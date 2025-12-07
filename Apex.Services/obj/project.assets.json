@@ -1,0 +1,160 @@
+{
+  "version": 3,
+  "targets": {
+    "net8.0": {
+      "Apex.Core/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/Apex.Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Apex.Core.dll": {}
+        }
+      },
+      "Apex.Data/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Apex.Core": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Apex.Data.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Apex.Data.dll": {}
+        }
+      }
+    },
+    "net8.0/win-x64": {
+      "Apex.Core/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/Apex.Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Apex.Core.dll": {}
+        }
+      },
+      "Apex.Data/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Apex.Core": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Apex.Data.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Apex.Data.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Apex.Core/1.0.0": {
+      "type": "project",
+      "path": "../Apex.Core/Apex.Core.csproj",
+      "msbuildProject": "../Apex.Core/Apex.Core.csproj"
+    },
+    "Apex.Data/1.0.0": {
+      "type": "project",
+      "path": "../Apex.Data/Apex.Data.csproj",
+      "msbuildProject": "../Apex.Data/Apex.Data.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net8.0": [
+      "Apex.Core >= 1.0.0",
+      "Apex.Data >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\moham\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.Services\\Apex.Services.csproj",
+      "projectName": "Apex.Services",
+      "projectPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.Services\\Apex.Services.csproj",
+      "packagesPath": "C:\\Users\\moham\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.Services\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\moham\\AppData\\Roaming\\NuGet\\NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "net8.0"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "projectReferences": {
+            "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.Core\\Apex.Core.csproj": {
+              "projectPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.Core\\Apex.Core.csproj"
+            },
+            "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.Data\\Apex.Data.csproj": {
+              "projectPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.Data\\Apex.Data.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      }
+    },
+    "frameworks": {
+      "net8.0": {
+        "targetAlias": "net8.0",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
+            "version": "[8.0.22, 8.0.22]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Runtime.win-x64",
+            "version": "[8.0.22, 8.0.22]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
+            "version": "[8.0.22, 8.0.22]"
+          }
+        ],
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.416/PortableRuntimeIdentifierGraph.json"
+      }
+    },
+    "runtimes": {
+      "win-x64": {
+        "#import": []
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Data\bin\Release\net8.0\win-x64\Apex.Data.deps.json
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Data\bin\Release\net8.0\win-x64\Apex.Data.dll
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Data\bin\Release\net8.0\win-x64\Apex.Data.pdb
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Data\bin\Release\net8.0\win-x64\Apex.Core.dll
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Data\bin\Release\net8.0\win-x64\Apex.Core.pdb
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Data\obj\Release\net8.0\win-x64\Apex.Data.csproj.AssemblyReference.cache
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Data\obj\Release\net8.0\win-x64\Apex.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Data\obj\Release\net8.0\win-x64\Apex.Data.AssemblyInfoInputs.cache
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Data\obj\Release\net8.0\win-x64\Apex.Data.AssemblyInfo.cs
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Data\obj\Release\net8.0\win-x64\Apex.Data.csproj.CoreCompileInputs.cache
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Data\obj\Release\net8.0\win-x64\Apex.Data.csproj.Up2Date
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Data\obj\Release\net8.0\win-x64\Apex.Data.dll
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Data\obj\Release\net8.0\win-x64\refint\Apex.Data.dll
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Data\obj\Release\net8.0\win-x64\Apex.Data.pdb
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Data\obj\Release\net8.0\win-x64\ref\Apex.Data.dll

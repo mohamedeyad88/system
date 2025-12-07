@@ -1,0 +1,378 @@
+[15:28:46] [Info] [4b1844fd-d11e-4791-af35-7f5ae6eea6d0] Printer Monitoring Service starting.
+[15:28:46] [Info] [bb1fc02d-4753-47f4-8317-8d1fabf086eb] Temp File Cleanup Service starting.
+[15:28:46] [Info] [3cf7eee3-43ad-4abb-b782-c86c4713966a] Application Starting...
+[15:28:47] [Info] [2394b961-4ac0-4e10-ae03-3e7dbfa6d475] Startup Complete
+[15:28:55] [Critical] [bbc1bcce-9787-49b6-b561-05e70c20f3d7] Global Exception (UI Thread Error) [Ex: String]
+[15:28:55] [Critical] [008f28ad-2c2f-43e3-b29f-2c87fa433ecc] Global Exception (UI Thread Error) [Ex: String]
+[15:28:55] [Critical] [28ff9aac-4e3b-4e51-be90-af277304249d] Global Exception (UI Thread Error) [Ex: String]
+[15:28:55] [Critical] [7213144a-b88e-4771-b583-2de34696bdbb] Global Exception (UI Thread Error) [Ex: String]
+[15:28:55] [Critical] [b6206d21-c953-4fac-a3d2-f6ec253fea09] Global Exception (UI Thread Error) [Ex: String]
+[15:28:56] [Critical] [7f2d266c-19de-4b47-9690-57e989474516] Global Exception (UI Thread Error) [Ex: String]
+[15:28:56] [Critical] [6aaa0c58-a0f2-4fe1-987c-fe7bf9a5d9b4] Global Exception (UI Thread Error) [Ex: String]
+[15:28:56] [Critical] [dc0e67e7-c4d1-44a7-8113-a5e17cfc5313] Global Exception (UI Thread Error) [Ex: String]
+[15:28:56] [Critical] [fa144fa9-daae-4583-b08e-ec7ebca197ce] Global Exception (UI Thread Error) [Ex: String]
+[15:28:56] [Critical] [955be11a-004c-4c71-bdb5-2a5ee81bd057] Global Exception (UI Thread Error) [Ex: String]
+[15:28:56] [Critical] [cac3d40c-2bca-433c-b122-88d35e66ce65] Global Exception (UI Thread Error) [Ex: String]
+[15:28:56] [Critical] [785bdedf-4c3b-4438-9d98-4df97069c089] Global Exception (UI Thread Error) [Ex: String]
+[15:28:56] [Critical] [2ce9e78c-4967-46af-9d6a-dc1a39a47a86] Global Exception (UI Thread Error) [Ex: String]
+[15:28:56] [Critical] [c7ebd32f-df99-4707-bc52-d6992d492df6] Global Exception (UI Thread Error) [Ex: String]
+[15:28:56] [Critical] [ba5bc54a-bb0b-42c2-bd39-e5c0c324eeb4] Global Exception (UI Thread Error) [Ex: String]
+[15:28:56] [Critical] [bfd3e67b-eab9-45f2-9978-9fd28ae40013] Global Exception (UI Thread Error) [Ex: String]
+[15:28:56] [Critical] [8b9b4847-11cd-499e-bc5b-89ff13618303] Global Exception (UI Thread Error) [Ex: String]
+[15:28:56] [Critical] [58b0dad1-eaf7-4725-b291-c31a7d0a2a1d] Global Exception (UI Thread Error) [Ex: String]
+[15:28:56] [Critical] [0062159c-94a5-45bb-b876-2610a749cec6] Global Exception (UI Thread Error) [Ex: String]
+[15:28:56] [Critical] [0ae78fe7-3ac1-406a-8645-dcacbe035a6b] Global Exception (UI Thread Error) [Ex: String]
+[15:29:13] [Info] [343f8771-0919-480c-80c0-5b5b332e87eb] Printer Monitoring Service starting.
+[15:29:13] [Info] [d728f542-8096-42c9-9a4a-a273bb86069f] Temp File Cleanup Service starting.
+[15:29:13] [Info] [c9d94306-7e89-43d8-9c34-d34d26a6c334] Application Starting...
+[15:29:14] [Info] [3be829a2-9eb0-41b0-a2c4-1e182bd07bd4] Startup Complete
+[15:29:46] [Critical] [da448622-efd9-4d63-bd2f-cd3fe3349ca5] Global Exception (UI Thread Error) [Ex: String]
+[15:29:46] [Critical] [9028ef9d-f070-40c6-bb9d-bc14022240c9] Global Exception (UI Thread Error) [Ex: String]
+[15:29:46] [Critical] [63a756fd-c2a3-43b6-8029-96e65297eb2f] Global Exception (UI Thread Error) [Ex: String]
+[15:29:46] [Critical] [ec8e87d1-4991-4327-8158-7f130c6fbdc5] Global Exception (UI Thread Error) [Ex: String]
+[15:29:46] [Critical] [36c2c489-8246-4106-a22f-7e99f7e88a75] Global Exception (UI Thread Error) [Ex: String]
+[15:29:46] [Critical] [6bf7806a-2d47-4c6f-85a4-b761b3db03ba] Global Exception (UI Thread Error) [Ex: String]
+[15:29:46] [Critical] [5ddd1d9f-f21a-42d1-b9af-c9b3829ebbba] Global Exception (UI Thread Error) [Ex: String]
+[15:29:46] [Critical] [baa716c7-530f-4a23-8564-b301548abb03] Global Exception (UI Thread Error) [Ex: String]
+[15:29:46] [Critical] [f6e01177-d17a-43e8-9b06-32ad78370bd5] Global Exception (UI Thread Error) [Ex: String]
+[15:29:46] [Critical] [c6b5700c-c47a-4b45-8b71-961dce4e0248] Global Exception (UI Thread Error) [Ex: String]
+[15:29:46] [Critical] [ed442141-2ef8-400f-881a-08895ba348d5] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [212b7d58-bfac-4a44-a895-c451859be11e] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [1c226ea6-b3fc-4d33-9334-05bb3cbadd56] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [a0db7976-0d86-49e9-ada6-ee5b670a63be] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [ea1d9542-f06a-4aaa-a4ae-4c0d8f4a12f4] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [40807195-e0df-42e6-b573-8b60ee44583c] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [580ee1fe-8685-413d-a45a-295037689c25] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [75fb5c2b-5ba7-42cf-9e9c-9fce3eefb555] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [6bcd9d56-8880-4d7c-b2eb-14b60821bdcc] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [2e051434-41e5-4326-bddd-656607b4c77b] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [ed0ad297-916f-4843-9a76-fad85bfb87d4] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [07778190-9b16-4ec2-aac7-d4fda1d92a70] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [1ca8e6b4-fc5a-45b9-898e-177886c879df] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [47f4f5a2-dbce-4c4b-98bf-d3b50620d373] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [1809acbb-712a-47d8-a74d-1df8d3ece3eb] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [55928fd4-d451-4738-83e4-3612ccb0750d] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [4f0e1297-ab27-44d3-9ad0-b50048e58f79] Global Exception (UI Thread Error) [Ex: String]
+[15:29:47] [Critical] [d2fd8299-3436-48b6-a8e0-4c49602fd21d] Global Exception (UI Thread Error) [Ex: String]
+[15:29:48] [Critical] [fec10e6e-ba8a-46c3-a514-05b37944feca] Global Exception (UI Thread Error) [Ex: String]
+[15:29:48] [Critical] [c904c83c-6b34-4f12-94f2-1bd131c0108d] Global Exception (UI Thread Error) [Ex: String]
+[15:29:48] [Critical] [d40da997-7f0e-4a46-8b9f-0237128e1807] Global Exception (UI Thread Error) [Ex: String]
+[15:30:12] [Info] [8d69b2bd-127a-4cd9-a95d-b3c7bb43b09b] Printer Monitoring Service starting.
+[15:30:12] [Info] [4970cb6a-09f1-4df8-9245-73c84cd7c579] Temp File Cleanup Service starting.
+[15:30:12] [Info] [846ff80c-8c63-4436-acfa-f938fab48f70] Application Starting...
+[15:30:13] [Info] [0386adcc-a0ec-467e-91ca-2c38c04cfa35] Startup Complete
+[15:30:40] [Critical] [a4772927-0008-4575-999f-72783ab21651] Global Exception (UI Thread Error) [Ex: String]
+[15:30:40] [Critical] [b38ace59-7f07-472a-a86d-dfd85cd9c7c4] Global Exception (UI Thread Error) [Ex: String]
+[15:30:40] [Critical] [81822698-6c7b-4caf-b4a2-41dffa14e71d] Global Exception (UI Thread Error) [Ex: String]
+[15:30:40] [Critical] [893fd93c-490a-4178-9c5d-90ef37dcc6cc] Global Exception (UI Thread Error) [Ex: String]
+[15:30:40] [Critical] [ab37ca5b-b931-4fb4-8626-bc2f8a3c89fd] Global Exception (UI Thread Error) [Ex: String]
+[15:30:40] [Critical] [4034af89-27a4-4e1e-8785-d2e01bc3afd7] Global Exception (UI Thread Error) [Ex: String]
+[15:30:40] [Critical] [807f4c26-d730-4c92-b734-520173344f31] Global Exception (UI Thread Error) [Ex: String]
+[15:30:40] [Critical] [6fe0d2b8-f740-4b6b-a6ec-d724247ab8df] Global Exception (UI Thread Error) [Ex: String]
+[15:30:40] [Critical] [6a59829d-6de5-40c4-b923-d0a4dda739e3] Global Exception (UI Thread Error) [Ex: String]
+[15:30:40] [Critical] [9dfb826c-1089-414f-b924-6537a3783269] Global Exception (UI Thread Error) [Ex: String]
+[15:30:40] [Critical] [ed9dddf7-af6e-4fe4-851d-89323a06f9f4] Global Exception (UI Thread Error) [Ex: String]
+[15:30:40] [Critical] [23f5f5ce-e8c6-4064-9352-78476fea802a] Global Exception (UI Thread Error) [Ex: String]
+[15:30:41] [Critical] [0d8f12dc-fb08-4149-8d70-146e18af6b14] Global Exception (UI Thread Error) [Ex: String]
+[15:30:41] [Critical] [35346d2a-8509-413f-812f-0fe9b6738726] Global Exception (UI Thread Error) [Ex: String]
+[15:30:41] [Critical] [4abb5d4b-7652-4bb1-9564-c21f85819a07] Global Exception (UI Thread Error) [Ex: String]
+[15:30:41] [Critical] [56745239-787e-44de-93bd-312a8adfb229] Global Exception (UI Thread Error) [Ex: String]
+[15:30:41] [Critical] [a2f67add-d2f9-4c58-b960-a343f4b680ff] Global Exception (UI Thread Error) [Ex: String]
+[15:30:41] [Critical] [aa18f7fa-2583-468a-8425-67078585d38a] Global Exception (UI Thread Error) [Ex: String]
+[15:30:41] [Critical] [d5f6aa57-49a4-46cc-a065-37e88ae268b6] Global Exception (UI Thread Error) [Ex: String]
+[15:30:41] [Critical] [b16b1690-9aa5-4547-9e79-34ffe044d8c5] Global Exception (UI Thread Error) [Ex: String]
+[15:37:12] [Info] [6b76fa37-637f-4c19-9149-f9b1d10eb2ee] Printer Monitoring Service starting.
+[15:37:12] [Info] [2c4c3b9d-2eb2-4638-b02e-448425e40bde] Temp File Cleanup Service starting.
+[15:37:12] [Info] [84278143-33d0-4caf-90bf-556892ffc6a8] Application Starting...
+[15:37:13] [Info] [d718636b-6ed2-496f-855c-1dd6ffd09869] Startup Complete
+[15:37:16] [Critical] [348cf54f-0f9f-4074-9bfd-4dd3ac622f2b] Global Exception (UI Thread Error) [Ex: String]
+[15:37:16] [Critical] [4e146724-0fec-4018-89c8-8dfa198f0184] Global Exception (UI Thread Error) [Ex: String]
+[15:37:16] [Critical] [cef71eae-6e37-486d-9b99-8fbb39e2566c] Global Exception (UI Thread Error) [Ex: String]
+[15:37:16] [Critical] [9363f86f-3615-4f4e-81e2-5d0a9a9bf0e8] Global Exception (UI Thread Error) [Ex: String]
+[15:37:16] [Critical] [4353fda6-71d2-44bf-8d15-3b2782e0fce6] Global Exception (UI Thread Error) [Ex: String]
+[15:37:16] [Critical] [59ba9f7c-bef5-4ace-af99-e375fb78a597] Global Exception (UI Thread Error) [Ex: String]
+[15:37:16] [Critical] [5a9a8d6d-b69e-402f-8a94-81deda81ce8c] Global Exception (UI Thread Error) [Ex: String]
+[15:37:16] [Critical] [2d36cb9b-7a3c-460f-8090-db63c07108ad] Global Exception (UI Thread Error) [Ex: String]
+[15:37:17] [Critical] [93a56b00-c073-455b-88a6-60551b3ea924] Global Exception (UI Thread Error) [Ex: String]
+[15:37:17] [Critical] [15d5f2ec-ec11-40a3-bc72-1bd7eeabeba5] Global Exception (UI Thread Error) [Ex: String]
+[15:37:17] [Critical] [f5f8dd54-25c9-4f07-be6e-5893930ed0af] Global Exception (UI Thread Error) [Ex: String]
+[15:37:17] [Critical] [e8ed0b53-5da6-400c-b383-74b29fd0e00b] Global Exception (UI Thread Error) [Ex: String]
+[15:37:17] [Critical] [8fa85147-4f03-4fa3-b637-adca793aa54c] Global Exception (UI Thread Error) [Ex: String]
+[15:37:17] [Critical] [2dae931b-9630-420e-99b8-8a4c425e5fab] Global Exception (UI Thread Error) [Ex: String]
+[15:37:17] [Critical] [a5699b4b-0cb3-4773-a276-e392a5550ebf] Global Exception (UI Thread Error) [Ex: String]
+[15:37:17] [Critical] [b5c59989-5477-4678-bbea-4890e99b047e] Global Exception (UI Thread Error) [Ex: String]
+[15:37:17] [Critical] [a270fe52-3ba9-4734-ac97-6943effd362d] Global Exception (UI Thread Error) [Ex: String]
+[15:37:17] [Critical] [ef8056e1-2603-4be2-9c9e-2378feeccb7d] Global Exception (UI Thread Error) [Ex: String]
+[15:37:33] [Info] [20587bb0-4fb5-4546-886b-041537d86a6e] Printer Monitoring Service starting.
+[15:37:33] [Info] [7a1221d3-b067-489d-9a09-5e43403b4b34] Temp File Cleanup Service starting.
+[15:37:33] [Info] [03d48088-a554-4c95-abb4-c47e06a5c27d] Application Starting...
+[15:37:34] [Info] [b047555d-29ae-4e7d-9a81-f5d5cc631701] Startup Complete
+[15:37:38] [Info] [fca207fb-b1cd-418a-abb4-70a4d2660223] Application Exiting
+[15:37:38] [Info] [6b99d0c9-6388-4521-b57c-7a6e87174efa] Printer Monitoring Service stopping.
+[15:55:31] [Info] [7f8ad170-bf47-41df-ad7c-72f697a816d0] Printer Monitoring Service starting.
+[15:55:31] [Info] [9a37c686-dbce-480a-a201-fe10bd6bac6c] Temp File Cleanup Service starting.
+[15:55:31] [Info] [09be46c1-fa23-4039-ba5a-aa1ef4ef41bc] Application Starting...
+[15:55:32] [Info] [ddab2f95-7e0c-4393-ada0-db9f3abfcc9a] Startup Complete
+[15:55:40] [Critical] [c031fee8-2034-469d-81dc-9f8d3d9a2288] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [c5b9ced0-e269-4260-82c0-94f67ab2ca71] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [fd3708ea-c18e-4c0e-9c83-38f64699bee8] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [e11bf665-9136-4851-8f04-d234f5d0180c] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [e3984c0e-747a-46a0-b6d9-61b9cbc6fb7e] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [ec9ad0ef-fe27-4734-a9ec-d98c94d90c45] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [7ca97a35-b150-49d1-b0bb-5849faa816b2] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [14704cd2-5ce1-4186-adbd-e7d6af962bff] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [a01fddfd-8370-446e-8a76-5145841873a5] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [4e3301f5-9afa-449c-823c-ca37fc644b39] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [fef7d799-c75d-4855-a586-6f253d2fbb49] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [ad1e8a6e-7f9e-4777-ab48-1c3e27eeb49d] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [30be5898-7aea-4d0f-88dd-f99ddea38703] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [96767894-972c-4deb-85de-39979f15a536] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [8b9d59f9-b9c1-46a5-86b8-c356ebdbf89c] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [7a7336d2-57a8-42dd-804c-d3ca27351a1d] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [dabaef1d-4c7a-4ffc-aaf4-08de8ce2bfdb] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [ded27950-2871-40cf-a521-5b6e870e5767] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [d66f0867-34da-4486-bdb6-917a5b7107de] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [ddf326bb-4de0-4f91-8bdb-0b5954efd64e] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [929fa74e-6f3c-42ae-8fa2-5ecf9df03319] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [9c83a2ea-941f-4779-86ba-791333fa2adf] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [e7f6a7c2-da8b-4a19-a26c-f73746be2c6f] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [ea753345-170a-4c51-be1d-60277c38509a] Global Exception (UI Thread Error) [Ex: String]
+[15:55:41] [Critical] [16830449-141d-4f2a-abd6-99440039e720] Global Exception (UI Thread Error) [Ex: String]
+[15:55:42] [Critical] [78d6652f-4ed7-4830-b5c1-dc631a65cb7f] Global Exception (UI Thread Error) [Ex: String]
+[15:55:42] [Critical] [3b28a39e-f2d6-4922-a834-cd30a098536c] Global Exception (UI Thread Error) [Ex: String]
+[15:55:42] [Critical] [1266335c-64cb-452c-a543-18f0e6c810fa] Global Exception (UI Thread Error) [Ex: String]
+[15:55:42] [Critical] [eacd1e20-195b-4b7f-a29a-6d1a521aba4f] Global Exception (UI Thread Error) [Ex: String]
+[15:55:42] [Critical] [d622855b-d9fe-4007-b6d1-5982da0ddf0c] Global Exception (UI Thread Error) [Ex: String]
+[16:07:46] [Info] [b4311687-8fe6-4347-8612-3d0652fde11e] Printer Monitoring Service starting.
+[16:07:46] [Info] [df76258b-b32e-47ab-aad4-47e838276467] Temp File Cleanup Service starting.
+[16:07:46] [Info] [fdb0a6dd-6bef-404b-b37a-fe965f6d0bff] Application Starting...
+[16:07:47] [Info] [b3b98b39-690f-4495-9126-ce515b507123] Startup Complete
+[16:07:52] [Critical] [8d9f3dc1-e935-49c7-a8c8-fa9cf7957aed] Global Exception (UI Thread Error) [Ex: String]
+[16:07:52] [Critical] [68b3dd42-3127-45a1-9b89-43c312337c3d] Global Exception (UI Thread Error) [Ex: String]
+[16:07:52] [Critical] [081887b7-b34e-4731-b122-8dac4493f1c9] Global Exception (UI Thread Error) [Ex: String]
+[16:07:52] [Critical] [19b4c5f3-063d-4ba8-9858-fafb45257c7c] Global Exception (UI Thread Error) [Ex: String]
+[16:07:52] [Critical] [8e28ebaf-7343-4fae-bd37-bc9f815e8bd1] Global Exception (UI Thread Error) [Ex: String]
+[16:07:53] [Critical] [c02b6a81-5767-4037-971d-11ba589df8bb] Global Exception (UI Thread Error) [Ex: String]
+[16:07:53] [Critical] [a5ec456c-cec3-497c-9c2d-079efded2e7a] Global Exception (UI Thread Error) [Ex: String]
+[16:07:53] [Critical] [e26cdfe3-4dff-4c8d-9635-a52fc49f0e9e] Global Exception (UI Thread Error) [Ex: String]
+[16:07:53] [Critical] [45f47681-6cb1-44ed-9801-aa88e94d9385] Global Exception (UI Thread Error) [Ex: String]
+[16:07:53] [Critical] [8a7b454a-4fb4-44e7-b846-9c3efb7ebb58] Global Exception (UI Thread Error) [Ex: String]
+[16:07:53] [Critical] [1cc53641-d890-4765-b9d9-17a24c0c89eb] Global Exception (UI Thread Error) [Ex: String]
+[16:07:53] [Critical] [30d8a006-a74e-4f95-bd31-db2399a79958] Global Exception (UI Thread Error) [Ex: String]
+[16:07:53] [Critical] [8b9ca186-323b-4280-9799-1325fb8a41c6] Global Exception (UI Thread Error) [Ex: String]
+[16:07:53] [Critical] [a6303a36-3fb8-43b2-b876-91eb45ca338b] Global Exception (UI Thread Error) [Ex: String]
+[16:07:53] [Critical] [cb0a461c-a588-4402-ad57-80f51921dc31] Global Exception (UI Thread Error) [Ex: String]
+[16:07:53] [Critical] [0ec7b10e-dbbd-4938-908d-df05ba7d1c3d] Global Exception (UI Thread Error) [Ex: String]
+[16:07:53] [Critical] [6268a672-c5a7-4288-bb96-5a019aae66fd] Global Exception (UI Thread Error) [Ex: String]
+[16:07:53] [Critical] [76eba0d4-c420-4946-90e2-68a9a27b1ec3] Global Exception (UI Thread Error) [Ex: String]
+[16:10:45] [Info] [56b73632-d5b7-4b1a-a98f-4fd528b19dfe] Printer Monitoring Service starting.
+[16:10:45] [Info] [7cd28bbf-a603-4a93-b383-54f1b3327cfd] Temp File Cleanup Service starting.
+[16:10:45] [Info] [c74bddaf-835a-40f5-8fe5-999cc1f00dd8] Application Starting...
+[16:10:46] [Info] [eac2f316-fe47-4e15-bbdf-48f6a2f70927] Startup Complete
+[16:10:52] [Critical] [d8860b9b-605d-4b3b-9ad5-c03085aed9e8] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [40e02932-9133-476e-bff7-13f6dc4e6fea] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [0ba437ce-2c90-4062-aa6f-4f9ba1282e96] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [363ebf55-062b-4c19-bd79-986c260087c7] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [2dd59e05-2628-4164-80da-664d31afb651] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [243a2627-c06f-4ff7-90bc-11e93191612e] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [d48c12df-5ea9-4e44-a928-e9f1b29d5450] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [e018cc65-ceff-401a-957e-0a7334c02564] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [165b336b-7a59-45a5-8e73-9ce0adb1d0af] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [3870f3c5-cc2b-463c-985b-6ac7cf4bcd62] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [cf76d247-db92-4635-9124-4806d0ecf7dc] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [e0d688d5-66d6-4ee9-adf6-3dd57c379eb5] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [a66faa20-0870-49fe-a83c-cfeab132b307] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [ef2a9a65-b167-47e5-8783-b231232fb61a] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [8c4d4d7c-d781-490c-9044-cf932b80153e] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [2b00edfe-1942-4974-a415-2a325c2e24bb] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [9f2f0a1b-27b0-4ed3-87c8-b2f5cf10e54c] Global Exception (UI Thread Error) [Ex: String]
+[16:10:52] [Critical] [895e6f3c-5691-4284-95c6-483fc78ef0ec] Global Exception (UI Thread Error) [Ex: String]
+[16:20:46] [Info] [0016b34a-75e2-40da-b261-47a04c5f8cbd] Printer Monitoring Service starting.
+[16:20:46] [Info] [00e164c9-07a7-489d-8e4f-c70af972731c] Temp File Cleanup Service starting.
+[16:20:46] [Info] [0884d2cd-4227-4c9a-b68e-68cc6530b865] Application Starting...
+[16:20:47] [Info] [2ead51d3-3fca-490b-b6e1-1b1216615af9] Startup Complete
+[16:21:10] [Critical] [7072a94c-479b-4b48-9ac0-ec11a59d2350] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [4f9b1854-4a9b-4a6d-a381-ce9c5d1395ea] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [f5dd9830-3864-45fe-a46c-6046d627f540] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [20c1431c-7e86-4938-ab45-56b14ce94416] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [299312af-8a3d-4727-b393-c49a9d91a5b1] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [07e163eb-b20a-4ab2-aaf1-cdfed1eef20b] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [9e33e513-9dda-41b1-b416-9a1d7903405e] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [3cb2abdf-9c9d-4b8f-985a-43ab350eb308] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [238b61c1-2aa0-4c32-8e9c-c079934fcf1b] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [a6a67cbd-3c5f-41a7-95eb-25f3b88be6d4] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [e82c2576-68cb-4c9c-a8cf-c82cb2a9b902] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [ecc59e21-425d-443a-a932-72980cfde260] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [ce00ba04-5815-4579-9b72-5ef04c8a3396] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [99ceefc1-91db-4271-ae7d-6f9007a99b3a] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [ea9c99c6-d761-42dc-a514-d11b649a39eb] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [6dd0acd0-1c99-4f90-914a-464abd849837] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [8c7ede8a-5407-4738-b1df-e9360a6d773d] Global Exception (UI Thread Error) [Ex: String]
+[16:21:10] [Critical] [ffb8f77e-f4ec-42b6-8319-d7ef2af17248] Global Exception (UI Thread Error) [Ex: String]
+[16:36:26] [Info] [28b62641-f9c0-4bc0-baf4-f620bb51b29d] Printer Monitoring Service starting.
+[16:36:26] [Info] [547079c9-1b0f-408a-be31-e66c2060a3ef] Temp File Cleanup Service starting.
+[16:36:26] [Info] [20be0bce-7119-4e26-bdf2-bfdcdc8ef313] Application Starting...
+[16:36:27] [Info] [7aa99a41-ef0c-426f-a264-d6e05c470189] Startup Complete
+[16:36:32] [Critical] [71461838-5e86-4074-ad96-9cb58d8f2311] Global Exception (UI Thread Error) [Ex: String]
+[16:36:32] [Critical] [f9d99d9f-0973-44ff-a53a-c267ed899b9d] Global Exception (UI Thread Error) [Ex: String]
+[16:36:32] [Critical] [4763dee6-15c0-48e1-9ae9-e72e3d22c962] Global Exception (UI Thread Error) [Ex: String]
+[16:36:32] [Critical] [495675c5-f517-4f97-a855-dde5e4f9cbeb] Global Exception (UI Thread Error) [Ex: String]
+[16:36:32] [Critical] [85b975d6-2788-465a-88d8-83ab8499afe0] Global Exception (UI Thread Error) [Ex: String]
+[16:36:32] [Critical] [e44b7d6e-e8d1-4bb7-8b9e-5c9e37ea5037] Global Exception (UI Thread Error) [Ex: String]
+[16:36:32] [Critical] [b8ecf88b-432d-4286-8050-18fa8f0e49f8] Global Exception (UI Thread Error) [Ex: String]
+[16:36:32] [Critical] [e5f0e8d6-cabe-486e-acfd-53f95dd5b707] Global Exception (UI Thread Error) [Ex: String]
+[16:36:32] [Critical] [26555060-dc97-4a50-8f2e-b0b4be85345b] Global Exception (UI Thread Error) [Ex: String]
+[16:36:32] [Critical] [7dcc74a1-b32d-4a40-b081-d28150aa1aed] Global Exception (UI Thread Error) [Ex: String]
+[16:36:32] [Critical] [b60c3968-59ee-4ee0-a0d4-6685d731bc19] Global Exception (UI Thread Error) [Ex: String]
+[16:36:32] [Critical] [0ad456db-e647-4ed6-8cdf-9606cfebc51c] Global Exception (UI Thread Error) [Ex: String]
+[16:36:32] [Critical] [6d5e56cf-38f1-4fb2-82f7-f1456ce4e739] Global Exception (UI Thread Error) [Ex: String]
+[16:36:32] [Critical] [848d6b58-fa15-433b-ba7e-529a49800c72] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [b52c295a-4f08-4442-8937-77d99031bcc7] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [33ba83f9-a528-4e3f-83f1-2f0f84d9aeae] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [5d37f46d-c891-4024-b975-c36f3905d719] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [e1eb216b-b341-44bf-b69c-5901e7936f05] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [1f134a84-4cbb-4311-814d-84262279557b] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [66b6c3a0-b572-4732-97f1-10c0b479ea85] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [3fc367b3-b2b3-4b0f-8f50-2b7a80cef867] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [6afe489d-4b31-48d5-92b3-8c19dc148376] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [e0169b19-3eb8-4b65-bcfc-fe5735673ad0] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [2ee830d8-bcca-4a7b-9c39-c87711264699] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [22ba84f4-cfe1-4dde-977f-bf8335ce0ffa] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [c2a935c0-0e9a-4eca-82b7-3b4f54b913a1] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [8fd8dacb-eb8b-4bc7-b445-7ffba7c71a97] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [f3755b79-3443-409c-b421-00e1d9515b7a] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [ff4870f9-5814-4b54-87f3-fa2eb0ccee57] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [0f9364aa-caf4-41e7-8450-348c42f99e1a] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [ec716371-5166-4ed3-9426-972f6f9d3f7c] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [a3f7919c-a8b9-4511-b045-434906a29a7e] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [26d56fd6-bfcf-415e-ae2b-23dee1035424] Global Exception (UI Thread Error) [Ex: String]
+[16:36:33] [Critical] [806b2c9b-6394-45f1-bbaa-e22eda5bb4e1] Global Exception (UI Thread Error) [Ex: String]
+[16:57:52] [Info] [5fab57fa-7af9-4c4c-8077-7eadf5875e92] Printer Monitoring Service starting.
+[16:57:52] [Info] [ea7b4f1b-dae3-4330-9594-7359504133d6] Temp File Cleanup Service starting.
+[16:57:52] [Info] [cf821f50-e407-41c5-b7b4-c8c663373771] Application Starting...
+[16:57:53] [Info] [5fafa793-0564-40aa-b570-c9021ee0aa01] Startup Complete
+[16:58:01] [Critical] [c9722e77-3a0f-4050-8bf2-85a6ca6128d2] Global Exception (UI Thread Error) [Ex: String]
+[16:58:01] [Critical] [cb443127-76bd-4f2a-876c-9baf94019b60] Global Exception (UI Thread Error) [Ex: String]
+[16:58:02] [Critical] [70a3be85-15fe-41db-acdc-d0630841701d] Global Exception (UI Thread Error) [Ex: String]
+[16:58:02] [Critical] [a8ba2a28-0816-4239-8ccf-95f9181eba66] Global Exception (UI Thread Error) [Ex: String]
+[16:58:02] [Critical] [be871cb0-db7a-4fe4-9c79-12503cc32f85] Global Exception (UI Thread Error) [Ex: String]
+[16:58:02] [Critical] [555824c9-2213-49fb-9a12-cab8e2abca65] Global Exception (UI Thread Error) [Ex: String]
+[16:58:02] [Critical] [0b35645f-d2bb-4fe0-85a9-9518c1a99d3a] Global Exception (UI Thread Error) [Ex: String]
+[16:58:02] [Critical] [bfb9f706-2f64-49ae-912b-83a3aea3bcef] Global Exception (UI Thread Error) [Ex: String]
+[16:58:02] [Critical] [451a9f03-3339-4208-9319-7063297f6edd] Global Exception (UI Thread Error) [Ex: String]
+[16:58:02] [Critical] [19077e87-7e08-41d3-8833-226d595cec34] Global Exception (UI Thread Error) [Ex: String]
+[16:58:02] [Critical] [710f8e0a-f073-42cb-871b-eef5955fff73] Global Exception (UI Thread Error) [Ex: String]
+[16:58:02] [Critical] [e1b0ab0f-f96f-4301-a101-b29315d82801] Global Exception (UI Thread Error) [Ex: String]
+[16:58:02] [Critical] [48ef779a-a157-4f3d-b309-efdb04ed26d9] Global Exception (UI Thread Error) [Ex: String]
+[16:58:02] [Critical] [1777ee80-75a1-4f38-bc28-2e0ba82279c7] Global Exception (UI Thread Error) [Ex: String]
+[16:58:02] [Critical] [98b6c815-ffdb-42d8-9661-d71b161cc19e] Global Exception (UI Thread Error) [Ex: String]
+[16:58:02] [Critical] [b1fe8554-16ac-4781-ad1b-9608df4c8944] Global Exception (UI Thread Error) [Ex: String]
+[16:58:02] [Critical] [4727b65d-9657-4b8d-9837-8ba4917b1631] Global Exception (UI Thread Error) [Ex: String]
+[16:58:02] [Critical] [ecac45af-2439-43c9-9e37-1390bf9974e6] Global Exception (UI Thread Error) [Ex: String]
+[17:03:08] [Info] [612243c4-90fc-4e0e-943b-f4320c8d3af0] Printer Monitoring Service starting.
+[17:03:08] [Info] [9d052490-b819-46e4-8d13-b64a0ad2074b] Temp File Cleanup Service starting.
+[17:03:08] [Info] [77ebec8c-ee03-4e71-a2d9-6fa1fd81d0db] Application Starting...
+[17:03:09] [Info] [77fc19ca-6d02-46bc-95ce-17ed93428214] Startup Complete
+[17:04:23] [Critical] [96159d14-c4b3-4daa-8a74-3a92c5fb9dd0] Global Exception (UI Thread Error) [Ex: String]
+[17:04:25] [Critical] [3db1bf31-e5d6-4f94-b900-22586c747c68] Global Exception (UI Thread Error) [Ex: String]
+[17:04:27] [Critical] [c4ac26c3-9b16-4359-af42-ae5d141ff0e3] Global Exception (UI Thread Error) [Ex: String]
+[17:04:29] [Critical] [09bf6939-abf4-4ab1-b402-ebf33f9f930d] Global Exception (UI Thread Error) [Ex: String]
+[17:04:31] [Critical] [4c1ae17e-a6c2-4450-a0b5-92c0a8344858] Global Exception (UI Thread Error) [Ex: String]
+[17:04:33] [Critical] [50cdc6f1-4881-42cd-a1f3-2a2633179e8e] Global Exception (UI Thread Error) [Ex: String]
+[17:04:35] [Critical] [8134410d-762e-4483-a202-84c352e41e95] Global Exception (UI Thread Error) [Ex: String]
+[17:04:37] [Critical] [7d6bb562-546a-4014-a86f-cd107546301a] Global Exception (UI Thread Error) [Ex: String]
+[17:04:39] [Critical] [be60286a-a6ea-4a70-a668-45d67628d6d3] Global Exception (UI Thread Error) [Ex: String]
+[17:04:41] [Critical] [f0f277ce-489b-4d64-9d27-5b0a66fc7f22] Global Exception (UI Thread Error) [Ex: String]
+[17:04:43] [Critical] [19c3c35d-0b2c-494f-a217-db86a6ab16d9] Global Exception (UI Thread Error) [Ex: String]
+[17:04:45] [Critical] [36afa003-f760-413b-8dcf-7ca0a6cc41a1] Global Exception (UI Thread Error) [Ex: String]
+[17:04:47] [Critical] [ed82f8d0-1f49-46d9-b129-3619807d4282] Global Exception (UI Thread Error) [Ex: String]
+[17:04:49] [Critical] [4e9422f7-bb8f-406d-9a37-27d9a4313e30] Global Exception (UI Thread Error) [Ex: String]
+[17:04:51] [Critical] [633d0559-cb49-41ac-80fd-7ee9e9be0654] Global Exception (UI Thread Error) [Ex: String]
+[17:04:53] [Critical] [57667263-ec5b-4d1c-8c57-fdffbaca3b32] Global Exception (UI Thread Error) [Ex: String]
+[17:04:55] [Critical] [714381cb-a4ca-49e8-8a63-51f3f12f2b03] Global Exception (UI Thread Error) [Ex: String]
+[17:04:57] [Critical] [ce5de864-aafa-4c4a-b5e9-a47a985ea6af] Global Exception (UI Thread Error) [Ex: String]
+[17:04:59] [Critical] [dbfb3f72-efb9-473c-9d37-7e54fd33975e] Global Exception (UI Thread Error) [Ex: String]
+[17:05:01] [Critical] [a9ae35a0-6b4f-4282-93ed-a6c4b21fb0fc] Global Exception (UI Thread Error) [Ex: String]
+[17:05:03] [Critical] [834a6862-f93c-47f6-a96b-062980b0145a] Global Exception (UI Thread Error) [Ex: String]
+[17:05:05] [Critical] [789f8458-4ab1-4386-8eaf-8a7852c0c65b] Global Exception (UI Thread Error) [Ex: String]
+[17:05:07] [Critical] [cf499547-111e-4a5d-ac7f-a2f3ff8cd6cc] Global Exception (UI Thread Error) [Ex: String]
+[17:25:42] [Info] [6d666aed-f299-4f9e-99f3-f3dae3a7ebc1] Printer Monitoring Service starting.
+[17:25:42] [Info] [6183351f-9393-47df-a184-b7a74cd14516] Temp File Cleanup Service starting.
+[17:25:42] [Info] [62f2dec9-5169-42c5-80ce-a3791d1a1a6f] Application Starting...
+[17:25:43] [Info] [c6357903-2510-48d8-9e3b-83e744f74616] Startup Complete
+[17:34:23] [Info] [a2a2b984-bc30-4529-82e7-c99f0592bab1] Application Exiting
+[17:34:23] [Info] [03854119-8150-4620-8b74-8070de1758f8] Printer Monitoring Service stopping.
+[17:48:11] [Info] [26722f50-c6a4-418f-969f-7fe31a1592fd] Printer Monitoring Service starting.
+[17:48:11] [Info] [369c8779-23f1-4fbf-a3bb-a5166d2781f6] Temp File Cleanup Service starting.
+[17:48:11] [Info] [537d1edb-5dc6-4209-a210-13df340abec1] Application Starting...
+[17:48:12] [Info] [3539649f-be81-4325-9960-f7d2399198db] Startup Complete
+[17:57:15] [Info] [13167e45-59a8-4dc8-ae14-d1e73310a54d] Application Exiting
+[17:57:15] [Info] [7017d543-1d8a-4c12-a48c-c96e68dc3393] Printer Monitoring Service stopping.
+[18:25:17] [Info] [5fc100b3-7093-4f7b-8119-84607c5f6fb4] Printer Monitoring Service starting.
+[18:25:17] [Info] [70914f31-be81-4a7e-b051-1691d27a9b3a] Temp File Cleanup Service starting.
+[18:25:17] [Info] [158aef83-6c46-4660-830a-3ce461ae7932] Application Starting...
+[18:25:18] [Info] [a755b864-e0a5-443a-bfd4-840b01d3bb50] Startup Complete
+[19:05:49] [Info] [6b01ec92-1e80-43a3-a6a4-9dc875905d5a] Application Exiting
+[19:05:49] [Info] [579d99e1-d2bd-4605-96f7-9c7a637eea38] Printer Monitoring Service stopping.
+[19:31:21] [Info] [70de0289-a4e7-4a66-99ba-d39f051467fc] Printer Monitoring Service starting.
+[19:31:21] [Info] [d4c1c43c-bec3-4e29-a429-702d36d84cec] Temp File Cleanup Service starting.
+[19:31:21] [Info] [34089e32-3dda-4560-a4fe-13692ed90955] Application Starting...
+[19:31:22] [Info] [1208fdfb-8a1b-4827-a57c-d388ae4bab69] Startup Complete
+[19:31:23] [Critical] [ad3a4275-5a97-4e6a-994a-cffb8462a900] Global Exception (UI Thread Error) [Ex: String]
+[19:31:23] [Critical] [3cee456a-033c-4a1f-be66-223a2f55ca30] Global Exception (UI Thread Error) [Ex: String]
+[19:31:23] [Critical] [44afe5e5-de8d-4e64-a216-609eb476fe28] Global Exception (UI Thread Error) [Ex: String]
+[19:31:23] [Critical] [f1251cb6-0d9e-4de2-8343-beb92e933f6c] Global Exception (UI Thread Error) [Ex: String]
+[19:31:23] [Critical] [1ec397eb-289d-4831-a319-2fafcfe6a26e] Global Exception (UI Thread Error) [Ex: String]
+[19:31:23] [Critical] [60049151-4ebb-4017-a8c0-fe2d74903291] Global Exception (UI Thread Error) [Ex: String]
+[19:31:24] [Critical] [b4352385-3779-4a9b-a2dd-4f4b509bd3c3] Global Exception (UI Thread Error) [Ex: String]
+[19:31:24] [Critical] [9c168b26-f19b-4668-8a55-2c96fb7a49bb] Global Exception (UI Thread Error) [Ex: String]
+[19:31:24] [Critical] [784453f1-4a27-4cb2-8831-9e2a93a7fb1d] Global Exception (UI Thread Error) [Ex: String]
+[19:31:24] [Critical] [11cb1929-c6aa-48a9-a09d-84b380f9f9dc] Global Exception (UI Thread Error) [Ex: String]
+[19:31:24] [Critical] [770508af-d6da-4fd8-b42e-3ee8bfed0a13] Global Exception (UI Thread Error) [Ex: String]
+[19:31:24] [Critical] [0f0837e2-4a77-46ad-85f3-4ba8b5a52cfd] Global Exception (UI Thread Error) [Ex: String]
+[19:31:24] [Critical] [697c8deb-2311-47f1-bbb1-40de9dc04677] Global Exception (UI Thread Error) [Ex: String]
+[19:32:09] [Info] [217fff2b-9e9a-4f02-89e4-506a88f5d61b] Printer Monitoring Service starting.
+[19:32:09] [Info] [183e66fb-9f50-4d69-942c-42aef59cb602] Temp File Cleanup Service starting.
+[19:32:09] [Info] [bde32ea3-a78c-4a95-b2ce-71e74783c435] Application Starting...
+[19:32:10] [Info] [b6ba798e-8969-44cd-92ae-9b5a5e137c7a] Startup Complete
+[19:32:11] [Critical] [3da04ffc-463e-4e8d-8f12-418fb0e79596] Global Exception (UI Thread Error) [Ex: String]
+[19:32:11] [Critical] [d48be66f-e34a-4878-a5e3-e5b3531af74c] Global Exception (UI Thread Error) [Ex: String]
+[19:32:11] [Critical] [c37d34b6-5c7d-4356-95c3-acb5b6516f57] Global Exception (UI Thread Error) [Ex: String]
+[19:32:11] [Critical] [f9069e75-1bff-498a-a7a6-1379ad64424d] Global Exception (UI Thread Error) [Ex: String]
+[19:32:11] [Critical] [e45be7cf-7e5b-414f-bc8e-ada6ed61866a] Global Exception (UI Thread Error) [Ex: String]
+[19:32:11] [Critical] [7134b99e-2ed3-4edb-9d97-e3e802808a80] Global Exception (UI Thread Error) [Ex: String]
+[19:32:11] [Critical] [f317bc4f-bdb7-4855-84dd-dd978500d0a8] Global Exception (UI Thread Error) [Ex: String]
+[19:32:11] [Critical] [2b9250f3-9aba-4018-8e39-b39f62032319] Global Exception (UI Thread Error) [Ex: String]
+[19:32:11] [Critical] [02af7b6c-8147-499d-8a67-ad3659768183] Global Exception (UI Thread Error) [Ex: String]
+[19:32:11] [Critical] [2992e2e1-c19c-4222-b211-46a8646a7e68] Global Exception (UI Thread Error) [Ex: String]
+[19:32:11] [Critical] [6cb6551a-8c9a-487a-b125-fe80d8c9f2ac] Global Exception (UI Thread Error) [Ex: String]
+[19:32:11] [Critical] [efbebe38-0508-49b7-86c4-558448005ff0] Global Exception (UI Thread Error) [Ex: String]
+[19:32:11] [Critical] [daf45d9c-302a-4204-9fe0-7a925df88b82] Global Exception (UI Thread Error) [Ex: String]
+[19:36:52] [Info] [18a491b6-2d0f-4f1d-bd88-853ae7d3d542] Printer Monitoring Service starting.
+[19:36:52] [Info] [42c1e1b5-0094-4866-a414-98aa431fc570] Temp File Cleanup Service starting.
+[19:36:52] [Info] [e0408678-cbaf-426c-8033-2a6512b48a4f] Application Starting...
+[19:36:53] [Info] [b358d9f2-2f8a-4aa5-a881-2aa752790ab2] Startup Complete
+[19:41:49] [Info] [51b6a5d9-0051-42bc-b26d-977f9b282f67] Pipeline: Processing file 'Invoice_1.pdf'
+[19:42:25] [Error] [7983930d-0bea-498a-bb3a-f8e7ee48c107] Pipeline Error: Cannot access a disposed context instance. A common cause of this error is disposing a context instance that was resolved from dependency injection and then later trying to use the same context instance elsewhere in your application. This may occur if you are calling 'Dispose' on the context instance, or wrapping it in a using statement. If you are using dependency injection, you should let the dependency injection container take care of disposing context instances.
+Object name: 'ApexDbContext'. [Ex: String]
+[19:42:25] [Critical] [2e2c0c3d-9ae2-40ea-8147-690fad29eb88] Global Exception (UI Thread Error) [Ex: String]
+[20:00:33] [Info] [ed1e2d3b-bbb0-429a-aa12-184d1516c0fe] Application Exiting
+[20:00:33] [Info] [1430081f-d497-40d6-8c1c-75c7965d4a49] Printer Monitoring Service stopping.
+[20:02:18] [Info] [266b9f6a-87c3-433f-ad78-acb40609b561] Printer Monitoring Service starting.
+[20:02:18] [Info] [9811d4b9-b5f5-4e7c-9f14-0f7e9a75e6ac] Temp File Cleanup Service starting.
+[20:02:18] [Info] [74aba2a8-9b10-4101-8f49-5713b78e7370] Application Starting...
+[20:02:18] [Info] [474bedf6-4fe4-492b-b6f7-94815f07388f] Startup Complete
+[21:28:57] [Info] [5874dec0-9035-486e-bf65-ca5b25ccac56] Application Exiting
+[21:28:57] [Info] [85526d93-2b68-4ba4-b5b5-1fc8efa5a2ca] Printer Monitoring Service stopping.
+[21:31:38] [Info] [7e9ea442-7efb-4b7e-9772-e7865572b1f9] Printer Monitoring Service starting.
+[21:31:38] [Info] [b6b6654f-b0b8-473c-9b41-b36c08ed6708] Temp File Cleanup Service starting.
+[21:31:38] [Info] [054c31c9-565e-49b9-a5b9-ccc3cd52e5c0] Application Starting...
+[21:31:39] [Info] [1ae78f10-6f5c-41ee-a6ca-f4219d0ccd5b] Startup Complete
+[21:34:33] [Info] [c9d5b46c-9156-4335-93dc-135543b0c3cd] Pipeline: Processing file 'Invoice_1.pdf'
+[21:35:08] [Info] [7bae43e7-8b2f-4fc6-9e4e-825c0530042a] Pipeline: Job 7 queued successfully.
+[21:51:40] [Info] [5f7f2c8d-51d0-4f9b-9f75-e605fbc50643] Application Exiting
+[21:51:40] [Info] [168a3e67-bc0f-42bc-b9d1-541e9e2522d4] Printer Monitoring Service stopping.
+[22:47:49] [Info] [2d31627f-3585-42d5-a101-b9ad8426564a] Printer Monitoring Service starting.
+[22:47:49] [Info] [07c3a91a-c93d-4c94-a962-74babed2397e] Temp File Cleanup Service starting.
+[22:47:49] [Info] [38188617-2995-4ff8-81a3-b5fa96a19e3a] Application Starting...
+[22:47:50] [Info] [45ef460a-73a2-44a9-ae6b-d27a84472478] Startup Complete

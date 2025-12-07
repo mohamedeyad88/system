@@ -1,0 +1,224 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    
+    <sys:String x:Key="Welcome">مرحباً بك في أبيكس</sys:String>
+    <sys:String x:Key="Dashboard">لوحة التحكم</sys:String>
+    <sys:String x:Key="PrintManager">إدارة الطباعة</sys:String>
+    <sys:String x:Key="NumberedBooks">الكتب المرقمة</sys:String>
+    <sys:String x:Key="PrintingOps">عمليات الطباعة</sys:String>
+    <sys:String x:Key="Diagnostics">التشخيصات</sys:String>
+    <sys:String x:Key="Performance">الأداء</sys:String>
+    <sys:String x:Key="SystemLogs">سجلات النظام</sys:String>
+    <sys:String x:Key="Language">اللغة</sys:String>
+    <sys:String x:Key="English">الإنجليزية</sys:String>
+    <sys:String x:Key="Arabic">العربية</sys:String>
+    <sys:String x:Key="ProfessionalSuite">الجناح الاحترافي</sys:String>
+
+    <!-- Navigation & Main -->
+    <sys:String x:Key="Distribution">التوزيع</sys:String>
+    <sys:String x:Key="Quotation">عرض السعر</sys:String>
+    <sys:String x:Key="Settings">الإعدادات</sys:String>
+    
+    <!-- Job Monitor -->
+    <sys:String x:Key="JobMonitor">مراقب المهام</sys:String>
+    <sys:String x:Key="Refresh">تحديث</sys:String>
+    <sys:String x:Key="JobId">معرف المهمة</sys:String>
+    <sys:String x:Key="FileName">اسم الملف</sys:String>
+    <sys:String x:Key="Printer">الطابعة</sys:String>
+    <sys:String x:Key="Status">الحالة</sys:String>
+    <sys:String x:Key="Created">تاريخ الإنشاء</sys:String>
+    <sys:String x:Key="Attempts">المحاولات</sys:String>
+    <sys:String x:Key="RetryJob">إعادة المحاولة</sys:String>
+    <sys:String x:Key="CancelJob">إلغاء المهمة</sys:String>
+    
+    <!-- Settings Module -->
+    <sys:String x:Key="Settings_Title">الإعدادات</sys:String>
+    <sys:String x:Key="Settings_Description">تكوين تفضيلات التطبيق ومعلومات الشركة</sys:String>
+    <sys:String x:Key="Settings_CompanyInfo">معلومات الشركة</sys:String>
+    <sys:String x:Key="Settings_CompanyName">اسم الشركة</sys:String>
+    <sys:String x:Key="Settings_Address">العنوان</sys:String>
+    <sys:String x:Key="Settings_Phone">الهاتف</sys:String>
+    <sys:String x:Key="Settings_Logo">شعار الشركة</sys:String>
+    <sys:String x:Key="Settings_Financial">الإعدادات المالية</sys:String>
+    <sys:String x:Key="Settings_PricePerPage">السعر الافتراضي للصفحة</sys:String>
+    <sys:String x:Key="Settings_CoverPrice">السعر الافتراضي للغلاف</sys:String>
+    <sys:String x:Key="Settings_InvoiceHeader">رأس الفاتورة</sys:String>
+    <sys:String x:Key="Settings_InvoiceFooter">تذييل الفاتورة</sys:String>
+    <sys:String x:Key="Settings_LanguageRegion">اللغة والمنطقة</sys:String>
+    <sys:String x:Key="Settings_ApplicationLanguage">لغة التطبيق</sys:String>
+    <sys:String x:Key="Settings_Backup">النسخ الاحتياطي والتخزين</sys:String>
+    <sys:String x:Key="Settings_BackupPath">مسار النسخ الاحتياطي</sys:String>
+    <sys:String x:Key="Settings_Save">حفظ الإعدادات</sys:String>
+    
+    <!-- Quotation Module -->
+    <sys:String x:Key="Quotation_Title">حاسبة عروض أسعار الطباعة</sys:String>
+    <sys:String x:Key="Quotation_BasicDetails">التفاصيل الأساسية</sys:String>
+    <sys:String x:Key="Quotation_TotalPages">عدد الصفحات</sys:String>
+    <sys:String x:Key="Quotation_Quantity">عدد النسخ</sys:String>
+    <sys:String x:Key="Quotation_DoubleSided">طباعة وجهين</sys:String>
+    <sys:String x:Key="Quotation_PricePerSheet">سعر طباعة الورقة</sys:String>
+    <sys:String x:Key="Quotation_CoverOptions">خيارات الغلاف</sys:String>
+    <sys:String x:Key="Quotation_AddCover">إضافة غلاف</sys:String>
+    <sys:String x:Key="Quotation_CoverPrice">سعر الغلاف</sys:String>
+    <sys:String x:Key="Quotation_FinishingServices">خدمات التشطيب</sys:String>
+    <sys:String x:Key="Quotation_ProfitMargin">نسبة الربح</sys:String>
+    <sys:String x:Key="Quotation_ProfitMarginPercent">نسبة الربح %</sys:String>
+    <sys:String x:Key="Quotation_Reset">إعادة تعيين</sys:String>
+    <sys:String x:Key="Quotation_Export">تصدير العرض</sys:String>
+    <sys:String x:Key="Quotation_CostBreakdown">تفصيل التكلفة</sys:String>
+    <sys:String x:Key="Quotation_SheetsRequired">عدد الورق المطلوب</sys:String>
+    <sys:String x:Key="Quotation_PrintingCost">تكلفة الطباعة</sys:String>
+    <sys:String x:Key="Quotation_CoverCost">تكلفة الغلاف</sys:String>
+    <sys:String x:Key="Quotation_FinishingCost">خدمات التشطيب</sys:String>
+    <sys:String x:Key="Quotation_Subtotal">المجموع الفرعي</sys:String>
+    <sys:String x:Key="Quotation_Profit">الربح</sys:String>
+    <sys:String x:Key="Quotation_FinalPrice">السعر النهائي</sys:String>
+    <sys:String x:Key="Quotation_DetailedBreakdown">التفصيل الكامل</sys:String>
+    <sys:String x:Key="Quotation_Sheets">ورقة</sys:String>
+    
+    <!-- Distribution Module -->
+    <sys:String x:Key="Distribution_SelectFile">اختر الملف للطباعة</sys:String>
+    <sys:String x:Key="Distribution_ChooseFile">اختر ملف</sys:String>
+    <sys:String x:Key="Distribution_NoFile">لم يتم اختيار ملف</sys:String>
+    <sys:String x:Key="Distribution_SelectPrinters">اختر الطابعات</sys:String>
+    <sys:String x:Key="Distribution_PrintSettings">إعدادات الطباعة</sys:String>
+    <sys:String x:Key="Distribution_Copies">عدد النسخ</sys:String>
+    <sys:String x:Key="Distribution_ColorMode">وضع الألوان</sys:String>
+    <sys:String x:Key="Distribution_PrintInColor">طباعة ملونة</sys:String>
+    <sys:String x:Key="Distribution_Duplex">الطباعة المزدوجة</sys:String>
+    <sys:String x:Key="Distribution_TwoSided">طباعة وجهين</sys:String>
+    <sys:String x:Key="Distribution_PageRange">نطاق الصفحات</sys:String>
+    <sys:String x:Key="Distribution_Timeout">المهلة (بالثواني)</sys:String>
+    <sys:String x:Key="Distribution_RetryAttempts">محاولات إعادة المحاولة</sys:String>
+    <sys:String x:Key="Distribution_SelectAll">تحديد الكل</sys:String>
+    <sys:String x:Key="Distribution_Reset">إعادة تعيين</sys:String>
+    <sys:String x:Key="Distribution_StartPrinting">بدء الطباعة</sys:String>
+    <sys:String x:Key="Distribution_LiveMonitor">مراقب الطباعة المباشر</sys:String>
+    <sys:String x:Key="Distribution_Success">نجح</sys:String>
+    <sys:String x:Key="Distribution_Failed">فشل</sys:String>
+    <sys:String x:Key="Distribution_Printing">جاري الطباعة</sys:String>
+    <sys:String x:Key="Distribution_PrinterName">الطابعة</sys:String>
+    <sys:String x:Key="Distribution_StatusText">الحالة</sys:String>
+    <sys:String x:Key="Distribution_JobId">معرف المهمة</sys:String>
+    <sys:String x:Key="Distribution_Time">الوقت</sys:String>
+    <sys:String x:Key="Distribution_Error">الخطأ</sys:String>
+    <sys:String x:Key="Distribution_CancelAll">إلغاء الكل</sys:String>
+    <sys:String x:Key="Distribution_RetryFailed">إعادة المحاولة للفاشلة</sys:String>
+    <sys:String x:Key="Distribution_ExportReport">تصدير التقرير</sys:String>
+    
+    <!-- Cost Calculation Module -->
+    <sys:String x:Key="CostCalc_Title">حساب التكلفة</sys:String>
+    <sys:String x:Key="CostCalc_Pages">عدد الصفحات</sys:String>
+    <sys:String x:Key="CostCalc_SingleSide">طباعة وجه واحد</sys:String>
+    <sys:String x:Key="CostCalc_DoubleSide">طباعة وجهين</sys:String>
+    <sys:String x:Key="CostCalc_SheetCost">سعر الورقة</sys:String>
+    <sys:String x:Key="CostCalc_TotalSheets">إجمالي عدد الورق</sys:String>
+    <sys:String x:Key="CostCalc_CoverCost">تكلفة الغلاف</sys:String>
+    <sys:String x:Key="CostCalc_Finishing">خدمات التشطيب</sys:String>
+    <sys:String x:Key="CostCalc_AddService">إضافة خدمة</sys:String>
+    <sys:String x:Key="CostCalc_ServiceName">اسم الخدمة</sys:String>
+    <sys:String x:Key="CostCalc_ServicePrice">سعر الخدمة</sys:String>
+    <sys:String x:Key="CostCalc_Quantity">الكمية</sys:String>
+    <sys:String x:Key="CostCalc_TotalCost">إجمالي التكلفة</sys:String>
+    <sys:String x:Key="CostCalc_ProfitMargin">نسبة الربح</sys:String>
+    <sys:String x:Key="CostCalc_FinalPrice">السعر النهائي</sys:String>
+    
+    <!-- Common UI Elements -->
+    <sys:String x:Key="Common_Save">حفظ</sys:String>
+    <sys:String x:Key="Common_Cancel">إلغاء</sys:String>
+    <sys:String x:Key="Common_Browse">تصفح</sys:String>
+    <sys:String x:Key="Common_Close">إغلاق</sys:String>
+    <sys:String x:Key="Common_Add">إضافة</sys:String>
+    <sys:String x:Key="Common_Edit">تعديل</sys:String>
+    <sys:String x:Key="Common_Delete">حذف</sys:String>
+    <sys:String x:Key="Common_Refresh">تحديث</sys:String>
+    <sys:String x:Key="Common_Yes">نعم</sys:String>
+    <sys:String x:Key="Common_No">لا</sys:String>
+    
+    <!-- Upload Module -->
+    <sys:String x:Key="Upload_DropFiles">اسحب ملفاتك هنا</sys:String>
+    <sys:String x:Key="Upload_AddFromMenu">أو أضفها من القائمة</sys:String>
+    <sys:String x:Key="Upload_ListOfDocuments">قائمة المستندات</sys:String>
+    <sys:String x:Key="Upload_SelectPrinter">اختر الطابعة</sys:String>
+    <sys:String x:Key="Upload_PrinterProperties">خصائص الطابعة</sys:String>
+    <sys:String x:Key="Upload_Status">الحالة</sys:String>
+    <sys:String x:Key="Upload_PleaseAdd">الرجاء إضافة مستندات أو مجلدات إلى القائمة</sys:String>
+    <sys:String x:Key="Upload_ListEmpty">قائمة المستندات فارغة</sys:String>
+    <sys:String x:Key="Upload_PrintSettings">إعدادات الطباعة</sys:String>
+    <sys:String x:Key="Upload_DefaultCopies">عدد النسخ الافتراضي</sys:String>
+    <sys:String x:Key="Upload_Orientation">الاتجاه</sys:String>
+    <sys:String x:Key="Upload_PrintQuality">جودة الطباعة</sys:String>
+    <sys:String x:Key="Upload_ColorPrinting">طباعة ملونة</sys:String>
+    <sys:String x:Key="Upload_Duplex">طباعة وجهين</sys:String>
+    <sys:String x:Key="Upload_Apply">تطبيق</sys:String>
+    
+    <!-- Numbering Wizard Module -->
+    <sys:String x:Key="Numbering_StartNumber">رقم البداية</sys:String>
+    <sys:String x:Key="Numbering_TotalNumbers">إجمالي الأرقام</sys:String>
+    <sys:String x:Key="Numbering_CopiesPerNumber">عدد النسخ لكل رقم</sys:String>
+    <sys:String x:Key="Numbering_NumberingMode">وضع الترقيم</sys:String>
+    <sys:String x:Key="Numbering_SlotActions">إجراءات الخانة</sys:String>
+    <sys:String x:Key="Numbering_Typography">الطباعة</sys:String>
+    <sys:String x:Key="Numbering_Font">الخط</sys:String>
+    <sys:String x:Key="Numbering_FontSize">حجم الخط</sys:String>
+    <sys:String x:Key="Numbering_FontWeight">سمك الخط</sys:String>
+    <sys:String x:Key="Numbering_Regular">عادي</sys:String>
+    <sys:String x:Key="Numbering_Bold">عريض</sys:String>
+    <sys:String x:Key="Numbering_Color">اللون</sys:String>
+    <sys:String x:Key="Numbering_Alignment">المحاذاة</sys:String>
+    <sys:String x:Key="Numbering_Rotation">الدوران</sys:String>
+    <sys:String x:Key="Numbering_Opacity">الشفافية</sys:String>
+    <sys:String x:Key="Numbering_Preview">معاينة</sys:String>
+    <sys:String x:Key="Numbering_Printer">الطابعة</sys:String>
+    
+    <!-- Print Operations Module -->
+    <sys:String x:Key="PrintOps_UnifiedCommand">القيادة والتحكم الموحد</sys:String>
+    <sys:String x:Key="PrintOps_Printers">الطابعات</sys:String>
+    <sys:String x:Key="PrintOps_QuickPrint">طباعة سريعة:</sys:String>
+    <sys:String x:Key="PrintOps_Copies">عدد النسخ:</sys:String>
+    <sys:String x:Key="PrintOps_JobMonitor">مراقب المهام</sys:String>
+    <sys:String x:Key="PrintOps_RuleEditor">محرر القواعد</sys:String>
+    <sys:String x:Key="PrintOps_ActivityLog">سجل النشاط</sys:String>
+    
+    <!-- Printers Module -->
+    <sys:String x:Key="Printers_SelectAndPrint">اختر طابعة واطبع المستندات بسهولة</sys:String>
+    <sys:String x:Key="Printers_SelectFile">اختر ملف للطباعة...</sys:String>
+    <sys:String x:Key="Printers_Copies">عدد النسخ:</sys:String>
+    
+    <!-- Printer Properties -->
+    <sys:String x:Key="PrinterProps_Status">الحالة</sys:String>
+    <sys:String x:Key="PrinterProps_Queue">قائمة الانتظار</sys:String>
+    <sys:String x:Key="PrinterProps_GeneralInfo">معلومات عامة</sys:String>
+    <sys:String x:Key="PrinterProps_Type">النوع</sys:String>
+    <sys:String x:Key="PrinterProps_PortLocation">المنفذ/الموقع</sys:String>
+    <sys:String x:Key="PrinterProps_Capabilities">القدرات</sys:String>
+    <sys:String x:Key="PrinterProps_OutOfPaper">الطابعة نفد منها الورق</sys:String>
+    
+    <!-- Printer Diagnostics -->
+    <sys:String x:Key="Diagnostics_SystemDiagnostics">تشخيص النظام</sys:String>
+    <sys:String x:Key="Diagnostics_OverallStatus">الحالة العامة: </sys:String>
+    <sys:String x:Key="Diagnostics_LocalDevice">جهاز محلي</sys:String>
+    
+    <!-- System Performance -->
+    <sys:String x:Key="Performance_RealTimeMetrics">مقاييس النظام واستخدام الموارد في الوقت الفعلي</sys:String>
+    <sys:String x:Key="Performance_MemoryUsage">استخدام الذاكرة</sys:String>
+    <sys:String x:Key="Performance_ActiveThreads">المسارات النشطة</sys:String>
+    <sys:String x:Key="Performance_SystemUptime">وقت تشغيل النظام</sys:String>
+    <sys:String x:Key="Performance_AppVersion">إصدار التطبيق</sys:String>
+    <sys:String x:Key="Performance_ProcessID">معرف العملية</sys:String>
+    
+    <!-- Printer Card -->
+    <sys:String x:Key="PrinterCard_QueueLength">طول قائمة الانتظار</sys:String>
+    
+    <!-- Log Viewer -->
+    <sys:String x:Key="Log_Filter">تصفية:</sys:String>
+    <sys:String x:Key="Log_Search">بحث:</sys:String>
+    
+    <!-- Free Form Editor -->
+    <sys:String x:Key="FreeForm_Position">الموضع</sys:String>
+    <sys:String x:Key="FreeForm_Size">الحجم</sys:String>
+    <sys:String x:Key="FreeForm_Width">العرض</sys:String>
+    <sys:String x:Key="FreeForm_Height">الارتفاع</sys:String>
+
+</ResourceDictionary>

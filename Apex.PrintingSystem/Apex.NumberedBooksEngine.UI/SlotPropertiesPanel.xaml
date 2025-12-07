@@ -1,0 +1,109 @@
+<UserControl x:Class="Apex.NumberedBooksEngine.UI.SlotPropertiesPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="300">
+    <StackPanel Background="White">
+        <TextBlock Text="Slot Properties" FontWeight="Bold" Margin="0,0,0,10"/>
+
+        <Grid Margin="0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="ID:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <TextBox Grid.Column="1" Text="{Binding Id, Mode=OneWay}" IsReadOnly="True" Background="#F3F4F6"/>
+        </Grid>
+
+        <Grid Margin="0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                <TextBlock Text="X (%)"/>
+                <TextBox Text="{Binding X, StringFormat=N3}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                <TextBlock Text="Y (%)"/>
+                <TextBox Text="{Binding Y, StringFormat=N3}"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Margin="0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                <TextBlock Text="Width (%)"/>
+                <TextBox Text="{Binding Width, StringFormat=N3}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                <TextBlock Text="Height (%)"/>
+                <TextBox Text="{Binding Height, StringFormat=N3}"/>
+            </StackPanel>
+        </Grid>
+
+        <Separator Margin="0,10"/>
+
+        <TextBlock Text="Appearance" FontWeight="SemiBold" Margin="0,0,0,5"/>
+
+        <Grid Margin="0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Font:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <ComboBox Grid.Column="1" Text="{Binding FontFamily}" IsEditable="True">
+                <ComboBoxItem Content="Arial"/>
+                <ComboBoxItem Content="Times New Roman"/>
+                <ComboBoxItem Content="Courier New"/>
+                <ComboBoxItem Content="Verdana"/>
+            </ComboBox>
+        </Grid>
+
+        <Grid Margin="0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Size:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <TextBox Grid.Column="1" Text="{Binding FontSize}"/>
+        </Grid>
+
+        <Grid Margin="0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Color:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <TextBox Grid.Column="1" Text="{Binding FontColorHex}"/>
+        </Grid>
+
+        <Grid Margin="0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Align:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <ComboBox Grid.Column="1" SelectedValue="{Binding Align}" SelectedValuePath="Content">
+                <ComboBoxItem Content="Left"/>
+                <ComboBoxItem Content="Center"/>
+                <ComboBoxItem Content="Right"/>
+            </ComboBox>
+        </Grid>
+
+        <Grid Margin="0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Rotation:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <TextBox Grid.Column="1" Text="{Binding Rotation}"/>
+        </Grid>
+
+    </StackPanel>
+</UserControl>

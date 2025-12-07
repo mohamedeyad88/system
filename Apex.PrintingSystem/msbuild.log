@@ -1,0 +1,1302 @@
+Build started 01/12/2025 10:23:20 م.
+Logging verbosity is set to: Detailed.     0>Process = "C:\Program Files\dotnet\dotnet.exe"
+       MSBuild executable path = "C:\Program Files\dotnet\sdk\8.0.416\MSBuild.dll"
+       Command line arguments = "C:\Program Files\dotnet\sdk\8.0.416\MSBuild.dll -maxcpucount -verbosity:m -nologo -restore -consoleloggerparameters:Summary c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj /flp:v=detailed -distributedlogger:Microsoft.DotNet.Tools.MSBuild.MSBuildLogger,C:\Program Files\dotnet\sdk\8.0.416\dotnet.dll*Microsoft.DotNet.Tools.MSBuild.MSBuildForwardingLogger,C:\Program Files\dotnet\sdk\8.0.416\dotnet.dll"
+       Current directory = "C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem"
+       MSBuild version = "17.11.48+02bf66295"
+       Based on the Windows registry key LongPathsEnabled, the LongPaths feature is disabled.
+       Assembly loaded during Evaluation: System.ServiceProcess.ServiceController, Version=8.0.0.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\sdk\8.0.416\runtimes\win\lib\net8.0\System.ServiceProcess.ServiceController.dll, MVID: 4d9b9bfd-668b-4d22-9c27-9837db55db86, AssemblyLoadContext: Default)
+       The SDK "Microsoft.NET.Sdk" was successfully resolved by the "DefaultSdkResolver" resolver to location "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\Sdk" and version "".
+       Assembly loaded during Evaluation: Microsoft.NET.StringTools, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\sdk\8.0.416\Microsoft.NET.StringTools.dll, MVID: a6df08db-4589-427d-8720-dbb53fdf37b0, AssemblyLoadContext: Default)
+       Assembly loaded during Evaluation: System.Security.Principal.Windows, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.22\System.Security.Principal.Windows.dll, MVID: 96ae39cc-1721-4fa4-b40c-3db518f2e97a, AssemblyLoadContext: Default)
+       Assembly loaded during Evaluation: System.Security.Claims, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.22\System.Security.Claims.dll, MVID: ef0ac35f-9a1b-45aa-8f26-3cefd96ec151, AssemblyLoadContext: Default)
+       Property 'MSBuildExtensionsPath' with value 'C:\Program Files\dotnet\sdk\8.0.416\' expanded from the environment.
+       Property reassignment: $(MSBuildProjectExtensionsPath)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\" (previous value: "obj\") at C:\Program Files\dotnet\sdk\8.0.416\Current\Microsoft.Common.props (60,5)
+       Property 'MSBuildUserExtensionsPath' with value 'C:\Users\moham\AppData\Local\Microsoft\MSBuild' expanded from the environment.
+       Property reassignment: $(AssemblySearchPaths)="{CandidateAssemblyFiles};{HintPathFromItem}" (previous value: "{CandidateAssemblyFiles}") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.props (91,5)
+       Property reassignment: $(AssemblySearchPaths)="{CandidateAssemblyFiles};{HintPathFromItem};{TargetFrameworkDirectory}" (previous value: "{CandidateAssemblyFiles};{HintPathFromItem}") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.props (92,5)
+       Property reassignment: $(AssemblySearchPaths)="{CandidateAssemblyFiles};{HintPathFromItem};{TargetFrameworkDirectory};{RawFileName}" (previous value: "{CandidateAssemblyFiles};{HintPathFromItem};{TargetFrameworkDirectory}") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.props (93,5)
+       The "DefaultSdkResolver" resolver attempted to resolve the SDK "Microsoft.NET.SDK.WorkloadAutoImportPropsLocator".
+       Warnings: null
+       Errors: MSB4276: The default SDK resolver failed to resolve SDK "Microsoft.NET.SDK.WorkloadAutoImportPropsLocator" because directory "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.SDK.WorkloadAutoImportPropsLocator\Sdk" did not exist.
+       Assembly loaded during Evaluation: Microsoft.Build.NuGetSdkResolver, Version=6.11.1.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Build.NuGetSdkResolver.dll, MVID: ae254ffe-3ea7-4bba-8a74-0bd55e8cfe87, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Build.NuGetSdkResolver.dll)
+       Assembly loaded during Evaluation: Microsoft.NET.Sdk.WorkloadMSBuildSdkResolver, Version=8.0.416.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\8.0.416\Microsoft.NET.Sdk.WorkloadMSBuildSdkResolver.dll, MVID: ce33acff-0179-4715-b768-3cf68725da36, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\Microsoft.NET.Sdk.WorkloadMSBuildSdkResolver.dll)
+       Assembly loaded during Evaluation: System.Reflection.Metadata, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.22\System.Reflection.Metadata.dll, MVID: e725aa58-0767-4539-8fdc-48fb7e9b6dcf, AssemblyLoadContext: Default)
+       Assembly loaded during Evaluation: Microsoft.DotNet.Cli.Utils, Version=8.0.416.0, Culture=neutral, PublicKeyToken=adb9793829ddae60 (location: C:\Program Files\dotnet\sdk\8.0.416\Microsoft.DotNet.Cli.Utils.dll, MVID: 8bc5ebac-df06-4d73-beaf-556714617467, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\Microsoft.NET.Sdk.WorkloadMSBuildSdkResolver.dll)
+       Assembly loaded during Evaluation: Microsoft.NET.Sdk.WorkloadManifestReader, Version=8.0.416.0, Culture=neutral, PublicKeyToken=adb9793829ddae60 (location: C:\Program Files\dotnet\sdk\8.0.416\Microsoft.NET.Sdk.WorkloadManifestReader.dll, MVID: 37a1be5f-8452-46bf-8eee-ee950542a579, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\Microsoft.NET.Sdk.WorkloadMSBuildSdkResolver.dll)
+       Assembly loaded during Evaluation: Microsoft.Deployment.DotNet.Releases, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Deployment.DotNet.Releases.dll, MVID: 34f9f9be-a352-437d-b864-e54aac6740dd, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\Microsoft.NET.Sdk.WorkloadMSBuildSdkResolver.dll)
+       The SDK "Microsoft.NET.SDK.WorkloadAutoImportPropsLocator" was successfully resolved by the "Microsoft.DotNet.MSBuildWorkloadSdkResolver" resolver to location "null" and version "null".
+       Property reassignment: $(TargetsForTfmSpecificContentInPackage)=";PackTool;_PackProjectToolValidation" (previous value: ";PackTool") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.PackProjectTool.props (15,5)
+       Property reassignment: $(OutputType)="WinExe" (previous value: "Library") at c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj (4,5)
+       Property reassignment: $(PublishProfileImported)="false" (previous value: "true") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.ImportPublishProfile.targets (28,5)
+       Assembly loaded during Evaluation: NuGet.Frameworks, Version=6.11.1.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\8.0.416\NuGet.Frameworks.dll, MVID: 36fa17a1-abb6-4cce-b85c-dd32a6dcc45f, AssemblyLoadContext: Assembly.LoadFile(C:\Program Files\dotnet\sdk\8.0.416\NuGet.Frameworks.dll))
+       Property reassignment: $(TargetPlatformVersion)="" (previous value: "0.0") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets (69,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**" (previous value: ";bin\Debug\/**") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DefaultOutputPaths.targets (122,5)
+       Property reassignment: $(OutputPath)="bin\Debug\net8.0\" (previous value: "bin\Debug\") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DefaultOutputPaths.targets (137,5)
+       Property reassignment: $(IntermediateOutputPath)="obj\Debug\net8.0\" (previous value: "obj\Debug\") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DefaultOutputPaths.targets (142,5)
+       The "DefaultSdkResolver" resolver attempted to resolve the SDK "Microsoft.NET.SDK.WorkloadManifestTargetsLocator".
+       Warnings: null
+       Errors: MSB4276: The default SDK resolver failed to resolve SDK "Microsoft.NET.SDK.WorkloadManifestTargetsLocator" because directory "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.SDK.WorkloadManifestTargetsLocator\Sdk" did not exist.
+       The SDK "Microsoft.NET.SDK.WorkloadManifestTargetsLocator" was successfully resolved by the "Microsoft.DotNet.MSBuildWorkloadSdkResolver" resolver to location "C:\Program Files\dotnet\sdk-manifests\8.0.100\microsoft.net.sdk.android\34.0.43" and version "null".
+       Property reassignment: $(_FrameworkIdentifierForImplicitDefine)="NET" (previous value: "NETCOREAPP") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.BeforeCommon.targets (187,5)
+       Property reassignment: $(_FrameworkVersionForImplicitDefine)="8_0" (previous value: "8.0") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.BeforeCommon.targets (192,5)
+       Property reassignment: $(CommandLineArgsForDesignTimeEvaluation)="-langversion:12.0 -define:TRACE" (previous value: "-langversion:12.0") at C:\Program Files\dotnet\sdk\8.0.416\Roslyn\Microsoft.CSharp.Core.targets (200,5)
+       Assembly loaded during Evaluation: Microsoft.Build.Utilities.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Build.Utilities.Core.dll, MVID: 3ef2c93a-1391-4e37-a4e3-a5d04b06a824, AssemblyLoadContext: Default)
+       Property reassignment: $(_DebugSymbolsProduced)="true" (previous value: "false") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (175,5)
+       Property reassignment: $(_DocumentationFileProduced)="false" (previous value: "true") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (185,5)
+       Property reassignment: $(MSBuildCopyMarkerName)="Apex.Setup.csproj.Up2Date" (previous value: "Apex.Setup.csproj") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (393,5)
+       Property reassignment: $(ProcessorArchitecture)="msil" (previous value: "") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (541,5)
+       Property reassignment: $(DelaySign)="" (previous value: "false") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (580,5)
+       Property 'LOCALAPPDATA' with value 'C:\Users\moham\AppData\Local' expanded from the environment.
+       Property reassignment: $(_SGenGenerateSerializationAssembliesConfig)="Auto" (previous value: "") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (3896,5)
+       Property reassignment: $(_SGenGenerateSerializationAssembliesConfig)="Off" (previous value: "Auto") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (3897,5)
+       Property reassignment: $(_TargetsThatPrepareProjectReferences)="
+             AssignProjectConfiguration;
+             _SplitProjectReferencesByFileExistence
+           " (previous value: "_SplitProjectReferencesByFileExistence") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (5099,5)
+       Property 'MSBuildExtensionsPath32' with value 'C:\Program Files\dotnet\sdk\8.0.416' expanded from the environment.
+       Assembly loaded during Evaluation: System.Threading.Tasks.Parallel, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.22\System.Threading.Tasks.Parallel.dll, MVID: 18d786a9-51ef-421f-b895-0f3430ea7f9b, AssemblyLoadContext: Default)
+       Property reassignment: $(ProjectAssetsFile)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\project.assets.json" (previous value: "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\/project.assets.json") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets (24,5)
+       Property reassignment: $(ProjectAssetsCacheFile)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.assets.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.assets.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets (29,5)
+       Property reassignment: $(ResolveAssemblyReferencesDependsOn)="
+             
+             ResolveProjectReferences;
+             FindInvalidProjectReferences;
+             GetFrameworkPaths;
+             GetReferenceAssemblyPaths;
+             PrepareForBuild;
+             ResolveSDKReferences;
+             ExpandSDKReferences;
+           ;
+             ResolvePackageDependenciesForBuild;
+             _HandlePackageFileConflicts;
+           " (previous value: "
+             ResolveProjectReferences;
+             FindInvalidProjectReferences;
+             GetFrameworkPaths;
+             GetReferenceAssemblyPaths;
+             PrepareForBuild;
+             ResolveSDKReferences;
+             ExpandSDKReferences;
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets (80,5)
+       Property reassignment: $(PrepareResourcesDependsOn)="
+             ResolvePackageDependenciesForBuild;
+             _HandlePackageFileConflicts;
+             
+             ;
+             PrepareResourceNames;
+             ResGen;
+             CompileLicxFiles
+           
+           " (previous value: "
+             ;
+             PrepareResourceNames;
+             ResGen;
+             CompileLicxFiles
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets (86,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**" (previous value: ";bin\Debug\/**;obj\Debug\/**") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (27,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (29,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (32,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (33,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj;**/*.sln" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (34,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj;**/*.sln;**/*.vssscc" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj;**/*.sln") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (35,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj;**/*.sln;**/*.vssscc;**/.DS_Store" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj;**/*.sln;**/*.vssscc") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (36,5)
+       Property reassignment: $(ResolveAssemblyReferencesDependsOn)="
+             
+             
+             ResolveProjectReferences;
+             FindInvalidProjectReferences;
+             GetFrameworkPaths;
+             GetReferenceAssemblyPaths;
+             PrepareForBuild;
+             ResolveSDKReferences;
+             ExpandSDKReferences;
+           ;
+             ResolvePackageDependenciesForBuild;
+             _HandlePackageFileConflicts;
+           ;
+             ResolveTargetingPackAssets;
+           " (previous value: "
+             
+             ResolveProjectReferences;
+             FindInvalidProjectReferences;
+             GetFrameworkPaths;
+             GetReferenceAssemblyPaths;
+             PrepareForBuild;
+             ResolveSDKReferences;
+             ExpandSDKReferences;
+           ;
+             ResolvePackageDependenciesForBuild;
+             _HandlePackageFileConflicts;
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.FrameworkReferenceResolution.targets (14,5)
+       Property reassignment: $(_GenerateRuntimeConfigurationPropertyInputsCache)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.genruntimeconfig.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.genruntimeconfig.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (44,5)
+       Property reassignment: $(_GeneratePublishDependencyFilePropertyInputsCache)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.genpublishdeps.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.genpublishdeps.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (46,5)
+       Property reassignment: $(_GenerateSingleFileBundlePropertyInputsCache)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.genbundle.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.genbundle.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (48,5)
+       Property reassignment: $(GenerateRuntimeConfigDevFile)="false" (previous value: "true") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (81,5)
+       Property 'USERPROFILE' with value 'C:\Users\moham' expanded from the environment.
+       Property reassignment: $(_DefaultUserProfileRuntimeStorePath)="C:\Users\moham" (previous value: "") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (97,5)
+       Property reassignment: $(_DefaultUserProfileRuntimeStorePath)="C:\Users\moham\.dotnet\store" (previous value: "C:\Users\moham") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (98,5)
+       Property reassignment: $(AvailablePlatforms)="Any CPU,x86,x64,ARM32" (previous value: "Any CPU,x86,x64") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (136,5)
+       Property reassignment: $(AvailablePlatforms)="Any CPU,x86,x64,ARM32,ARM64" (previous value: "Any CPU,x86,x64,ARM32") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (140,5)
+       Property reassignment: $(CoreBuildDependsOn)="
+             _CheckForBuildWithNoBuild;
+             
+             BuildOnlySettings;
+             PrepareForBuild;
+             PreBuildEvent;
+             ResolveReferences;
+             PrepareResources;
+             ResolveKeySource;
+             Compile;
+             ExportWindowsMDFile;
+             UnmanagedUnregistration;
+             GenerateSerializationAssemblies;
+             CreateSatelliteAssemblies;
+             GenerateManifests;
+             GetTargetPath;
+             PrepareForRun;
+             UnmanagedRegistration;
+             IncrementalClean;
+             PostBuildEvent
+           ;
+             GenerateBuildDependencyFile;
+             GenerateBuildRuntimeConfigurationFiles
+           " (previous value: "
+             BuildOnlySettings;
+             PrepareForBuild;
+             PreBuildEvent;
+             ResolveReferences;
+             PrepareResources;
+             ResolveKeySource;
+             Compile;
+             ExportWindowsMDFile;
+             UnmanagedUnregistration;
+             GenerateSerializationAssemblies;
+             CreateSatelliteAssemblies;
+             GenerateManifests;
+             GetTargetPath;
+             PrepareForRun;
+             UnmanagedRegistration;
+             IncrementalClean;
+             PostBuildEvent
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (197,5)
+       Property reassignment: $(CoreCleanDependsOn)="
+             _SdkBeforeClean;
+             
+           " (previous value: "") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (206,5)
+       Property reassignment: $(RebuildDependsOn)="
+             _SdkBeforeRebuild;
+             
+             BeforeRebuild;
+             Clean;
+             Build;
+             AfterRebuild;
+           
+           " (previous value: "
+             BeforeRebuild;
+             Clean;
+             Build;
+             AfterRebuild;
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (213,5)
+       Property reassignment: $(CompileDependsOn)="
+             
+             ResolveReferences;
+             ResolveKeySource;
+             SetWin32ManifestProperties;
+             _SetPreferNativeArm64Win32ManifestProperties;
+             FindReferenceAssembliesForReferences;
+             _GenerateCompileInputs;
+             BeforeCompile;
+             _TimeStampBeforeCompile;
+             _GenerateCompileDependencyCache;
+             CoreCompile;
+             _TimeStampAfterCompile;
+             AfterCompile;
+           ;
+             _CreateAppHost;
+             _CreateComHost;
+             _GetIjwHostPaths;
+           " (previous value: "
+             ResolveReferences;
+             ResolveKeySource;
+             SetWin32ManifestProperties;
+             _SetPreferNativeArm64Win32ManifestProperties;
+             FindReferenceAssembliesForReferences;
+             _GenerateCompileInputs;
+             BeforeCompile;
+             _TimeStampBeforeCompile;
+             _GenerateCompileDependencyCache;
+             CoreCompile;
+             _TimeStampAfterCompile;
+             AfterCompile;
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (679,5)
+       Property reassignment: $(CreateSatelliteAssembliesDependsOn)="
+             
+             ;
+             _GenerateSatelliteAssemblyInputs;
+             ComputeIntermediateSatelliteAssemblies;
+             GenerateSatelliteAssemblies
+           ;
+             CoreGenerateSatelliteAssemblies
+           " (previous value: "
+             ;
+             _GenerateSatelliteAssemblyInputs;
+             ComputeIntermediateSatelliteAssemblies;
+             GenerateSatelliteAssemblies
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (1065,5)
+       Property reassignment: $(SourceLinkUrlInitializerTargets)=";_InitializeGitHubSourceLinkUrl;_InitializeGitLabSourceLinkUrl" (previous value: ";_InitializeGitHubSourceLinkUrl") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.GitLab\build\Microsoft.SourceLink.GitLab.targets (12,5)
+       Property reassignment: $(SourceControlManagerUrlTranslationTargets)=";TranslateGitHubUrlsInSourceControlInformation;TranslateGitLabUrlsInSourceControlInformation" (previous value: ";TranslateGitHubUrlsInSourceControlInformation") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.GitLab\build\Microsoft.SourceLink.GitLab.targets (13,5)
+       Property reassignment: $(SourceLinkUrlInitializerTargets)=";_InitializeGitHubSourceLinkUrl;_InitializeGitLabSourceLinkUrl;_InitializeAzureReposGitSourceLinkUrl" (previous value: ";_InitializeGitHubSourceLinkUrl;_InitializeGitLabSourceLinkUrl") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.AzureRepos.Git\build\Microsoft.SourceLink.AzureRepos.Git.targets (12,5)
+       Property reassignment: $(SourceControlManagerUrlTranslationTargets)=";TranslateGitHubUrlsInSourceControlInformation;TranslateGitLabUrlsInSourceControlInformation;TranslateAzureReposGitUrlsInSourceControlInformation" (previous value: ";TranslateGitHubUrlsInSourceControlInformation;TranslateGitLabUrlsInSourceControlInformation") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.AzureRepos.Git\build\Microsoft.SourceLink.AzureRepos.Git.targets (13,5)
+       Property reassignment: $(SourceLinkUrlInitializerTargets)=";_InitializeGitHubSourceLinkUrl;_InitializeGitLabSourceLinkUrl;_InitializeAzureReposGitSourceLinkUrl;_InitializeBitbucketGitSourceLinkUrl" (previous value: ";_InitializeGitHubSourceLinkUrl;_InitializeGitLabSourceLinkUrl;_InitializeAzureReposGitSourceLinkUrl") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.Bitbucket.Git\build\Microsoft.SourceLink.Bitbucket.Git.targets (12,5)
+       Property reassignment: $(SourceControlManagerUrlTranslationTargets)=";TranslateGitHubUrlsInSourceControlInformation;TranslateGitLabUrlsInSourceControlInformation;TranslateAzureReposGitUrlsInSourceControlInformation;TranslateBitbucketGitUrlsInSourceControlInformation" (previous value: ";TranslateGitHubUrlsInSourceControlInformation;TranslateGitLabUrlsInSourceControlInformation;TranslateAzureReposGitUrlsInSourceControlInformation") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.Bitbucket.Git\build\Microsoft.SourceLink.Bitbucket.Git.targets (13,5)
+       Property reassignment: $(DesignerRuntimeImplementationProjectOutputGroupDependsOn)="
+             
+             ;
+             
+             ;
+             BuildOnlySettings;
+             PrepareForBuild;
+             AssignTargetPaths;
+             ResolveReferences
+           
+           ;
+             _GenerateDesignerDepsFile;
+             _GenerateDesignerRuntimeConfigFile;
+             GetCopyToOutputDirectoryItems;
+             _GatherDesignerShadowCopyFiles;
+           " (previous value: "
+             ;
+             
+             ;
+             BuildOnlySettings;
+             PrepareForBuild;
+             AssignTargetPaths;
+             ResolveReferences
+           
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DesignerSupport.targets (21,5)
+       Property reassignment: $(_GenerateToolsSettingsFileCacheFile)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.toolssettingsinput.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.toolssettingsinput.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.PackTool.targets (68,5)
+       Property reassignment: $(_ShimInputCacheFile)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.shiminput.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.shiminput.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.PackTool.targets (137,5)
+       Property reassignment: $(_ShimCreatedSentinelFile)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.shimcreated.sentinel" (previous value: "obj\Debug\net8.0\Apex.Setup.shimcreated.sentinel") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.PackTool.targets (139,5)
+       Property reassignment: $(DefineConstants)="TRACE;DEBUG" (previous value: "TRACE") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.CSharp.targets (31,5)
+       Property reassignment: $(DefineConstants)="TRACE;DEBUG;NET;NET8_0;NETCOREAPP" (previous value: "TRACE;DEBUG") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.CSharp.targets (34,5)
+       Property reassignment: $(WarningsAsErrors)=";NU1605;SYSLIB0011" (previous value: ";NU1605") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.CSharp.targets (48,5)
+       Property reassignment: $(PackageDescription)="Package Description" (previous value: "") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\NuGet.Build.Tasks.Pack\build\NuGet.Build.Tasks.Pack.targets (34,5)
+       Property reassignment: $(GenerateNuspecDependsOn)="Build;_LoadPackInputItems; _GetTargetFrameworksOutput; _WalkEachTargetPerFramework; _GetPackageFiles; " (previous value: "_LoadPackInputItems; _GetTargetFrameworksOutput; _WalkEachTargetPerFramework; _GetPackageFiles; ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\NuGet.Build.Tasks.Pack\build\NuGet.Build.Tasks.Pack.targets (59,5)
+       Property reassignment: $(_IsNotSetContainersTargetsDir)="true" (previous value: "false") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\Sdk\Sdk.targets (59,5)
+       Property reassignment: $(_IsSDKContainerAllowedVersion)="true" (previous value: "false") at C:\Program Files\dotnet\sdk\8.0.416\Containers\build\Microsoft.NET.Build.Containers.targets (5,5)
+       Property reassignment: $(_ContainerIsTargetingNet8TFM)="true" (previous value: "false") at C:\Program Files\dotnet\sdk\8.0.416\Containers\build\Microsoft.NET.Build.Containers.targets (15,5)
+       Assembly loaded during Evaluation: System.Net.Sockets, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.22\System.Net.Sockets.dll, MVID: 5b8ca8ab-7cfe-43ce-acaa-86b8be1574ef, AssemblyLoadContext: Default)
+       Assembly loaded during Evaluation: System.Threading.Overlapped, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.22\System.Threading.Overlapped.dll, MVID: 93c13625-3355-4f01-90b4-61041af1c9df, AssemblyLoadContext: Default)
+       Assembly loaded during Evaluation: System.Threading.ThreadPool, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.22\System.Threading.ThreadPool.dll, MVID: 6870c149-4b7c-4671-bb4d-b0653a8cabd1, AssemblyLoadContext: Default)
+       Assembly loaded during Evaluation: System.Reflection.Emit.Lightweight, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.22\System.Reflection.Emit.Lightweight.dll, MVID: ee7e5a7b-9687-4f67-80b9-7e8d5f0d93a4, AssemblyLoadContext: Default)
+       Assembly loaded during Evaluation: System.Reflection.Emit.ILGeneration, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.22\System.Reflection.Emit.ILGeneration.dll, MVID: 6f01035e-2120-46b2-bbc6-4b202c8778f3, AssemblyLoadContext: Default)
+       Assembly loaded during Evaluation: System.Reflection.Primitives, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.22\System.Reflection.Primitives.dll, MVID: 203b2cfd-32fb-49c8-a2c3-bdc3bec5fd16, AssemblyLoadContext: Default)
+       Overriding target "ResolveFrameworkReferences" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "ResolveFrameworkReferences" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.FrameworkReferenceResolution.targets".
+       Overriding target "Run" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "Run" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets".
+       Overriding target "GenerateSupportedTargetFrameworkAlias" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "GenerateSupportedTargetFrameworkAlias" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets".
+       Overriding target "GetReferenceAssemblyPaths" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "GetReferenceAssemblyPaths" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DisableStandardFrameworkResolution.targets".
+       Overriding target "GetFrameworkPaths" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "GetFrameworkPaths" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DisableStandardFrameworkResolution.targets".
+       Overriding target "DesignerRuntimeImplementationProjectOutputGroup" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "DesignerRuntimeImplementationProjectOutputGroup" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DesignerSupport.targets".
+       Overriding target "Publish" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "Publish" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Publish.targets".
+       Overriding target "ResolveReadyToRunCompilers" in project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.CrossGen.targets" with target "ResolveReadyToRunCompilers" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Publish.targets".
+       Overriding target "GetCopyToPublishDirectoryItems" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "GetCopyToPublishDirectoryItems" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Publish.targets".
+     1>Project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" on node 1 (Restore target(s)).
+     1>Target "_LoadRestoreGraphEntryPoints" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_FilterRestoreGraphProjectInputItems" depends on it):
+     1>Task "GetRestoreSolutionProjectsTask" skipped, due to false condition; ( $(MSBuildProjectFullPath.EndsWith('.metaproj')) == 'true' AND @(RestoreGraphProjectInputItems) == '' ) was evaluated as ( False == 'true' AND c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj == '' ).
+     1>Done building target "_LoadRestoreGraphEntryPoints" in project "Apex.Setup.csproj".
+     1>Target "_FilterRestoreGraphProjectInputItems" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GenerateRestoreGraph" depends on it):
+       Using "RemoveDuplicates" task from assembly "Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
+       Task "RemoveDuplicates"
+       Done executing task "RemoveDuplicates".
+       Using "MSBuild" task from assembly "Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
+       Task "MSBuild"
+         Global Properties:
+           ExcludeRestorePackageImports=true
+     0>Property 'MSBuildExtensionsPath' with value 'C:\Program Files\dotnet\sdk\8.0.416\' expanded from the environment.
+       Property reassignment: $(MSBuildProjectExtensionsPath)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\" (previous value: "obj\") at C:\Program Files\dotnet\sdk\8.0.416\Current\Microsoft.Common.props (60,5)
+       Property 'MSBuildUserExtensionsPath' with value 'C:\Users\moham\AppData\Local\Microsoft\MSBuild' expanded from the environment.
+       Property reassignment: $(AssemblySearchPaths)="{CandidateAssemblyFiles};{HintPathFromItem}" (previous value: "{CandidateAssemblyFiles}") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.props (91,5)
+       Property reassignment: $(AssemblySearchPaths)="{CandidateAssemblyFiles};{HintPathFromItem};{TargetFrameworkDirectory}" (previous value: "{CandidateAssemblyFiles};{HintPathFromItem}") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.props (92,5)
+       Property reassignment: $(AssemblySearchPaths)="{CandidateAssemblyFiles};{HintPathFromItem};{TargetFrameworkDirectory};{RawFileName}" (previous value: "{CandidateAssemblyFiles};{HintPathFromItem};{TargetFrameworkDirectory}") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.props (93,5)
+       Property reassignment: $(TargetsForTfmSpecificContentInPackage)=";PackTool;_PackProjectToolValidation" (previous value: ";PackTool") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.PackProjectTool.props (15,5)
+       Property reassignment: $(OutputType)="WinExe" (previous value: "Library") at c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj (4,5)
+       Property reassignment: $(PublishProfileImported)="false" (previous value: "true") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.ImportPublishProfile.targets (28,5)
+       Property reassignment: $(TargetPlatformVersion)="" (previous value: "0.0") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets (69,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**" (previous value: ";bin\Debug\/**") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DefaultOutputPaths.targets (122,5)
+       Property reassignment: $(OutputPath)="bin\Debug\net8.0\" (previous value: "bin\Debug\") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DefaultOutputPaths.targets (137,5)
+       Property reassignment: $(IntermediateOutputPath)="obj\Debug\net8.0\" (previous value: "obj\Debug\") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DefaultOutputPaths.targets (142,5)
+       Property reassignment: $(_FrameworkIdentifierForImplicitDefine)="NET" (previous value: "NETCOREAPP") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.BeforeCommon.targets (187,5)
+       Property reassignment: $(_FrameworkVersionForImplicitDefine)="8_0" (previous value: "8.0") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.BeforeCommon.targets (192,5)
+       Property reassignment: $(CommandLineArgsForDesignTimeEvaluation)="-langversion:12.0 -define:TRACE" (previous value: "-langversion:12.0") at C:\Program Files\dotnet\sdk\8.0.416\Roslyn\Microsoft.CSharp.Core.targets (200,5)
+       Property reassignment: $(_DebugSymbolsProduced)="true" (previous value: "false") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (175,5)
+       Property reassignment: $(_DocumentationFileProduced)="false" (previous value: "true") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (185,5)
+       Property reassignment: $(MSBuildCopyMarkerName)="Apex.Setup.csproj.Up2Date" (previous value: "Apex.Setup.csproj") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (393,5)
+       Property reassignment: $(ProcessorArchitecture)="msil" (previous value: "") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (541,5)
+       Property reassignment: $(DelaySign)="" (previous value: "false") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (580,5)
+       Property 'LOCALAPPDATA' with value 'C:\Users\moham\AppData\Local' expanded from the environment.
+       Property reassignment: $(_SGenGenerateSerializationAssembliesConfig)="Auto" (previous value: "") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (3896,5)
+       Property reassignment: $(_SGenGenerateSerializationAssembliesConfig)="Off" (previous value: "Auto") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (3897,5)
+       Property reassignment: $(_TargetsThatPrepareProjectReferences)="
+             AssignProjectConfiguration;
+             _SplitProjectReferencesByFileExistence
+           " (previous value: "_SplitProjectReferencesByFileExistence") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (5099,5)
+       Property 'MSBuildExtensionsPath32' with value 'C:\Program Files\dotnet\sdk\8.0.416' expanded from the environment.
+       Property reassignment: $(ProjectAssetsFile)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\project.assets.json" (previous value: "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\/project.assets.json") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets (24,5)
+       Property reassignment: $(ProjectAssetsCacheFile)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.assets.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.assets.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets (29,5)
+       Property reassignment: $(ResolveAssemblyReferencesDependsOn)="
+             
+             ResolveProjectReferences;
+             FindInvalidProjectReferences;
+             GetFrameworkPaths;
+             GetReferenceAssemblyPaths;
+             PrepareForBuild;
+             ResolveSDKReferences;
+             ExpandSDKReferences;
+           ;
+             ResolvePackageDependenciesForBuild;
+             _HandlePackageFileConflicts;
+           " (previous value: "
+             ResolveProjectReferences;
+             FindInvalidProjectReferences;
+             GetFrameworkPaths;
+             GetReferenceAssemblyPaths;
+             PrepareForBuild;
+             ResolveSDKReferences;
+             ExpandSDKReferences;
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets (80,5)
+       Property reassignment: $(PrepareResourcesDependsOn)="
+             ResolvePackageDependenciesForBuild;
+             _HandlePackageFileConflicts;
+             
+             ;
+             PrepareResourceNames;
+             ResGen;
+             CompileLicxFiles
+           
+           " (previous value: "
+             ;
+             PrepareResourceNames;
+             ResGen;
+             CompileLicxFiles
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets (86,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**" (previous value: ";bin\Debug\/**;obj\Debug\/**") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (27,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (29,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (32,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (33,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj;**/*.sln" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (34,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj;**/*.sln;**/*.vssscc" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj;**/*.sln") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (35,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj;**/*.sln;**/*.vssscc;**/.DS_Store" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj;**/*.sln;**/*.vssscc") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (36,5)
+       Property reassignment: $(ResolveAssemblyReferencesDependsOn)="
+             
+             
+             ResolveProjectReferences;
+             FindInvalidProjectReferences;
+             GetFrameworkPaths;
+             GetReferenceAssemblyPaths;
+             PrepareForBuild;
+             ResolveSDKReferences;
+             ExpandSDKReferences;
+           ;
+             ResolvePackageDependenciesForBuild;
+             _HandlePackageFileConflicts;
+           ;
+             ResolveTargetingPackAssets;
+           " (previous value: "
+             
+             ResolveProjectReferences;
+             FindInvalidProjectReferences;
+             GetFrameworkPaths;
+             GetReferenceAssemblyPaths;
+             PrepareForBuild;
+             ResolveSDKReferences;
+             ExpandSDKReferences;
+           ;
+             ResolvePackageDependenciesForBuild;
+             _HandlePackageFileConflicts;
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.FrameworkReferenceResolution.targets (14,5)
+       Property reassignment: $(_GenerateRuntimeConfigurationPropertyInputsCache)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.genruntimeconfig.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.genruntimeconfig.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (44,5)
+       Property reassignment: $(_GeneratePublishDependencyFilePropertyInputsCache)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.genpublishdeps.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.genpublishdeps.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (46,5)
+       Property reassignment: $(_GenerateSingleFileBundlePropertyInputsCache)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.genbundle.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.genbundle.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (48,5)
+       Property reassignment: $(GenerateRuntimeConfigDevFile)="false" (previous value: "true") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (81,5)
+       Property 'USERPROFILE' with value 'C:\Users\moham' expanded from the environment.
+       Property reassignment: $(_DefaultUserProfileRuntimeStorePath)="C:\Users\moham" (previous value: "") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (97,5)
+       Property reassignment: $(_DefaultUserProfileRuntimeStorePath)="C:\Users\moham\.dotnet\store" (previous value: "C:\Users\moham") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (98,5)
+       Property reassignment: $(AvailablePlatforms)="Any CPU,x86,x64,ARM32" (previous value: "Any CPU,x86,x64") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (136,5)
+       Property reassignment: $(AvailablePlatforms)="Any CPU,x86,x64,ARM32,ARM64" (previous value: "Any CPU,x86,x64,ARM32") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (140,5)
+       Property reassignment: $(CoreBuildDependsOn)="
+             _CheckForBuildWithNoBuild;
+             
+             BuildOnlySettings;
+             PrepareForBuild;
+             PreBuildEvent;
+             ResolveReferences;
+             PrepareResources;
+             ResolveKeySource;
+             Compile;
+             ExportWindowsMDFile;
+             UnmanagedUnregistration;
+             GenerateSerializationAssemblies;
+             CreateSatelliteAssemblies;
+             GenerateManifests;
+             GetTargetPath;
+             PrepareForRun;
+             UnmanagedRegistration;
+             IncrementalClean;
+             PostBuildEvent
+           ;
+             GenerateBuildDependencyFile;
+             GenerateBuildRuntimeConfigurationFiles
+           " (previous value: "
+             BuildOnlySettings;
+             PrepareForBuild;
+             PreBuildEvent;
+             ResolveReferences;
+             PrepareResources;
+             ResolveKeySource;
+             Compile;
+             ExportWindowsMDFile;
+             UnmanagedUnregistration;
+             GenerateSerializationAssemblies;
+             CreateSatelliteAssemblies;
+             GenerateManifests;
+             GetTargetPath;
+             PrepareForRun;
+             UnmanagedRegistration;
+             IncrementalClean;
+             PostBuildEvent
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (197,5)
+       Property reassignment: $(CoreCleanDependsOn)="
+             _SdkBeforeClean;
+             
+           " (previous value: "") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (206,5)
+       Property reassignment: $(RebuildDependsOn)="
+             _SdkBeforeRebuild;
+             
+             BeforeRebuild;
+             Clean;
+             Build;
+             AfterRebuild;
+           
+           " (previous value: "
+             BeforeRebuild;
+             Clean;
+             Build;
+             AfterRebuild;
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (213,5)
+       Property reassignment: $(CompileDependsOn)="
+             
+             ResolveReferences;
+             ResolveKeySource;
+             SetWin32ManifestProperties;
+             _SetPreferNativeArm64Win32ManifestProperties;
+             FindReferenceAssembliesForReferences;
+             _GenerateCompileInputs;
+             BeforeCompile;
+             _TimeStampBeforeCompile;
+             _GenerateCompileDependencyCache;
+             CoreCompile;
+             _TimeStampAfterCompile;
+             AfterCompile;
+           ;
+             _CreateAppHost;
+             _CreateComHost;
+             _GetIjwHostPaths;
+           " (previous value: "
+             ResolveReferences;
+             ResolveKeySource;
+             SetWin32ManifestProperties;
+             _SetPreferNativeArm64Win32ManifestProperties;
+             FindReferenceAssembliesForReferences;
+             _GenerateCompileInputs;
+             BeforeCompile;
+             _TimeStampBeforeCompile;
+             _GenerateCompileDependencyCache;
+             CoreCompile;
+             _TimeStampAfterCompile;
+             AfterCompile;
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (679,5)
+       Property reassignment: $(CreateSatelliteAssembliesDependsOn)="
+             
+             ;
+             _GenerateSatelliteAssemblyInputs;
+             ComputeIntermediateSatelliteAssemblies;
+             GenerateSatelliteAssemblies
+           ;
+             CoreGenerateSatelliteAssemblies
+           " (previous value: "
+             ;
+             _GenerateSatelliteAssemblyInputs;
+             ComputeIntermediateSatelliteAssemblies;
+             GenerateSatelliteAssemblies
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (1065,5)
+       Property reassignment: $(SourceLinkUrlInitializerTargets)=";_InitializeGitHubSourceLinkUrl;_InitializeGitLabSourceLinkUrl" (previous value: ";_InitializeGitHubSourceLinkUrl") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.GitLab\build\Microsoft.SourceLink.GitLab.targets (12,5)
+       Property reassignment: $(SourceControlManagerUrlTranslationTargets)=";TranslateGitHubUrlsInSourceControlInformation;TranslateGitLabUrlsInSourceControlInformation" (previous value: ";TranslateGitHubUrlsInSourceControlInformation") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.GitLab\build\Microsoft.SourceLink.GitLab.targets (13,5)
+       Property reassignment: $(SourceLinkUrlInitializerTargets)=";_InitializeGitHubSourceLinkUrl;_InitializeGitLabSourceLinkUrl;_InitializeAzureReposGitSourceLinkUrl" (previous value: ";_InitializeGitHubSourceLinkUrl;_InitializeGitLabSourceLinkUrl") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.AzureRepos.Git\build\Microsoft.SourceLink.AzureRepos.Git.targets (12,5)
+       Property reassignment: $(SourceControlManagerUrlTranslationTargets)=";TranslateGitHubUrlsInSourceControlInformation;TranslateGitLabUrlsInSourceControlInformation;TranslateAzureReposGitUrlsInSourceControlInformation" (previous value: ";TranslateGitHubUrlsInSourceControlInformation;TranslateGitLabUrlsInSourceControlInformation") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.AzureRepos.Git\build\Microsoft.SourceLink.AzureRepos.Git.targets (13,5)
+       Property reassignment: $(SourceLinkUrlInitializerTargets)=";_InitializeGitHubSourceLinkUrl;_InitializeGitLabSourceLinkUrl;_InitializeAzureReposGitSourceLinkUrl;_InitializeBitbucketGitSourceLinkUrl" (previous value: ";_InitializeGitHubSourceLinkUrl;_InitializeGitLabSourceLinkUrl;_InitializeAzureReposGitSourceLinkUrl") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.Bitbucket.Git\build\Microsoft.SourceLink.Bitbucket.Git.targets (12,5)
+       Property reassignment: $(SourceControlManagerUrlTranslationTargets)=";TranslateGitHubUrlsInSourceControlInformation;TranslateGitLabUrlsInSourceControlInformation;TranslateAzureReposGitUrlsInSourceControlInformation;TranslateBitbucketGitUrlsInSourceControlInformation" (previous value: ";TranslateGitHubUrlsInSourceControlInformation;TranslateGitLabUrlsInSourceControlInformation;TranslateAzureReposGitUrlsInSourceControlInformation") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.Bitbucket.Git\build\Microsoft.SourceLink.Bitbucket.Git.targets (13,5)
+       Property reassignment: $(DesignerRuntimeImplementationProjectOutputGroupDependsOn)="
+             
+             ;
+             
+             ;
+             BuildOnlySettings;
+             PrepareForBuild;
+             AssignTargetPaths;
+             ResolveReferences
+           
+           ;
+             _GenerateDesignerDepsFile;
+             _GenerateDesignerRuntimeConfigFile;
+             GetCopyToOutputDirectoryItems;
+             _GatherDesignerShadowCopyFiles;
+           " (previous value: "
+             ;
+             
+             ;
+             BuildOnlySettings;
+             PrepareForBuild;
+             AssignTargetPaths;
+             ResolveReferences
+           
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DesignerSupport.targets (21,5)
+       Property reassignment: $(_GenerateToolsSettingsFileCacheFile)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.toolssettingsinput.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.toolssettingsinput.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.PackTool.targets (68,5)
+       Property reassignment: $(_ShimInputCacheFile)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.shiminput.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.shiminput.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.PackTool.targets (137,5)
+       Property reassignment: $(_ShimCreatedSentinelFile)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.shimcreated.sentinel" (previous value: "obj\Debug\net8.0\Apex.Setup.shimcreated.sentinel") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.PackTool.targets (139,5)
+       Property reassignment: $(DefineConstants)="TRACE;DEBUG" (previous value: "TRACE") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.CSharp.targets (31,5)
+       Property reassignment: $(DefineConstants)="TRACE;DEBUG;NET;NET8_0;NETCOREAPP" (previous value: "TRACE;DEBUG") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.CSharp.targets (34,5)
+       Property reassignment: $(WarningsAsErrors)=";NU1605;SYSLIB0011" (previous value: ";NU1605") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.CSharp.targets (48,5)
+       Property reassignment: $(PackageDescription)="Package Description" (previous value: "") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\NuGet.Build.Tasks.Pack\build\NuGet.Build.Tasks.Pack.targets (34,5)
+       Property reassignment: $(GenerateNuspecDependsOn)="Build;_LoadPackInputItems; _GetTargetFrameworksOutput; _WalkEachTargetPerFramework; _GetPackageFiles; " (previous value: "_LoadPackInputItems; _GetTargetFrameworksOutput; _WalkEachTargetPerFramework; _GetPackageFiles; ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\NuGet.Build.Tasks.Pack\build\NuGet.Build.Tasks.Pack.targets (59,5)
+       Property reassignment: $(_IsNotSetContainersTargetsDir)="true" (previous value: "false") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\Sdk\Sdk.targets (59,5)
+       Property reassignment: $(_IsSDKContainerAllowedVersion)="true" (previous value: "false") at C:\Program Files\dotnet\sdk\8.0.416\Containers\build\Microsoft.NET.Build.Containers.targets (5,5)
+       Property reassignment: $(_ContainerIsTargetingNet8TFM)="true" (previous value: "false") at C:\Program Files\dotnet\sdk\8.0.416\Containers\build\Microsoft.NET.Build.Containers.targets (15,5)
+       Overriding target "ResolveFrameworkReferences" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "ResolveFrameworkReferences" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.FrameworkReferenceResolution.targets".
+       Overriding target "Run" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "Run" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets".
+       Overriding target "GenerateSupportedTargetFrameworkAlias" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "GenerateSupportedTargetFrameworkAlias" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets".
+       Overriding target "GetReferenceAssemblyPaths" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "GetReferenceAssemblyPaths" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DisableStandardFrameworkResolution.targets".
+       Overriding target "GetFrameworkPaths" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "GetFrameworkPaths" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DisableStandardFrameworkResolution.targets".
+       Overriding target "DesignerRuntimeImplementationProjectOutputGroup" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "DesignerRuntimeImplementationProjectOutputGroup" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DesignerSupport.targets".
+       Overriding target "Publish" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "Publish" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Publish.targets".
+       Overriding target "ResolveReadyToRunCompilers" in project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.CrossGen.targets" with target "ResolveReadyToRunCompilers" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Publish.targets".
+       Overriding target "GetCopyToPublishDirectoryItems" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "GetCopyToPublishDirectoryItems" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Publish.targets".
+     1>Project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (1) is building "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (1:2) on node 1 (_IsProjectRestoreSupported target(s)).
+   1:2>Target "_IsProjectRestoreSupported" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (entry point):
+   1:2>Done building target "_IsProjectRestoreSupported" in project "Apex.Setup.csproj".
+   1:2>Done Building Project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (_IsProjectRestoreSupported target(s)).
+     1>Done executing task "MSBuild".
+       Task "MSBuild" skipped, due to false condition; ( '$(RestoreUseSkipNonexistentTargets)' != 'true' ) was evaluated as ( 'true' != 'true' ).
+       Assembly loaded during TaskRun: NuGet.Build.Tasks, Version=6.11.1.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll, MVID: da6659e2-ab3c-4a1c-91d3-86fe81c4da96, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll)
+       Assembly loaded during TaskRun: NuGet.Common, Version=6.11.1.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\8.0.416\NuGet.Common.dll, MVID: 71662c50-4eea-46ea-82bf-b2edfd33a945, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll)
+       Assembly loaded during TaskRun: NuGet.Commands, Version=6.11.1.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\8.0.416\NuGet.Commands.dll, MVID: fd182425-a30a-445b-9628-b4c5f0ab1353, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll)
+       Assembly loaded during TaskRun: NuGet.ProjectModel, Version=6.11.1.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\8.0.416\NuGet.ProjectModel.dll, MVID: de1018f8-9cea-4ea5-aafd-eccdf5a6f888, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll)
+       Using "WarnForInvalidProjectsTask" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll".
+       Task "WarnForInvalidProjectsTask"
+       Done executing task "WarnForInvalidProjectsTask".
+     1>Done building target "_FilterRestoreGraphProjectInputItems" in project "Apex.Setup.csproj".
+       Target "_FilterRestoreGraphProjectInputItems" skipped. Previously built successfully.
+     1>Target "_GetAllRestoreProjectPathItems" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GenerateRestoreGraph" depends on it):
+       Using "NuGetMessageTask" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll".
+       Task "NuGetMessageTask"
+         Determining projects to restore...
+       Done executing task "NuGetMessageTask".
+       Task "MSBuild"
+         Global Properties:
+           ExcludeRestorePackageImports=true
+     1>Project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (1) is building "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (1:3) on node 1 (_GenerateRestoreProjectPathWalk target(s)).
+   1:3>Target "_GenerateRestoreProjectPathItemsAllFrameworks" skipped, due to false condition; ( '$(TargetFrameworks)' != '' ) was evaluated as ( '' != '' ).
+   1:3>Target "_GenerateRestoreProjectPathItemsPerFramework" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GenerateRestoreProjectPathItemsCurrentProject" depends on it):
+       Using "ConvertToAbsolutePath" task from assembly "Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
+       Task "ConvertToAbsolutePath"
+       Done executing task "ConvertToAbsolutePath".
+   1:3>Done building target "_GenerateRestoreProjectPathItemsPerFramework" in project "Apex.Setup.csproj".
+   1:3>Target "_GenerateRestoreProjectPathItemsCurrentProject" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GenerateRestoreProjectPathItems" depends on it):
+   1:3>Done building target "_GenerateRestoreProjectPathItemsCurrentProject" in project "Apex.Setup.csproj".
+   1:3>Target "_GenerateRestoreProjectPathItems" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GenerateRestoreProjectPathWalk" depends on it):
+       Task "RemoveDuplicates"
+       Done executing task "RemoveDuplicates".
+   1:3>Done building target "_GenerateRestoreProjectPathItems" in project "Apex.Setup.csproj".
+   1:3>Target "_GenerateRestoreProjectPathWalk" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (entry point):
+       Task "MSBuild"
+       Done executing task "MSBuild".
+       Task "MSBuild" skipped, due to false condition; ( '$(RestoreUseSkipNonexistentTargets)' != 'true' ) was evaluated as ( 'true' != 'true' ).
+       Task "RemoveDuplicates"
+       Done executing task "RemoveDuplicates".
+   1:3>Done building target "_GenerateRestoreProjectPathWalk" in project "Apex.Setup.csproj".
+   1:3>Done Building Project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (_GenerateRestoreProjectPathWalk target(s)).
+     1>Done executing task "MSBuild".
+       Task "MSBuild" skipped, due to false condition; ( '$(RestoreUseSkipNonexistentTargets)' != 'true' ) was evaluated as ( 'true' != 'true' ).
+       Task "RemoveDuplicates"
+       Done executing task "RemoveDuplicates".
+       Task "MSBuild"
+         Global Properties:
+           ExcludeRestorePackageImports=true
+     1>Project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (1) is building "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (1:4) on node 1 (_IsProjectRestoreSupported target(s)).
+   1:4>Target "_IsProjectRestoreSupported" skipped. Previously built successfully.
+   1:4>Done Building Project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (_IsProjectRestoreSupported target(s)).
+     1>Done executing task "MSBuild".
+       Task "MSBuild" skipped, due to false condition; ( '$(RestoreUseSkipNonexistentTargets)' != 'true' ) was evaluated as ( 'true' != 'true' ).
+     1>Done building target "_GetAllRestoreProjectPathItems" in project "Apex.Setup.csproj".
+     1>Target "_GenerateRestoreGraph" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "Restore" depends on it):
+       Using "Message" task from assembly "Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
+       Task "Message"
+         Generating dg file
+       Done executing task "Message".
+       Task "Message"
+         c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj
+       Done executing task "Message".
+       Task "MSBuild"
+         Global Properties:
+           ExcludeRestorePackageImports=true
+     1>Project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (1) is building "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (1:5) on node 1 (_GenerateRestoreGraphProjectEntry target(s)).
+   1:5>Target "_GetProjectJsonPath" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GetRestoreProjectStyle" depends on it):
+   1:5>Task "GetRestoreProjectJsonPathTask" skipped, due to false condition; ( '$(RestoreProjectStyle)' == 'ProjectJson' OR '$(RestoreProjectStyle)' == '' ) was evaluated as ( 'PackageReference' == 'ProjectJson' OR 'PackageReference' == '' ).
+   1:5>Done building target "_GetProjectJsonPath" in project "Apex.Setup.csproj".
+       Target "_CheckForUnsupportedTargetPlatformIdentifier" skipped, due to false condition; ('$(TargetPlatformIdentifier)' != '' and '$(TargetFrameworkIdentifier)' == '.NETCoreApp' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), 5.0)) And ('$(DesignTimeBuild)' != 'true' Or '@(MissingWorkloadPack)' == '')) was evaluated as ('' != '' and '.NETCoreApp' == '.NETCoreApp' and True And ('' != 'true' Or '' == '')).
+       Target "_CheckForMissingWorkload" skipped, due to false condition; ('@(MissingWorkloadPack)' != '' And '$(DesignTimeBuild)' != 'true') was evaluated as ('' != '' And '' != 'true').
+   1:5>Target "_CheckForUnsupportedNETCoreVersion" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "CollectPackageReferences" depends on it):
+       Task "NETSdkError" skipped, due to false condition; ('$(_TargetFrameworkVersionWithoutV)' > '$(NETCoreAppMaximumVersion)' and '$(DisplayVSMessage)' != 'true') was evaluated as ('8.0' > '8.0' and '' != 'true').
+       Task "NETSdkError" skipped, due to false condition; ('$(DisplayVSMessage)' == 'true') was evaluated as ('' == 'true').
+   1:5>Done building target "_CheckForUnsupportedNETCoreVersion" in project "Apex.Setup.csproj".
+       Target "_CheckForEolTargetFrameworks" skipped, due to false condition; ('@(_EolNetCoreTargetFrameworkVersions->AnyHaveMetadataValue('Identity', '$(_TargetFrameworkVersionWithoutV)'))' and '$(TargetFrameworkIdentifier)' == '.NETCoreApp' and '$(CheckEolTargetFramework)' == 'true') was evaluated as ('false' and '.NETCoreApp' == '.NETCoreApp' and 'true' == 'true').
+       Target "_CheckForEolWorkloads" skipped, due to false condition; ('@(EolWorkload)' != '' and '$(CheckEolWorkloads)' == 'true') was evaluated as ('' != '' and 'true' == 'true').
+   1:5>Target "_CheckForUnsupportedCppNETCoreVersion" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "CollectPackageReferences" depends on it):
+       Task "NETSdkError" skipped, due to false condition; ('$(TargetFrameworkIdentifier)' == '.NETCoreApp' and '$(_TargetFrameworkVersionWithoutV)' < '3.1' and ('$(Language)' == 'C++' and '$(_EnablePackageReferencesInVCProjects)' != 'true')) was evaluated as ('.NETCoreApp' == '.NETCoreApp' and '8.0' < '3.1' and ('C#' == 'C++' and '' != 'true')).
+   1:5>Done building target "_CheckForUnsupportedCppNETCoreVersion" in project "Apex.Setup.csproj".
+       Target "_CheckForUnsupportedNETStandardVersion" skipped, due to false condition; ('$(TargetFrameworkIdentifier)' == '.NETStandard' And '$(NETStandardMaximumVersion)' != '') was evaluated as ('.NETCoreApp' == '.NETStandard' And '' != '').
+       Target "_CheckForUnsupportedTargetFrameworkAndFeatureCombination" skipped, due to false condition; ('$(TargetFrameworkIdentifier)' == '.NETFramework') was evaluated as ('.NETCoreApp' == '.NETFramework').
+   1:5>Target "UpdateAspNetToFrameworkReference" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.Shared.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "ApplyImplicitVersions" depends on it):
+       Using "CheckIfPackageReferenceShouldBeFrameworkReference" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\..\tools\net8.0\Microsoft.NET.Build.Tasks.dll".
+       Task "CheckIfPackageReferenceShouldBeFrameworkReference"
+       Done executing task "CheckIfPackageReferenceShouldBeFrameworkReference".
+       Task "NETSdkError" skipped, due to false condition; ('$(_ShouldRemoveAspNetCoreAll)' == 'true') was evaluated as ('False' == 'true').
+       Task "CheckIfPackageReferenceShouldBeFrameworkReference"
+       Done executing task "CheckIfPackageReferenceShouldBeFrameworkReference".
+       Task "NETSdkWarning" skipped, due to false condition; ('$(_ShouldRemoveAspNetCoreApp)' == 'true') was evaluated as ('False' == 'true').
+   1:5>Done building target "UpdateAspNetToFrameworkReference" in project "Apex.Setup.csproj".
+       Target "IncludeTargetingPackReference" skipped, due to false condition; ('$(TargetFrameworkMoniker)' != '' and '$(TargetFrameworkIdentifier)' == '.NETFramework' and '$(AutomaticallyUseReferenceAssemblyPackages)' == 'true') was evaluated as ('.NETCoreApp,Version=v8.0' != '' and '.NETCoreApp' == '.NETFramework' and 'true' == 'true').
+   1:5>Target "CheckForImplicitPackageReferenceOverrides" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.Shared.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "ApplyImplicitVersions" depends on it):
+       Using "CheckForImplicitPackageReferenceOverrides" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\..\tools\net8.0\Microsoft.NET.Build.Tasks.dll".
+       Task "CheckForImplicitPackageReferenceOverrides"
+       Done executing task "CheckForImplicitPackageReferenceOverrides".
+   1:5>Done building target "CheckForImplicitPackageReferenceOverrides" in project "Apex.Setup.csproj".
+   1:5>Target "ApplyImplicitVersions" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.Shared.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "CollectPackageReferences" depends on it):
+       Using "ApplyImplicitVersions" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\..\tools\net8.0\Microsoft.NET.Build.Tasks.dll".
+       Task "ApplyImplicitVersions"
+       Done executing task "ApplyImplicitVersions".
+   1:5>Done building target "ApplyImplicitVersions" in project "Apex.Setup.csproj".
+       Target "CheckForImplicitPackageReferenceOverrides" skipped. Previously built successfully.
+       Target "AddWindowsSdkKnownFrameworkReferences" skipped, due to false condition; ('$(TargetFrameworkIdentifier)' == '.NETCoreApp' And '$(TargetPlatformIdentifier)' == 'Windows') was evaluated as ('.NETCoreApp' == '.NETCoreApp' And '' == 'Windows').
+       Target "_NormalizeTargetPlatformVersion" skipped, due to false condition; ('$(TargetPlatformVersion)' != '' and '$(TargetFrameworkIdentifier)' == '.NETCoreApp' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), 5.0)) and ('$(Language)' != 'C++' or '$(_EnablePackageReferencesInVCProjects)' == 'true')) was evaluated as ('' != '' and '.NETCoreApp' == '.NETCoreApp' and True and ('C#' != 'C++' or '' == 'true')).
+   1:5>Target "_CheckForLanguageAndFeatureCombinationSupport" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.RuntimeIdentifierInference.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "ProcessFrameworkReferences" depends on it):
+       Task "NETSdkError" skipped, due to false condition; (('$(Language)' == 'C++' and '$(_EnablePackageReferencesInVCProjects)' != 'true') and $(OutputType) != 'library' and '$(TargetFrameworkIdentifier)' == '.NETCoreApp') was evaluated as (('C#' == 'C++' and '' != 'true') and WinExe != 'library' and '.NETCoreApp' == '.NETCoreApp').
+       Task "NETSdkError" skipped, due to false condition; (('$(Language)' == 'C++' and '$(_EnablePackageReferencesInVCProjects)' != 'true') and $(EnableComHosting) == 'true') was evaluated as (('C#' == 'C++' and '' != 'true') and  == 'true').
+       Task "NETSdkError" skipped, due to false condition; (('$(Language)' == 'C++' and '$(_EnablePackageReferencesInVCProjects)' != 'true') and $(SelfContained) == 'true') was evaluated as (('C#' == 'C++' and '' != 'true') and false == 'true').
+   1:5>Done building target "_CheckForLanguageAndFeatureCombinationSupport" in project "Apex.Setup.csproj".
+   1:5>Target "_ComputeToolPackInputsToProcessFrameworkReferences" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Publish.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "ProcessFrameworkReferences" depends on it):
+   1:5>Done building target "_ComputeToolPackInputsToProcessFrameworkReferences" in project "Apex.Setup.csproj".
+   1:5>Target "ProcessFrameworkReferences" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.FrameworkReferenceResolution.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "CollectPackageReferences" depends on it):
+       Using "CheckForDuplicateFrameworkReferences" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\..\tools\net8.0\Microsoft.NET.Build.Tasks.dll".
+       Task "CheckForDuplicateFrameworkReferences"
+       Done executing task "CheckForDuplicateFrameworkReferences".
+       Using "ProcessFrameworkReferences" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\..\tools\net8.0\Microsoft.NET.Build.Tasks.dll".
+       Task "ProcessFrameworkReferences"
+       Done executing task "ProcessFrameworkReferences".
+       Using "ResolveAppHosts" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\..\tools\net8.0\Microsoft.NET.Build.Tasks.dll".
+       Task "ResolveAppHosts"
+       Done executing task "ResolveAppHosts".
+   1:5>Done building target "ProcessFrameworkReferences" in project "Apex.Setup.csproj".
+       Target "IncludeTargetingPackReference" skipped, due to false condition; ('$(TargetFrameworkMoniker)' != '' and '$(TargetFrameworkIdentifier)' == '.NETFramework' and '$(AutomaticallyUseReferenceAssemblyPackages)' == 'true') was evaluated as ('.NETCoreApp,Version=v8.0' != '' and '.NETCoreApp' == '.NETFramework' and 'true' == 'true').
+   1:5>Target "_AddMicrosoftNetCompilerToolsetFrameworkPackage" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "CollectPackageReferences" depends on it):
+       Task "NETSdkWarning" skipped, due to false condition; ('@(PackageReference->AnyHaveMetadataValue('Identity', 'Microsoft.Net.Compilers.Toolset.Framework'))' == 'true') was evaluated as ('false' == 'true').
+   1:5>Done building target "_AddMicrosoftNetCompilerToolsetFrameworkPackage" in project "Apex.Setup.csproj".
+   1:5>Target "_CheckForObsoleteDotNetCliToolReferences" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ObsoleteReferences.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "CollectPackageReferences" depends on it):
+       Task "NETSdkWarning" skipped, due to false condition; ( '%(_ReferenceToObsoleteDotNetCliTool.Identity)' != '' ) was evaluated as ( '' != '' ).
+   1:5>Done building target "_CheckForObsoleteDotNetCliToolReferences" in project "Apex.Setup.csproj".
+   1:5>Target "CollectPackageReferences" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GetRestoreProjectStyle" depends on it):
+       Using "CheckForDuplicateNuGetItemsTask" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll".
+       Task "CheckForDuplicateNuGetItemsTask"
+       Done executing task "CheckForDuplicateNuGetItemsTask".
+   1:5>Done building target "CollectPackageReferences" in project "Apex.Setup.csproj".
+   1:5>Target "_GetRestoreProjectStyle" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GenerateRestoreSpecs" depends on it):
+       Using "GetRestoreProjectStyleTask" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll".
+       Task "GetRestoreProjectStyleTask"
+       Done executing task "GetRestoreProjectStyleTask".
+   1:5>Done building target "_GetRestoreProjectStyle" in project "Apex.Setup.csproj".
+   1:5>Target "_GenerateRestoreSpecs" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GenerateRestoreGraphProjectEntry" depends on it):
+       Task "Message"
+         Restore entry point c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj
+       Done executing task "Message".
+   1:5>Done building target "_GenerateRestoreSpecs" in project "Apex.Setup.csproj".
+   1:5>Target "_GetRestoreSettingsOverrides" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GetRestoreSettings" depends on it):
+       Task "MSBuild" skipped, due to false condition; ( '$(RestorePackagesPath)' != '' ) was evaluated as ( '' != '' ).
+       Task "MSBuild" skipped, due to false condition; ( '$(RestoreRepositoryPathOverride)' != '' ) was evaluated as ( '' != '' ).
+       Task "MSBuild" skipped, due to false condition; ( '$(RestoreSources)' != '' ) was evaluated as ( '' != '' ).
+       Task "MSBuild" skipped, due to false condition; ( '$(RestoreFallbackFolders)' != '' ) was evaluated as ( '' != '' ).
+   1:5>Done building target "_GetRestoreSettingsOverrides" in project "Apex.Setup.csproj".
+   1:5>Target "_GetRestoreSettingsPerFramework" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GetRestoreSettingsCurrentProject" depends on it):
+   1:5>Done building target "_GetRestoreSettingsPerFramework" in project "Apex.Setup.csproj".
+   1:5>Target "_GetRestoreSettingsCurrentProject" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GetRestoreSettings" depends on it):
+   1:5>Done building target "_GetRestoreSettingsCurrentProject" in project "Apex.Setup.csproj".
+       Target "_GetRestoreSettingsAllFrameworks" skipped, due to false condition; ( '$(TargetFrameworks)' != '' AND '$(PackageReferenceCompatibleProjectStyle)' == 'true' ) was evaluated as ( '' != '' AND 'True' == 'true' ).
+   1:5>Target "_GetRestoreSettings" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GenerateDotnetCliToolReferenceSpecs" depends on it):
+       Using "GetRestoreSettingsTask" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll".
+       Task "GetRestoreSettingsTask"
+         Assembly loaded during TaskRun (NuGet.Build.Tasks.GetRestoreSettingsTask): NuGet.Configuration, Version=6.11.1.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\8.0.416\NuGet.Configuration.dll, MVID: be7e3e57-42a2-4a9c-87cf-47833efa7f94, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll)
+       Done executing task "GetRestoreSettingsTask".
+   1:5>Done building target "_GetRestoreSettings" in project "Apex.Setup.csproj".
+   1:5>Target "_GenerateDotnetCliToolReferenceSpecs" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GenerateRestoreGraphProjectEntry" depends on it):
+       Using "GetRestoreDotnetCliToolsTask" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll".
+       Task "GetRestoreDotnetCliToolsTask"
+       Done executing task "GetRestoreDotnetCliToolsTask".
+   1:5>Done building target "_GenerateDotnetCliToolReferenceSpecs" in project "Apex.Setup.csproj".
+   1:5>Target "_GenerateRestoreGraphProjectEntry" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (entry point):
+   1:5>Done building target "_GenerateRestoreGraphProjectEntry" in project "Apex.Setup.csproj".
+   1:5>Done Building Project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (_GenerateRestoreGraphProjectEntry target(s)).
+     1>Done executing task "MSBuild".
+       Task "MSBuild"
+         Global Properties:
+           ExcludeRestorePackageImports=true
+     1>Project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (1) is building "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (1:6) on node 1 (_GenerateProjectRestoreGraph target(s)).
+   1:6>Target "_GetRestoreProjectStyle" skipped. Previously built successfully.
+       Target "_GetRestoreProjectStyle" skipped. Previously built successfully.
+       Target "_GetRestoreProjectStyle" skipped. Previously built successfully.
+   1:6>Target "_GetRestoreTargetFrameworkOverride" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GetRestoreTargetFrameworksOutput" depends on it):
+       Task "GetGlobalPropertyValueTask" skipped, due to false condition; ( '$(TargetFrameworks)' != '' ) was evaluated as ( '' != '' ).
+   1:6>Done building target "_GetRestoreTargetFrameworkOverride" in project "Apex.Setup.csproj".
+   1:6>Target "_GetRestoreTargetFrameworksOutput" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GenerateRestoreProjectSpec" depends on it):
+       Using "GetProjectTargetFrameworksTask" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll".
+       Task "GetProjectTargetFrameworksTask"
+       Done executing task "GetProjectTargetFrameworksTask".
+   1:6>Done building target "_GetRestoreTargetFrameworksOutput" in project "Apex.Setup.csproj".
+       Target "_GetRestoreSettings" skipped. Previously built successfully.
+   1:6>Target "_GenerateRestoreProjectSpec" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GenerateProjectRestoreGraph" depends on it):
+       Task "ConvertToAbsolutePath"
+       Done executing task "ConvertToAbsolutePath".
+   1:6>Done building target "_GenerateRestoreProjectSpec" in project "Apex.Setup.csproj".
+       Target "_GenerateProjectRestoreGraphAllFrameworks" skipped, due to false condition; ( '$(TargetFrameworks)' != '' ) was evaluated as ( '' != '' ).
+       Target "_GetRestoreProjectStyle" skipped. Previously built successfully.
+       Target "CollectPackageReferences" skipped. Previously built successfully.
+   1:6>Target "CollectPackageDownloads" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_CollectRestoreInputs" depends on it):
+       Task "CheckForDuplicateNuGetItemsTask"
+       Done executing task "CheckForDuplicateNuGetItemsTask".
+   1:6>Done building target "CollectPackageDownloads" in project "Apex.Setup.csproj".
+   1:6>Target "CollectFrameworkReferences" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_CollectRestoreInputs" depends on it):
+   1:6>Done building target "CollectFrameworkReferences" in project "Apex.Setup.csproj".
+   1:6>Target "CollectCentralPackageVersions" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_CollectRestoreInputs" depends on it):
+       Task "CheckForDuplicateNuGetItemsTask"
+       Done executing task "CheckForDuplicateNuGetItemsTask".
+   1:6>Done building target "CollectCentralPackageVersions" in project "Apex.Setup.csproj".
+   1:6>Target "CollectNuGetAuditSuppressions" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_CollectRestoreInputs" depends on it):
+       Task "CheckForDuplicateNuGetItemsTask"
+       Done executing task "CheckForDuplicateNuGetItemsTask".
+   1:6>Done building target "CollectNuGetAuditSuppressions" in project "Apex.Setup.csproj".
+   1:6>Target "_CollectRestoreInputs" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GenerateProjectRestoreGraphPerFramework" depends on it):
+   1:6>Done building target "_CollectRestoreInputs" in project "Apex.Setup.csproj".
+       Target "PrepRestoreForStoreProjects" skipped, due to false condition; ('$(StorePackageName)' != '') was evaluated as ('' != '').
+   1:6>Target "_GenerateProjectRestoreGraphPerFramework" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GenerateProjectRestoreGraphCurrentProject" depends on it):
+       Using "GetRestoreProjectReferencesTask" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll".
+       Task "GetRestoreProjectReferencesTask"
+       Done executing task "GetRestoreProjectReferencesTask".
+       Using "GetRestorePackageReferencesTask" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll".
+       Task "GetRestorePackageReferencesTask"
+       Done executing task "GetRestorePackageReferencesTask".
+       Task "GetCentralPackageVersionsTask" skipped, due to false condition; ( '$(PackageReferenceCompatibleProjectStyle)' == 'true' AND '$(_CentralPackageVersionsEnabled)' == 'true' ) was evaluated as ( 'True' == 'true' AND '' == 'true' ).
+       Using "GetRestorePackageDownloadsTask" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll".
+       Task "GetRestorePackageDownloadsTask"
+       Done executing task "GetRestorePackageDownloadsTask".
+       Using "GetRestoreFrameworkReferencesTask" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll".
+       Task "GetRestoreFrameworkReferencesTask"
+       Done executing task "GetRestoreFrameworkReferencesTask".
+       Using "GetRestoreNuGetAuditSuppressionsTask" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll".
+       Task "GetRestoreNuGetAuditSuppressionsTask"
+       Done executing task "GetRestoreNuGetAuditSuppressionsTask".
+   1:6>Done building target "_GenerateProjectRestoreGraphPerFramework" in project "Apex.Setup.csproj".
+   1:6>Target "_GenerateProjectRestoreGraphCurrentProject" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GenerateRestoreDependencies" depends on it):
+   1:6>Done building target "_GenerateProjectRestoreGraphCurrentProject" in project "Apex.Setup.csproj".
+   1:6>Target "_GenerateRestoreDependencies" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GenerateProjectRestoreGraph" depends on it):
+   1:6>Done building target "_GenerateRestoreDependencies" in project "Apex.Setup.csproj".
+   1:6>Target "_GenerateProjectRestoreGraph" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (entry point):
+   1:6>Done building target "_GenerateProjectRestoreGraph" in project "Apex.Setup.csproj".
+   1:6>Done Building Project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (_GenerateProjectRestoreGraph target(s)).
+     1>Done executing task "MSBuild".
+     1>Done building target "_GenerateRestoreGraph" in project "Apex.Setup.csproj".
+       Target "_CheckForUnsupportedTargetFramework" skipped, due to false condition; ('$(_UnsupportedTargetFrameworkError)' == 'true') was evaluated as ('' == 'true').
+     1>Target "_CollectTargetFrameworkForTelemetry" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "Restore" depends on it):
+       Using "AllowEmptyTelemetry" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\..\tools\net8.0\Microsoft.NET.Build.Tasks.dll".
+       Task "AllowEmptyTelemetry"
+       Done executing task "AllowEmptyTelemetry".
+     1>Done building target "_CollectTargetFrameworkForTelemetry" in project "Apex.Setup.csproj".
+     1>Target "_CheckForUnsupportedNETCoreVersion" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "Restore" depends on it):
+       Task "NETSdkError" skipped, due to false condition; ('$(_TargetFrameworkVersionWithoutV)' > '$(NETCoreAppMaximumVersion)' and '$(DisplayVSMessage)' != 'true') was evaluated as ('8.0' > '8.0' and '' != 'true').
+       Task "NETSdkError" skipped, due to false condition; ('$(DisplayVSMessage)' == 'true') was evaluated as ('' == 'true').
+     1>Done building target "_CheckForUnsupportedNETCoreVersion" in project "Apex.Setup.csproj".
+       Target "_CheckForEolTargetFrameworks" skipped, due to false condition; ('@(_EolNetCoreTargetFrameworkVersions->AnyHaveMetadataValue('Identity', '$(_TargetFrameworkVersionWithoutV)'))' and '$(TargetFrameworkIdentifier)' == '.NETCoreApp' and '$(CheckEolTargetFramework)' == 'true') was evaluated as ('false' and '.NETCoreApp' == '.NETCoreApp' and 'true' == 'true').
+       Target "_CheckForEolWorkloads" skipped, due to false condition; ('@(EolWorkload)' != '' and '$(CheckEolWorkloads)' == 'true') was evaluated as ('' != '' and 'true' == 'true').
+     1>Target "_CheckForUnsupportedCppNETCoreVersion" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "Restore" depends on it):
+       Task "NETSdkError" skipped, due to false condition; ('$(TargetFrameworkIdentifier)' == '.NETCoreApp' and '$(_TargetFrameworkVersionWithoutV)' < '3.1' and ('$(Language)' == 'C++' and '$(_EnablePackageReferencesInVCProjects)' != 'true')) was evaluated as ('.NETCoreApp' == '.NETCoreApp' and '8.0' < '3.1' and ('C#' == 'C++' and '' != 'true')).
+     1>Done building target "_CheckForUnsupportedCppNETCoreVersion" in project "Apex.Setup.csproj".
+       Target "_CheckForUnsupportedNETStandardVersion" skipped, due to false condition; ('$(TargetFrameworkIdentifier)' == '.NETStandard' And '$(NETStandardMaximumVersion)' != '') was evaluated as ('.NETCoreApp' == '.NETStandard' And '' != '').
+       Target "_CheckForUnsupportedTargetFrameworkAndFeatureCombination" skipped, due to false condition; ('$(TargetFrameworkIdentifier)' == '.NETFramework') was evaluated as ('.NETCoreApp' == '.NETFramework').
+     1>Target "Restore" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (entry point):
+       Task "RemoveDuplicates"
+       Done executing task "RemoveDuplicates".
+       Using "RestoreTask" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll".
+       Task "RestoreTask"
+         Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): NuGet.Packaging, Version=6.11.1.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\8.0.416\NuGet.Packaging.dll, MVID: c3569465-2284-4cdc-80fa-53f23ad5a901, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll)
+         Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): NuGet.LibraryModel, Version=6.11.1.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\8.0.416\NuGet.LibraryModel.dll, MVID: 9c74e240-a36b-4261-ae2d-466984d97095, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll)
+         Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): NuGet.Versioning, Version=6.11.1.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\8.0.416\NuGet.Versioning.dll, MVID: 0ff30a8a-7983-4ede-bc2f-f9d2f526b309, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll)
+         Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): NuGet.Frameworks, Version=6.11.1.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\8.0.416\NuGet.Frameworks.dll, MVID: 36fa17a1-abb6-4cce-b85c-dd32a6dcc45f, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll)
+         Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): NuGet.Protocol, Version=6.11.1.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\8.0.416\NuGet.Protocol.dll, MVID: 65288774-e726-408e-8bb6-d22100f75eed, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll)
+         Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): NuGet.Credentials, Version=6.11.1.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\8.0.416\NuGet.Credentials.dll, MVID: 07a91a3f-265a-4226-985e-876d1036d338, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll)
+         X.509 certificate chain validation will use the default trust store selected by .NET for code signing.
+         X.509 certificate chain validation will use the default trust store selected by .NET for timestamping.
+         Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): NuGet.DependencyResolver.Core, Version=6.11.1.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\8.0.416\NuGet.DependencyResolver.Core.dll, MVID: 70f2641a-4895-4758-a37b-70be48187b22, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll)
+         Running restore with 24 concurrent jobs.
+         Reading project file c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj.
+         Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed (location: C:\Program Files\dotnet\sdk\8.0.416\Newtonsoft.Json.dll, MVID: 7e62198b-eab2-4380-bbac-29171862d1d8, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll)
+         Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Runtime.Serialization.Primitives, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.22\System.Runtime.Serialization.Primitives.dll, MVID: fda1de46-3b4d-441b-977b-bbed766c8dc5, AssemblyLoadContext: Default)
+         Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Runtime.Numerics, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.22\System.Runtime.Numerics.dll, MVID: e33315da-9e7b-4e71-ac35-07eafdffc34e, AssemblyLoadContext: Default)
+         The restore inputs for 'Apex.Setup' have not changed. No further actions are required to complete the restore.
+         Committing restore...
+         Assets file has not changed. Skipping assets file writing. Path: c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\project.assets.json
+         No-Op restore. The cache will not be updated. Path: c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\project.nuget.cache
+         Restored c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj (in 123 ms).
+         
+         NuGet Config files used:
+             C:\Users\moham\AppData\Roaming\NuGet\NuGet.Config
+         
+         Feeds used:
+             https://api.nuget.org/v3/index.json
+         All projects are up-to-date for restore.
+       Done executing task "RestoreTask".
+     1>Done building target "Restore" in project "Apex.Setup.csproj".
+     1>Done Building Project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (Restore target(s)).
+     0>The SDK "Microsoft.NET.Sdk" was successfully resolved by the "DefaultSdkResolver" resolver to location "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\Sdk" and version "".
+       Property 'MSBuildExtensionsPath' with value 'C:\Program Files\dotnet\sdk\8.0.416\' expanded from the environment.
+       Property reassignment: $(MSBuildProjectExtensionsPath)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\" (previous value: "obj\") at C:\Program Files\dotnet\sdk\8.0.416\Current\Microsoft.Common.props (60,5)
+       Property 'USERPROFILE' with value 'C:\Users\moham' expanded from the environment.
+       Property 'MSBuildUserExtensionsPath' with value 'C:\Users\moham\AppData\Local\Microsoft\MSBuild' expanded from the environment.
+       Property reassignment: $(AssemblySearchPaths)="{CandidateAssemblyFiles};{HintPathFromItem}" (previous value: "{CandidateAssemblyFiles}") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.props (91,5)
+       Property reassignment: $(AssemblySearchPaths)="{CandidateAssemblyFiles};{HintPathFromItem};{TargetFrameworkDirectory}" (previous value: "{CandidateAssemblyFiles};{HintPathFromItem}") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.props (92,5)
+       Property reassignment: $(AssemblySearchPaths)="{CandidateAssemblyFiles};{HintPathFromItem};{TargetFrameworkDirectory};{RawFileName}" (previous value: "{CandidateAssemblyFiles};{HintPathFromItem};{TargetFrameworkDirectory}") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.props (93,5)
+       The "DefaultSdkResolver" resolver attempted to resolve the SDK "Microsoft.NET.SDK.WorkloadAutoImportPropsLocator".
+       Warnings: null
+       Errors: MSB4276: The default SDK resolver failed to resolve SDK "Microsoft.NET.SDK.WorkloadAutoImportPropsLocator" because directory "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.SDK.WorkloadAutoImportPropsLocator\Sdk" did not exist.
+       The SDK "Microsoft.NET.SDK.WorkloadAutoImportPropsLocator" was successfully resolved by the "Microsoft.DotNet.MSBuildWorkloadSdkResolver" resolver to location "null" and version "null".
+       Property reassignment: $(TargetsForTfmSpecificContentInPackage)=";PackTool;_PackProjectToolValidation" (previous value: ";PackTool") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.PackProjectTool.props (15,5)
+       Property reassignment: $(OutputType)="WinExe" (previous value: "Library") at c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj (4,5)
+       Property reassignment: $(PublishProfileImported)="false" (previous value: "true") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.ImportPublishProfile.targets (28,5)
+       Property reassignment: $(TargetPlatformVersion)="" (previous value: "0.0") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets (69,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**" (previous value: ";bin\Debug\/**") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DefaultOutputPaths.targets (122,5)
+       Property reassignment: $(OutputPath)="bin\Debug\net8.0\" (previous value: "bin\Debug\") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DefaultOutputPaths.targets (137,5)
+       Property reassignment: $(IntermediateOutputPath)="obj\Debug\net8.0\" (previous value: "obj\Debug\") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DefaultOutputPaths.targets (142,5)
+       The "DefaultSdkResolver" resolver attempted to resolve the SDK "Microsoft.NET.SDK.WorkloadManifestTargetsLocator".
+       Warnings: null
+       Errors: MSB4276: The default SDK resolver failed to resolve SDK "Microsoft.NET.SDK.WorkloadManifestTargetsLocator" because directory "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.SDK.WorkloadManifestTargetsLocator\Sdk" did not exist.
+       The SDK "Microsoft.NET.SDK.WorkloadManifestTargetsLocator" was successfully resolved by the "Microsoft.DotNet.MSBuildWorkloadSdkResolver" resolver to location "C:\Program Files\dotnet\sdk-manifests\8.0.100\microsoft.net.sdk.android\34.0.43" and version "null".
+       Property reassignment: $(_FrameworkIdentifierForImplicitDefine)="NET" (previous value: "NETCOREAPP") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.BeforeCommon.targets (187,5)
+       Property reassignment: $(_FrameworkVersionForImplicitDefine)="8_0" (previous value: "8.0") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.BeforeCommon.targets (192,5)
+       Property reassignment: $(CommandLineArgsForDesignTimeEvaluation)="-langversion:12.0 -define:TRACE" (previous value: "-langversion:12.0") at C:\Program Files\dotnet\sdk\8.0.416\Roslyn\Microsoft.CSharp.Core.targets (200,5)
+       Property reassignment: $(_DebugSymbolsProduced)="true" (previous value: "false") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (175,5)
+       Property reassignment: $(_DocumentationFileProduced)="false" (previous value: "true") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (185,5)
+       Property reassignment: $(MSBuildCopyMarkerName)="Apex.Setup.csproj.Up2Date" (previous value: "Apex.Setup.csproj") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (393,5)
+       Property reassignment: $(ProcessorArchitecture)="msil" (previous value: "") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (541,5)
+       Property reassignment: $(DelaySign)="" (previous value: "false") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (580,5)
+       Property 'LOCALAPPDATA' with value 'C:\Users\moham\AppData\Local' expanded from the environment.
+       Property reassignment: $(_SGenGenerateSerializationAssembliesConfig)="Auto" (previous value: "") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (3896,5)
+       Property reassignment: $(_SGenGenerateSerializationAssembliesConfig)="Off" (previous value: "Auto") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (3897,5)
+       Property reassignment: $(_TargetsThatPrepareProjectReferences)="
+             AssignProjectConfiguration;
+             _SplitProjectReferencesByFileExistence
+           " (previous value: "_SplitProjectReferencesByFileExistence") at C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets (5099,5)
+       Property 'MSBuildExtensionsPath32' with value 'C:\Program Files\dotnet\sdk\8.0.416' expanded from the environment.
+       Property reassignment: $(ProjectAssetsCacheFile)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.assets.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.assets.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets (29,5)
+       Property reassignment: $(ResolveAssemblyReferencesDependsOn)="
+             
+             ResolveProjectReferences;
+             FindInvalidProjectReferences;
+             GetFrameworkPaths;
+             GetReferenceAssemblyPaths;
+             PrepareForBuild;
+             ResolveSDKReferences;
+             ExpandSDKReferences;
+           ;
+             ResolvePackageDependenciesForBuild;
+             _HandlePackageFileConflicts;
+           " (previous value: "
+             ResolveProjectReferences;
+             FindInvalidProjectReferences;
+             GetFrameworkPaths;
+             GetReferenceAssemblyPaths;
+             PrepareForBuild;
+             ResolveSDKReferences;
+             ExpandSDKReferences;
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets (80,5)
+       Property reassignment: $(PrepareResourcesDependsOn)="
+             ResolvePackageDependenciesForBuild;
+             _HandlePackageFileConflicts;
+             
+             ;
+             PrepareResourceNames;
+             ResGen;
+             CompileLicxFiles
+           
+           " (previous value: "
+             ;
+             PrepareResourceNames;
+             ResGen;
+             CompileLicxFiles
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.PackageDependencyResolution.targets (86,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**" (previous value: ";bin\Debug\/**;obj\Debug\/**") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (27,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (29,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (32,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (33,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj;**/*.sln" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (34,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj;**/*.sln;**/*.vssscc" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj;**/*.sln") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (35,5)
+       Property reassignment: $(DefaultItemExcludes)=";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj;**/*.sln;**/*.vssscc;**/.DS_Store" (previous value: ";bin\Debug\/**;obj\Debug\/**;bin\/**;obj\/**;**/*.user;**/*.*proj;**/*.sln;**/*.vssscc") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets (36,5)
+       Property reassignment: $(ResolveAssemblyReferencesDependsOn)="
+             
+             
+             ResolveProjectReferences;
+             FindInvalidProjectReferences;
+             GetFrameworkPaths;
+             GetReferenceAssemblyPaths;
+             PrepareForBuild;
+             ResolveSDKReferences;
+             ExpandSDKReferences;
+           ;
+             ResolvePackageDependenciesForBuild;
+             _HandlePackageFileConflicts;
+           ;
+             ResolveTargetingPackAssets;
+           " (previous value: "
+             
+             ResolveProjectReferences;
+             FindInvalidProjectReferences;
+             GetFrameworkPaths;
+             GetReferenceAssemblyPaths;
+             PrepareForBuild;
+             ResolveSDKReferences;
+             ExpandSDKReferences;
+           ;
+             ResolvePackageDependenciesForBuild;
+             _HandlePackageFileConflicts;
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.FrameworkReferenceResolution.targets (14,5)
+       Property reassignment: $(_GenerateRuntimeConfigurationPropertyInputsCache)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.genruntimeconfig.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.genruntimeconfig.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (44,5)
+       Property reassignment: $(_GeneratePublishDependencyFilePropertyInputsCache)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.genpublishdeps.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.genpublishdeps.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (46,5)
+       Property reassignment: $(_GenerateSingleFileBundlePropertyInputsCache)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.genbundle.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.genbundle.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (48,5)
+       Property reassignment: $(GenerateRuntimeConfigDevFile)="false" (previous value: "true") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (81,5)
+       Property reassignment: $(_DefaultUserProfileRuntimeStorePath)="C:\Users\moham" (previous value: "") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (97,5)
+       Property reassignment: $(_DefaultUserProfileRuntimeStorePath)="C:\Users\moham\.dotnet\store" (previous value: "C:\Users\moham") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (98,5)
+       Property reassignment: $(AvailablePlatforms)="Any CPU,x86,x64,ARM32" (previous value: "Any CPU,x86,x64") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (136,5)
+       Property reassignment: $(AvailablePlatforms)="Any CPU,x86,x64,ARM32,ARM64" (previous value: "Any CPU,x86,x64,ARM32") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (140,5)
+       Property reassignment: $(CoreBuildDependsOn)="
+             _CheckForBuildWithNoBuild;
+             
+             BuildOnlySettings;
+             PrepareForBuild;
+             PreBuildEvent;
+             ResolveReferences;
+             PrepareResources;
+             ResolveKeySource;
+             Compile;
+             ExportWindowsMDFile;
+             UnmanagedUnregistration;
+             GenerateSerializationAssemblies;
+             CreateSatelliteAssemblies;
+             GenerateManifests;
+             GetTargetPath;
+             PrepareForRun;
+             UnmanagedRegistration;
+             IncrementalClean;
+             PostBuildEvent
+           ;
+             GenerateBuildDependencyFile;
+             GenerateBuildRuntimeConfigurationFiles
+           " (previous value: "
+             BuildOnlySettings;
+             PrepareForBuild;
+             PreBuildEvent;
+             ResolveReferences;
+             PrepareResources;
+             ResolveKeySource;
+             Compile;
+             ExportWindowsMDFile;
+             UnmanagedUnregistration;
+             GenerateSerializationAssemblies;
+             CreateSatelliteAssemblies;
+             GenerateManifests;
+             GetTargetPath;
+             PrepareForRun;
+             UnmanagedRegistration;
+             IncrementalClean;
+             PostBuildEvent
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (197,5)
+       Property reassignment: $(CoreCleanDependsOn)="
+             _SdkBeforeClean;
+             
+           " (previous value: "") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (206,5)
+       Property reassignment: $(RebuildDependsOn)="
+             _SdkBeforeRebuild;
+             
+             BeforeRebuild;
+             Clean;
+             Build;
+             AfterRebuild;
+           
+           " (previous value: "
+             BeforeRebuild;
+             Clean;
+             Build;
+             AfterRebuild;
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (213,5)
+       Property reassignment: $(CompileDependsOn)="
+             
+             ResolveReferences;
+             ResolveKeySource;
+             SetWin32ManifestProperties;
+             _SetPreferNativeArm64Win32ManifestProperties;
+             FindReferenceAssembliesForReferences;
+             _GenerateCompileInputs;
+             BeforeCompile;
+             _TimeStampBeforeCompile;
+             _GenerateCompileDependencyCache;
+             CoreCompile;
+             _TimeStampAfterCompile;
+             AfterCompile;
+           ;
+             _CreateAppHost;
+             _CreateComHost;
+             _GetIjwHostPaths;
+           " (previous value: "
+             ResolveReferences;
+             ResolveKeySource;
+             SetWin32ManifestProperties;
+             _SetPreferNativeArm64Win32ManifestProperties;
+             FindReferenceAssembliesForReferences;
+             _GenerateCompileInputs;
+             BeforeCompile;
+             _TimeStampBeforeCompile;
+             _GenerateCompileDependencyCache;
+             CoreCompile;
+             _TimeStampAfterCompile;
+             AfterCompile;
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (679,5)
+       Property reassignment: $(CreateSatelliteAssembliesDependsOn)="
+             
+             ;
+             _GenerateSatelliteAssemblyInputs;
+             ComputeIntermediateSatelliteAssemblies;
+             GenerateSatelliteAssemblies
+           ;
+             CoreGenerateSatelliteAssemblies
+           " (previous value: "
+             ;
+             _GenerateSatelliteAssemblyInputs;
+             ComputeIntermediateSatelliteAssemblies;
+             GenerateSatelliteAssemblies
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets (1065,5)
+       Property reassignment: $(SourceLinkUrlInitializerTargets)=";_InitializeGitHubSourceLinkUrl;_InitializeGitLabSourceLinkUrl" (previous value: ";_InitializeGitHubSourceLinkUrl") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.GitLab\build\Microsoft.SourceLink.GitLab.targets (12,5)
+       Property reassignment: $(SourceControlManagerUrlTranslationTargets)=";TranslateGitHubUrlsInSourceControlInformation;TranslateGitLabUrlsInSourceControlInformation" (previous value: ";TranslateGitHubUrlsInSourceControlInformation") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.GitLab\build\Microsoft.SourceLink.GitLab.targets (13,5)
+       Property reassignment: $(SourceLinkUrlInitializerTargets)=";_InitializeGitHubSourceLinkUrl;_InitializeGitLabSourceLinkUrl;_InitializeAzureReposGitSourceLinkUrl" (previous value: ";_InitializeGitHubSourceLinkUrl;_InitializeGitLabSourceLinkUrl") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.AzureRepos.Git\build\Microsoft.SourceLink.AzureRepos.Git.targets (12,5)
+       Property reassignment: $(SourceControlManagerUrlTranslationTargets)=";TranslateGitHubUrlsInSourceControlInformation;TranslateGitLabUrlsInSourceControlInformation;TranslateAzureReposGitUrlsInSourceControlInformation" (previous value: ";TranslateGitHubUrlsInSourceControlInformation;TranslateGitLabUrlsInSourceControlInformation") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.AzureRepos.Git\build\Microsoft.SourceLink.AzureRepos.Git.targets (13,5)
+       Property reassignment: $(SourceLinkUrlInitializerTargets)=";_InitializeGitHubSourceLinkUrl;_InitializeGitLabSourceLinkUrl;_InitializeAzureReposGitSourceLinkUrl;_InitializeBitbucketGitSourceLinkUrl" (previous value: ";_InitializeGitHubSourceLinkUrl;_InitializeGitLabSourceLinkUrl;_InitializeAzureReposGitSourceLinkUrl") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.Bitbucket.Git\build\Microsoft.SourceLink.Bitbucket.Git.targets (12,5)
+       Property reassignment: $(SourceControlManagerUrlTranslationTargets)=";TranslateGitHubUrlsInSourceControlInformation;TranslateGitLabUrlsInSourceControlInformation;TranslateAzureReposGitUrlsInSourceControlInformation;TranslateBitbucketGitUrlsInSourceControlInformation" (previous value: ";TranslateGitHubUrlsInSourceControlInformation;TranslateGitLabUrlsInSourceControlInformation;TranslateAzureReposGitUrlsInSourceControlInformation") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.SourceLink.Bitbucket.Git\build\Microsoft.SourceLink.Bitbucket.Git.targets (13,5)
+       Property reassignment: $(DesignerRuntimeImplementationProjectOutputGroupDependsOn)="
+             
+             ;
+             
+             ;
+             BuildOnlySettings;
+             PrepareForBuild;
+             AssignTargetPaths;
+             ResolveReferences
+           
+           ;
+             _GenerateDesignerDepsFile;
+             _GenerateDesignerRuntimeConfigFile;
+             GetCopyToOutputDirectoryItems;
+             _GatherDesignerShadowCopyFiles;
+           " (previous value: "
+             ;
+             
+             ;
+             BuildOnlySettings;
+             PrepareForBuild;
+             AssignTargetPaths;
+             ResolveReferences
+           
+           ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DesignerSupport.targets (21,5)
+       Property reassignment: $(_GenerateToolsSettingsFileCacheFile)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.toolssettingsinput.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.toolssettingsinput.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.PackTool.targets (68,5)
+       Property reassignment: $(_ShimInputCacheFile)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.shiminput.cache" (previous value: "obj\Debug\net8.0\Apex.Setup.shiminput.cache") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.PackTool.targets (137,5)
+       Property reassignment: $(_ShimCreatedSentinelFile)="c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\obj\Debug\net8.0\Apex.Setup.shimcreated.sentinel" (previous value: "obj\Debug\net8.0\Apex.Setup.shimcreated.sentinel") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.PackTool.targets (139,5)
+       Property reassignment: $(DefineConstants)="TRACE;DEBUG" (previous value: "TRACE") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.CSharp.targets (31,5)
+       Property reassignment: $(DefineConstants)="TRACE;DEBUG;NET;NET8_0;NETCOREAPP" (previous value: "TRACE;DEBUG") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.CSharp.targets (34,5)
+       Property reassignment: $(WarningsAsErrors)=";NU1605;SYSLIB0011" (previous value: ";NU1605") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.CSharp.targets (48,5)
+       Property reassignment: $(PackageDescription)="Package Description" (previous value: "") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\NuGet.Build.Tasks.Pack\build\NuGet.Build.Tasks.Pack.targets (34,5)
+       Property reassignment: $(GenerateNuspecDependsOn)="Build;_LoadPackInputItems; _GetTargetFrameworksOutput; _WalkEachTargetPerFramework; _GetPackageFiles; " (previous value: "_LoadPackInputItems; _GetTargetFrameworksOutput; _WalkEachTargetPerFramework; _GetPackageFiles; ") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\NuGet.Build.Tasks.Pack\build\NuGet.Build.Tasks.Pack.targets (59,5)
+       Property reassignment: $(_IsNotSetContainersTargetsDir)="true" (previous value: "false") at C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\Sdk\Sdk.targets (59,5)
+       Property reassignment: $(_IsSDKContainerAllowedVersion)="true" (previous value: "false") at C:\Program Files\dotnet\sdk\8.0.416\Containers\build\Microsoft.NET.Build.Containers.targets (5,5)
+       Property reassignment: $(_ContainerIsTargetingNet8TFM)="true" (previous value: "false") at C:\Program Files\dotnet\sdk\8.0.416\Containers\build\Microsoft.NET.Build.Containers.targets (15,5)
+       Overriding target "ResolveFrameworkReferences" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "ResolveFrameworkReferences" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.FrameworkReferenceResolution.targets".
+       Overriding target "Run" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "Run" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets".
+       Overriding target "GenerateSupportedTargetFrameworkAlias" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "GenerateSupportedTargetFrameworkAlias" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets".
+       Overriding target "GetReferenceAssemblyPaths" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "GetReferenceAssemblyPaths" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DisableStandardFrameworkResolution.targets".
+       Overriding target "GetFrameworkPaths" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "GetFrameworkPaths" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DisableStandardFrameworkResolution.targets".
+       Overriding target "DesignerRuntimeImplementationProjectOutputGroup" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "DesignerRuntimeImplementationProjectOutputGroup" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DesignerSupport.targets".
+       Overriding target "Publish" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "Publish" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Publish.targets".
+       Overriding target "ResolveReadyToRunCompilers" in project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.CrossGen.targets" with target "ResolveReadyToRunCompilers" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Publish.targets".
+       Overriding target "GetCopyToPublishDirectoryItems" in project "C:\Program Files\dotnet\sdk\8.0.416\Microsoft.Common.CurrentVersion.targets" with target "GetCopyToPublishDirectoryItems" from project "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Publish.targets".
+       The target "ResolveNuGetPackageAssets" listed in an AfterTargets attribute at "C:\Users\moham\.nuget\packages\communitytoolkit.mvvm\8.2.2\buildTransitive\netstandard2.1\CommunityToolkit.Mvvm.targets (13,11)" does not exist in the project, and will be ignored.
+       The target "ResolveNuGetPackageAssets" listed in an AfterTargets attribute at "C:\Users\moham\.nuget\packages\communitytoolkit.mvvm\8.2.2\buildTransitive\netstandard2.1\CommunityToolkit.Mvvm.targets (25,11)" does not exist in the project, and will be ignored.
+       The target "ResolveNuGetPackageAssets" listed in an AfterTargets attribute at "C:\Users\moham\.nuget\packages\communitytoolkit.mvvm\8.2.2\buildTransitive\netstandard2.1\CommunityToolkit.Mvvm.targets (111,11)" does not exist in the project, and will be ignored.
+   1:7>Project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" on node 1 (default targets).
+   1:7>Target "_CheckForUnsupportedTargetFramework" skipped, due to false condition; ('$(_UnsupportedTargetFrameworkError)' == 'true') was evaluated as ('' == 'true').
+   1:7>Target "_CollectTargetFrameworkForTelemetry" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_CheckForInvalidConfigurationAndPlatform" depends on it):
+       Using "AllowEmptyTelemetry" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\..\tools\net8.0\Microsoft.NET.Build.Tasks.dll".
+       Task "AllowEmptyTelemetry"
+       Done executing task "AllowEmptyTelemetry".
+   1:7>Done building target "_CollectTargetFrameworkForTelemetry" in project "Apex.Setup.csproj".
+       Target "_CheckForUnsupportedTargetPlatformIdentifier" skipped, due to false condition; ('$(TargetPlatformIdentifier)' != '' and '$(TargetFrameworkIdentifier)' == '.NETCoreApp' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), 5.0)) And ('$(DesignTimeBuild)' != 'true' Or '@(MissingWorkloadPack)' == '')) was evaluated as ('' != '' and '.NETCoreApp' == '.NETCoreApp' and True And ('' != 'true' Or '' == '')).
+       Target "_CheckForMissingWorkload" skipped, due to false condition; ('@(MissingWorkloadPack)' != '' And '$(DesignTimeBuild)' != 'true') was evaluated as ('' != '' And '' != 'true').
+   1:7>Target "_CheckForUnsupportedNETCoreVersion" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_CheckForInvalidConfigurationAndPlatform" depends on it):
+       Task "NETSdkError" skipped, due to false condition; ('$(_TargetFrameworkVersionWithoutV)' > '$(NETCoreAppMaximumVersion)' and '$(DisplayVSMessage)' != 'true') was evaluated as ('8.0' > '8.0' and '' != 'true').
+       Task "NETSdkError" skipped, due to false condition; ('$(DisplayVSMessage)' == 'true') was evaluated as ('' == 'true').
+   1:7>Done building target "_CheckForUnsupportedNETCoreVersion" in project "Apex.Setup.csproj".
+       Target "_CheckForEolTargetFrameworks" skipped, due to false condition; ('@(_EolNetCoreTargetFrameworkVersions->AnyHaveMetadataValue('Identity', '$(_TargetFrameworkVersionWithoutV)'))' and '$(TargetFrameworkIdentifier)' == '.NETCoreApp' and '$(CheckEolTargetFramework)' == 'true') was evaluated as ('false' and '.NETCoreApp' == '.NETCoreApp' and 'true' == 'true').
+       Target "_CheckForEolWorkloads" skipped, due to false condition; ('@(EolWorkload)' != '' and '$(CheckEolWorkloads)' == 'true') was evaluated as ('' != '' and 'true' == 'true').
+   1:7>Target "_CheckForUnsupportedCppNETCoreVersion" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.TargetFrameworkInference.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_CheckForInvalidConfigurationAndPlatform" depends on it):
+       Task "NETSdkError" skipped, due to false condition; ('$(TargetFrameworkIdentifier)' == '.NETCoreApp' and '$(_TargetFrameworkVersionWithoutV)' < '3.1' and ('$(Language)' == 'C++' and '$(_EnablePackageReferencesInVCProjects)' != 'true')) was evaluated as ('.NETCoreApp' == '.NETCoreApp' and '8.0' < '3.1' and ('C#' == 'C++' and '' != 'true')).
+   1:7>Done building target "_CheckForUnsupportedCppNETCoreVersion" in project "Apex.Setup.csproj".
+       Target "_CheckForUnsupportedNETStandardVersion" skipped, due to false condition; ('$(TargetFrameworkIdentifier)' == '.NETStandard' And '$(NETStandardMaximumVersion)' != '') was evaluated as ('.NETCoreApp' == '.NETStandard' And '' != '').
+       Target "_CheckForUnsupportedTargetFrameworkAndFeatureCombination" skipped, due to false condition; ('$(TargetFrameworkIdentifier)' == '.NETFramework') was evaluated as ('.NETCoreApp' == '.NETFramework').
+       Target "_CheckForSupportedOSPlatformVersionHigherThanTargetPlatformVersion" skipped, due to false condition; ('$(TargetPlatformVersion)' != '' and '$(TargetFrameworkIdentifier)' == '.NETCoreApp' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), 5.0))) was evaluated as ('' != '' and '.NETCoreApp' == '.NETCoreApp' and True).
+       Target "_CheckForInvalidTargetPlatformVersion" skipped, due to false condition; ('$(TargetPlatformVersion)' != '' and '$(TargetFrameworkIdentifier)' == '.NETCoreApp' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), 5.0)) and ('$(Language)' != 'C++' or '$(_EnablePackageReferencesInVCProjects)' == 'true')) was evaluated as ('' != '' and '.NETCoreApp' == '.NETCoreApp' and True and ('C#' != 'C++' or '' == 'true')).
+   1:7>Target "_CheckForUnsupportedArtifactsPath" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.DefaultOutputPaths.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_CheckForInvalidConfigurationAndPlatform" depends on it):
+       Task "NetSdkError" skipped, due to false condition; ('$(UseArtifactsOutput)' == 'true' and '$(_ArtifactsPathSetEarly)' != 'true') was evaluated as ('' == 'true' and '' != 'true').
+       Task "NetSdkError" skipped, due to false condition; ('$(_ArtifactsPathLocationType)' == 'ProjectFolder') was evaluated as ('' == 'ProjectFolder').
+   1:7>Done building target "_CheckForUnsupportedArtifactsPath" in project "Apex.Setup.csproj".
+       Target "_CheckForMissingWorkload" skipped, due to false condition; ('@(MissingWorkloadPack)' != '' And '$(DesignTimeBuild)' != 'true') was evaluated as ('' != '' And '' != 'true').
+   1:7>Target "_CheckForUnsupportedAppHostUsage" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.RuntimeIdentifierInference.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_CheckForInvalidConfigurationAndPlatform" depends on it):
+       Task "NETSdkError" skipped, due to false condition; ('$(SelfContained)' == 'true' and '$(RuntimeIdentifier)' == '' and '$(AllowSelfContainedWithoutRuntimeIdentifier)' != 'true') was evaluated as ('false' == 'true' and '' == '' and '' != 'true').
+       Task "NETSdkError" skipped, due to false condition; ('$(PublishReadyToRun)' == 'true' and '$(RuntimeIdentifier)' == '' and '$(_IsPublishing)' == 'true') was evaluated as ('' == 'true' and '' == '' and '' == 'true').
+       Task "NETSdkError" skipped, due to false condition; ('$(PublishSingleFile)' == 'true' and '$(RuntimeIdentifier)' == '' and '$(_IsPublishing)' == 'true') was evaluated as ('' == 'true' and '' == '' and '' == 'true').
+       Task "NETSdkError" skipped, due to false condition; ('$(PublishAot)' == 'true' and '$(RuntimeIdentifier)' == '' and '$(_IsPublishing)' == 'true' and '$(AllowPublishAotWithoutRuntimeIdentifier)' != 'true') was evaluated as ('' == 'true' and '' == '' and '' == 'true' and '' != 'true').
+       Task "NETSdkError" skipped, due to false condition; ('$(PublishSelfContained)' != 'true' and '$(PublishSelfContained)' != 'false' and '$(PublishSelfContained)' != '') was evaluated as ('' != 'true' and '' != 'false' and '' != '').
+       Task "NETSdkError" skipped, due to false condition; ('$(SelfContained)' == 'true' and '$(UseAppHost)' != 'true' and '$(_RuntimeIdentifierUsesAppHost)' == 'true') was evaluated as ('false' == 'true' and 'true' != 'true' and 'true' == 'true').
+       Task "NETSdkError" skipped, due to false condition; ('$(SelfContained)' != 'true' and '$(UseAppHost)' == 'true' and '$(_TargetFrameworkVersionWithoutV)' < '2.1') was evaluated as ('false' != 'true' and 'true' == 'true' and '8.0' < '2.1').
+       Task "NETSdkError" skipped, due to false condition; ('$(PublishSingleFile)' == 'true' and '$(_TargetFrameworkVersionWithoutV)' < '3.0') was evaluated as ('' == 'true' and '8.0' < '3.0').
+       Task "NETSdkWarning" skipped, due to false condition; ('$(PublishReadyToRun)' == 'true' and '$(_TargetFrameworkVersionWithoutV)' < '3.0') was evaluated as ('' == 'true' and '8.0' < '3.0').
+       Task "NETSdkWarning" skipped, due to false condition; ('$(RuntimeIdentifier)' != '' and '$(_TargetFrameworkVersionWithoutV)' != '' and $([MSBuild]::VersionLessThan($(_TargetFrameworkVersionWithoutV), '8.0')) and '$(_SelfContainedWasSpecified)' != 'true') was evaluated as ('' != '' and '8.0' != '' and False and '' != 'true').
+       Task "NetSdkError" skipped, due to false condition; (('$(UseWindowsForms)' == 'true') and ('$(PublishTrimmed)' == 'true') and ('$(_SuppressWinFormsTrimError)' != 'true')) was evaluated as (('' == 'true') and ('' == 'true') and ('' != 'true')).
+       Task "NetSdkError" skipped, due to false condition; (('$(UseWpf)' == 'true') and ('$(PublishTrimmed)' == 'true') and ('$(_SuppressWpfTrimError)' != 'true')) was evaluated as (('true' == 'true') and ('' == 'true') and ('' != 'true')).
+   1:7>Done building target "_CheckForUnsupportedAppHostUsage" in project "Apex.Setup.csproj".
+   1:7>Target "_CheckForUnsupportedHostingUsage" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.RuntimeIdentifierInference.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_CheckForInvalidConfigurationAndPlatform" depends on it):
+       Task "NETSdkWarning" skipped, due to false condition; ('$(SelfContained)' == 'true' and '$(EnableComHosting)' == 'true') was evaluated as ('false' == 'true' and '' == 'true').
+   1:7>Done building target "_CheckForUnsupportedHostingUsage" in project "Apex.Setup.csproj".
+   1:7>Target "_CheckAndUnsetUnsupportedPrefer32Bit" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.RuntimeIdentifierInference.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_CheckForInvalidConfigurationAndPlatform" depends on it):
+       Task "NETSdkWarning" skipped, due to false condition; ('$(Prefer32Bit)' == 'true') was evaluated as ('false' == 'true').
+   1:7>Done building target "_CheckAndUnsetUnsupportedPrefer32Bit" in project "Apex.Setup.csproj".
+       Target "_CheckForMismatchingPlatform" skipped, due to false condition; ('$(RuntimeIdentifier)' != '' and '$(PlatformTarget)' != '') was evaluated as ('' != '' and '' != '').
+   1:7>Target "_CheckForLanguageAndFeatureCombinationSupport" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.RuntimeIdentifierInference.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_CheckForInvalidConfigurationAndPlatform" depends on it):
+       Task "NETSdkError" skipped, due to false condition; (('$(Language)' == 'C++' and '$(_EnablePackageReferencesInVCProjects)' != 'true') and $(OutputType) != 'library' and '$(TargetFrameworkIdentifier)' == '.NETCoreApp') was evaluated as (('C#' == 'C++' and '' != 'true') and WinExe != 'library' and '.NETCoreApp' == '.NETCoreApp').
+       Task "NETSdkError" skipped, due to false condition; (('$(Language)' == 'C++' and '$(_EnablePackageReferencesInVCProjects)' != 'true') and $(EnableComHosting) == 'true') was evaluated as (('C#' == 'C++' and '' != 'true') and  == 'true').
+       Task "NETSdkError" skipped, due to false condition; (('$(Language)' == 'C++' and '$(_EnablePackageReferencesInVCProjects)' != 'true') and $(SelfContained) == 'true') was evaluated as (('C#' == 'C++' and '' != 'true') and false == 'true').
+   1:7>Done building target "_CheckForLanguageAndFeatureCombinationSupport" in project "Apex.Setup.csproj".
+       Target "_CheckForNETCoreSdkIsPreview" skipped, due to false condition; ( '$(_NETCoreSdkIsPreview)' == 'true' AND '$(SuppressNETCoreSdkPreviewMessage)' != 'true' ) was evaluated as ( 'false' == 'true' AND '' != 'true' ).
+   1:7>Target "_GetProjectJsonPath" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GetRestoreProjectStyle" depends on it):
+       Task "GetRestoreProjectJsonPathTask" skipped, due to false condition; ( '$(RestoreProjectStyle)' == 'ProjectJson' OR '$(RestoreProjectStyle)' == '' ) was evaluated as ( 'PackageReference' == 'ProjectJson' OR 'PackageReference' == '' ).
+   1:7>Done building target "_GetProjectJsonPath" in project "Apex.Setup.csproj".
+       Target "_CheckForUnsupportedTargetPlatformIdentifier" skipped, due to false condition; ('$(TargetPlatformIdentifier)' != '' and '$(TargetFrameworkIdentifier)' == '.NETCoreApp' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), 5.0)) And ('$(DesignTimeBuild)' != 'true' Or '@(MissingWorkloadPack)' == '')) was evaluated as ('' != '' and '.NETCoreApp' == '.NETCoreApp' and True And ('' != 'true' Or '' == '')).
+       Target "_CheckForMissingWorkload" skipped, due to false condition; ('@(MissingWorkloadPack)' != '' And '$(DesignTimeBuild)' != 'true') was evaluated as ('' != '' And '' != 'true').
+       Target "_CheckForUnsupportedNETStandardVersion" skipped, due to false condition; ('$(TargetFrameworkIdentifier)' == '.NETStandard' And '$(NETStandardMaximumVersion)' != '') was evaluated as ('.NETCoreApp' == '.NETStandard' And '' != '').
+       Target "_CheckForUnsupportedTargetFrameworkAndFeatureCombination" skipped, due to false condition; ('$(TargetFrameworkIdentifier)' == '.NETFramework') was evaluated as ('.NETCoreApp' == '.NETFramework').
+   1:7>Target "UpdateAspNetToFrameworkReference" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.Shared.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "ApplyImplicitVersions" depends on it):
+       Using "CheckIfPackageReferenceShouldBeFrameworkReference" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\..\tools\net8.0\Microsoft.NET.Build.Tasks.dll".
+       Task "CheckIfPackageReferenceShouldBeFrameworkReference"
+       Done executing task "CheckIfPackageReferenceShouldBeFrameworkReference".
+       Task "NETSdkError" skipped, due to false condition; ('$(_ShouldRemoveAspNetCoreAll)' == 'true') was evaluated as ('False' == 'true').
+       Task "CheckIfPackageReferenceShouldBeFrameworkReference"
+       Done executing task "CheckIfPackageReferenceShouldBeFrameworkReference".
+       Task "NETSdkWarning" skipped, due to false condition; ('$(_ShouldRemoveAspNetCoreApp)' == 'true') was evaluated as ('False' == 'true').
+   1:7>Done building target "UpdateAspNetToFrameworkReference" in project "Apex.Setup.csproj".
+       Target "IncludeTargetingPackReference" skipped, due to false condition; ('$(TargetFrameworkMoniker)' != '' and '$(TargetFrameworkIdentifier)' == '.NETFramework' and '$(AutomaticallyUseReferenceAssemblyPackages)' == 'true') was evaluated as ('.NETCoreApp,Version=v8.0' != '' and '.NETCoreApp' == '.NETFramework' and 'true' == 'true').
+   1:7>Target "CheckForImplicitPackageReferenceOverrides" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.Shared.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "ApplyImplicitVersions" depends on it):
+       Using "CheckForImplicitPackageReferenceOverrides" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\..\tools\net8.0\Microsoft.NET.Build.Tasks.dll".
+       Task "CheckForImplicitPackageReferenceOverrides"
+       Done executing task "CheckForImplicitPackageReferenceOverrides".
+   1:7>Done building target "CheckForImplicitPackageReferenceOverrides" in project "Apex.Setup.csproj".
+   1:7>Target "ApplyImplicitVersions" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.Shared.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "CollectPackageReferences" depends on it):
+       Using "ApplyImplicitVersions" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\..\tools\net8.0\Microsoft.NET.Build.Tasks.dll".
+       Task "ApplyImplicitVersions"
+       Done executing task "ApplyImplicitVersions".
+   1:7>Done building target "ApplyImplicitVersions" in project "Apex.Setup.csproj".
+       Target "CheckForImplicitPackageReferenceOverrides" skipped. Previously built successfully.
+       Target "AddWindowsSdkKnownFrameworkReferences" skipped, due to false condition; ('$(TargetFrameworkIdentifier)' == '.NETCoreApp' And '$(TargetPlatformIdentifier)' == 'Windows') was evaluated as ('.NETCoreApp' == '.NETCoreApp' And '' == 'Windows').
+       Target "_NormalizeTargetPlatformVersion" skipped, due to false condition; ('$(TargetPlatformVersion)' != '' and '$(TargetFrameworkIdentifier)' == '.NETCoreApp' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), 5.0)) and ('$(Language)' != 'C++' or '$(_EnablePackageReferencesInVCProjects)' == 'true')) was evaluated as ('' != '' and '.NETCoreApp' == '.NETCoreApp' and True and ('C#' != 'C++' or '' == 'true')).
+   1:7>Target "_ComputeToolPackInputsToProcessFrameworkReferences" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Publish.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "ProcessFrameworkReferences" depends on it):
+   1:7>Done building target "_ComputeToolPackInputsToProcessFrameworkReferences" in project "Apex.Setup.csproj".
+   1:7>Target "ProcessFrameworkReferences" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.FrameworkReferenceResolution.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "CollectPackageReferences" depends on it):
+       Using "CheckForDuplicateFrameworkReferences" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\..\tools\net8.0\Microsoft.NET.Build.Tasks.dll".
+       Task "CheckForDuplicateFrameworkReferences"
+       Done executing task "CheckForDuplicateFrameworkReferences".
+       Using "ProcessFrameworkReferences" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\..\tools\net8.0\Microsoft.NET.Build.Tasks.dll".
+       Task "ProcessFrameworkReferences"
+       Done executing task "ProcessFrameworkReferences".
+       Using "ResolveAppHosts" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\..\tools\net8.0\Microsoft.NET.Build.Tasks.dll".
+       Task "ResolveAppHosts"
+       Done executing task "ResolveAppHosts".
+   1:7>Done building target "ProcessFrameworkReferences" in project "Apex.Setup.csproj".
+       Target "IncludeTargetingPackReference" skipped, due to false condition; ('$(TargetFrameworkMoniker)' != '' and '$(TargetFrameworkIdentifier)' == '.NETFramework' and '$(AutomaticallyUseReferenceAssemblyPackages)' == 'true') was evaluated as ('.NETCoreApp,Version=v8.0' != '' and '.NETCoreApp' == '.NETFramework' and 'true' == 'true').
+   1:7>Target "_AddMicrosoftNetCompilerToolsetFrameworkPackage" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "CollectPackageReferences" depends on it):
+       Task "NETSdkWarning" skipped, due to false condition; ('@(PackageReference->AnyHaveMetadataValue('Identity', 'Microsoft.Net.Compilers.Toolset.Framework'))' == 'true') was evaluated as ('false' == 'true').
+   1:7>Done building target "_AddMicrosoftNetCompilerToolsetFrameworkPackage" in project "Apex.Setup.csproj".
+   1:7>Target "_CheckForObsoleteDotNetCliToolReferences" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.ObsoleteReferences.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "CollectPackageReferences" depends on it):
+       Task "NETSdkWarning" skipped, due to false condition; ( '%(_ReferenceToObsoleteDotNetCliTool.Identity)' != '' ) was evaluated as ( '' != '' ).
+   1:7>Done building target "_CheckForObsoleteDotNetCliToolReferences" in project "Apex.Setup.csproj".
+   1:7>Target "CollectPackageReferences" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_GetRestoreProjectStyle" depends on it):
+       Using "CheckForDuplicateNuGetItemsTask" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll".
+       Task "CheckForDuplicateNuGetItemsTask"
+       Done executing task "CheckForDuplicateNuGetItemsTask".
+   1:7>Done building target "CollectPackageReferences" in project "Apex.Setup.csproj".
+   1:7>Target "_GetRestoreProjectStyle" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "EnableIntermediateOutputPathMismatchWarning" depends on it):
+       Using "GetRestoreProjectStyleTask" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\NuGet.Build.Tasks.dll".
+       Task "GetRestoreProjectStyleTask"
+       Done executing task "GetRestoreProjectStyleTask".
+   1:7>Done building target "_GetRestoreProjectStyle" in project "Apex.Setup.csproj".
+   1:7>Target "EnableIntermediateOutputPathMismatchWarning" in file "C:\Program Files\dotnet\sdk\8.0.416\NuGet.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_CheckForInvalidConfigurationAndPlatform" depends on it):
+   1:7>Done building target "EnableIntermediateOutputPathMismatchWarning" in project "Apex.Setup.csproj".
+       Target "ApplyImplicitVersions" skipped. Previously built successfully.
+       Target "CheckForImplicitPackageReferenceOverrides" skipped. Previously built successfully.
+   1:7>Target "CheckForDuplicateItems" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.Shared.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_CheckForInvalidConfigurationAndPlatform" depends on it):
+       Using "CheckForDuplicateItems" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\..\tools\net8.0\Microsoft.NET.Build.Tasks.dll".
+       Task "CheckForDuplicateItems"
+       Done executing task "CheckForDuplicateItems".
+       Task "CheckForDuplicateItems"
+       Done executing task "CheckForDuplicateItems".
+       Task "CheckForDuplicateItems"
+       Done executing task "CheckForDuplicateItems".
+   1:7>Done building target "CheckForDuplicateItems" in project "Apex.Setup.csproj".
+       Target "WarnForExplicitVersions" skipped, due to false condition; ('@(SdkBuildWarning)' != '') was evaluated as ('' != '').
+       Target "_CheckForFailedSDKResolution" skipped, due to false condition; ('$(SdkResolverHonoredGlobalJson)' == 'false') was evaluated as ('' == 'false').
+       Target "_WarnWhenUsingNET8AndVSPriorTo178" skipped, due to false condition; ($([MSBuild]::VersionLessThan($(MSBuildVersion), '17.8.0')) and '$(TargetFrameworkIdentifier)' == '.NETCoreApp' and $([MSBuild]::VersionGreaterThanOrEquals($(_TargetFrameworkVersionWithoutV), '8.0'))) was evaluated as (False and '.NETCoreApp' == '.NETCoreApp' and True).
+   1:7>Target "_CheckForInvalidWindowsDesktopTargetingConfiguration" in file "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets" from project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (target "_CheckForInvalidConfigurationAndPlatform" depends on it):
+       Using "NETSdkError" task from assembly "C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\..\tools\net8.0\Microsoft.NET.Build.Tasks.dll".
+       Task "NETSdkError"
+   1:7>C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets(141,5): error NETSDK1136: The target platform must be set to Windows (usually by including '-windows' in the TargetFramework property) when using Windows Forms or WPF, or referencing projects or packages that do so. [c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj]
+       Done executing task "NETSdkError" -- FAILED.
+   1:7>Done building target "_CheckForInvalidWindowsDesktopTargetingConfiguration" in project "Apex.Setup.csproj" -- FAILED.
+   1:7>Done Building Project "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+       "c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj" (default target) (1:7) ->
+       (_CheckForInvalidWindowsDesktopTargetingConfiguration target) -> 
+         C:\Program Files\dotnet\sdk\8.0.416\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.Sdk.DefaultItems.targets(141,5): error NETSDK1136: The target platform must be set to Windows (usually by including '-windows' in the TargetFramework property) when using Windows Forms or WPF, or referencing projects or packages that do so. [c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Setup\Apex.Setup.csproj]
+
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:01.84

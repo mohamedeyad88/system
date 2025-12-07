@@ -1,0 +1,213 @@
+<UserControl x:Class="Apex.UI.Views.SystemPerformanceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="900"
+             Background="#F8FAFC">
+    
+    <UserControl.Resources>
+        <!-- Metric Card -->
+        <Style x:Key="MetricCard" TargetType="Border">
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="24"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.08" Color="#000"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,24">
+            <TextBlock Text="📊 System Performance" FontSize="28" FontWeight="Bold" Foreground="#0F172A"/>
+            <TextBlock Text="{DynamicResource Performance_RealTimeMetrics}" FontSize="14" Foreground="#64748B" Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <!-- Main Metrics -->
+        <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,24">
+            <!-- Memory -->
+            <Border Style="{StaticResource MetricCard}" Margin="0,0,16,0">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#DBEAFE" Offset="0"/>
+                        <GradientStop Color="#BFDBFE" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="#3B82F6" HorizontalAlignment="Left" Margin="0,0,0,16">
+                        <TextBlock Text="💾" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_MemoryUsage}" FontSize="13" Foreground="#1E40AF" Margin="0,0,0,4"/>
+                    <TextBlock Grid.Row="2" Text="{Binding MemoryUsageMB, StringFormat='{}{0:F1} MB'}" FontSize="28" FontWeight="Bold" Foreground="#1D4ED8"/>
+                </Grid>
+            </Border>
+
+            <!-- Threads -->
+            <Border Style="{StaticResource MetricCard}" Margin="8,0">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#D1FAE5" Offset="0"/>
+                        <GradientStop Color="#A7F3D0" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="#10B981" HorizontalAlignment="Left" Margin="0,0,0,16">
+                        <TextBlock Text="🧵" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_ActiveThreads}" FontSize="13" Foreground="#065F46" Margin="0,0,0,4"/>
+                    <TextBlock Grid.Row="2" Text="{Binding ThreadCount}" FontSize="28" FontWeight="Bold" Foreground="#047857"/>
+                </Grid>
+            </Border>
+
+            <!-- Uptime -->
+            <Border Style="{StaticResource MetricCard}" Margin="8,0">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#FEF3C7" Offset="0"/>
+                        <GradientStop Color="#FDE68A" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="#F59E0B" HorizontalAlignment="Left" Margin="0,0,0,16">
+                        <TextBlock Text="⏱️" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_SystemUptime}" FontSize="13" Foreground="#92400E" Margin="0,0,0,4"/>
+                    <TextBlock Grid.Row="2" Text="{Binding Uptime}" FontSize="28" FontWeight="Bold" Foreground="#B45309"/>
+                </Grid>
+            </Border>
+
+            <!-- CPU -->
+            <Border Style="{StaticResource MetricCard}" Margin="16,0,0,0">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#EDE9FE" Offset="0"/>
+                        <GradientStop Color="#DDD6FE" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="#8B5CF6" HorizontalAlignment="Left" Margin="0,0,0,16">
+                        <TextBlock Text="⚡" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Grid.Row="1" Text="CPU Usage" FontSize="13" Foreground="#5B21B6" Margin="0,0,0,4"/>
+                    <TextBlock Grid.Row="2" Text="{Binding CpuUsage, StringFormat='{}{0:F1}%', FallbackValue='0.0%'}" FontSize="28" FontWeight="Bold" Foreground="#7C3AED"/>
+                </Grid>
+            </Border>
+        </UniformGrid>
+
+        <!-- Additional Info -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- System Info -->
+            <Border Grid.Column="0" Background="White" CornerRadius="16" Padding="24" Margin="0,0,12,0">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.08" Color="#000"/>
+                </Border.Effect>
+                <StackPanel>
+                    <TextBlock Text="🖥️ System Information" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,20"/>
+                    
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="OS Version" Foreground="#64748B"/>
+                        <TextBlock Grid.Column="1" Text="{Binding OsVersion, FallbackValue='Windows 11'}" FontWeight="Medium" Foreground="#1E293B"/>
+                    </Grid>
+                    
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text=".NET Version" Foreground="#64748B"/>
+                        <TextBlock Grid.Column="1" Text="{Binding DotNetVersion, FallbackValue='.NET 8.0'}" FontWeight="Medium" Foreground="#1E293B"/>
+                    </Grid>
+                    
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{DynamicResource Performance_AppVersion}" Foreground="#64748B"/>
+                        <TextBlock Grid.Column="1" Text="{Binding AppVersion, FallbackValue='1.0.0'}" FontWeight="Medium" Foreground="#1E293B"/>
+                    </Grid>
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{DynamicResource Performance_ProcessID}" Foreground="#64748B"/>
+                        <TextBlock Grid.Column="1" Text="{Binding ProcessId, FallbackValue='12345'}" FontWeight="Medium" Foreground="#1E293B"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Activity Log -->
+            <Border Grid.Column="1" Background="White" CornerRadius="16" Padding="24" Margin="12,0,0,0">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.08" Color="#000"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="📋 Recent Activity" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,16"/>
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding RecentActivities}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#F8FAFC" CornerRadius="8" Padding="12" Margin="0,0,0,8">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Message}" FontSize="13" Foreground="#475569"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Time}" FontSize="11" Foreground="#94A3B8"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

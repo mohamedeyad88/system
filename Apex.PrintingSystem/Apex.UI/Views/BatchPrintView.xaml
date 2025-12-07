@@ -1,0 +1,532 @@
+<UserControl x:Class="Apex.UI.Views.BatchPrintView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignHeight="700" d:DesignWidth="1000"
+             Background="{StaticResource Brush.Background}">
+    
+    <UserControl.Resources>
+        <!-- Converters -->
+    </UserControl.Resources>
+    
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,24">
+            <TextBlock Text="🖨️ Batch Print" FontSize="28" FontWeight="Bold" Foreground="{StaticResource Brush.Text.Primary}"/>
+            <TextBlock Text="Print multiple files in a single batch operation" FontSize="14" Foreground="#64748B" Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <!-- Steps Indicator -->
+        <Border Grid.Row="1" Style="{StaticResource ModernCard}" Padding="32,20" Margin="0,0,0,24">
+            <Grid HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Step 1 -->
+                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                    <Border Style="{StaticResource StepCircle}" 
+                            Background="{Binding CurrentStep, Converter={StaticResource StepBgConverter}, ConverterParameter=1, FallbackValue=#CBD5E1}">
+                        <TextBlock Text="1" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                    </Border>
+                    <TextBlock Text="Files" FontWeight="{Binding CurrentStep, Converter={StaticResource StepWeightConverter}, ConverterParameter=1}" 
+                               Margin="0,6,0,0" HorizontalAlignment="Center" Foreground="#475569" FontSize="12"/>
+                </StackPanel>
+
+                <!-- Connector -->
+                <Rectangle Grid.Column="1" Height="2" Fill="#E2E8F0" VerticalAlignment="Top" Margin="0,19,0,0"/>
+
+                <!-- Step 2 -->
+                <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                    <Border Style="{StaticResource StepCircle}" 
+                            Background="{Binding CurrentStep, Converter={StaticResource StepBgConverter}, ConverterParameter=2, FallbackValue=#CBD5E1}">
+                        <TextBlock Text="2" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                    </Border>
+                    <TextBlock Text="Printer" FontWeight="{Binding CurrentStep, Converter={StaticResource StepWeightConverter}, ConverterParameter=2}" 
+                               Margin="0,6,0,0" HorizontalAlignment="Center" Foreground="#475569" FontSize="12"/>
+                </StackPanel>
+
+                <Rectangle Grid.Column="3" Height="2" Fill="#E2E8F0" VerticalAlignment="Top" Margin="0,19,0,0"/>
+
+                <!-- Step 3 -->
+                <StackPanel Grid.Column="4" HorizontalAlignment="Center">
+                    <Border Style="{StaticResource StepCircle}" 
+                            Background="{Binding CurrentStep, Converter={StaticResource StepBgConverter}, ConverterParameter=3, FallbackValue=#CBD5E1}">
+                        <TextBlock Text="3" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                    </Border>
+                    <TextBlock Text="Settings" FontWeight="{Binding CurrentStep, Converter={StaticResource StepWeightConverter}, ConverterParameter=3}" 
+                               Margin="0,6,0,0" HorizontalAlignment="Center" Foreground="#475569" FontSize="12"/>
+                </StackPanel>
+
+                <Rectangle Grid.Column="5" Height="2" Fill="#E2E8F0" VerticalAlignment="Top" Margin="0,19,0,0"/>
+
+                <!-- Step 4 -->
+                <StackPanel Grid.Column="6" HorizontalAlignment="Center">
+                    <Border Style="{StaticResource StepCircle}" 
+                            Background="{Binding CurrentStep, Converter={StaticResource StepBgConverter}, ConverterParameter=4, FallbackValue=#CBD5E1}">
+                        <TextBlock Text="4" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                    </Border>
+                    <TextBlock Text="Progress" FontWeight="{Binding CurrentStep, Converter={StaticResource StepWeightConverter}, ConverterParameter=4}" 
+                               Margin="0,6,0,0" HorizontalAlignment="Center" Foreground="#475569" FontSize="12"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Step 1: File Selection -->
+        <Border Grid.Row="2" Style="{StaticResource ModernCard}" Padding="24"
+                Visibility="{Binding CurrentStep, Converter={StaticResource StepVisConverter}, ConverterParameter=1}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- DropZone for Drag and Drop -->
+                <Border Grid.Row="0" x:Name="DropZone" Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="2" 
+                        CornerRadius="12" Padding="32" Margin="0,0,0,16" AllowDrop="True"
+                        Drop="DropZone_Drop" DragOver="DropZone_DragOver" DragLeave="DropZone_DragLeave">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="BorderBrush" Value="#3B82F6"/>
+                                    <Setter Property="Background" Value="#EFF6FF"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="📁" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                        <TextBlock Text="Drag and drop files here" FontSize="16" FontWeight="SemiBold" 
+                                   Foreground="#475569" HorizontalAlignment="Center"/>
+                        <TextBlock Text="or use the Add Files button below" FontSize="13" 
+                                   Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,16">
+                    <Button Command="{Binding AddFilesCommand}" Content="➕ Add Files" Style="{StaticResource ModernButton}" Margin="0,0,12,0"/>
+                    <Button Command="{Binding ClearFilesCommand}" Content="🗑️ Clear All" Style="{StaticResource SecondaryButton}"/>
+                    <Border Background="#E0F2FE" CornerRadius="10" Padding="12,8" Margin="24,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Files.Count, StringFormat={}{0} files selected}" FontSize="13" Foreground="#0369A1"/>
+                    </Border>
+                </StackPanel>
+
+                <DataGrid Grid.Row="2" ItemsSource="{Binding Files}" AutoGenerateColumns="False" IsReadOnly="True"
+                          BorderThickness="0" Background="White" RowHeight="48"
+                          GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#F1F5F9">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#F8FAFC"/>
+                            <Setter Property="Foreground" Value="#64748B"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="FontSize" Value="12"/>
+                            <Setter Property="Padding" Value="16,12"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="FILE NAME" Binding="{Binding FileName}" Width="*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Padding" Value="16,0"/>
+                                    <Setter Property="FontWeight" Value="Medium"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="TYPE" Binding="{Binding FileType}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Foreground" Value="#64748B"/>
+                                    <Setter Property="Padding" Value="16,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="SIZE" Binding="{Binding FileSize}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Foreground" Value="#64748B"/>
+                                    <Setter Property="Padding" Value="16,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="PAGES" Binding="{Binding EstimatedPages}" Width="70">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Foreground" Value="#64748B"/>
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="Padding" Value="8,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="STATUS" Binding="{Binding Status}" Width="120">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Padding" Value="12,0"/>
+                                    <Setter Property="FontWeight" Value="Medium"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Status}" Value="Completed">
+                                            <Setter Property="Foreground" Value="#10B981"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Status}" Value="Failed">
+                                            <Setter Property="Foreground" Value="#EF4444"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Status}" Value="Printing">
+                                            <Setter Property="Foreground" Value="#3B82F6"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Status}" Value="Converting">
+                                            <Setter Property="Foreground" Value="#F59E0B"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Status}" Value="Pending">
+                                            <Setter Property="Foreground" Value="#94A3B8"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTemplateColumn Width="60">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="❌" 
+                                            Command="{Binding DataContext.RemoveFileCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                            CommandParameter="{Binding}" 
+                                            Background="Transparent" BorderThickness="0" Foreground="#EF4444" FontSize="14" Cursor="Hand"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <!-- Step 2: Printer Selection -->
+        <Border Grid.Row="2" Style="{StaticResource CardStyle}" Padding="24"
+                Visibility="{Binding CurrentStep, Converter={StaticResource StepVisConverter}, ConverterParameter=2}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="320"/>
+                </Grid.ColumnDefinitions>
+
+                <ListBox Grid.Column="0" ItemsSource="{Binding Printers}" SelectedItem="{Binding SelectedPrinter}" 
+                         BorderThickness="0" Background="Transparent">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#F8FAFC" CornerRadius="12" Padding="16" Margin="0,0,16,12" MinWidth="250">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Width="48" Height="48" CornerRadius="10" Background="#DBEAFE" Margin="0,0,16,0">
+                                        <TextBlock Text="🖨️" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" Foreground="#1E293B"/>
+                                        <TextBlock Text="{Binding StatusText}" FontSize="12" Foreground="#64748B" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Printer Details -->
+                <Border Grid.Column="1" Background="#F8FAFC" CornerRadius="12" Padding="20" DataContext="{Binding SelectedPrinter}">
+                    <StackPanel>
+                        <TextBlock Text="📋 Printer Details" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,20"/>
+                        
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Name" Foreground="#64748B"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Name}" FontWeight="Medium" Foreground="#1E293B"/>
+                        </Grid>
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Status" Foreground="#64748B"/>
+                            <TextBlock Grid.Column="1" Text="{Binding StatusText}" FontWeight="Medium" Foreground="#10B981"/>
+                        </Grid>
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Queue" Foreground="#64748B"/>
+                            <TextBlock Grid.Column="1" Text="{Binding QueueLength}" FontWeight="Medium" Foreground="#1E293B"/>
+                        </Grid>
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Color" Foreground="#64748B"/>
+                            <TextBlock Grid.Column="1" Text="{Binding IsColor}" FontWeight="Medium" Foreground="#1E293B"/>
+                        </Grid>
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Duplex" Foreground="#64748B"/>
+                            <TextBlock Grid.Column="1" Text="{Binding CanDuplex}" FontWeight="Medium" Foreground="#1E293B"/>
+                        </Grid>
+                        
+                        <!-- Test Printer Button -->
+                        <Button Command="{Binding DataContext.TestPrinterCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                Content="🧪 Test Printer" Style="{StaticResource Button.Secondary}" 
+                                Margin="0,20,0,0" HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Step 3: Settings -->
+        <Border Grid.Row="2" Style="{StaticResource CardStyle}" Padding="24"
+                Visibility="{Binding CurrentStep, Converter={StaticResource StepVisConverter}, ConverterParameter=3}">
+            <StackPanel MaxWidth="500" HorizontalAlignment="Center">
+                <TextBlock Text="⚙️ Batch Settings" FontSize="18" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,24"/>
+                
+                <!-- Stop on Error -->
+                <Border Background="#F8FAFC" CornerRadius="12" Padding="20" Margin="0,0,0,16">
+                    <CheckBox IsChecked="{Binding Settings.StopOnError}" FontSize="14" Foreground="#475569">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⏹️ Stop batch on error" Margin="8,0,0,0"/>
+                        </StackPanel>
+                    </CheckBox>
+                </Border>
+                
+                <!-- Copies per File -->
+                <Border Background="#F8FAFC" CornerRadius="12" Padding="20" Margin="0,0,0,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Copies per file" FontWeight="Medium" Foreground="#1E293B"/>
+                            <TextBlock Text="Number of copies to print" FontSize="12" Foreground="#64748B" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <TextBox Grid.Column="1" Text="{Binding Settings.Copies}" Style="{StaticResource ModernTextBox}" TextAlignment="Center"/>
+                    </Grid>
+                </Border>
+                
+                <!-- Duplex Mode (Two-Sided) -->
+                <Border Background="#F8FAFC" CornerRadius="12" Padding="20" Margin="0,0,0,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="📄 Duplex (Two-sided)" FontWeight="Medium" Foreground="#1E293B"/>
+                            <TextBlock Text="Print on both sides of paper" FontSize="12" Foreground="#64748B" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <CheckBox Grid.Column="1" IsChecked="{Binding Settings.Duplex}" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+                
+                <!-- Color Mode -->
+                <Border Background="#F8FAFC" CornerRadius="12" Padding="20" Margin="0,0,0,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="🎨 Color Mode" FontWeight="Medium" Foreground="{StaticResource Brush.Text.Primary}"/>
+                            <TextBlock Text="Color vs Monochrome printing" FontSize="12" Foreground="#64748B" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <RadioButton Content="Color" IsChecked="{Binding Settings.ColorMode}" Margin="0,0,16,0"/>
+                            <RadioButton Content="Mono" IsChecked="{Binding Settings.ColorMode, Converter={StaticResource InverseBoolConverter}}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                
+                <!-- Delay Between Jobs -->
+                <Border Background="#F8FAFC" CornerRadius="12" Padding="20" Margin="0,0,0,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Delay between jobs" FontWeight="Medium" Foreground="#1E293B"/>
+                            <TextBlock Text="Milliseconds between prints" FontSize="12" Foreground="#64748B" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <TextBox Grid.Column="1" Text="{Binding Settings.DelayBetweenJobsMs}" Style="{StaticResource ModernTextBox}" TextAlignment="Center"/>
+                    </Grid>
+                </Border>
+                
+                <!-- Retry Attempts -->
+                <Border Background="#F8FAFC" CornerRadius="12" Padding="20">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Retry attempts" FontWeight="Medium" Foreground="#1E293B"/>
+                            <TextBlock Text="Retries on failure" FontSize="12" Foreground="#64748B" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <TextBox Grid.Column="1" Text="{Binding Settings.RetryCount}" Style="{StaticResource ModernTextBox}" TextAlignment="Center"/>
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <!-- Step 4: Dashboard -->
+        <Border Grid.Row="2" Style="{StaticResource CardStyle}" Padding="24"
+                Visibility="{Binding CurrentStep, Converter={StaticResource StepVisConverter}, ConverterParameter=4}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Status Bar -->
+                <Border Grid.Row="0" Background="#F8FAFC" CornerRadius="12" Padding="20" Margin="0,0,0,16">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding BatchStatus}" FontWeight="SemiBold" FontSize="16" Foreground="#1E293B" VerticalAlignment="Center"/>
+                            <Border Grid.Column="1" Background="#D1FAE5" CornerRadius="8" Padding="12,6" Margin="16,0">
+                                <TextBlock Text="{Binding SuccessCount, StringFormat='✅ {0} Success'}" FontWeight="Medium" Foreground="#047857"/>
+                            </Border>
+                            <Border Grid.Column="2" Background="#FEE2E2" CornerRadius="8" Padding="12,6">
+                                <TextBlock Text="{Binding FailedCount, StringFormat='❌ {0} Failed'}" FontWeight="Medium" Foreground="#B91C1C"/>
+                            </Border>
+                        </Grid>
+                        
+                        <!-- Overall Progress Bar -->
+                        <Grid Margin="0,16,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <ProgressBar Height="8" Value="{Binding ProgressPercent}" Maximum="100" 
+                                         Background="#E2E8F0" Foreground="#3B82F6"/>
+                            <TextBlock Grid.Column="1" Text="{Binding ProgressPercent, StringFormat='{}{0:F0}%'}" 
+                                       FontWeight="SemiBold" Foreground="#475569" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Files}" AutoGenerateColumns="False" IsReadOnly="True"
+                          BorderThickness="0" Background="White" RowHeight="48"
+                          GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#F1F5F9">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#F8FAFC"/>
+                            <Setter Property="Foreground" Value="#64748B"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="FontSize" Value="12"/>
+                            <Setter Property="Padding" Value="16,12"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="FILE" Binding="{Binding FileName}" Width="*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Padding" Value="16,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTemplateColumn Header="STATUS" Width="120">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="6" Padding="10,4" HorizontalAlignment="Left" Margin="16,0">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#F1F5F9"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Success">
+                                                        <Setter Property="Background" Value="#D1FAE5"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Failed">
+                                                        <Setter Property="Background" Value="#FEE2E2"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Printing">
+                                                        <Setter Property="Background" Value="#DBEAFE"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="{Binding Status}" FontSize="11" FontWeight="SemiBold"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="TIME" Binding="{Binding TimeTaken, StringFormat=ss\\.fff}" Width="80">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Foreground" Value="#64748B"/>
+                                    <Setter Property="Padding" Value="16,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="MESSAGE" Binding="{Binding ErrorMessage}" Width="200">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Foreground" Value="#EF4444"/>
+                                    <Setter Property="Padding" Value="16,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <!-- Navigation -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Command="{Binding CancelBatchCommand}" Content="⏹️ Cancel" 
+                    Style="{StaticResource Button.Danger}" Margin="0,0,12,0"
+                    Visibility="{Binding IsPrinting, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            
+            <Button Command="{Binding PrevStepCommand}" Content="← Back" 
+                    Style="{StaticResource Button.Secondary}" Margin="0,0,12,0"
+                    IsEnabled="{Binding IsPrinting, Converter={StaticResource InverseBoolConverter}}"/>
+            
+            <Button Command="{Binding NextStepCommand}" Content="Next →" Style="{StaticResource Button.Primary}"
+                    Visibility="{Binding CurrentStep, Converter={StaticResource StepVisConverter}, ConverterParameter=1}"/>
+            <Button Command="{Binding NextStepCommand}" Content="Next →" Style="{StaticResource Button.Primary}"
+                    Visibility="{Binding CurrentStep, Converter={StaticResource StepVisConverter}, ConverterParameter=2}"/>
+            <Button Command="{Binding StartBatchCommand}" Content="🚀 Start Batch" Style="{StaticResource Button.Success}"
+                    Visibility="{Binding CurrentStep, Converter={StaticResource StepVisConverter}, ConverterParameter=3}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

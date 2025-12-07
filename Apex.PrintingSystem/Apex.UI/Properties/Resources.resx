@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="Clients" xml:space="preserve">
+    <value>Clients</value>
+  </data>
+  <data name="Orders" xml:space="preserve">
+    <value>Orders</value>
+  </data>
+  <data name="Expenses" xml:space="preserve">
+    <value>Expenses</value>
+  </data>
+  <data name="Attendance" xml:space="preserve">
+    <value>Attendance</value>
+  </data>
+  <data name="PrintingOps" xml:space="preserve">
+    <value>Printing Ops</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Arabic" xml:space="preserve">
+    <value>Arabic</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Welcome to Apex Printing System</value>
+  </data>
+  <data name="AddClient" xml:space="preserve">
+    <value>Add Client</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="GenerateInvoice" xml:space="preserve">
+    <value>Generate Invoice</value>
+  </data>
+  <data name="AddOrder" xml:space="preserve">
+    <value>Add Order</value>
+  </data>
+  <data name="Printers" xml:space="preserve">
+    <value>Printers</value>
+  </data>
+  <data name="Jobs" xml:space="preserve">
+    <value>Jobs</value>
+  </data>
+  <data name="AddPrinter" xml:space="preserve">
+    <value>Add Printer</value>
+  </data>
+  <data name="IPAddress" xml:space="preserve">
+    <value>IP Address</value>
+  </data>
+  <data name="Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="DistributeJob" xml:space="preserve">
+    <value>Distribute Job</value>
+  </data>
+  <data name="FileName" xml:space="preserve">
+    <value>File Name</value>
+  </data>
+  <data name="Copies" xml:space="preserve">
+    <value>Copies</value>
+  </data>
+  <data name="CheckIn" xml:space="preserve">
+    <value>Check In</value>
+  </data>
+  <data name="CheckOut" xml:space="preserve">
+    <value>Check Out</value>
+  </data>
+  <data name="Employee" xml:space="preserve">
+    <value>Employee</value>
+  </data>
+  <data name="AddEmployee" xml:space="preserve">
+    <value>Add Employee</value>
+  </data>
+  <data name="NetProfit" xml:space="preserve">
+    <value>Net Profit</value>
+  </data>
+  <data name="Income" xml:space="preserve">
+    <value>Income</value>
+  </data>
+  <data name="Expense" xml:space="preserve">
+    <value>Expense</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Contact</value>
+  </data>
+  <data name="Client" xml:space="preserve">
+    <value>Client</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="Employees" xml:space="preserve">
+    <value>Employees</value>
+  </data>
+  <data name="TodaysAttendance" xml:space="preserve">
+    <value>Today's Attendance</value>
+  </data>
+  <data name="EmployeeID" xml:space="preserve">
+    <value>Employee ID</value>
+  </data>
+  <data name="AddMockPrinter" xml:space="preserve">
+    <value>Add Mock Printer</value>
+  </data>
+  <data name="CompanyName" xml:space="preserve">
+    <value>Company Name</value>
+  </data>
+  <data name="CompanyAddress" xml:space="preserve">
+    <value>Company Address</value>
+  </data>
+  <data name="CompanyPhone" xml:space="preserve">
+    <value>Company Phone</value>
+  </data>
+  <data name="Logo" xml:space="preserve">
+    <value>Logo</value>
+  </data>
+  <data name="InvoiceHeader" xml:space="preserve">
+    <value>Invoice Header</value>
+  </data>
+  <data name="InvoiceFooter" xml:space="preserve">
+    <value>Invoice Footer</value>
+  </data>
+  <data name="DefaultPricePerPage" xml:space="preserve">
+    <value>Default Price/Page</value>
+  </data>
+  <data name="DefaultCoverPrice" xml:space="preserve">
+    <value>Default Cover Price</value>
+  </data>
+  <data name="BackupPath" xml:space="preserve">
+    <value>Backup Path</value>
+  </data>
+  <data name="Browse" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="SelectFolder" xml:space="preserve">
+    <value>Select Folder</value>
+  </data>
+  <data name="SelectFile" xml:space="preserve">
+    <value>Select File</value>
+  </data>
+  
+  <!-- Error Messages -->
+  <data name="PrintError" xml:space="preserve">
+    <value>An error occurred while printing</value>
+  </data>
+  <data name="PrintErrorDetails" xml:space="preserve">
+    <value>Error Details</value>
+  </data>
+  <data name="UnhandledError" xml:space="preserve">
+    <value>Unhandled Error</value>
+  </data>
+  <data name="ImagePrintError" xml:space="preserve">
+    <value>Image printing failed</value>
+  </data>
+  <data name="CheckLogForDetails" xml:space="preserve">
+    <value>Check logs for details</value>
+  </data>
+  <data name="PleaseSelectFile" xml:space="preserve">
+    <value>Please select a file</value>
+  </data>
+  <data name="PleaseSelectAtLeastOnePrinter" xml:space="preserve">
+    <value>Please select at least one printer</value>
+  </data>
+  <data name="DistributionComplete" xml:space="preserve">
+    <value>Distribution Complete!</value>
+  </data>
+  
+  <!-- Settings Messages -->
+  <data name="SettingsSavedSuccessfully" xml:space="preserve">
+    <value>Settings saved successfully</value>
+  </data>
+  <data name="SomeChangesMayRequireRestart" xml:space="preserve">
+    <value>Some changes may require a restart</value>
+  </data>
+  
+  <!-- Quotation Messages -->
+  <data name="QuotationCopiedToClipboard" xml:space="preserve">
+    <value>Quotation copied to clipboard!</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  
+  <!-- Printer Messages -->
+  <data name="PleaseSelectPrinterFirst" xml:space="preserve">
+    <value>Please select a printer first</value>
+  </data>
+  <data name="CouldNotOpenPrinterProperties" xml:space="preserve">
+    <value>Could not open printer properties</value>
+  </data>
+  <data name="PleaseSelectPrinter" xml:space="preserve">
+    <value>Please select a printer</value>
+  </data>
+  <data name="PleaseAddFilesToPrint" xml:space="preserve">
+    <value>Please add files to print</value>
+  </data>
+  <data name="BatchPrintingCompletedSuccessfully" xml:space="preserve">
+    <value>Batch printing completed successfully</value>
+  </data>
+  <data name="PrintingFailedError" xml:space="preserve">
+    <value>Printing failed</value>
+  </data>
+  <data name="NoPrinterSelected" xml:space="preserve">
+    <value>No Printer Selected</value>
+  </data>
+  <data name="PrinterProperties" xml:space="preserve">
+    <value>Printer Properties</value>
+  </data>
+  
+  <!-- Numbering Wizard Messages -->
+  <data name="ErrorLoadingTemplate" xml:space="preserve">
+    <value>Error loading template</value>
+  </data>
+  <data name="PDFPreviewNotAvailable" xml:space="preserve">
+    <value>PDF preview not available</value>
+  </data>
+  <data name="PDFWillStillBeUsed" xml:space="preserve">
+    <value>The PDF will still be used for numbering</value>
+  </data>
+  <data name="PleaseAddAtLeastOneSlot" xml:space="preserve">
+    <value>Please add at least one slot</value>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="TemplateFileNotFound" xml:space="preserve">
+    <value>Template file not found</value>
+  </data>
+  <data name="CleanPreviewGeneratedSuccessfully" xml:space="preserve">
+    <value>Clean preview generated successfully</value>
+  </data>
+  <data name="Resolution" xml:space="preserve">
+    <value>Resolution</value>
+  </data>
+  <data name="ErrorGeneratingPreview" xml:space="preserve">
+    <value>Error generating preview</value>
+  </data>
+  <data name="PleaseAddAtLeastOneNumberSlot" xml:space="preserve">
+    <value>Please add at least one number slot</value>
+  </data>
+  <data name="NoPrintersAvailable" xml:space="preserve">
+    <value>No printers available</value>
+  </data>
+  <data name="CannotStartPrint" xml:space="preserve">
+    <value>Cannot start print</value>
+  </data>
+  <data name="ValidationErrors" xml:space="preserve">
+    <value>Validation Errors</value>
+  </data>
+  <data name="WarningsFound" xml:space="preserve">
+    <value>Warnings found</value>
+  </data>
+  <data name="ContinueAnyway" xml:space="preserve">
+    <value>Continue anyway?</value>
+  </data>
+  <data name="PrintFailedWithErrors" xml:space="preserve">
+    <value>Print Failed</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  
+  <!-- Numbered Books Messages -->
+  <data name="PleaseSelectTemplatePDF" xml:space="preserve">
+    <value>Please select a template PDF</value>
+  </data>
+  <data name="BookGeneratedSuccessfully" xml:space="preserve">
+    <value>Book generated successfully</value>
+  </data>
+  <data name="GenerationFailed" xml:space="preserve">
+    <value>Generation failed</value>
+  </data>
+  
+  <!-- Free Form Editor Messages -->
+  <data name="TemplateLoaded" xml:space="preserve">
+    <value>Template loaded</value>
+  </data>
+  
+  <!-- Batch Print Messages -->
+  <data name="UnsupportedFormat" xml:space="preserve">
+    <value>Unsupported format</value>
+  </data>
+  <data name="File" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="PleaseAddAtLeastOneFile" xml:space="preserve">
+    <value>Please add at least one file</value>
+  </data>
+  <data name="NoFiles" xml:space="preserve">
+    <value>No Files</value>
+  </data>
+  <data name="NoPrinter" xml:space="preserve">
+    <value>No Printer</value>
+  </data>
+  
+</root>

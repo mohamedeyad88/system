@@ -1,0 +1,20 @@
+﻿Apex.UI
+
+
+winexe
+C#
+.cs
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.UI\obj\Release\net8.0-windows\
+Apex.UI
+none
+false
+TRACE;RELEASE;NET;NET8_0;NETCOREAPP
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.UI\App.xaml
+31-917345385
+11813512712
+54-991217133
+264-1305550961
+MainWindow.xaml;Resources\Converters.xaml;Resources\Language.ar.xaml;Resources\Language.en.xaml;Styles\Animations.xaml;Styles\Colors.xaml;Styles\Controls.xaml;Styles\Layouts.xaml;Styles\ModernEffects.xaml;Styles\Theme.xaml;Views\AddPrinterDialog.xaml;Views\BatchPrintView.xaml;Views\DashboardView.xaml;Views\DataTemplates.xaml;Views\Dialogs\ConfirmationDialog.xaml;Views\DistributionView.xaml;Views\ErrorDialog.xaml;Views\FreeFormEditorView.xaml;Views\LogViewerWindow.xaml;Views\NumberedBooksView.xaml;Views\NumberingWizardView.xaml;Views\PrinterCard.xaml;Views\PrinterDiagnosticsView.xaml;Views\PrinterPropertiesView.xaml;Views\PrintersView.xaml;Views\PrintManagerView.xaml;Views\PrintOperationsView.xaml;Views\QuotationView.xaml;Views\SettingsView.xaml;Views\SystemPerformanceView.xaml;Views\UploadView.xaml;
+
+False
+

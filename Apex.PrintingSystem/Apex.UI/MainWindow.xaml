@@ -1,0 +1,172 @@
+﻿<Window x:Class="Apex.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Apex.UI"
+        xmlns:views="clr-namespace:Apex.UI.Views"
+        xmlns:viewmodels="clr-namespace:Apex.UI.ViewModels"
+        xmlns:services="clr-namespace:Apex.UI.Services"
+        xmlns:properties="clr-namespace:Apex.UI.Properties"
+        mc:Ignorable="d"
+        Title="{DynamicResource Welcome}" Height="700" Width="1100"
+        FlowDirection="{Binding Source={x:Static services:LocalizationService.Instance}, Path=FlowDirection, Mode=OneWay}"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource Brush.Background}">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="240"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Professional Sidebar -->
+        <Border Grid.Column="0" Background="{DynamicResource Gradient.Sidebar}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Logo Area -->
+                <StackPanel Grid.Row="0" Margin="24,32,24,32">
+                    <TextBlock Text="PRINT OS" 
+                               Foreground="{DynamicResource Brush.Text.OnDark}" 
+                               FontSize="24" 
+                               FontWeight="Bold" 
+                               FontFamily="Segoe UI"/>
+                    <TextBlock Text="{DynamicResource ProfessionalSuite}" 
+                               Foreground="{DynamicResource Brush.Sidebar.Text}" 
+                               FontSize="12" 
+                               Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <!-- Navigation -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0,0,0,16">
+                        <!-- Main Dashboard -->
+                        <Button Content="🏠 {DynamicResource Dashboard}" 
+                                Command="{Binding NavigateToDashboardCommand}" 
+                                Style="{DynamicResource NavButtonStyle}"/>
+                        
+                        <!-- Printing Operations -->
+                        <Button Content="🖨️ {DynamicResource PrintManager}" 
+                                Command="{Binding NavigateToPrintManagerCommand}" 
+                                Style="{DynamicResource NavButtonStyle}"/>
+                        <Button Content="📤 {DynamicResource Distribution}" 
+                                Command="{Binding NavigateToDistributionCommand}" 
+                                Style="{DynamicResource NavButtonStyle}"/>
+                        <Button Content="📚 {DynamicResource NumberedBooks}" 
+                                Command="{Binding NavigateToNumberedBooksCommand}" 
+                                Style="{DynamicResource NavButtonStyle}"/>
+                        <Button Content="⚙️ {DynamicResource PrintingOps}" 
+                                Command="{Binding NavigateToPrintersCommand}" 
+                                Style="{DynamicResource NavButtonStyle}"/>
+                        
+                        <Separator Background="{DynamicResource Brush.Sidebar.Hover}" 
+                                   Margin="16,12" Height="1"/>
+                        
+                        <!-- Business Tools -->
+                        <Button Content="💰 {DynamicResource Quotation}" 
+                                Command="{Binding NavigateToQuotationCommand}" 
+                                Style="{DynamicResource NavButtonStyle}"/>
+                        
+                        <Separator Background="{DynamicResource Brush.Sidebar.Hover}" 
+                                   Margin="16,12" Height="1"/>
+                        
+                        <!-- System Monitoring -->
+                        <Button Content="🔍 {DynamicResource Diagnostics}" 
+                                Command="{Binding NavigateToDiagnosticsCommand}" 
+                                Style="{DynamicResource NavButtonStyle}"/>
+                        <Button Content="📊 {DynamicResource Performance}" 
+                                Command="{Binding NavigateToPerformanceCommand}" 
+                                Style="{DynamicResource NavButtonStyle}"/>
+                        <Button Content="📝 {DynamicResource SystemLogs}" 
+                                Command="{Binding OpenLogViewerCommand}" 
+                                Style="{DynamicResource NavButtonStyle}"/>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Bottom Language Switcher -->
+                <Border Grid.Row="2" 
+                        Background="#1F2937" 
+                        Padding="16"
+                        BorderBrush="{DynamicResource Brush.Sidebar.Hover}"
+                        BorderThickness="0,1,0,0">
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource Language}" 
+                                   Foreground="{DynamicResource Brush.Sidebar.Text}" 
+                                   FontSize="11" 
+                                   Margin="0,0,0,8"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0"
+                                    Content="{DynamicResource English}" 
+                                    Command="{Binding SwitchLanguageCommand}" 
+                                    CommandParameter="en" 
+                                    Background="{DynamicResource Brush.Sidebar.Hover}"
+                                    Foreground="{DynamicResource Brush.Sidebar.Text}"
+                                    BorderThickness="0"
+                                    Padding="8,6"
+                                    FontSize="12"
+                                    Cursor="Hand">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" 
+                                                            CornerRadius="4" 
+                                                            Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                            <Button Grid.Column="2"
+                                    Content="{DynamicResource Arabic}" 
+                                    Command="{Binding SwitchLanguageCommand}" 
+                                    CommandParameter="ar" 
+                                    Background="{DynamicResource Brush.Sidebar.Hover}"
+                                    Foreground="{DynamicResource Brush.Sidebar.Text}"
+                                    BorderThickness="0"
+                                    Padding="8,6"
+                                    FontSize="12"
+                                    Cursor="Hand">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" 
+                                                            CornerRadius="4" 
+                                                            Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Column="1" Background="{DynamicResource Brush.Background}">
+            <!-- Content with proper padding -->
+            <ContentPresenter Content="{Binding CurrentViewModel}" Margin="24"/>
+        </Grid>
+    </Grid>
+</Window>

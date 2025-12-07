@@ -1,0 +1,14 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Apex.Core -> C:\Users\moham\OneDrive\?????? ????????????\Apex\system\Apex.PrintingSystem\Apex.Core\bin\Debug\net8.0\Apex.Core.dll
+  Apex.Data -> C:\Users\moham\OneDrive\?????? ????????????\Apex\system\Apex.PrintingSystem\Apex.Data\bin\Debug\net8.0\Apex.Data.dll
+  Apex.Services -> C:\Users\moham\OneDrive\?????? ????????????\Apex\system\Apex.PrintingSystem\Apex.Services\bin\Debug\net8.0\Apex.Services.dll
+C:\Users\moham\OneDrive\?????? ????????????\Apex\system\Apex.PrintingSystem\Apex.UI\Views\ManageCatalogView.xaml(34,122): error MC3072: The property 'PlaceholderText' does not exist in XML namespace 'http://schemas.microsoft.com/winfx/2006/xaml/presentation'. Line 34 Position 122. [C:\Users\moham\OneDrive\?????? ????????????\Apex\system\Apex.PrintingSystem\Apex.UI\Apex.UI.csproj]
+
+Build FAILED.
+
+C:\Users\moham\OneDrive\?????? ????????????\Apex\system\Apex.PrintingSystem\Apex.UI\Views\ManageCatalogView.xaml(34,122): error MC3072: The property 'PlaceholderText' does not exist in XML namespace 'http://schemas.microsoft.com/winfx/2006/xaml/presentation'. Line 34 Position 122. [C:\Users\moham\OneDrive\?????? ????????????\Apex\system\Apex.PrintingSystem\Apex.UI\Apex.UI.csproj]
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:03.28

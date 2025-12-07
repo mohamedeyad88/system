@@ -1,0 +1,27 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="clr-namespace:Apex.UI.Converters">
+
+    <converters:BooleanToColorConverter x:Key="BooleanToColorConverter"/>
+    <converters:NullToBoolConverter x:Key="NullToBoolConverter"/>
+    <converters:NullToVisibilityConverter x:Key="NullToVisConverter"/>
+    <converters:InverseCountToVisibilityConverter x:Key="InverseCountToVisibilityConverter"/>
+    <converters:StepVisibilityConverter x:Key="StepVisConverter"/>
+    <converters:StepWeightConverter x:Key="StepWeightConverter"/>
+    <converters:StepBackgroundConverter x:Key="StepBgConverter"/>
+    <converters:BoolToVisConverter x:Key="BoolToVisConverter"/>
+    <converters:NormalizedToPixelConverter x:Key="NormalizedToPixelConverter"/>
+    <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+    <converters:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibility"/>
+    <converters:PercentToWidthConverter x:Key="PercentToWidthConverter"/>
+    <converters:DivideByTwoConverter x:Key="DivideByTwoConverter"/>
+    <converters:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter"/>
+    <converters:BoolToColorConverter x:Key="BoolToColorConverter"/>
+    <converters:InverseBoolToColorConverter x:Key="InverseBoolToColorConverter"/>
+    <converters:PercentToOpacityConverter x:Key="PercentToOpacityConverter"/>
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    <converters:BooleanToTextConverter x:Key="BooleanToTextConverter"/>
+
+</ResourceDictionary>
+

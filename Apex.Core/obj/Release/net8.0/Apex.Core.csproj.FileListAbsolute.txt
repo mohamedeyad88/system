@@ -1,0 +1,11 @@
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Core\bin\Release\net8.0\Apex.Core.deps.json
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Core\bin\Release\net8.0\Apex.Core.dll
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Core\bin\Release\net8.0\Apex.Core.pdb
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Core\obj\Release\net8.0\Apex.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Core\obj\Release\net8.0\Apex.Core.AssemblyInfoInputs.cache
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Core\obj\Release\net8.0\Apex.Core.AssemblyInfo.cs
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Core\obj\Release\net8.0\Apex.Core.csproj.CoreCompileInputs.cache
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Core\obj\Release\net8.0\Apex.Core.dll
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Core\obj\Release\net8.0\refint\Apex.Core.dll
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Core\obj\Release\net8.0\Apex.Core.pdb
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.Core\obj\Release\net8.0\ref\Apex.Core.dll

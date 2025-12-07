@@ -1,0 +1,342 @@
+<UserControl x:Class="Apex.UI.Views.PrintOperationsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Apex.UI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="900" d:DesignWidth="1200"
+             Background="{DynamicResource Brush.Background}">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Header -->
+            <RowDefinition Height="Auto"/> <!-- Section A: Printers -->
+            <RowDefinition Height="*"/>    <!-- Section B: Job Monitor -->
+            <RowDefinition Height="Auto"/> <!-- Section C: Rules -->
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="🎛️ Operations Center" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource Brush.Text.Primary}"/>
+                <TextBlock Text="{DynamicResource PrintOps_UnifiedCommand}" FontSize="13" Foreground="#64748B"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                 <!-- Global Status/Stats could go here -->
+                 <TextBlock Text="{Binding TotalJobs, StringFormat='Active Load: {0} Jobs'}" 
+                            VerticalAlignment="Center" Foreground="#475569" Margin="0,0,16,0"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Section A: Printer Overview -->
+        <Grid Grid.Row="1" Margin="0,0,0,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/> <!-- NEW: Quick Actions -->
+            </Grid.RowDefinitions>
+            
+            <!-- Toolbar -->
+            <Grid Grid.Row="0" Margin="0,0,0,10">
+                <TextBlock Text="{DynamicResource PrintOps_Printers}" FontSize="16" FontWeight="SemiBold" Foreground="#334155" VerticalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBox Text="{Binding PrinterSearchQuery, UpdateSourceTrigger=PropertyChanged}" 
+                             Width="200" Padding="8,4" Margin="0,0,8,0" Background="White" BorderBrush="#E2E8F0"
+                             ToolTip="Search printers..."/>
+                    <Button Content="Refresh" Command="{Binding LoadPrintersCommand}" Style="{DynamicResource GhostButton}"/>
+                </StackPanel>
+            </Grid>
+            
+            <!-- Printer List (Horizontal Scroll) -->
+            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Height="170" Margin="0,0,0,10">
+                <ItemsControl ItemsSource="{Binding Printers}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="180" Height="150" Margin="0,0,12,6" Background="White" CornerRadius="8" Padding="12">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.05"/>
+                                </Border.Effect>
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                        <Setter Property="BorderBrush" Value="Transparent"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="BorderBrush" Value="#3B82F6"/>
+                                                <Setter Property="Background" Value="#EFF6FF"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Border.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" 
+                                                  Command="{Binding DataContext.SelectPrinterCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                  CommandParameter="{Binding}"/>
+                                </Border.InputBindings>
+
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <!-- Header -->
+                                    <Grid Grid.Row="0">
+                                        <TextBlock Text="🖨️" FontSize="20" HorizontalAlignment="Left"/>
+                                        <Ellipse Width="8" Height="8" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,0,0">
+                                            <Ellipse.Style>
+                                                <Style TargetType="Ellipse">
+                                                    <Setter Property="Fill" Value="#EF4444"/> <!-- Offline -->
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsOnline}" Value="True">
+                                                            <Setter Property="Fill" Value="#10B981"/> <!-- Online -->
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Ellipse.Style>
+                                        </Ellipse>
+                                    </Grid>
+                                    
+                                    <!-- Info -->
+                                    <StackPanel Grid.Row="1" Margin="0,8,0,0">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" ToolTip="{Binding Name}"/>
+                                        <TextBlock Text="{Binding QueueLength, StringFormat='{}Queue: {0}'}" FontSize="12" Foreground="#64748B"/>
+                                        <TextBlock Text="{Binding StatusText}" FontSize="11" Foreground="#94A3B8" TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+                                    
+                                    <!-- Action -->
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                                         <Button Content="⚙️" Padding="4" Background="Transparent" Foreground="#64748B" BorderThickness="0"
+                                                 ToolTip="Properties"
+                                                 Command="{Binding DataContext.OpenPropertiesCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                 CommandParameter="{Binding}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- Quick Actions Bar -->
+            <Border Grid.Row="2" Background="White" CornerRadius="8" Padding="10" BorderBrush="#E2E8F0" BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="{DynamicResource PrintOps_QuickPrint}" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,10,0"/>
+
+                    <TextBox Grid.Column="1" Text="{Binding NewJobFileName}" IsReadOnly="True" 
+                             VerticalAlignment="Center" Padding="6" Background="#F8FAFC" BorderBrush="#E2E8F0"
+                             ToolTip="Select a file to print..."/>
+                    
+                    <Button Grid.Column="2" Content="..." Command="{Binding BrowseFileCommand}" 
+                            Width="30" Margin="4,0,10,0" Style="{DynamicResource Button.Secondary}"/>
+
+                    <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
+                        <TextBlock Text="{DynamicResource PrintOps_Copies}" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBox Text="{Binding NewJobCopies}" Width="40" Padding="4" HorizontalContentAlignment="Center"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="4" Content="Print Now" Command="{Binding SubmitJobCommand}" 
+                            Style="{DynamicResource ModernButton}" Margin="0,0,20,0"/>
+
+                    <Separator Grid.Column="5" Style="{DynamicResource VerticalSeparator}" Margin="0,0,20,0"/>
+
+                    <StackPanel Grid.Column="6" Orientation="Horizontal">
+                        <Button Content="Test Page" Command="{Binding TestPrintCommand}" Style="{DynamicResource Button.Secondary}" Margin="0,0,8,0"/>
+                        <Button Content="Flush Queue" Command="{Binding FlushQueueCommand}" Style="{DynamicResource Button.Secondary}" Foreground="#EF4444"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+        
+        <!-- Section B: Job Monitor -->
+        <Grid Grid.Row="2" Margin="0,0,0,20">
+            <Border Style="{DynamicResource CardStyle}" Padding="0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Monitor Header -->
+                    <Grid Grid.Row="0" Margin="16,12">
+                        <StackPanel Orientation="Horizontal">
+                             <TextBlock Text="{DynamicResource PrintOps_JobMonitor}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                             <Border Background="#E2E8F0" CornerRadius="4" Padding="6,2" Margin="8,0,0,0">
+                                 <TextBlock Text="{Binding SelectedPrinter.Name, FallbackValue='No Printer Selected'}" FontSize="11" Foreground="#475569"/>
+                             </Border>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="Retry" Command="{Binding RetryJobCommand}" CommandParameter="{Binding SelectedJob}" Style="{DynamicResource Button.Secondary}" Margin="0,0,8,0"/>
+                            <Button Content="⏹️ Cancel All" Command="{Binding CancelAllPendingCommand}" Style="{DynamicResource Button.Secondary}" Foreground="#EF4444" Margin="0,0,8,0"/>
+                            <Button Content="⭕ Cancel Active" Command="{Binding CancelJobCommand}" CommandParameter="{Binding SelectedJob}" Style="{DynamicResource Button.Secondary}"/>
+                        </StackPanel>
+                    </Grid>
+                    
+                    <!-- DataGrid -->
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding ActiveJobs}" SelectedItem="{Binding SelectedJob}"
+                              AutoGenerateColumns="False" CanUserAddRows="False"
+                              GridLinesVisibility="Horizontal" RowHeight="40" Background="White" BorderThickness="0,1,0,0" BorderBrush="#F1F5F9">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="File" Binding="{Binding FileName}" Width="*"/>
+                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+                            <DataGridTemplateColumn Header="Progress" Width="150">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ProgressBar Value="{Binding ProgressPercent}" Maximum="100" Height="6" BorderThickness="0" Background="#F1F5F9" Foreground="#3B82F6"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="ETA" Binding="{Binding Eta}" Width="80"/>
+                            <DataGridTextColumn Header="Pages" Binding="{Binding TotalPages}" Width="70"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </Grid>
+        
+        <!-- Section C: Rules & Logs -->
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Rules Engine -->
+            <Expander Header="Routing Rules" IsExpanded="True" BorderBrush="#E2E8F0" Background="White" Margin="0,0,20,0">
+                <Grid Height="200" Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Grid Grid.Column="0" Margin="0,0,10,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <ListBox ItemsSource="{Binding Rules}" SelectedItem="{Binding SelectedRule}" BorderThickness="1" BorderBrush="#E2E8F0">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding TargetPrinterName, StringFormat='-> {0}'}" FontSize="11" Foreground="#64748B"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,8,0,0">
+                            <Button Content="+" Command="{Binding AddRuleCommand}" Style="{DynamicResource Button.Secondary}" Width="30" Margin="0,0,4,0"/>
+                            <Button Content="Edit" Command="{Binding EditRuleCommand}" CommandParameter="{Binding SelectedRule}" Style="{DynamicResource Button.Secondary}" Margin="0,0,4,0"/>
+                            <Button Content="Del" Command="{Binding DeleteRuleCommand}" CommandParameter="{Binding SelectedRule}" Style="{DynamicResource Button.Secondary}" Foreground="#EF4444"/>
+                        </StackPanel>
+                    </Grid>
+                    
+                    <!-- Editor -->
+                    <Grid Grid.Column="1" Visibility="{Binding IsRuleEditorOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8" Padding="16">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                
+                                <TextBlock Text="{DynamicResource PrintOps_RuleEditor}" FontWeight="Bold" Margin="0,0,0,10"/>
+                                
+                                <Grid Grid.Row="1" Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="80"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Text="{Binding EditingRule.Name}" ToolTip="Name" Margin="0,0,8,0" Padding="4"/>
+                                    <TextBox Grid.Column="1" Text="{Binding EditingRule.Priority}" ToolTip="Pri" Padding="4"/>
+                                </Grid>
+                                
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Text="{Binding EditingRule.ConditionsJson}" Margin="0,0,4,0" FontFamily="Consolas" AcceptsReturn="True" ToolTip="Conditions"/>
+                                    <TextBox Grid.Column="1" Text="{Binding EditingRule.ActionsJson}" Margin="4,0,0,0" FontFamily="Consolas" AcceptsReturn="True" ToolTip="Actions"/>
+                                </Grid>
+                                
+                                <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                                    <Button Content="Cancel" Command="{Binding CancelRuleEditCommand}" Style="{DynamicResource Button.Secondary}" Margin="0,0,8,0"/>
+                                    <Button Content="Save" Command="{Binding SaveRuleCommand}" Style="{DynamicResource Button.Primary}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Expander>
+
+            <!-- Activity Log -->
+            <Border Grid.Column="1" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="{DynamicResource PrintOps_ActivityLog}" FontWeight="SemiBold" Padding="10" Background="#F1F5F9"/>
+                    <TextBox Grid.Row="1" Text="{Binding LogText, Mode=OneWay}" 
+                             IsReadOnly="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
+                             FontFamily="Consolas" FontSize="11" Padding="8" BorderThickness="0"/>
+                </Grid>
+            </Border>
+        </Grid>
+        
+        <!-- Properties Modal Overlay -->
+        <Grid Grid.RowSpan="4" Visibility="{Binding IsPropertiesPanelOpen, Converter={StaticResource BooleanToVisibilityConverter}}"
+              Background="#7F000000">
+             <Border Background="White" Width="600" Height="500" CornerRadius="12" Effect="{DynamicResource DropShadow}">
+                 <Grid>
+                     <Grid.RowDefinitions>
+                         <RowDefinition Height="Auto"/>
+                         <RowDefinition Height="*"/>
+                         <RowDefinition Height="Auto"/>
+                     </Grid.RowDefinitions>
+                     <Border Padding="20" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+                         <TextBlock Text="{Binding PropertiesPrinter.Name, StringFormat='Properties: {0}'}" FontSize="18" FontWeight="Bold"/>
+                     </Border>
+                     
+                     <!-- Properties Content Reused or Custom -->
+                     <local:PrinterPropertiesView DataContext="{Binding PropertiesPrinter}" Grid.Row="1" Margin="20"/>
+                     
+                     <Border Grid.Row="2" Padding="20" Background="#F8FAFC" CornerRadius="0,0,12,12">
+                         <Button Content="Close" Command="{Binding ClosePropertiesCommand}" HorizontalAlignment="Right" Style="{DynamicResource Button.Primary}"/>
+                     </Border>
+                 </Grid>
+             </Border>
+        </Grid>
+    </Grid>
+</UserControl>

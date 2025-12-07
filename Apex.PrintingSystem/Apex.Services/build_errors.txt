@@ -1,0 +1,25 @@
+﻿  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Apex.Core -> C:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Core\bin\Debug\net8.0\Apex.Core.dll
+  Apex.Data -> c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Data\bin\Debug\net8.0\Apex.Data.dll
+c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\InvoiceService.cs(83,18): error CS1519: Invalid token ')' in class, record, struct, or interface member declaration [c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\Apex.Services.csproj]
+c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\InvoiceService.cs(84,14): error CS1022: Type or namespace definition, or end-of-file expected [c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\Apex.Services.csproj]
+c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\InvoiceService.cs(86,29): error CS0116: A namespace cannot directly contain members such as fields, methods or statements [c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\Apex.Services.csproj]
+c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\InvoiceService.cs(86,41): error CS8124: Tuple must contain at least two elements. [c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\Apex.Services.csproj]
+c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\InvoiceService.cs(86,42): error CS1022: Type or namespace definition, or end-of-file expected [c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\Apex.Services.csproj]
+c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\InvoiceService.cs(88,5): error CS1022: Type or namespace definition, or end-of-file expected [c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\Apex.Services.csproj]
+c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\InvoiceService.cs(89,1): error CS1022: Type or namespace definition, or end-of-file expected [c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\Apex.Services.csproj]
+
+Build FAILED.
+
+c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\InvoiceService.cs(83,18): error CS1519: Invalid token ')' in class, record, struct, or interface member declaration [c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\Apex.Services.csproj]
+c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\InvoiceService.cs(84,14): error CS1022: Type or namespace definition, or end-of-file expected [c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\Apex.Services.csproj]
+c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\InvoiceService.cs(86,29): error CS0116: A namespace cannot directly contain members such as fields, methods or statements [c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\Apex.Services.csproj]
+c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\InvoiceService.cs(86,41): error CS8124: Tuple must contain at least two elements. [c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\Apex.Services.csproj]
+c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\InvoiceService.cs(86,42): error CS1022: Type or namespace definition, or end-of-file expected [c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\Apex.Services.csproj]
+c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\InvoiceService.cs(88,5): error CS1022: Type or namespace definition, or end-of-file expected [c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\Apex.Services.csproj]
+c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\InvoiceService.cs(89,1): error CS1022: Type or namespace definition, or end-of-file expected [c:\Users\moham\OneDrive\╪│╪╖╪ص ╪د┘┘à┘â╪ز╪ذ\Apex\system\Apex.PrintingSystem\Apex.Services\Apex.Services.csproj]
+    0 Warning(s)
+    7 Error(s)
+
+Time Elapsed 00:00:02.95

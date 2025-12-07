@@ -1,0 +1,56 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Apex.Services/1.0.0": {
+        "dependencies": {
+          "Apex.Core": "1.0.0",
+          "Apex.Data": "1.0.0"
+        },
+        "runtime": {
+          "Apex.Services.dll": {}
+        }
+      },
+      "Apex.Core/1.0.0": {
+        "runtime": {
+          "Apex.Core.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Apex.Data/1.0.0": {
+        "dependencies": {
+          "Apex.Core": "1.0.0"
+        },
+        "runtime": {
+          "Apex.Data.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Apex.Services/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Apex.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Apex.Data/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

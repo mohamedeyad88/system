@@ -1,0 +1,30 @@
+[
+  {
+    "Id": "s1",
+    "X": 0.1,
+    "Y": 0.1,
+    "Width": 0.2,
+    "Height": 0.05,
+    "FontFamily": "Arial",
+    "FontSize": 24,
+    "Align": "Center",
+    "CopyStyles": [
+      { "Label": "Original", "ColorHex": "#FF0000", "Opacity": 1.0 },
+      { "Label": "Copy", "ColorHex": "#0000FF", "Opacity": 0.5 }
+    ]
+  },
+  {
+    "Id": "s2",
+    "X": 0.6,
+    "Y": 0.1,
+    "Width": 0.2,
+    "Height": 0.05,
+    "FontFamily": "Arial",
+    "FontSize": 24,
+    "Align": "Center",
+    "CopyStyles": [
+      { "Label": "Original", "ColorHex": "#FF0000", "Opacity": 1.0 },
+      { "Label": "Copy", "ColorHex": "#0000FF", "Opacity": 0.5 }
+    ]
+  }
+]

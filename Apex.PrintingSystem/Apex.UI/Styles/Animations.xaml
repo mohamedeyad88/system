@@ -1,0 +1,150 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Global Animations & Transitions -->
+
+    <!-- Fade In Animation -->
+    <Storyboard x:Key="FadeInAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.3"/>
+    </Storyboard>
+
+    <!-- Slide Up Animation -->
+    <Storyboard x:Key="SlideUpAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.4"/>
+        <ThicknessAnimation Storyboard.TargetProperty="Margin" From="0,20,0,0" To="0" Duration="0:0:0.4" DecelerationRatio="0.9"/>
+    </Storyboard>
+
+    <!-- Button Hover Scale Animation (Up) -->
+    <Storyboard x:Key="ButtonHoverEnter">
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1.02" Duration="0:0:0.1"/>
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1.02" Duration="0:0:0.1"/>
+    </Storyboard>
+
+    <!-- Button Hover Scale Animation (Down) -->
+    <Storyboard x:Key="ButtonHoverExit">
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1.0" Duration="0:0:0.1"/>
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1.0" Duration="0:0:0.1"/>
+    </Storyboard>
+    
+    <!-- Button Pressed Animation -->
+    <Storyboard x:Key="ButtonPressed">
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="0.96" Duration="0:0:0.05"/>
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="0.96" Duration="0:0:0.05"/>
+    </Storyboard>
+
+    <!-- Button Release Animation -->
+    <Storyboard x:Key="ButtonRelease">
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1.02" Duration="0:0:0.1"/>
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1.02" Duration="0:0:0.1"/>
+    </Storyboard>
+    
+    <!-- ==================== NEW MODERN ANIMATIONS ==================== -->
+    
+    <!-- Ripple Effect (for buttons) -->
+    <Storyboard x:Key="RippleEffect">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.5" To="0" Duration="0:0:0.6"/>
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" From="0" To="3" Duration="0:0:0.6">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" From="0" To="3" Duration="0:0:0.6">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+    
+    <!-- Bounce Animation (for alerts/notifications) -->
+    <Storyboard x:Key="BounceIn">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5"/>
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" 
+                         From="0.3" To="1" Duration="0:0:0.5">
+            <DoubleAnimation.EasingFunction>
+                <BounceEase Bounces="2" Bounciness="3" EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" 
+                         From="0.3" To="1" Duration="0:0:0.5">
+            <DoubleAnimation.EasingFunction>
+                <BounceEase Bounces="2" Bounciness="3" EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+    
+    <!-- Smooth Slide from Right (RTL-friendly) -->
+    <Storyboard x:Key="SlideFromRight">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.4"/>
+        <ThicknessAnimation Storyboard.TargetProperty="Margin" From="40,0,0,0" To="0" Duration="0:0:0.4">
+            <ThicknessAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </ThicknessAnimation.EasingFunction>
+        </ThicknessAnimation>
+    </Storyboard>
+    
+    <!-- Smooth Slide from Left (LTR-friendly) -->
+    <Storyboard x:Key="SlideFromLeft">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.4"/>
+        <ThicknessAnimation Storyboard.TargetProperty="Margin" From="-40,0,0,0" To="0" Duration="0:0:0.4">
+            <ThicknessAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </ThicknessAnimation.EasingFunction>
+        </ThicknessAnimation>
+    </Storyboard>
+    
+    <!-- Pulse Animation (for new/updated items) -->
+    <Storyboard x:Key="PulseAnimation" RepeatBehavior="3x">
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" 
+                         From="1" To="1.05" AutoReverse="True" Duration="0:0:0.3">
+            <DoubleAnimation.EasingFunction>
+                <SineEase EasingMode="EaseInOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" 
+                         From="1" To="1.05" AutoReverse="True" Duration="0:0:0.3">
+            <DoubleAnimation.EasingFunction>
+                <SineEase EasingMode="EaseInOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+    
+    <!-- Fade Out Animation -->
+    <Storyboard x:Key="FadeOutAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1.0" To="0.0" Duration="0:0:0.3"/>
+    </Storyboard>
+    
+    <!-- Smooth Scale Up -->
+    <Storyboard x:Key="ScaleUpSmooth">
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" 
+                         From="0.95" To="1" Duration="0:0:0.3">
+            <DoubleAnimation.EasingFunction>
+                <ExponentialEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" 
+                         From="0.95" To="1" Duration="0:0:0.3">
+            <DoubleAnimation.EasingFunction>
+                <ExponentialEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+    </Storyboard>
+    
+    <!-- Card Elevation Animation (on hover) -->
+    <Storyboard x:Key="ElevateCard">
+        <ThicknessAnimation Storyboard.TargetProperty="Margin" To="0,-2,0,2" Duration="0:0:0.2">
+            <ThicknessAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </ThicknessAnimation.EasingFunction>
+        </ThicknessAnimation>
+    </Storyboard>
+    
+    <Storyboard x:Key="LowerCard">
+        <ThicknessAnimation Storyboard.TargetProperty="Margin" To="0" Duration="0:0:0.2">
+            <ThicknessAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </ThicknessAnimation.EasingFunction>
+        </ThicknessAnimation>
+    </Storyboard>
+
+</ResourceDictionary>
