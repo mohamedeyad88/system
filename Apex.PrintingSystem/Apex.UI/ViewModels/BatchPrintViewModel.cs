@@ -50,10 +50,6 @@ namespace Apex.UI.ViewModels
         [ObservableProperty] private int _printingJobs;
         [ObservableProperty] private int _completedJobs;
         [ObservableProperty] private int _failedJobs;
-
-        // Supported formats display
-        public string SupportedFormats => "TXT, CSV, PDF, PNG, JPG, BMP, TIFF, HTML, DOCX, XLSX, PPTX, ODT";
-
         public BatchPrintViewModel(
             IPrinterDiscoveryService discoveryService,
             BatchPrintJobManager batchManager,
@@ -71,11 +67,15 @@ namespace Apex.UI.ViewModels
             _batchManager.OnJobStatusChanged += OnJobStatusChanged;
             _batchManager.OnBatchStatusChanged += (s, status) => BatchStatus = status;
             _batchManager.OnBatchProgressChanged += OnBatchProgressChanged;
-
-            LoadPrinters();
         }
 
-        private async void LoadPrinters()
+        public override async Task InitializeAsync()
+        {
+            await base.InitializeAsync();
+            await LoadPrinters();
+        }
+
+        private async Task LoadPrinters()
         {
             var list = await _discoveryService.ScanAsync();
             PrinterNames = new ObservableCollection<string>(list.Select(p => p.Name));
@@ -94,6 +94,16 @@ namespace Apex.UI.ViewModels
                 }
                 UpdateStats();
             });
+        }
+
+        private void UpdateStats()
+        {
+            TotalJobs = Files.Count;
+            PendingJobs = Files.Count(f => f.Status == "Pending");
+            ConvertingJobs = Files.Count(f => f.Status == "Converting");
+            PrintingJobs = Files.Count(f => f.Status == "Printing");
+            CompletedJobs = Files.Count(f => f.Status == "Completed");
+            FailedJobs = Files.Count(f => f.Status == "Failed");
         }
 
         private void OnBatchProgressChanged(object? sender, BatchProgress progress)
@@ -279,24 +289,7 @@ namespace Apex.UI.ViewModels
                 job.ErrorMessage = "";
                 job.RetryCount = 0;
             }
-
             UpdateStats();
-        }
-
-        #endregion
-
-        #region Helpers
-
-        private void UpdateStats()
-        {
-            TotalJobs = Files.Count;
-            PendingJobs = Files.Count(f => f.IsPending);
-            ConvertingJobs = Files.Count(f => f.IsConverting);
-            PrintingJobs = Files.Count(f => f.IsPrinting);
-            CompletedJobs = Files.Count(f => f.IsCompleted);
-            FailedJobs = Files.Count(f => f.IsFailed);
-            
-            ProgressPercent = TotalJobs > 0 ? (double)CompletedJobs / TotalJobs * 100 : 0;
         }
 
         private static string FormatFileSize(long bytes)

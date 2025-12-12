@@ -62,11 +62,22 @@
             </Setter>
         </Style>
 
-        <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+
+        <Style x:Key="SecondaryButton" TargetType="Button">
             <Setter Property="Background" Value="#E2E8F0"/>
             <Setter Property="Foreground" Value="#475569"/>
             <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
+
 
         <!-- Section Title -->
         <Style x:Key="SectionTitle" TargetType="TextBlock">

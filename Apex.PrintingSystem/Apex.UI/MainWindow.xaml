@@ -46,45 +46,64 @@
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="0,0,0,16">
                         <!-- Main Dashboard -->
-                        <Button Content="🏠 {DynamicResource Dashboard}" 
-                                Command="{Binding NavigateToDashboardCommand}" 
-                                Style="{DynamicResource NavButtonStyle}"/>
+                        <Button Command="{Binding NavigateToDashboardCommand}" Style="{DynamicResource NavButtonStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🏠" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource Dashboard}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
                         
                         <!-- Printing Operations -->
-                        <Button Content="🖨️ {DynamicResource PrintManager}" 
-                                Command="{Binding NavigateToPrintManagerCommand}" 
-                                Style="{DynamicResource NavButtonStyle}"/>
-                        <Button Content="📤 {DynamicResource Distribution}" 
-                                Command="{Binding NavigateToDistributionCommand}" 
-                                Style="{DynamicResource NavButtonStyle}"/>
-                        <Button Content="📚 {DynamicResource NumberedBooks}" 
-                                Command="{Binding NavigateToNumberedBooksCommand}" 
-                                Style="{DynamicResource NavButtonStyle}"/>
-                        <Button Content="⚙️ {DynamicResource PrintingOps}" 
-                                Command="{Binding NavigateToPrintersCommand}" 
-                                Style="{DynamicResource NavButtonStyle}"/>
+                        <Button Command="{Binding NavigateToPrintManagerCommand}" Style="{DynamicResource NavButtonStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🖨️" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource PrintManager}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding NavigateToDistributionCommand}" Style="{DynamicResource NavButtonStyle}">
+                             <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📤" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource Distribution}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding NavigateToNumberedBooksCommand}" Style="{DynamicResource NavButtonStyle}">
+                             <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📚" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource NumberedBooks}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding NavigateToPrintersCommand}" Style="{DynamicResource NavButtonStyle}">
+                             <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="⚙️" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource PrintingOps}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
                         
-                        <Separator Background="{DynamicResource Brush.Sidebar.Hover}" 
-                                   Margin="16,12" Height="1"/>
+                        <Separator Background="{DynamicResource Brush.Sidebar.Hover}" Margin="16,12" Height="1"/>
                         
                         <!-- Business Tools -->
-                        <Button Content="💰 {DynamicResource Quotation}" 
-                                Command="{Binding NavigateToQuotationCommand}" 
-                                Style="{DynamicResource NavButtonStyle}"/>
+                        <Button Command="{Binding NavigateToQuotationCommand}" Style="{DynamicResource NavButtonStyle}">
+                             <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="💰" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource Quotation}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
                         
-                        <Separator Background="{DynamicResource Brush.Sidebar.Hover}" 
-                                   Margin="16,12" Height="1"/>
+                        <Separator Background="{DynamicResource Brush.Sidebar.Hover}" Margin="16,12" Height="1"/>
                         
                         <!-- System Monitoring -->
-                        <Button Content="🔍 {DynamicResource Diagnostics}" 
-                                Command="{Binding NavigateToDiagnosticsCommand}" 
-                                Style="{DynamicResource NavButtonStyle}"/>
-                        <Button Content="📊 {DynamicResource Performance}" 
-                                Command="{Binding NavigateToPerformanceCommand}" 
-                                Style="{DynamicResource NavButtonStyle}"/>
-                        <Button Content="📝 {DynamicResource SystemLogs}" 
-                                Command="{Binding OpenLogViewerCommand}" 
-                                Style="{DynamicResource NavButtonStyle}"/>
+                        <Button Command="{Binding NavigateToPerformanceCommand}" Style="{DynamicResource NavButtonStyle}">
+                             <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📊" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource Performance}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding OpenLogViewerCommand}" Style="{DynamicResource NavButtonStyle}">
+                             <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📝" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource SystemLogs}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
                 </ScrollViewer>
 

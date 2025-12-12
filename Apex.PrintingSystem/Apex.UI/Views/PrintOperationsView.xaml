@@ -27,7 +27,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBlock Text="🎛️ Operations Center" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource Brush.Text.Primary}"/>
+                <TextBlock Text="{DynamicResource PrintOps_OperationsCenter}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource Brush.Text.Primary}"/>
                 <TextBlock Text="{DynamicResource PrintOps_UnifiedCommand}" FontSize="13" Foreground="#64748B"/>
             </StackPanel>
             
@@ -51,9 +51,8 @@
                 <TextBlock Text="{DynamicResource PrintOps_Printers}" FontSize="16" FontWeight="SemiBold" Foreground="#334155" VerticalAlignment="Center"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <TextBox Text="{Binding PrinterSearchQuery, UpdateSourceTrigger=PropertyChanged}" 
-                             Width="200" Padding="8,4" Margin="0,0,8,0" Background="White" BorderBrush="#E2E8F0"
-                             ToolTip="Search printers..."/>
-                    <Button Content="Refresh" Command="{Binding LoadPrintersCommand}" Style="{DynamicResource GhostButton}"/>
+                             Width="200" Padding="8,4" Margin="0,0,8,0" Background="White" BorderBrush="#E2E8F0"/>
+                    <Button Content="{DynamicResource PrintOps_Refresh}" Command="{Binding LoadPrintersCommand}" Style="{DynamicResource GhostButton}"/>
                 </StackPanel>
             </Grid>
             
@@ -98,7 +97,15 @@
                                     
                                     <!-- Header -->
                                     <Grid Grid.Row="0">
-                                        <TextBlock Text="🖨️" FontSize="20" HorizontalAlignment="Left"/>
+                                        <!-- Selection Checkbox -->
+                                        <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Top" HorizontalAlignment="Left" Panel.ZIndex="5">
+                                            <CheckBox.LayoutTransform>
+                                                <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
+                                            </CheckBox.LayoutTransform>
+                                        </CheckBox>
+
+                                        <TextBlock Text="🖨️" FontSize="20" HorizontalAlignment="Center"/>
+                                        
                                         <Ellipse Width="8" Height="8" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,0,0">
                                             <Ellipse.Style>
                                                 <Style TargetType="Ellipse">
@@ -115,15 +122,15 @@
                                     
                                     <!-- Info -->
                                     <StackPanel Grid.Row="1" Margin="0,8,0,0">
-                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" ToolTip="{Binding Name}"/>
-                                        <TextBlock Text="{Binding QueueLength, StringFormat='{}Queue: {0}'}" FontSize="12" Foreground="#64748B"/>
-                                        <TextBlock Text="{Binding StatusText}" FontSize="11" Foreground="#94A3B8" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" ToolTip="{Binding Name}" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding QueueLength}" FontSize="12" Foreground="#64748B" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding StatusText}" FontSize="11" Foreground="#94A3B8" TextTrimming="CharacterEllipsis" HorizontalAlignment="Center"/>
                                     </StackPanel>
                                     
                                     <!-- Action -->
                                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
                                          <Button Content="⚙️" Padding="4" Background="Transparent" Foreground="#64748B" BorderThickness="0"
-                                                 ToolTip="Properties"
+                                                 ToolTip="{DynamicResource PrintOps_Properties}"
                                                  Command="{Binding DataContext.OpenPropertiesCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                  CommandParameter="{Binding}"/>
                                     </StackPanel>
@@ -230,7 +237,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Rules Engine -->
-            <Expander Header="Routing Rules" IsExpanded="True" BorderBrush="#E2E8F0" Background="White" Margin="0,0,20,0">
+            <Expander Header="Routing Rules" IsExpanded="True" BorderBrush="#E2E8F0" Background="White" Margin="0,0,20,0" Visibility="Collapsed">
                 <Grid Height="200" Margin="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="250"/>

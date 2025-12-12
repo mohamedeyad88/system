@@ -52,15 +52,25 @@ namespace Apex.UI
             services.AddScoped<IPrintJobManager, PrintJobManager>();
             services.AddScoped<Apex.Core.Interfaces.IDocumentConverter, Apex.Services.Conversion.DocumentConverter>();
             services.AddScoped<Apex.Core.Interfaces.IUniversalPrintPipeline, Apex.Services.Printing.UniversalPrintPipeline>();
+            
+            // Business Services
+            services.AddScoped<QuotationService>();
 
             // ViewModels
             services.AddSingleton<MainViewModel>();
+            services.AddTransient<DashboardViewModel>();
             services.AddTransient<PrintersViewModel>();
             services.AddTransient<SettingsViewModel>();
             services.AddTransient<PrintManagerViewModel>();
             services.AddTransient<NumberedBooksViewModel>();
+            services.AddTransient<NumberingWizardViewModel>();
             services.AddTransient<SystemPerformanceViewModel>();
             services.AddTransient<PrinterDiagnosticsViewModel>();
+            services.AddTransient<LogViewerViewModel>();
+            services.AddTransient<DistributionViewModel>();
+            services.AddTransient<QuotationViewModel>();
+            services.AddTransient<BatchPrintViewModel>();
+            services.AddTransient<PrintOperationsViewModel>();
 
             // Views
             services.AddSingleton<MainWindow>();

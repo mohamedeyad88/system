@@ -69,8 +69,8 @@ namespace Apex.UI.ViewModels
             try
             {
                 // Placeholder for NumberedBooksEngine integration
-                // var engine = new NumberedBooksEngine();
-                // await engine.GenerateAsync(SelectedTemplate, StartNumber, EndNumber, Prefix);
+                // Placeholder for NumberedBooksEngine integration
+
                 
                 await Task.Delay(2000); // Simulation
                 

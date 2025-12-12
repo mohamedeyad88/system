@@ -32,7 +32,7 @@
                 </Style>
             </TabControl.Resources>
 
-            <TabItem Header="Upload Files">
+            <TabItem Header="{DynamicResource Upload_Title}">
                 <local:UploadView/>
             </TabItem>
         </TabControl>

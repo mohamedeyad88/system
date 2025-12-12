@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.Setup\\Apex.Setup.csproj",
+      "projectUniqueName": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.Setup\\Apex.Setup.csproj",
       "projectName": "Apex.Setup",
-      "projectPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.Setup\\Apex.Setup.csproj",
+      "projectPath": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.Setup\\Apex.Setup.csproj",
       "packagesPath": "C:\\Users\\moham\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.Setup\\obj\\",
+      "outputPath": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.Setup\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\moham\\AppData\\Roaming\\NuGet\\NuGet.Config"

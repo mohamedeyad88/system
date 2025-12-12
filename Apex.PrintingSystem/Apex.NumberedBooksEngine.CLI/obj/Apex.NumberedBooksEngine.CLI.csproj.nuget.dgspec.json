@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine.CLI\\Apex.NumberedBooksEngine.CLI.csproj": {}
+    "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine.CLI\\Apex.NumberedBooksEngine.CLI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine.CLI\\Apex.NumberedBooksEngine.CLI.csproj": {
+    "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine.CLI\\Apex.NumberedBooksEngine.CLI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine.CLI\\Apex.NumberedBooksEngine.CLI.csproj",
+        "projectUniqueName": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine.CLI\\Apex.NumberedBooksEngine.CLI.csproj",
         "projectName": "Apex.NumberedBooksEngine.CLI",
-        "projectPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine.CLI\\Apex.NumberedBooksEngine.CLI.csproj",
+        "projectPath": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine.CLI\\Apex.NumberedBooksEngine.CLI.csproj",
         "packagesPath": "C:\\Users\\moham\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine.CLI\\obj\\",
+        "outputPath": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine.CLI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\moham\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -26,8 +26,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\Apex.NumberedBooksEngine.csproj": {
-                "projectPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\Apex.NumberedBooksEngine.csproj"
+              "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\Apex.NumberedBooksEngine.csproj": {
+                "projectPath": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\Apex.NumberedBooksEngine.csproj"
               }
             }
           }
@@ -66,14 +66,14 @@
         }
       }
     },
-    "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\Apex.NumberedBooksEngine.csproj": {
+    "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\Apex.NumberedBooksEngine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\Apex.NumberedBooksEngine.csproj",
+        "projectUniqueName": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\Apex.NumberedBooksEngine.csproj",
         "projectName": "Apex.NumberedBooksEngine",
-        "projectPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\Apex.NumberedBooksEngine.csproj",
+        "projectPath": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\Apex.NumberedBooksEngine.csproj",
         "packagesPath": "C:\\Users\\moham\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\obj\\",
+        "outputPath": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\moham\\AppData\\Roaming\\NuGet\\NuGet.Config"

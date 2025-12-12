@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Windows;
-using Apex.UI.Services.Printing;
+using Apex.Services.Printing;
 using Microsoft.Win32;
 using System.IO;
 using Apex.Core.Interfaces;
@@ -14,7 +14,7 @@ namespace Apex.UI.ViewModels
 {
     public partial class PrintManagerViewModel : ViewModelBase
     {
-        private readonly BatchPrintService _batchPrintService;
+        private readonly BatchPrintJobManager _batchPrintJobManager;
         private readonly IPrinterDiscoveryService _printerService;
 
         [ObservableProperty]
@@ -60,22 +60,11 @@ namespace Apex.UI.ViewModels
         public ObservableCollection<string> PrintQualities { get; } = new() { "Draft", "Normal", "High", "Best" };
         public ObservableCollection<string> Orientations { get; } = new() { "Portrait", "Landscape" };
 
-        public PrintManagerViewModel(BatchPrintService batchPrintService, IPrinterDiscoveryService printerService)
+        public PrintManagerViewModel(BatchPrintJobManager batchPrintJobManager, IPrinterDiscoveryService printerService)
         {
-            _batchPrintService = batchPrintService;
+            _batchPrintJobManager = batchPrintJobManager;
             _printerService = printerService;
 
-            _batchPrintService.OnStatusUpdate += (s, e) => StatusMessage = e;
-            _batchPrintService.OnProgressUpdate += (s, e) => ProgressValue = e;
-
-            LoadPrinters();
-        }
-
-        private async void LoadPrinters()
-        {
-            var printers = await _printerService.ScanAsync();
-            AvailablePrinters = new ObservableCollection<string>(printers.Select(p => p.Name));
-            if (AvailablePrinters.Count > 0) SelectedPrinter = AvailablePrinters[0];
         }
 
         [RelayCommand]
@@ -246,7 +235,7 @@ namespace Apex.UI.ViewModels
         [RelayCommand]
         private void Refresh()
         {
-            LoadPrinters();
+
         }
 
         [RelayCommand]
@@ -277,7 +266,38 @@ namespace Apex.UI.ViewModels
 
             try
             {
-                await _batchPrintService.PrintBatchAsync(SelectedPrinter, FilesToPrint.ToList());
+                // Create batch jobs from ingested files
+                var batchJobs = IngestedFiles.Select(f => new Apex.Core.Models.BatchJob
+                {
+                    FilePath = f.FullPath,
+                    Status = "Pending"
+                }).ToList();
+
+                // Create batch settings
+                var settings = new Apex.Core.Models.BatchSettings
+                {
+                    Copies = DefaultCopies,
+                    Duplex = IsDuplexEnabled,
+                    ColorMode = IsColorEnabled,
+                    DelayBetweenJobsMs = 500,
+                    StopOnError = false
+                };
+
+                // Subscribe to events for progress tracking
+                _batchPrintJobManager.OnJobStatusChanged += (sender, job) =>
+                {
+                    StatusMessage = $"Processing: {System.IO.Path.GetFileName(job.FilePath)}";
+                };
+
+                _batchPrintJobManager.OnBatchProgressChanged += (sender, progress) =>
+                {
+                    ProgressValue = (int)progress.PercentComplete;
+                    StatusMessage = $"{progress.CompletedJobs}/{progress.TotalJobs} jobs completed";
+                };
+
+                // Process the batch
+                await _batchPrintJobManager.ProcessBatchAsync(SelectedPrinter, batchJobs, settings);
+
                 MessageBox.Show(
                     Services.LocalizationService.Instance.GetString("BatchPrintingCompletedSuccessfully"), 
                     Services.LocalizationService.Instance.GetString("Success"), 
@@ -300,7 +320,7 @@ namespace Apex.UI.ViewModels
         [RelayCommand]
         private async Task StopPrinting()
         {
-            await _batchPrintService.StopAsync();
+            _batchPrintJobManager.CancelBatch();
             StatusMessage = "Stopping...";
         }
     }

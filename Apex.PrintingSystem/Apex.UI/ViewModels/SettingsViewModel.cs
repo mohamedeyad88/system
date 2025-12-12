@@ -11,24 +11,24 @@ namespace Apex.UI.ViewModels
         private readonly ISettingsService _settingsService;
 
         // Company Info
-        [ObservableProperty] private string _companyName;
-        [ObservableProperty] private string _companyAddress;
-        [ObservableProperty] private string _companyPhone;
-        [ObservableProperty] private string _logoPath;
+        [ObservableProperty] private string _companyName = string.Empty;
+        [ObservableProperty] private string _companyAddress = string.Empty;
+        [ObservableProperty] private string _companyPhone = string.Empty;
+        [ObservableProperty] private string _logoPath = string.Empty;
 
         // Financials
-        [ObservableProperty] private string _invoiceHeader;
-        [ObservableProperty] private string _invoiceFooter;
+        [ObservableProperty] private string _invoiceHeader = string.Empty;
+        [ObservableProperty] private string _invoiceFooter = string.Empty;
         [ObservableProperty] private decimal _defaultPricePerPage;
         [ObservableProperty] private decimal _defaultCoverPrice;
 
         // System
-        [ObservableProperty] private string _backupPath;
-        [ObservableProperty] private string _selectedLanguage; // "en" or "ar"
+        [ObservableProperty] private string _backupPath = string.Empty;
+        [ObservableProperty] private string _selectedLanguage = "en"; // "en" or "ar"
 
         public SettingsViewModel(ISettingsService settingsService)
         {
-            _settingsService = settingsService;
+            _settingsService = settingsService ?? throw new System.ArgumentNullException(nameof(settingsService));
         }
 
         public override async Task InitializeAsync()

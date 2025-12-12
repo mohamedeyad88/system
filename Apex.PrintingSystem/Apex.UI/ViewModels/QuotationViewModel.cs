@@ -61,7 +61,7 @@ namespace Apex.UI.ViewModels
         
         public QuotationViewModel(QuotationService quotationService)
         {
-            _quotationService = quotationService;
+            _quotationService = quotationService ?? throw new System.ArgumentNullException(nameof(quotationService));
             LoadAvailableServices();
             CalculateCommand.Execute(null);
         }
@@ -71,7 +71,7 @@ namespace Apex.UI.ViewModels
             var services = FinishingServicesCatalog.GetCommonServices();
             foreach (var service in services)
             {
-                AvailableServices.Add(new FinishingServiceViewModel(service));
+                AvailableServices.Add(new FinishingServiceViewModel(service, () => CalculateCommand.Execute(null)));
             }
         }
         
@@ -174,9 +174,12 @@ namespace Apex.UI.ViewModels
         [ObservableProperty]
         private string _description;
         
-        public FinishingServiceViewModel(FinishingService service)
+        private readonly System.Action? _onChanged;
+
+        public FinishingServiceViewModel(FinishingService service, System.Action? onChanged = null)
         {
-            Service = service;
+            Service = service ?? throw new System.ArgumentNullException(nameof(service));
+            _onChanged = onChanged;
             _name = service.Name;
             _price = service.PricePerPiece;
             _description = service.Description;
@@ -184,7 +187,13 @@ namespace Apex.UI.ViewModels
         
         partial void OnIsSelectedChanged(bool value)
         {
-            // Trigger recalculation when selection changes
+            _onChanged?.Invoke();
+        }
+
+        partial void OnPriceChanged(decimal value)
+        {
+            Service.PricePerPiece = value;
+            _onChanged?.Invoke();
         }
     }
 }

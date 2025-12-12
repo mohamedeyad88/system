@@ -16,9 +16,9 @@ namespace Apex.UI.ViewModels
 
         public MainViewModel(IServiceScopeFactory scopeFactory)
         {
-            _scopeFactory = scopeFactory;
+            _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
             // Default view
-            NavigateTo<PrintManagerViewModel>();
+            NavigateTo<DashboardViewModel>();
         }
 
         partial void OnCurrentViewModelChanged(ViewModelBase? value)
@@ -62,7 +62,7 @@ namespace Apex.UI.ViewModels
         }
 
         [RelayCommand]
-        public void NavigateToDashboard() => NavigateTo<PrintManagerViewModel>();
+        public void NavigateToDashboard() => NavigateTo<DashboardViewModel>();
 
         [RelayCommand]
         public void NavigateToPrinters() => NavigateTo<PrintOperationsViewModel>();
@@ -75,9 +75,6 @@ namespace Apex.UI.ViewModels
 
         [RelayCommand]
         public void NavigateToPerformance() => NavigateTo<SystemPerformanceViewModel>();
-
-        [RelayCommand]
-        public void NavigateToDiagnostics() => NavigateTo<PrinterDiagnosticsViewModel>();
 
         [RelayCommand]
         public void NavigateToDistribution() => NavigateTo<DistributionViewModel>();
@@ -119,9 +116,6 @@ namespace Apex.UI.ViewModels
                     break;
                 case "Performance":
                     NavigateToPerformance();
-                    break;
-                case "Diagnostics":
-                    NavigateToDiagnostics();
                     break;
                 case "Settings":
                     NavigateTo<SettingsViewModel>();

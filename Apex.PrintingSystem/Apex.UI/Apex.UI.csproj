@@ -6,6 +6,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <!-- Nullable Reference Types Warnings (تحذيرات القيم الفارغة)
+         تم تعطيل التحذيرات التالية مؤقتاً لحين مراجعة الكود:
+         CS8603: Possible null reference return
+         CS8618: Non-nullable field must contain a non-null value when exiting constructor
+         CS8602: Dereference of a possibly null reference
+         CS8604: Possible null reference argument
+         TODO: مراجعة وإصلاح تدريجياً في الإصدارات القادمة -->
     <NoWarn>$(NoWarn);CS8603;CS8618;CS8602;CS8604</NoWarn>
     <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
@@ -18,16 +25,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Page Include="**\*.xaml" Exclude="App.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="**\*.xaml" Exclude="App.xaml;App_MINIMAL.xaml" />
+    <ApplicationDefinition Include="App.xaml" />
+    <None Include="App_MINIMAL.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Page>
-    <ApplicationDefinition Include="App.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </ApplicationDefinition>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

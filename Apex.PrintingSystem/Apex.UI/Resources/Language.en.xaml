@@ -1,6 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
     
     <sys:String x:Key="Welcome">Welcome to Apex</sys:String>
     <sys:String x:Key="Dashboard">Dashboard</sys:String>
@@ -170,7 +170,26 @@
     <sys:String x:Key="Numbering_Rotation">Rotation</sys:String>
     <sys:String x:Key="Numbering_Opacity">Opacity</sys:String>
     <sys:String x:Key="Numbering_Preview">Preview</sys:String>
+    <sys:String x:Key="Numbering_AutoDetect">Auto Detect</sys:String>
+    <sys:String x:Key="Numbering_Shershara">Shershara (Linear)</sys:String>
+    <sys:String x:Key="Numbering_Cutting">Cutting (Imposed)</sys:String>
+    <sys:String x:Key="Numbering_CustomPattern">Custom Pattern</sys:String>
+    <sys:String x:Key="Numbering_LoadTemplate">Load Template</sys:String>
+    <sys:String x:Key="Numbering_AddSlot">Add Slot</sys:String>
+    <sys:String x:Key="Numbering_DeleteSlot">Delete Slot</sys:String>
     <sys:String x:Key="Numbering_Printer">Printer</sys:String>
+
+    <sys:String x:Key="PrintOps_SearchPlaceholder">Search printers...</sys:String>
+    <sys:String x:Key="PrintOps_Refresh">Refresh</sys:String>
+    <sys:String x:Key="PrintOps_QueueLength">Queue: {0}</sys:String>
+    <sys:String x:Key="PrintOps_Properties">Properties</sys:String>
+    <sys:String x:Key="PrintOps_OperationsCenter">Operations Center</sys:String>
+
+    <!-- Upload View -->
+    <sys:String x:Key="Upload_Title">Upload Files</sys:String>
+    <sys:String x:Key="Upload_AddFiles">Files +</sys:String>
+    <sys:String x:Key="Upload_AddFolder">Folder</sys:String>
+    <sys:String x:Key="Upload_ListEmpty">List of documents is empty</sys:String>
     
     <!-- Print Operations Module -->
     <sys:String x:Key="PrintOps_UnifiedCommand">Unified Command &amp; Control</sys:String>

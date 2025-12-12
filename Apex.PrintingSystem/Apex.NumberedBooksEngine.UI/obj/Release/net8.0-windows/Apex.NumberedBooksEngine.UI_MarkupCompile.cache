@@ -4,7 +4,7 @@
 library
 C#
 .cs
-C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\
 Apex.NumberedBooksEngine.UI
 none
 false
@@ -13,7 +13,7 @@ TRACE;RELEASE;NET;NET8_0;NETCOREAPP
 8660468891
 1-753930449
 18390566504
-255-9569945
+255-1655208860
 Controls\GridOverlay.xaml;Controls\NumberingModePanel.xaml;Controls\RulerControl.xaml;Controls\SlotStylePanel.xaml;NumberedBooksWizard.xaml;PreviewViewer.xaml;PrintJobMonitor.xaml;SlotPropertiesPanel.xaml;
 
 False

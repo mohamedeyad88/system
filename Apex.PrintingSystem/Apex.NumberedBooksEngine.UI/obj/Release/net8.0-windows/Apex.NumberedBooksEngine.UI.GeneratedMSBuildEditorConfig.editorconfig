@@ -13,6 +13,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Apex.NumberedBooksEngine.UI
-build_property.ProjectDir = C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\
+build_property.ProjectDir = D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

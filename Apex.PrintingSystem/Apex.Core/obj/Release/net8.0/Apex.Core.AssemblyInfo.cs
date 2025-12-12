@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Apex.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+af646ebd9628320b70d534715045a1706e82f114")]
 [assembly: System.Reflection.AssemblyProductAttribute("Apex.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Apex.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

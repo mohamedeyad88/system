@@ -1,6 +1,0 @@
-MSBUILD : error MSB1008: Only one project can be specified.
-    Full command line: 'C:\Program Files\dotnet\sdk\8.0.416\MSBuild.dll -maxcpucount -verbosity:m -nologo -restore -target:Publish --property:_IsPublishing=true --property:PublishSingleFile=false --property:IncludeNativeLibrariesForSelfExtract=false -property:PublishDir=c:\Users\moham\OneDrive\سطح -property:_CommandLineDefinedOutputPath=true -property:SelfContained=True -property:_CommandLineDefinedSelfContained=true -property:RuntimeIdentifier=win-x64 -property:_CommandLineDefinedRuntimeIdentifier=true -property:Configuration=Release -property:DOTNET_CLI_DISABLE_PUBLISH_AND_PACK_RELEASE=true c:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.UI\Apex.UI.csproj المكتب\Apex\system\Apex.PrintingSystem\Publish -distributedlogger:Microsoft.DotNet.Tools.MSBuild.MSBuildLogger,C:\Program Files\dotnet\sdk\8.0.416\dotnet.dll*Microsoft.DotNet.Tools.MSBuild.MSBuildForwardingLogger,C:\Program Files\dotnet\sdk\8.0.416\dotnet.dll'
-  Switches appended by response files:
-Switch: المكتب\Apex\system\Apex.PrintingSystem\Apex.UI\Apex.UI.csproj
-
-For switch syntax, type "MSBuild -help"

@@ -52,7 +52,7 @@ namespace Apex.NumberedBooksEngine.Models
         string FontColorHex,
         TextAlign Align,
         float Rotation,
-        CopyStyle[] CopyStyles
+        CopyStyle[]? CopyStyles
     );
 
     public enum TemplateFormat { Image, Pdf }

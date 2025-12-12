@@ -27,8 +27,8 @@ namespace Apex.UI.ViewModels
 
         public LogViewerViewModel(ILoggerService loggerService, ILogReaderService logReader)
         {
-            _loggerService = loggerService;
-            _logReader = logReader;
+            _loggerService = loggerService ?? throw new System.ArgumentNullException(nameof(loggerService));
+            _logReader = logReader ?? throw new System.ArgumentNullException(nameof(logReader));
             LogPath = _loggerService.GetTodayLogPath();
             
             _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };

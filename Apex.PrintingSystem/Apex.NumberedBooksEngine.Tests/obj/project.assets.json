@@ -6354,11 +6354,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine.Tests\\Apex.NumberedBooksEngine.Tests.csproj",
+      "projectUniqueName": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine.Tests\\Apex.NumberedBooksEngine.Tests.csproj",
       "projectName": "Apex.NumberedBooksEngine.Tests",
-      "projectPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine.Tests\\Apex.NumberedBooksEngine.Tests.csproj",
+      "projectPath": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine.Tests\\Apex.NumberedBooksEngine.Tests.csproj",
       "packagesPath": "C:\\Users\\moham\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine.Tests\\obj\\",
+      "outputPath": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\moham\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -6373,11 +6373,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.Core\\Apex.Core.csproj": {
-              "projectPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.Core\\Apex.Core.csproj"
+            "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.Core\\Apex.Core.csproj": {
+              "projectPath": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.Core\\Apex.Core.csproj"
             },
-            "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\Apex.NumberedBooksEngine.csproj": {
-              "projectPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\Apex.NumberedBooksEngine.csproj"
+            "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\Apex.NumberedBooksEngine.csproj": {
+              "projectPath": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\Apex.NumberedBooksEngine.csproj"
             }
           }
         }

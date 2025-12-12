@@ -93,7 +93,7 @@
                     <TextBlock Text="{DynamicResource Numbering_NumberingMode}" Style="{DynamicResource SectionLabel}"/>
                     <Border Background="{DynamicResource Brush.Surface}" BorderBrush="{DynamicResource Brush.Border.Light}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,20">
                         <StackPanel>
-                            <RadioButton Content="Auto Detect" Foreground="{DynamicResource TextPrimary}" IsChecked="{Binding IsAutoDetect}" GroupName="Mode" Margin="0,0,0,8">
+                            <RadioButton Content="{DynamicResource Numbering_AutoDetect}" Foreground="{DynamicResource TextPrimary}" IsChecked="{Binding IsAutoDetect}" GroupName="Mode" Margin="0,0,0,8">
                                 <RadioButton.Template>
                                     <ControlTemplate TargetType="RadioButton">
                                         <Border x:Name="Bd" Background="{DynamicResource Brush.Success}" CornerRadius="4" Padding="12,8" Cursor="Hand">
@@ -106,18 +106,32 @@
                                     </ControlTemplate>
                                 </RadioButton.Template>
                             </RadioButton>
-                            <RadioButton Content="Shershara (Linear)" Foreground="{DynamicResource TextSecondary}" IsChecked="{Binding IsLinearMode}" GroupName="Mode" Margin="0,0,0,8"/>
-                            <RadioButton Content="Cutting (Imposed)" Foreground="{DynamicResource TextSecondary}" IsChecked="{Binding IsImposedMode}" GroupName="Mode" Margin="0,0,0,8"/>
-                            <RadioButton Content="Custom Pattern" Foreground="{DynamicResource TextSecondary}" GroupName="Mode"/>
+                            <RadioButton Content="{DynamicResource Numbering_Shershara}" Foreground="{DynamicResource TextSecondary}" IsChecked="{Binding IsLinearMode}" GroupName="Mode" Margin="0,0,0,8"/>
+                            <RadioButton Content="{DynamicResource Numbering_Cutting}" Foreground="{DynamicResource TextSecondary}" IsChecked="{Binding IsImposedMode}" GroupName="Mode" Margin="0,0,0,8"/>
+                            <RadioButton Content="{DynamicResource Numbering_CustomPattern}" Foreground="{DynamicResource TextSecondary}" GroupName="Mode"/>
                         </StackPanel>
                     </Border>
                     
                     <!-- Action Buttons -->
                     <TextBlock Text="{DynamicResource Numbering_SlotActions}" Style="{DynamicResource SectionLabel}"/>
-                    <Button Content="📂 Load Template" Command="{Binding LoadTemplateCommand}" Style="{DynamicResource ActionButton}" Margin="0,0,0,8"/>
-                    <Button Content="➕ Add Slot" Command="{Binding AddSlotCommand}" Style="{DynamicResource ActionButton}" Margin="0,0,0,8"/>
-                    <Button Content="🗑️ Delete Slot" Command="{Binding DeleteSelectedSlotCommand}" 
-                            Background="#EF4444" Style="{DynamicResource ActionButton}"/>
+                    <Button Command="{Binding LoadTemplateCommand}" Style="{DynamicResource ActionButton}" Margin="0,0,0,8">
+                         <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📂" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource Numbering_LoadTemplate}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding AddSlotCommand}" Style="{DynamicResource ActionButton}" Margin="0,0,0,8">
+                         <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="➕" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource Numbering_AddSlot}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding DeleteSelectedSlotCommand}" Background="#EF4444" Style="{DynamicResource ActionButton}">
+                         <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🗑️" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource Numbering_DeleteSlot}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </ScrollViewer>
         </Border>

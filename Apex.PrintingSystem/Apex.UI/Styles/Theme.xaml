@@ -1,10 +1,50 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Colors.xaml"/>
-        <ResourceDictionary Source="Animations.xaml"/>
-        <ResourceDictionary Source="Controls.xaml"/>
-        <ResourceDictionary Source="Layouts.xaml"/>
-        <ResourceDictionary Source="ModernEffects.xaml"/>
-    </ResourceDictionary.MergedDictionaries>
+    
+    <!-- ══════════════════════════════════════════════════════════════════════════
+         APEX PRINTING SYSTEM - THEME
+         المظهر والتأثيرات
+         ══════════════════════════════════════════════════════════════════════════ -->
+    
+    <!-- Shadows - الظلال -->
+    <DropShadowEffect x:Key="Shadow.Small" 
+                      Color="#000000" 
+                      Opacity="0.05" 
+                      BlurRadius="4" 
+                      ShadowDepth="2" 
+                      Direction="270"/>
+    
+    <DropShadowEffect x:Key="Shadow.Medium" 
+                      Color="#000000" 
+                      Opacity="0.1" 
+                      BlurRadius="8" 
+                      ShadowDepth="4" 
+                      Direction="270"/>
+    
+    <DropShadowEffect x:Key="Shadow.Large" 
+                      Color="#000000" 
+                      Opacity="0.15" 
+                      BlurRadius="16" 
+                      ShadowDepth="8" 
+                      Direction="270"/>
+    
+    <!-- Border Radius - نصف قطر الحدود -->
+    <CornerRadius x:Key="CornerRadius.Small">4</CornerRadius>
+    <CornerRadius x:Key="CornerRadius.Medium">6</CornerRadius>
+    <CornerRadius x:Key="CornerRadius.Large">8</CornerRadius>
+    <CornerRadius x:Key="CornerRadius.XLarge">12</CornerRadius>
+    
+    <!-- Spacing - المسافات -->
+    <Thickness x:Key="Padding.XSmall">4</Thickness>
+    <Thickness x:Key="Padding.Small">8</Thickness>
+    <Thickness x:Key="Padding.Medium">12</Thickness>
+    <Thickness x:Key="Padding.Large">16</Thickness>
+    <Thickness x:Key="Padding.XLarge">24</Thickness>
+    
+    <Thickness x:Key="Margin.XSmall">4</Thickness>
+    <Thickness x:Key="Margin.Small">8</Thickness>
+    <Thickness x:Key="Margin.Medium">12</Thickness>
+    <Thickness x:Key="Margin.Large">16</Thickness>
+    <Thickness x:Key="Margin.XLarge">24</Thickness>
+    
 </ResourceDictionary>

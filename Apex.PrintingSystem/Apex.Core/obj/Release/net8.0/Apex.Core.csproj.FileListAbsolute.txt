@@ -6,7 +6,21 @@ C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\Apex.Core.AssemblyInfoInputs.cache
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\Apex.Core.AssemblyInfo.cs
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\Apex.Core.csproj.CoreCompileInputs.cache
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\Apex.Core.sourcelink.json
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\Apex.Core.dll
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\refint\Apex.Core.dll
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\Apex.Core.pdb
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\ref\Apex.Core.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.Core\bin\Release\net8.0\Apex.Core.deps.json
+D:\Apex\system\Apex.PrintingSystem\Apex.Core\bin\Release\net8.0\Apex.Core.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.Core\bin\Release\net8.0\Apex.Core.pdb
+D:\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\Apex.Core.csproj.AssemblyReference.cache
+D:\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\Apex.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\Apex.Core.AssemblyInfoInputs.cache
+D:\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\Apex.Core.AssemblyInfo.cs
+D:\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\Apex.Core.csproj.CoreCompileInputs.cache
+D:\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\Apex.Core.sourcelink.json
+D:\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\Apex.Core.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\refint\Apex.Core.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\Apex.Core.pdb
+D:\Apex\system\Apex.PrintingSystem\Apex.Core\obj\Release\net8.0\ref\Apex.Core.dll

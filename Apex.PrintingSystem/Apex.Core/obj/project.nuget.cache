@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "8RBFFIW867U=",
+  "dgSpecHash": "g7l7EOoN6n0=",
   "success": true,
-  "projectFilePath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.Core\\Apex.Core.csproj",
+  "projectFilePath": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.Core\\Apex.Core.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\moham\\.nuget\\packages\\communitytoolkit.mvvm\\8.4.0\\communitytoolkit.mvvm.8.4.0.nupkg.sha512"
   ],

@@ -62,10 +62,16 @@ namespace Apex.UI.ViewModels
                 });
             };
 
-            LoadPrinters();
+
         }
 
-        private async void LoadPrinters()
+        public override async Task InitializeAsync()
+        {
+            await base.InitializeAsync();
+             await LoadPrinters();
+        }
+
+        private async Task LoadPrinters()
         {
             var list = await _discoveryService.ScanAsync();
             Printers = new ObservableCollection<PrinterSelectionItem>(

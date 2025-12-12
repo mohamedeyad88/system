@@ -31,28 +31,15 @@
                             Command="{Binding BrowseFilesCommand}" ToolTip="Add Files">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border x:Name="Bd" CornerRadius="8">
-                                    <Border.Background>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                            <GradientStop Color="#3B82F6" Offset="0"/>
-                                            <GradientStop Color="#2563EB" Offset="1"/>
-                                        </LinearGradientBrush>
-                                    </Border.Background>
+                                <Border x:Name="Bd" CornerRadius="8" Background="#EA580C">
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                         <TextBlock Text="📄" FontSize="24" HorizontalAlignment="Center" Foreground="White"/>
-                                        <TextBlock Text="➕ Files" FontSize="11" HorizontalAlignment="Center" Foreground="White" Margin="0,4,0,0" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{DynamicResource Upload_AddFiles}" FontSize="11" HorizontalAlignment="Center" Foreground="White" Margin="0,4,0,0" FontWeight="SemiBold"/>
                                     </StackPanel>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="Bd" Property="Background">
-                                            <Setter.Value>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                    <GradientStop Color="#2563EB" Offset="0"/>
-                                                    <GradientStop Color="#3B82F6" Offset="1"/>
-                                                </LinearGradientBrush>
-                                            </Setter.Value>
-                                        </Setter>
+                                        <Setter TargetName="Bd" Property="Background" Value="#C2410C"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -64,28 +51,15 @@
                             Command="{Binding BrowseFolderCommand}" ToolTip="Add Folder">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border x:Name="Bd" CornerRadius="8">
-                                    <Border.Background>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                            <GradientStop Color="#A65A3F" Offset="0"/>
-                                            <GradientStop Color="#C47256" Offset="1"/>
-                                        </LinearGradientBrush>
-                                    </Border.Background>
+                                <Border x:Name="Bd" CornerRadius="8" Background="#F97316">
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                         <TextBlock Text="📁" FontSize="24" HorizontalAlignment="Center" Foreground="White"/>
-                                        <TextBlock Text="📂 Folder" FontSize="11" HorizontalAlignment="Center" Foreground="White" Margin="0,4,0,0" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{DynamicResource Upload_AddFolder}" FontSize="11" HorizontalAlignment="Center" Foreground="White" Margin="0,4,0,0" FontWeight="SemiBold"/>
                                     </StackPanel>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="Bd" Property="Background">
-                                            <Setter.Value>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                    <GradientStop Color="#C47256" Offset="0"/>
-                                                    <GradientStop Color="#A65A3F" Offset="1"/>
-                                                </LinearGradientBrush>
-                                            </Setter.Value>
-                                        </Setter>
+                                        <Setter TargetName="Bd" Property="Background" Value="#EA580C"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -94,13 +68,7 @@
                 </Grid>
                 
                 <!-- Select Printer Section -->
-                <Border Margin="15,5,15,10" CornerRadius="8" Padding="12">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Color="#3B82F6" Offset="0"/>
-                            <GradientStop Color="#2563EB" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Border.Background>
+                <Border Margin="15,5,15,10" CornerRadius="8" Padding="12" Background="#EA580C">
                     <StackPanel>
                         <TextBlock Foreground="White" FontWeight="Bold" FontSize="14" Margin="0,0,0,10">
                             <Run Text="🖨️ "/><Run Text="{DynamicResource Upload_SelectPrinter}"/>
@@ -128,67 +96,37 @@
                     </StackPanel>
                 </Border>
                 
-                <!-- Quick Actions Row -->
-                <Grid Margin="15,5,15,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    
-                    <!-- Settings Button -->
-                    <Button Grid.Column="0" Height="60" Margin="0,0,5,0" Cursor="Hand"
-                            Command="{Binding OpenSettingsCommand}" ToolTip="Print Settings">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="Bd" Background="#F5F5F5" CornerRadius="8" BorderBrush="#E0E0E0" BorderThickness="1">
-                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock Text="⚙️" FontSize="24" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="Settings" FontSize="10" Foreground="#666" HorizontalAlignment="Center" Margin="0,2,0,0"/>
-                                    </StackPanel>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="Bd" Property="Background" Value="#EAEAEA"/>
-                                        <Setter TargetName="Bd" Property="BorderBrush" Value="#3B82F6"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-                    
-                    <!-- Print Button -->
-                    <Button Grid.Column="1" Height="60" Margin="5,0,0,0" Cursor="Hand"
-                            Command="{Binding CreateJobsCommand}" ToolTip="Start Printing">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="Bd" CornerRadius="8">
-                                    <Border.Background>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                            <GradientStop Color="#09A603" Offset="0"/>
-                                            <GradientStop Color="#0BC904" Offset="1"/>
-                                        </LinearGradientBrush>
-                                    </Border.Background>
-                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock Text="🖨️" FontSize="24" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="PRINT" FontSize="10" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,2,0,0"/>
-                                    </StackPanel>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="Bd" Property="Background">
-                                            <Setter.Value>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                    <GradientStop Color="#0BC904" Offset="0"/>
-                                                    <GradientStop Color="#09A603" Offset="1"/>
-                                                </LinearGradientBrush>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-                </Grid>
+                <!-- Settings Section -->
+                <Border Margin="15,5,15,10" CornerRadius="8" Padding="12" Background="White" BorderBrush="#E5E7EB" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource Upload_PrintSettings}" FontWeight="Bold" FontSize="14" Margin="0,0,0,12" Foreground="#333"/>
+                        
+                        <!-- Copies -->
+                        <TextBlock Text="{DynamicResource Upload_DefaultCopies}" Foreground="#666" FontSize="11" Margin="0,0,0,4"/>
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Slider Value="{Binding DefaultCopies}" Minimum="1" Maximum="100" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
+                            <TextBlock Grid.Column="1" Text="{Binding DefaultCopies}" FontWeight="Bold" Foreground="#EA580C" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                        </Grid>
+                        
+                        <!-- Orientation -->
+                        <TextBlock Text="{DynamicResource Upload_Orientation}" Foreground="#666" FontSize="11" Margin="0,0,0,4"/>
+                        <ComboBox ItemsSource="{Binding Orientations}" SelectedItem="{Binding Orientation}" Margin="0,0,0,12" Padding="6,4" Background="#F9FAFB" BorderBrush="#E5E7EB"/>
+
+                        <!-- Quality -->
+                        <TextBlock Text="{DynamicResource Upload_PrintQuality}" Foreground="#666" FontSize="11" Margin="0,0,0,4"/>
+                        <ComboBox ItemsSource="{Binding PrintQualities}" SelectedItem="{Binding PrintQuality}" Margin="0,0,0,12" Padding="6,4" Background="#F9FAFB" BorderBrush="#E5E7EB"/>
+                        
+                        <!-- Toggles -->
+                        <StackPanel Orientation="Vertical">
+                            <CheckBox Content="{DynamicResource Upload_ColorPrinting}" IsChecked="{Binding IsColorEnabled}" Margin="0,0,0,8" FontSize="12" Foreground="#374151"/>
+                            <CheckBox Content="{DynamicResource Upload_Duplex}" IsChecked="{Binding IsDuplexEnabled}" Margin="0,0,0,0" FontSize="12" Foreground="#374151"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
                 
                 <!-- Status Section -->
                 <Border Background="White" Margin="15,5,15,10" CornerRadius="8" Padding="12" 
@@ -201,7 +139,7 @@
                                    TextWrapping="Wrap" FontSize="12" Foreground="#666"/>
                         <Border Background="#FFF0F6" CornerRadius="4" Padding="8" Margin="0,10,0,0">
                             <TextBlock Text="{Binding StatusMessage, FallbackValue={StaticResource Upload_ListEmpty}}" 
-                                       Foreground="#3B82F6" FontSize="12" FontWeight="SemiBold"/>
+                                       Foreground="#EA580C" FontSize="12" FontWeight="SemiBold"/>
                         </Border>
                     </StackPanel>
                 </Border>
@@ -217,14 +155,7 @@
             </Grid.RowDefinitions>
             
             <!-- Header Bar -->
-            <Border Grid.Row="0" Padding="15,12">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                        <GradientStop Color="#3B82F6" Offset="0"/>
-                        <GradientStop Color="#2563EB" Offset="0.5"/>
-                        <GradientStop Color="#A65A3F" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
+            <Border Grid.Row="0" Padding="15,12" Background="#EA580C">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -353,13 +284,16 @@
                     <!-- Drop Zone Placeholder (when empty) -->
                     <Border Visibility="{Binding IngestedFiles.Count, Converter={StaticResource InverseCountToVisibilityConverter}}"
                             Margin="60" BorderThickness="3" CornerRadius="16"
-                            Background="#FFFBFD">
+                            Background="#FFFBFD" Cursor="Hand">
+                        <Border.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding BrowseFilesCommand}"/>
+                        </Border.InputBindings>
                         <Border.BorderBrush>
                             <DrawingBrush Viewport="0,0,12,12" ViewportUnits="Absolute" TileMode="Tile">
                                 <DrawingBrush.Drawing>
                                     <GeometryDrawing>
                                         <GeometryDrawing.Pen>
-                                            <Pen Brush="#3B82F6" Thickness="2" DashStyle="{x:Static DashStyles.Dash}"/>
+                                            <Pen Brush="#EA580C" Thickness="2" DashStyle="{x:Static DashStyles.Dash}"/>
                                         </GeometryDrawing.Pen>
                                         <GeometryDrawing.Geometry>
                                             <RectangleGeometry Rect="0,0,12,12"/>
@@ -370,7 +304,7 @@
                         </Border.BorderBrush>
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                             <TextBlock Text="📁" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,15"/>
-                            <TextBlock Text="{DynamicResource Upload_DropFiles}" FontSize="20" Foreground="#3B82F6" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource Upload_DropFiles}" FontSize="20" Foreground="#EA580C" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                             <TextBlock Text="{DynamicResource Upload_AddFromMenu}" FontSize="14" Foreground="#999" HorizontalAlignment="Center" Margin="0,5,0,0"/>
                         </StackPanel>
                     </Border>
@@ -378,73 +312,6 @@
             </Border>
         </Grid>
         
-        <!-- Settings Popup Overlay -->
-        <Border Grid.ColumnSpan="2" Background="#80000000" 
-                Visibility="{Binding IsSettingsOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Border Background="White" CornerRadius="12" Width="400" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="30" ShadowDepth="5" Opacity="0.3" Color="Black"/>
-                </Border.Effect>
-                <StackPanel>
-                    <!-- Header -->
-                    <Border Background="#3B82F6" CornerRadius="12,12,0,0" Padding="20,15">
-                        <Grid>
-                            <TextBlock Text="{DynamicResource Upload_PrintSettings}" Foreground="White" FontSize="18" FontWeight="SemiBold"/>
-                            <Button Content="✕" HorizontalAlignment="Right" Background="Transparent" Foreground="White"
-                                    BorderThickness="0" FontSize="16" Cursor="Hand" Command="{Binding CloseSettingsCommand}"/>
-                        </Grid>
-                    </Border>
-                    
-                    <!-- Settings Content -->
-                    <Border Padding="20">
-                    <StackPanel>
-                        <!-- Copies -->
-                        <TextBlock Text="{DynamicResource Upload_DefaultCopies}" Foreground="#333" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                        <Grid Margin="0,0,0,15">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="60"/>
-                            </Grid.ColumnDefinitions>
-                            <Slider Value="{Binding DefaultCopies}" Minimum="1" Maximum="100" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="{Binding DefaultCopies}" FontWeight="Bold" Foreground="#3B82F6" 
-                                       VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                        </Grid>
-                        
-                        <!-- Orientation -->
-                        <TextBlock Text="{DynamicResource Upload_Orientation}" Foreground="#333" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                        <ComboBox ItemsSource="{Binding Orientations}" SelectedItem="{Binding Orientation}" 
-                                  Background="White" Foreground="#333" Padding="10" Margin="0,0,0,15"/>
-                        
-                        <!-- Quality -->
-                        <TextBlock Text="{DynamicResource Upload_PrintQuality}" Foreground="#333" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                        <ComboBox ItemsSource="{Binding PrintQualities}" SelectedItem="{Binding PrintQuality}" 
-                                  Background="White" Foreground="#333" Padding="10" Margin="0,0,0,15"/>
-                        
-                        <!-- Checkboxes -->
-                        <CheckBox Content="{DynamicResource Upload_ColorPrinting}" IsChecked="{Binding IsColorEnabled}" 
-                                  Foreground="#333" Margin="0,0,0,10"/>
-                        <CheckBox Content="{DynamicResource Upload_Duplex}" IsChecked="{Binding IsDuplexEnabled}" 
-                                  Foreground="#333" Margin="0,0,0,20"/>
-                        
-                        <!-- Actions -->
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Button Content="Cancel" Grid.Column="0" Margin="0,0,5,0" Padding="15,12"
-                                    Background="#F5F5F5" Foreground="#666" BorderThickness="1" BorderBrush="#E0E0E0"
-                                    Command="{Binding CloseSettingsCommand}" Cursor="Hand"/>
-                            <Button Grid.Column="1" Margin="5,0,0,0" Padding="15,12"
-                                    Background="#3B82F6" Foreground="White" BorderThickness="0"
-                                    Command="{Binding ApplySettingsCommand}" Cursor="Hand">
-                                <TextBlock Text="{DynamicResource Upload_Apply}"/>
-                            </Button>
-                        </Grid>
-                    </StackPanel>
-                    </Border>
-                </StackPanel>
-            </Border>
-        </Border>
+
     </Grid>
 </UserControl>

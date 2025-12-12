@@ -4,246 +4,70 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
-             d:DesignHeight="700" d:DesignWidth="1000">
+             d:DesignHeight="800" d:DesignWidth="1200">
     
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="24">
-            
-            <!-- Page Header -->
-            <TextBlock Text="{DynamicResource Dashboard}" 
-                       Style="{DynamicResource PageTitle}"
-                       FontSize="28" 
-                       FontWeight="Bold"
-                       Margin="0,0,0,24"/>
-            
-            <!-- KPI Cards Grid -->
-            <Grid Margin="0,0,0,32">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="16"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="16"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="16"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+    <Grid Background="{DynamicResource Brush.Background}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <Border Grid.Row="0" Padding="32,24">
+            <StackPanel>
+                <TextBlock Text="{DynamicResource Dashboard}" 
+                          Style="{StaticResource Text.PageTitle}"/>
+                <TextBlock Text="{DynamicResource Welcome}" 
+                          Style="{StaticResource Text.Caption}"
+                          Margin="0,4,0,0"/>
+            </StackPanel>
+        </Border>
+        
+        <!-- Dashboard Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="32,0,32,32">
                 
-                <!-- Total Jobs Card -->
-                <Border Grid.Column="0" Style="{StaticResource CardStyle}"
-                        Background="{DynamicResource Gradient.Background.Subtle}">
-                    <StackPanel>
-                        <TextBlock Text="🖨️" FontSize="32" Margin="0,0,0,12" HorizontalAlignment="Center"/>
-                        <TextBlock Text="150" FontSize="36" FontWeight="Bold" 
-                                   Foreground="{DynamicResource Brush.Primary}"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,8"/>
-                        <TextBlock Text="Total Print Jobs"
-                                   FontSize="14" 
-                                   Foreground="{DynamicResource Brush.Text.Secondary}"
-                                   HorizontalAlignment="Center"
-                                   TextWrapping="Wrap"
-                                   TextAlignment="Center"/>
-                    </StackPanel>
-                </Border>
+                <!-- Quick Stats Cards -->
+                <TextBlock Text="Dashboard Overview" 
+                          Style="{StaticResource Text.SectionTitle}"
+                          Margin="0,0,0,16"/>
                 
-                <!-- Active Printers Card -->
-                <Border Grid.Column="2" Style="{StaticResource CardStyle}"
-                        Background="{DynamicResource Gradient.Background.Subtle}">
-                    <StackPanel>
-                        <TextBlock Text="✅" FontSize="32" Margin="0,0,0,12" HorizontalAlignment="Center"/>
-                        <TextBlock Text="8" FontSize="36" FontWeight="Bold" 
-                                   Foreground="{DynamicResource Brush.Success}"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,8"/>
-                        <TextBlock Text="Active Printers"
-                                   FontSize="14" 
-                                   Foreground="{DynamicResource Brush.Text.Secondary}"
-                                   HorizontalAlignment="Center"
-                                   TextWrapping="Wrap"
-                                   TextAlignment="Center"/>
-                    </StackPanel>
-                </Border>
-                
-                <!-- Pending Jobs Card -->
-                <Border Grid.Column="4" Style="{StaticResource CardStyle}"
-                        Background="{DynamicResource Gradient.Background.Subtle}">
-                    <StackPanel>
-                        <TextBlock Text="⏳" FontSize="32" Margin="0,0,0,12" HorizontalAlignment="Center"/>
-                        <TextBlock Text="12" FontSize="36" FontWeight="Bold" 
-                                   Foreground="{DynamicResource Brush.Warning}"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,8"/>
-                        <TextBlock Text="Pending Jobs"
-                                   FontSize="14" 
-                                   Foreground="{DynamicResource Brush.Text.Secondary}"
-                                   HorizontalAlignment="Center"
-                                   TextWrapping="Wrap"
-                                   TextAlignment="Center"/>
-                    </StackPanel>
-                </Border>
-                
-                <!-- Failed Jobs Card -->
-                <Border Grid.Column="6" Style="{StaticResource CardStyle}"
-                        Background="{DynamicResource Gradient.Background.Subtle}">
-                    <StackPanel>
-                        <TextBlock Text="❌" FontSize="32" Margin="0,0,0,12" HorizontalAlignment="Center"/>
-                        <TextBlock Text="3" FontSize="36" FontWeight="Bold" 
-                                   Foreground="{DynamicResource Brush.Error}"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,8"/>
-                        <TextBlock Text="Failed Jobs"
-                                   FontSize="14" 
-                                   Foreground="{DynamicResource Brush.Text.Secondary}"
-                                   HorizontalAlignment="Center"
-                                   TextWrapping="Wrap"
-                                   TextAlignment="Center"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
-            
-            <!-- Quick Actions Section -->
-            <TextBlock Text="Quick Actions" 
-                       Style="{DynamicResource SectionLabel}"
-                       FontSize="20"
-                       FontWeight="600"
-                       Margin="0,0,0,16"/>
-            
-            <Grid Margin="0,0,0,32">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="16"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="16"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                
-                <!-- Print Manager Card -->
-                <Border Grid.Column="0" Style="{StaticResource Card.Interactive}">
-                    <StackPanel>
-                        <TextBlock Text="🖨️" FontSize="48" Margin="0,0,0,16" HorizontalAlignment="Center"/>
-                        <TextBlock Text="{DynamicResource PrintManager}"
-                                   FontSize="16" 
-                                   FontWeight="600"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,8"/>
-                        <TextBlock Text="Manage print jobs and documents"
-                                   FontSize="12" 
-                                   Foreground="{DynamicResource Brush.Text.Secondary}"
-                                   HorizontalAlignment="Center"
-                                   TextWrapping="Wrap"
-                                   TextAlignment="Center"/>
-                    </StackPanel>
-                </Border>
-                
-                <!-- Distribution Card -->
-                <Border Grid.Column="2" Style="{StaticResource Card.Interactive}">
-                    <StackPanel>
-                        <TextBlock Text="📤" FontSize="48" Margin="0,0,0,16" HorizontalAlignment="Center"/>
-                        <TextBlock Text="{DynamicResource Distribution}"
-                                   FontSize="16" 
-                                   FontWeight="600"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,8"/>
-                        <TextBlock Text="Distribute jobs across printers"
-                                   FontSize="12" 
-                                   Foreground="{DynamicResource Brush.Text.Secondary}"
-                                   HorizontalAlignment="Center"
-                                   TextWrapping="Wrap"
-                                   TextAlignment="Center"/>
-                    </StackPanel>
-                </Border>
-                
-                <!-- Numbered Books Card -->
-                <Border Grid.Column="4" Style="{StaticResource Card.Interactive}">
-                    <StackPanel>
-                        <TextBlock Text="📚" FontSize="48" Margin="0,0,0,16" HorizontalAlignment="Center"/>
-                        <TextBlock Text="{DynamicResource NumberedBooks}"
-                                   FontSize="16" 
-                                   FontWeight="600"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,8"/>
-                        <TextBlock Text="Create numbered documents"
-                                   FontSize="12" 
-                                   Foreground="{DynamicResource Brush.Text.Secondary}"
-                                   HorizontalAlignment="Center"
-                                   TextWrapping="Wrap"
-                                   TextAlignment="Center"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
-            
-            <!-- System Status Section -->
-            <TextBlock Text="System Status" 
-                       Style="{DynamicResource SectionLabel}"
-                       FontSize="20"
-                       FontWeight="600"
-                       Margin="0,0,0,16"/>
-            
-            <Border Style="{StaticResource CardStyle}">
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="16"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="16"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
                     
-                    <!-- System Health -->
-                    <Grid Grid.Row="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="16"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        
-                        <Ellipse Grid.Column="0" 
-                                 Width="12" Height="12" 
-                                 Fill="{DynamicResource Brush.Success}"/>
-                        <TextBlock Grid.Column="2" 
-                                   Text="All Systems Operational" 
-                                   FontWeight="500"
-                                   VerticalAlignment="Center"/>
-                        <TextBlock Grid.Column="3" 
-                                   Text="✓" 
-                                   FontSize="20"
-                                   Foreground="{DynamicResource Brush.Success}"
-                                   VerticalAlignment="Center"/>
-                    </Grid>
+                    <!-- Card 1 -->
+                    <Border Grid.Column="0" Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="Active Printers" FontSize="14" Foreground="{DynamicResource Brush.Text.Secondary}"/>
+                            <TextBlock Text="--" FontSize="32" FontWeight="Bold" Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </Border>
                     
-                    <!-- Last Update -->
-                    <Grid Grid.Row="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        
-                        <TextBlock Grid.Column="0" 
-                                   Text="Last Update:" 
-                                   Foreground="{DynamicResource Brush.Text.Secondary}"/>
-                        <TextBlock Grid.Column="1" 
-                                   Text="2 minutes ago"
-                                   FontWeight="500"/>
-                    </Grid>
+                    <!-- Card 2 -->
+                    <Border Grid.Column="2" Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="Print Jobs Today" FontSize="14" Foreground="{DynamicResource Brush.Text.Secondary}"/>
+                            <TextBlock Text="--" FontSize="32" FontWeight="Bold" Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </Border>
                     
-                    <!-- Version Info -->
-                    <Grid Grid.Row="4">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        
-                        <TextBlock Grid.Column="0" 
-                                   Text="System Version:" 
-                                   Foreground="{DynamicResource Brush.Text.Secondary}"/>
-                        <TextBlock Grid.Column="1" 
-                                   Text="Apex Print OS v2.0"
-                                   FontWeight="500"/>
-                    </Grid>
+                    <!-- Card 3 -->
+                    <Border Grid.Column="4" Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="System Status" FontSize="14" Foreground="{DynamicResource Brush.Text.Secondary}"/>
+                            <TextBlock Text="Ready" FontSize="32" FontWeight="Bold" Margin="0,8,0,0" Foreground="{DynamicResource Brush.Success}"/>
+                        </StackPanel>
+                    </Border>
                 </Grid>
-            </Border>
-            
-        </StackPanel>
-    </ScrollViewer>
+                
+            </StackPanel>
+        </ScrollViewer>
+        
+    </Grid>
 </UserControl>

@@ -1,8 +1,0 @@
-  Determining projects to restore...
-  All projects are up-to-date for restore.
-  Apex.Core -> C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Core\bin\Debug\net8.0\Apex.Core.dll
-  Apex.NumberedBooksEngine -> C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine\bin\Debug\net8.0\Apex.NumberedBooksEngine.dll
-  Apex.Data -> C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Data\bin\Debug\net8.0\Apex.Data.dll
-  Apex.Services -> C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.Services\bin\Debug\net8.0-windows\Apex.Services.dll
-  Apex.NumberedBooksEngine.UI -> C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Debug\net8.0-windows\Apex.NumberedBooksEngine.UI.dll
-C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.UI\App.xaml.cs(141,29): error CS1513: } expected [C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.UI\Apex.UI_b03o01p2_wpftmp.csproj]

@@ -35,8 +35,52 @@ C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.AssemblyInfoInputs.cache
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.AssemblyInfo.cs
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.csproj.CoreCompileInputs.cache
+C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.sourcelink.json
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.Num.204A429D.Up2Date
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.dll
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\refint\Apex.NumberedBooksEngine.UI.dll
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.pdb
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\ref\Apex.NumberedBooksEngine.UI.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Release\net8.0-windows\x64\pdfium.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.deps.json
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.pdb
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Release\net8.0-windows\Apex.Core.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Release\net8.0-windows\Apex.Data.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Release\net8.0-windows\Apex.NumberedBooksEngine.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Release\net8.0-windows\Apex.Services.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Release\net8.0-windows\Apex.NumberedBooksEngine.pdb
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Release\net8.0-windows\Apex.Services.pdb
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Release\net8.0-windows\Apex.Core.pdb
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Release\net8.0-windows\Apex.Data.pdb
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.csproj.AssemblyReference.cache
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Controls\GridOverlay.baml
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Controls\NumberingModePanel.baml
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Controls\RulerControl.baml
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Controls\SlotStylePanel.baml
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\PreviewViewer.baml
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\PrintJobMonitor.baml
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\SlotPropertiesPanel.baml
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Controls\GridOverlay.g.cs
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Controls\NumberingModePanel.g.cs
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Controls\RulerControl.g.cs
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Controls\SlotStylePanel.g.cs
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\NumberedBooksWizard.g.cs
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\PreviewViewer.g.cs
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\PrintJobMonitor.g.cs
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\SlotPropertiesPanel.g.cs
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\GeneratedInternalTypeHelper.g.cs
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI_MarkupCompile.cache
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI_MarkupCompile.lref
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\NumberedBooksWizard.baml
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.g.resources
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.GeneratedMSBuildEditorConfig.editorconfig
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.AssemblyInfoInputs.cache
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.AssemblyInfo.cs
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.csproj.CoreCompileInputs.cache
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.sourcelink.json
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.Num.204A429D.Up2Date
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\refint\Apex.NumberedBooksEngine.UI.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\Apex.NumberedBooksEngine.UI.pdb
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Release\net8.0-windows\ref\Apex.NumberedBooksEngine.UI.dll

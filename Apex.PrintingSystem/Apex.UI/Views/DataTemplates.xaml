@@ -3,6 +3,10 @@
                     xmlns:vm="clr-namespace:Apex.UI.ViewModels"
                     xmlns:v="clr-namespace:Apex.UI.Views">
 
+    <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+        <v:DashboardView />
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type vm:PrintersViewModel}">
         <v:PrintersView />
     </DataTemplate>
@@ -17,10 +21,6 @@
 
     <DataTemplate DataType="{x:Type vm:SystemPerformanceViewModel}">
         <v:SystemPerformanceView />
-    </DataTemplate>
-
-    <DataTemplate DataType="{x:Type vm:PrinterDiagnosticsViewModel}">
-        <v:PrinterDiagnosticsView />
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type vm:LogViewerViewModel}">

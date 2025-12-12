@@ -75,11 +75,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.Core\\Apex.Core.csproj",
+      "projectUniqueName": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.Core\\Apex.Core.csproj",
       "projectName": "Apex.Core",
-      "projectPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.Core\\Apex.Core.csproj",
+      "projectPath": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.Core\\Apex.Core.csproj",
       "packagesPath": "C:\\Users\\moham\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\moham\\OneDrive\\سطح المكتب\\Apex\\system\\Apex.PrintingSystem\\Apex.Core\\obj\\",
+      "outputPath": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.Core\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\moham\\AppData\\Roaming\\NuGet\\NuGet.Config"

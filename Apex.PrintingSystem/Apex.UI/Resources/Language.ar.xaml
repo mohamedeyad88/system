@@ -1,6 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
     
     <sys:String x:Key="Welcome">مرحباً بك في أبيكس</sys:String>
     <sys:String x:Key="Dashboard">لوحة التحكم</sys:String>
@@ -170,7 +170,26 @@
     <sys:String x:Key="Numbering_Rotation">الدوران</sys:String>
     <sys:String x:Key="Numbering_Opacity">الشفافية</sys:String>
     <sys:String x:Key="Numbering_Preview">معاينة</sys:String>
+    <sys:String x:Key="Numbering_AutoDetect">كشف تلقائي</sys:String>
+    <sys:String x:Key="Numbering_Shershara">شرشرة (خطي)</sys:String>
+    <sys:String x:Key="Numbering_Cutting">قص (مجمع)</sys:String>
+    <sys:String x:Key="Numbering_CustomPattern">نمط مخصص</sys:String>
+    <sys:String x:Key="Numbering_LoadTemplate">تحميل قالب</sys:String>
+    <sys:String x:Key="Numbering_AddSlot">إضافة خانة</sys:String>
+    <sys:String x:Key="Numbering_DeleteSlot">حذف خانة</sys:String>
     <sys:String x:Key="Numbering_Printer">الطابعة</sys:String>
+
+    <sys:String x:Key="PrintOps_SearchPlaceholder">بحث عن طابعة...</sys:String>
+    <sys:String x:Key="PrintOps_Refresh">تحديث</sys:String>
+    <sys:String x:Key="PrintOps_QueueLength">قائمة الإنتظار: {0}</sys:String>
+    <sys:String x:Key="PrintOps_Properties">خصائص الطابعة</sys:String>
+    <sys:String x:Key="PrintOps_OperationsCenter">مركز العمليات</sys:String>
+
+    <!-- Upload View -->
+    <sys:String x:Key="Upload_Title">تحميل الملفات</sys:String>
+    <sys:String x:Key="Upload_AddFiles">أضف ملفات +</sys:String>
+    <sys:String x:Key="Upload_AddFolder">مجلد</sys:String>
+    <sys:String x:Key="Upload_ListEmpty">قائمة المستندات فارغة</sys:String>
     
     <!-- Print Operations Module -->
     <sys:String x:Key="PrintOps_UnifiedCommand">القيادة والتحكم الموحد</sys:String>
