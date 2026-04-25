@@ -675,10 +675,17 @@ namespace Apex.UI.ViewModels
 
         // ── Step navigation command ───────────────────────────────────────────
 
+        /// <summary>
+        /// Navigate to a workflow step.
+        /// Accepts the step as a STRING so that XAML CommandParameter="0" (which is always
+        /// a string in WPF) is correctly received by RelayCommand&lt;string&gt;.
+        /// CommunityToolkit.Mvvm 8.x does not TypeConvert the CommandParameter value, so a
+        /// RelayCommand&lt;int&gt; would silently never execute when given a string "0".
+        /// </summary>
         [RelayCommand]
-        private void GoToStep(int step)
+        private void GoToStep(string? stepStr)
         {
-            if (Session.IsStepEnabled(step))
+            if (int.TryParse(stepStr, out int step) && Session.IsStepEnabled(step))
                 ActiveStep = step;
         }
 
@@ -733,7 +740,7 @@ namespace Apex.UI.ViewModels
         // ── Open / close (for legacy button + keyboard shortcut) ─────────────
 
         [RelayCommand]
-        private void OpenSmartPanel() => GoToStep(1);
+        private void OpenSmartPanel() => GoToStep("1");
 
         [RelayCommand]
         private void CloseSmartPanel() => ActiveStep = 0;
