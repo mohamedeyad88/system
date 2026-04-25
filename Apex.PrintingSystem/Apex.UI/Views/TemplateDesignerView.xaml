@@ -13,6 +13,8 @@
         <converters:StepVisibilityConverter                  x:Key="StepVisConv"/>
         <converters:StepBackgroundConverter                  x:Key="StepBgConv"/>
         <converters:NonEmptyStringToVisibilityConverter      x:Key="NonEmptyToVis"/>
+        <converters:SlotDataTypeToArabicConverter            x:Key="DataTypeToArabic"/>
+        <converters:HorizontalAlignToArabicConverter         x:Key="AlignToArabic"/>
 
         <!-- ── Stepper button style ──────────────────────────────────────── -->
         <Style x:Key="StepBtn" TargetType="Button">
@@ -686,7 +688,7 @@
                         <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Text"
                                 Style="{StaticResource FieldTypeBtn}" ToolTip="متغير نصي">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="T" Foreground="#3B82F6" FontWeight="Bold" FontSize="11"/>
+                                <TextBlock Text="ن" Foreground="#3B82F6" FontWeight="Bold" FontSize="11"/>
                                 <TextBlock Text=" نص" FontSize="11"/>
                             </StackPanel>
                         </Button>
@@ -702,7 +704,7 @@
                         <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Date"
                                 Style="{StaticResource FieldTypeBtn}" ToolTip="تاريخ">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="D" Foreground="#F59E0B" FontWeight="Bold" FontSize="11"/>
+                                <TextBlock Text="ت" Foreground="#F59E0B" FontWeight="Bold" FontSize="11"/>
                                 <TextBlock Text=" تاريخ" FontSize="11"/>
                             </StackPanel>
                         </Button>
@@ -710,7 +712,7 @@
                         <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Image"
                                 Style="{StaticResource FieldTypeBtn}" ToolTip="متغير صورة">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="I" Foreground="#8B5CF6" FontWeight="Bold" FontSize="11"/>
+                                <TextBlock Text="ص" Foreground="#8B5CF6" FontWeight="Bold" FontSize="11"/>
                                 <TextBlock Text=" صورة" FontSize="11"/>
                             </StackPanel>
                         </Button>
@@ -725,7 +727,7 @@
                         <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Barcode"
                                 Style="{StaticResource FieldTypeBtn}" ToolTip="باركود">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="||" Foreground="#EF4444" FontWeight="Bold" FontSize="11"/>
+                                <TextBlock Text="▌▌" Foreground="#EF4444" FontWeight="Bold" FontSize="11"/>
                                 <TextBlock Text=" باركود" FontSize="11"/>
                             </StackPanel>
                         </Button>
@@ -733,7 +735,7 @@
                         <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Counter"
                                 Style="{StaticResource FieldTypeBtn}" ToolTip="ترقيم تلقائي">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="S" Foreground="#06B6D4" FontWeight="Bold" FontSize="11"/>
+                                <TextBlock Text="١٢" Foreground="#06B6D4" FontWeight="Bold" FontSize="11"/>
                                 <TextBlock Text=" مسلسل" FontSize="11"/>
                             </StackPanel>
                         </Button>
@@ -1083,7 +1085,14 @@
                                         <ComboBox ItemsSource="{Binding AvailableDataTypes}"
                                                   SelectedItem="{Binding SlotDataType}"
                                                   Style="{StaticResource DarkCombo}"
-                                                  Margin="0,0,0,8"/>
+                                                  Margin="0,0,0,8">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Converter={StaticResource DataTypeToArabic}}"
+                                                               FontSize="12" Foreground="#E2E8F0"/>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
 
                                         <!-- Position X, Y -->
                                         <Grid Margin="0,0,0,8">
@@ -1167,7 +1176,14 @@
                                                 <TextBlock Text="المحاذاة" Style="{StaticResource FieldLabel}"/>
                                                 <ComboBox ItemsSource="{Binding AvailableAlignments}"
                                                           SelectedItem="{Binding SlotTextAlign}"
-                                                          Style="{StaticResource DarkCombo}"/>
+                                                          Style="{StaticResource DarkCombo}">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Converter={StaticResource AlignToArabic}}"
+                                                                       FontSize="12" Foreground="#E2E8F0"/>
+                                                        </DataTemplate>
+                                                    </ComboBox.ItemTemplate>
+                                                </ComboBox>
                                             </StackPanel>
                                             <StackPanel Grid.Column="2">
                                                 <TextBlock Text="لون النص (#RRGGBB)" Style="{StaticResource FieldLabel}"/>

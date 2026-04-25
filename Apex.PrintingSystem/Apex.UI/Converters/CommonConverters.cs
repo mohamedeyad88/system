@@ -513,6 +513,55 @@ namespace Apex.UI.Converters
     }
 
     /// <summary>
+    /// Converts SlotDataType enum → Arabic display string for ComboBox ItemTemplate.
+    /// ConvertBack is not needed because SelectedItem binding carries the enum value directly.
+    /// </summary>
+    public class SlotDataTypeToArabicConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Apex.Services.Templates.SlotDataType dt)
+                return dt switch
+                {
+                    Apex.Services.Templates.SlotDataType.Text    => "نص",
+                    Apex.Services.Templates.SlotDataType.Number  => "رقم",
+                    Apex.Services.Templates.SlotDataType.Date    => "تاريخ",
+                    Apex.Services.Templates.SlotDataType.Image   => "صورة",
+                    Apex.Services.Templates.SlotDataType.Barcode => "باركود",
+                    Apex.Services.Templates.SlotDataType.QrCode  => "QR كود",
+                    Apex.Services.Templates.SlotDataType.Counter => "مسلسل تلقائي",
+                    _                                            => value.ToString() ?? "",
+                };
+            return value?.ToString() ?? "";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => Binding.DoNothing;
+    }
+
+    /// <summary>
+    /// Converts HorizontalAlign enum → Arabic display string for ComboBox ItemTemplate.
+    /// </summary>
+    public class HorizontalAlignToArabicConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Apex.Services.Templates.HorizontalAlign align)
+                return align switch
+                {
+                    Apex.Services.Templates.HorizontalAlign.Right  => "يمين",
+                    Apex.Services.Templates.HorizontalAlign.Center => "وسط",
+                    Apex.Services.Templates.HorizontalAlign.Left   => "يسار",
+                    _                                              => value.ToString() ?? "",
+                };
+            return value?.ToString() ?? "";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => Binding.DoNothing;
+    }
+
+    /// <summary>
     /// Analytics bar chart: returns a green brush for today's date, blue for all other dates.
     /// </summary>
     public class DateToBarColorConverter : IValueConverter

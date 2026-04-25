@@ -28,14 +28,14 @@ namespace Apex.UI.ViewModels
         public string Label   => string.IsNullOrWhiteSpace(Slot.Name) ? (Slot.VariableName ?? "?") : Slot.Name;
         public string TypeTag => Slot.DataType switch
         {
-            SlotDataType.Text    => "T",
-            SlotDataType.Number  => "#",
-            SlotDataType.Date    => "D",
-            SlotDataType.Image   => "I",
-            SlotDataType.Barcode => "B",
-            SlotDataType.QrCode  => "Q",
-            SlotDataType.Counter => "C",
-            _                    => "?"
+            SlotDataType.Text    => "نص",
+            SlotDataType.Number  => "رقم",
+            SlotDataType.Date    => "تار",
+            SlotDataType.Image   => "صور",
+            SlotDataType.Barcode => "بار",
+            SlotDataType.QrCode  => "QR",
+            SlotDataType.Counter => "مسل",
+            _                    => "؟"
         };
 
         public string BorderColor => Slot.DataType switch
@@ -72,11 +72,12 @@ namespace Apex.UI.ViewModels
         // Page preset sizes (mm)
         private static readonly Dictionary<string, (double W, double H)> PagePresets = new()
         {
-            ["A4"]        = (210,   297),
-            ["A5"]        = (148,   210),
-            ["Letter"]    = (215.9, 279.4),
-            ["بطاقة عمل"] = (85.6,  54),
-            ["ملصق"]      = (101.6, 63.5),
+            ["A4"]          = (210,   297),
+            ["A5"]          = (148,   210),
+            ["A6"]          = (105,   148),
+            ["رسالة (Letter)"] = (215.9, 279.4),
+            ["بطاقة عمل"]  = (85.6,  54),
+            ["ملصق"]        = (101.6, 63.5),
         };
 
         // ── Library ───────────────────────────────────────────────────────────
