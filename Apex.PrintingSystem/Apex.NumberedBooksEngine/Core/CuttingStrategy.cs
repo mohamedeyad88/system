@@ -23,8 +23,19 @@ namespace Apex.NumberedBooksEngine.Core
             if (slotsPerPage == 0) yield break;
 
             // Calculate total pages needed
+            // Each page produces 'slotsPerPage' numbers after cutting
             long totalPages = (long)Math.Ceiling((double)options.TotalNumbers / slotsPerPage);
             long startNumber = options.StartNumber;
+            long endNumber = startNumber + options.TotalNumbers;
+
+            // #region agent log
+            System.Diagnostics.Debug.WriteLine($"[CuttingStrategy] GeneratePageNumbers:");
+            System.Diagnostics.Debug.WriteLine($"  StartNumber: {startNumber}");
+            System.Diagnostics.Debug.WriteLine($"  TotalNumbers: {options.TotalNumbers}");
+            System.Diagnostics.Debug.WriteLine($"  EndNumber: {endNumber}");
+            System.Diagnostics.Debug.WriteLine($"  SlotsPerPage: {slotsPerPage}");
+            System.Diagnostics.Debug.WriteLine($"  TotalPages: {totalPages}");
+            // #endregion
 
             for (long pageIndex = 0; pageIndex < totalPages; pageIndex++)
             {
@@ -35,8 +46,9 @@ namespace Apex.NumberedBooksEngine.Core
                     // Imposition formula: value = start + pageIndex + slotIndex * totalPages
                     long value = startNumber + pageIndex + (slotIndex * totalPages);
                     
-                    // Check if value exceeds total range
-                    if (value < startNumber + options.TotalNumbers)
+                    // Check if value is within the requested range
+                    // Value must be >= startNumber and < endNumber
+                    if (value >= startNumber && value < endNumber)
                     {
                         pageNumbers[slotIndex] = value;
                     }
@@ -45,6 +57,10 @@ namespace Apex.NumberedBooksEngine.Core
                         pageNumbers[slotIndex] = -1; // Empty slot
                     }
                 }
+
+                // #region agent log
+                System.Diagnostics.Debug.WriteLine($"[CuttingStrategy] Page {pageIndex}: [{string.Join(", ", pageNumbers)}]");
+                // #endregion
 
                 yield return pageNumbers;
             }

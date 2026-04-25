@@ -7,6 +7,8 @@ using Apex.UI.Modules;
 using Apex.UI.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.IO;
 
 namespace Apex.UI
 {
@@ -14,10 +16,20 @@ namespace Apex.UI
     {
         public static IServiceCollection AddApexServices(this IServiceCollection services)
         {
-            // Database
+            // Database - use ProgramData for shared access or LocalApplicationData for per-user
             services.AddDbContext<ApexDbContext>(options =>
             {
-                var dbPath = @"C:\ProgramData\ApexPrintingSystem\Database\apex.db";
+                var dbFolder = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                    "ApexPrintingSystem", "Database");
+                
+                // Ensure directory exists
+                if (!Directory.Exists(dbFolder))
+                {
+                    Directory.CreateDirectory(dbFolder);
+                }
+                
+                var dbPath = Path.Combine(dbFolder, "apex.db");
                 options.UseSqlite($"Data Source={dbPath}");
             });
 
@@ -53,8 +65,32 @@ namespace Apex.UI
             services.AddScoped<Apex.Core.Interfaces.IDocumentConverter, Apex.Services.Conversion.DocumentConverter>();
             services.AddScoped<Apex.Core.Interfaces.IUniversalPrintPipeline, Apex.Services.Printing.UniversalPrintPipeline>();
             
+            // Batch Print Services
+            services.AddScoped<Apex.Core.Interfaces.IPrinterValidationService, Apex.Services.Printing.PrinterValidationService>();
+            
+            // 🔒 UNIFIED PRINT GATEWAY - Mandatory Entry Point for ALL printing
+            services.AddSingleton<Apex.Core.Interfaces.IPageStreamEngine, Apex.Services.Printing.PdfPageStreamEngine>();
+            services.AddSingleton<Apex.Core.Interfaces.IAdaptiveStreamDispatcher, Apex.Services.Printing.AdaptiveStreamDispatcher>();
+            services.AddSingleton<Apex.Core.Interfaces.IFaultToleranceManager, Apex.Services.Printing.FaultToleranceManager>();
+            services.AddSingleton<Apex.Core.Interfaces.IPrintGateway, Apex.Services.Printing.UnifiedPrintGateway>();
+            services.AddScoped<Apex.Core.Interfaces.IPrintJobLogger, Apex.Services.Printing.PrintJobLogger>();
+            services.AddScoped<Apex.Core.Interfaces.IPrintEngine, Apex.Services.Printing.PrintEngine>();
+            services.AddScoped<Apex.Services.Printing.BatchPrintJobManager>();
+            
+            // Distribution Services
+            services.AddScoped<Apex.Services.Printing.PrintDispatcher>();
+            services.AddScoped<Apex.Services.Printing.PrinterStatusService>();
+            
+            // Numbering Services
+            services.AddScoped<Apex.Services.Numbering.NumberingService>();
+            services.AddScoped<Apex.NumberedBooksEngine.Core.INumberSequencer, Apex.NumberedBooksEngine.Core.NumberSequencer>();
+            
+            // Dialog Service
+            services.AddSingleton<Apex.Core.Interfaces.IDialogService, Apex.UI.Services.DialogService>();
+            
             // Business Services
             services.AddScoped<QuotationService>();
+            services.AddScoped<IInvoiceService, InvoiceService>();
 
             // ViewModels
             services.AddSingleton<MainViewModel>();
@@ -65,12 +101,18 @@ namespace Apex.UI
             services.AddTransient<NumberedBooksViewModel>();
             services.AddTransient<NumberingWizardViewModel>();
             services.AddTransient<SystemPerformanceViewModel>();
-            services.AddTransient<PrinterDiagnosticsViewModel>();
             services.AddTransient<LogViewerViewModel>();
             services.AddTransient<DistributionViewModel>();
             services.AddTransient<QuotationViewModel>();
             services.AddTransient<BatchPrintViewModel>();
             services.AddTransient<PrintOperationsViewModel>();
+            services.AddTransient<LicensingViewModel>();
+            services.AddTransient<AnalyticsDashboardViewModel>();
+            services.AddTransient<UserManagementViewModel>();
+            services.AddTransient<ReportsViewModel>();
+            services.AddTransient<LoadBalancerViewModel>();
+            services.AddTransient<ColorCalibrationViewModel>();
+            services.AddTransient<TemplateDesignerViewModel>();
 
             // Views
             services.AddSingleton<MainWindow>();

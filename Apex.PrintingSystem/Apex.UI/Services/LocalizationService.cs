@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using System;
 
 namespace Apex.UI.Services
 {
@@ -27,16 +28,29 @@ namespace Apex.UI.Services
 
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentCulture)));
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FlowDirection)));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsArabicActive)));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsEnglishActive)));
                 }
             }
         }
 
-        public FlowDirection FlowDirection => 
+        public FlowDirection FlowDirection =>
             CurrentCulture.TextInfo.IsRightToLeft ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+
+        public bool IsArabicActive  => CurrentCulture.Name.StartsWith("ar");
+        public bool IsEnglishActive => !CurrentCulture.Name.StartsWith("ar");
 
         public void SwitchLanguage(string cultureCode)
         {
-            CurrentCulture = new CultureInfo(cultureCode);
+            // Normalize language codes: "en" -> "en-US", "ar" -> "ar" (or "ar-SA")
+            string normalizedCode = cultureCode.ToLowerInvariant() switch
+            {
+                "en" => "en-US",
+                "ar" => "ar",
+                _ => cultureCode
+            };
+            
+            CurrentCulture = new CultureInfo(normalizedCode);
         }
 
         /// <summary>
@@ -61,17 +75,52 @@ namespace Apex.UI.Services
             var app = Application.Current;
             if (app == null) return;
 
-            var dictName = culture.Name.StartsWith("ar") ? "Language.ar.xaml" : "Language.en.xaml";
-            var uri = new Uri($"Resources/{dictName}", UriKind.Relative);
+            bool isArabic = culture.Name.StartsWith("ar");
 
-            var oldDict = app.Resources.MergedDictionaries.FirstOrDefault(d => d.Source != null && d.Source.OriginalString.Contains("Language."));
-            if (oldDict != null)
+            // Use Dispatcher to ensure UI thread safety
+            app.Dispatcher.Invoke(() =>
             {
-                app.Resources.MergedDictionaries.Remove(oldDict);
-            }
+                try
+                {
+                    // Find the pre-loaded language dictionaries (loaded at startup in App.xaml)
+                    var arDict = app.Resources.MergedDictionaries
+                        .FirstOrDefault(d => d.Source != null && d.Source.OriginalString.Contains("Language.ar"));
+                    var enDict = app.Resources.MergedDictionaries
+                        .FirstOrDefault(d => d.Source != null && d.Source.OriginalString.Contains("Language.en"));
 
-            var newDict = new ResourceDictionary { Source = uri };
-            app.Resources.MergedDictionaries.Add(newDict);
+                    if (arDict != null && enDict != null)
+                    {
+                        // Remove both language dictionaries
+                        app.Resources.MergedDictionaries.Remove(arDict);
+                        app.Resources.MergedDictionaries.Remove(enDict);
+
+                        // Re-add in correct order: target language LAST (last wins for duplicate keys)
+                        if (isArabic)
+                        {
+                            app.Resources.MergedDictionaries.Add(enDict);
+                            app.Resources.MergedDictionaries.Add(arDict);
+                        }
+                        else
+                        {
+                            app.Resources.MergedDictionaries.Add(arDict);
+                            app.Resources.MergedDictionaries.Add(enDict);
+                        }
+                    }
+
+                    // Update FlowDirection for all windows
+                    var flowDirection = FlowDirection;
+
+                    foreach (Window window in app.Windows)
+                    {
+                        window.FlowDirection = flowDirection;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.IO.File.AppendAllText("localization_error.log",
+                        $"[{DateTime.Now}] Error switching language: {ex.Message}\n{ex.StackTrace}\n");
+                }
+            });
         }
     }
 }

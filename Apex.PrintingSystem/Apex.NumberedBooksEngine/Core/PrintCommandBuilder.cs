@@ -142,6 +142,11 @@ namespace Apex.NumberedBooksEngine.Core
                 var number = pageNumbers[i];
                 if (number < 0) continue;
 
+                // ═══════════════════════════════════════════════════════════════════
+                // DIAGNOSTIC LOGGING: Track number assignment to slot
+                // ═══════════════════════════════════════════════════════════════════
+                System.Diagnostics.Debug.WriteLine($"[PrintCommandBuilder] Assigning number {number} to slot {slot.Id} (index {i})");
+
                 // Get copy-specific style
                 var style = GetCopyStyleForType(slot, copyType);
                 string displayText = FormatNumberWithLabel(number, style);

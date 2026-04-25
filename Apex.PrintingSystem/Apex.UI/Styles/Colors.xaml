@@ -2,64 +2,147 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
     <!-- ══════════════════════════════════════════════════════════════════════════
-         APEX PRINTING SYSTEM - COLOR PALETTE
-         لوحة الألوان
+         APEX PRINTING SYSTEM - UNIFIED COLOR PALETTE
+         لوحة الألوان الموحدة
          ══════════════════════════════════════════════════════════════════════════ -->
     
-    <!-- Primary Colors - الألوان الرئيسية -->
+    <!-- ═══════════════════════════════════════════════════════════════════
+         TEXT STYLES - MUST BE FIRST to ensure availability for StaticResource
+         ═══════════════════════════════════════════════════════════════════ -->
+    <Style x:Key="Text.PageTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="28"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="#F1F5F9"/>
+    </Style>
+    
+    <!-- ═══════════════════════════════════════════════════════════════════
+         🎨 PRIMARY BRAND COLORS - الألوان الرئيسية للعلامة التجارية
+         ═══════════════════════════════════════════════════════════════════ -->
     <Color x:Key="Color.Primary">#2563EB</Color>
     <Color x:Key="Color.Primary.Light">#3B82F6</Color>
     <Color x:Key="Color.Primary.Lighter">#60A5FA</Color>
     <Color x:Key="Color.Primary.Lightest">#DBEAFE</Color>
-    <Color x:Key="Color.Primary.Dark">#1E40AF</Color>
+    <Color x:Key="Color.Primary.Dark">#1D4ED8</Color>
+    <Color x:Key="Color.Primary.Darkest">#1E40AF</Color>
     
-    <!-- Success Colors - ألوان النجاح -->
+    <!-- ═══════════════════════════════════════════════════════════════════
+         ✅ SUCCESS COLORS - ألوان النجاح
+         ═══════════════════════════════════════════════════════════════════ -->
     <Color x:Key="Color.Success">#10B981</Color>
     <Color x:Key="Color.Success.Light">#34D399</Color>
+    <Color x:Key="Color.Success.Lighter">#D1FAE5</Color>
     <Color x:Key="Color.Success.Dark">#059669</Color>
+    <Color x:Key="Color.Success.Darkest">#047857</Color>
     
-    <!-- Warning Colors - ألوان التحذير -->
+    <!-- ═══════════════════════════════════════════════════════════════════
+         ⚠️ WARNING COLORS - ألوان التحذير
+         ═══════════════════════════════════════════════════════════════════ -->
     <Color x:Key="Color.Warning">#F59E0B</Color>
     <Color x:Key="Color.Warning.Light">#FBBF24</Color>
+    <Color x:Key="Color.Warning.Lighter">#FEF3C7</Color>
     <Color x:Key="Color.Warning.Dark">#D97706</Color>
+    <Color x:Key="Color.Warning.Darkest">#B45309</Color>
     
-    <!-- Error Colors - ألوان الخطأ -->
+    <!-- ═══════════════════════════════════════════════════════════════════
+         ❌ ERROR COLORS - ألوان الخطأ
+         ═══════════════════════════════════════════════════════════════════ -->
     <Color x:Key="Color.Error">#EF4444</Color>
     <Color x:Key="Color.Error.Light">#F87171</Color>
+    <Color x:Key="Color.Error.Lighter">#FEE2E2</Color>
     <Color x:Key="Color.Error.Dark">#DC2626</Color>
+    <Color x:Key="Color.Error.Darkest">#B91C1C</Color>
     
-    <!-- Neutral Colors - الألوان المحايدة -->
-    <Color x:Key="Color.Background">#F9FAFB</Color>
-    <Color x:Key="Color.Surface">#FFFFFF</Color>
-    <Color x:Key="Color.Surface.Elevated">#F3F4F6</Color>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         💜 ACCENT COLORS - ألوان إضافية
+         ═══════════════════════════════════════════════════════════════════ -->
+    <Color x:Key="Color.Purple">#7C3AED</Color>
+    <Color x:Key="Color.Purple.Light">#A78BFA</Color>
+    <Color x:Key="Color.Purple.Lighter">#EDE9FE</Color>
+    <Color x:Key="Color.Purple.Dark">#6D28D9</Color>
     
-    <!-- Text Colors - ألوان النص -->
-    <Color x:Key="Color.Text.Primary">#111827</Color>
-    <Color x:Key="Color.Text.Secondary">#6B7280</Color>
-    <Color x:Key="Color.Text.Disabled">#9CA3AF</Color>
+    <Color x:Key="Color.Cyan">#06B6D4</Color>
+    <Color x:Key="Color.Cyan.Light">#22D3EE</Color>
+    <Color x:Key="Color.Cyan.Lighter">#CFFAFE</Color>
+    <Color x:Key="Color.Cyan.Dark">#0891B2</Color>
+    
+    <Color x:Key="Color.Pink">#EC4899</Color>
+    <Color x:Key="Color.Pink.Light">#F472B6</Color>
+    <Color x:Key="Color.Pink.Lighter">#FCE7F3</Color>
+    
+    <!-- ═══════════════════════════════════════════════════════════════════
+         🎨 NEUTRAL / SLATE COLORS - الألوان المحايدة
+         ═══════════════════════════════════════════════════════════════════ -->
+    <Color x:Key="Color.Slate.50">#F8FAFC</Color>
+    <Color x:Key="Color.Slate.100">#F1F5F9</Color>
+    <Color x:Key="Color.Slate.200">#E2E8F0</Color>
+    <Color x:Key="Color.Slate.300">#CBD5E1</Color>
+    <Color x:Key="Color.Slate.400">#94A3B8</Color>
+    <Color x:Key="Color.Slate.500">#64748B</Color>
+    <Color x:Key="Color.Slate.600">#475569</Color>
+    <Color x:Key="Color.Slate.700">#334155</Color>
+    <Color x:Key="Color.Slate.800">#1E293B</Color>
+    <Color x:Key="Color.Slate.900">#0F172A</Color>
+    
+    <!-- ═══════════════════════════════════════════════════════════════════
+         📄 SURFACE COLORS - Dark Mode
+         ═══════════════════════════════════════════════════════════════════ -->
+    <Color x:Key="Color.Background">#0F172A</Color>
+    <Color x:Key="Color.Surface">#1E293B</Color>
+    <Color x:Key="Color.Surface.Elevated">#334155</Color>
+    <Color x:Key="Color.Surface.Overlay">#00000080</Color>
+    
+    <!-- ═══════════════════════════════════════════════════════════════════
+         🌙 DARK MODE COLORS - ألوان الوضع الداكن
+         ═══════════════════════════════════════════════════════════════════ -->
+    <Color x:Key="Color.Dark.Background">#0F172A</Color>
+    <Color x:Key="Color.Dark.Surface">#1E293B</Color>
+    <Color x:Key="Color.Dark.Surface.Elevated">#334155</Color>
+    <Color x:Key="Color.Dark.Border">#334155</Color>
+    <Color x:Key="Color.Dark.Border.Light">#475569</Color>
+    <Color x:Key="Color.Dark.Text.Primary">#FFFFFF</Color>
+    <Color x:Key="Color.Dark.Text.Secondary">#94A3B8</Color>
+    <Color x:Key="Color.Dark.Text.Muted">#64748B</Color>
+    
+    <!-- ═══════════════════════════════════════════════════════════════════
+         📝 TEXT COLORS - ألوان النص
+         ═══════════════════════════════════════════════════════════════════ -->
+    <Color x:Key="Color.Text.Primary">#F1F5F9</Color>
+    <Color x:Key="Color.Text.Secondary">#94A3B8</Color>
+    <Color x:Key="Color.Text.Tertiary">#64748B</Color>
+    <Color x:Key="Color.Text.Disabled">#475569</Color>
     <Color x:Key="Color.Text.OnPrimary">#FFFFFF</Color>
+    <Color x:Key="Color.Text.OnDark">#F8FAFC</Color>
     
-    <!-- Border Colors - ألوان الحدود -->
-    <Color x:Key="Color.Border.Light">#E5E7EB</Color>
-    <Color x:Key="Color.Border.Medium">#D1D5DB</Color>
-    <Color x:Key="Color.Border.Dark">#9CA3AF</Color>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         🔲 BORDER COLORS - ألوان الحدود
+         ═══════════════════════════════════════════════════════════════════ -->
+    <Color x:Key="Color.Border.Light">#334155</Color>
+    <Color x:Key="Color.Border.Medium">#475569</Color>
+    <Color x:Key="Color.Border.Dark">#64748B</Color>
+    <Color x:Key="Color.Border.Focus">#2563EB</Color>
     
-    <!-- Sidebar Colors - ألوان الشريط الجانبي -->
-    <Color x:Key="Color.Sidebar.Background">#1F2937</Color>
-    <Color x:Key="Color.Sidebar.Text">#D1D5DB</Color>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         📱 SIDEBAR COLORS - ألوان الشريط الجانبي
+         ═══════════════════════════════════════════════════════════════════ -->
+    <Color x:Key="Color.Sidebar.Background">#1E293B</Color>
+    <Color x:Key="Color.Sidebar.Header">#0F172A</Color>
+    <Color x:Key="Color.Sidebar.Text">#94A3B8</Color>
     <Color x:Key="Color.Sidebar.Text.Active">#FFFFFF</Color>
-    <Color x:Key="Color.Sidebar.Hover">#374151</Color>
+    <Color x:Key="Color.Sidebar.Hover">#334155</Color>
     <Color x:Key="Color.Sidebar.Active">#2563EB</Color>
+    <Color x:Key="Color.Sidebar.Divider">#334155</Color>
     
-    <!-- Interaction Colors - ألوان التفاعل -->
-    <Color x:Key="Color.Hover">#F3F4F6</Color>
-    <Color x:Key="Color.Active">#E5E7EB</Color>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         🖱️ INTERACTION COLORS - ألوان التفاعل
+         ═══════════════════════════════════════════════════════════════════ -->
+    <Color x:Key="Color.Hover">#334155</Color>
+    <Color x:Key="Color.Active">#475569</Color>
     <Color x:Key="Color.Focus">#2563EB</Color>
-    <Color x:Key="Color.Disabled">#F3F4F6</Color>
-    <Color x:Key="Color.Divider">#E5E7EB</Color>
+    <Color x:Key="Color.Disabled">#334155</Color>
+    <Color x:Key="Color.Divider">#334155</Color>
     
     <!-- ══════════════════════════════════════════════════════════════════════════
-         BRUSHES - الفرش
+         SOLID COLOR BRUSHES - الفرش الصلبة
          ══════════════════════════════════════════════════════════════════════════ -->
     
     <!-- Primary Brushes -->
@@ -68,44 +151,75 @@
     <SolidColorBrush x:Key="Brush.Primary.Lighter" Color="{StaticResource Color.Primary.Lighter}"/>
     <SolidColorBrush x:Key="Brush.Primary.Lightest" Color="{StaticResource Color.Primary.Lightest}"/>
     <SolidColorBrush x:Key="Brush.Primary.Dark" Color="{StaticResource Color.Primary.Dark}"/>
+    <SolidColorBrush x:Key="Brush.Primary.Darkest" Color="{StaticResource Color.Primary.Darkest}"/>
     
     <!-- Success Brushes -->
     <SolidColorBrush x:Key="Brush.Success" Color="{StaticResource Color.Success}"/>
     <SolidColorBrush x:Key="Brush.Success.Light" Color="{StaticResource Color.Success.Light}"/>
+    <SolidColorBrush x:Key="Brush.Success.Lighter" Color="{StaticResource Color.Success.Lighter}"/>
     <SolidColorBrush x:Key="Brush.Success.Dark" Color="{StaticResource Color.Success.Dark}"/>
     
     <!-- Warning Brushes -->
     <SolidColorBrush x:Key="Brush.Warning" Color="{StaticResource Color.Warning}"/>
     <SolidColorBrush x:Key="Brush.Warning.Light" Color="{StaticResource Color.Warning.Light}"/>
+    <SolidColorBrush x:Key="Brush.Warning.Lighter" Color="{StaticResource Color.Warning.Lighter}"/>
     <SolidColorBrush x:Key="Brush.Warning.Dark" Color="{StaticResource Color.Warning.Dark}"/>
     
     <!-- Error Brushes -->
     <SolidColorBrush x:Key="Brush.Error" Color="{StaticResource Color.Error}"/>
     <SolidColorBrush x:Key="Brush.Error.Light" Color="{StaticResource Color.Error.Light}"/>
+    <SolidColorBrush x:Key="Brush.Error.Lighter" Color="{StaticResource Color.Error.Lighter}"/>
     <SolidColorBrush x:Key="Brush.Error.Dark" Color="{StaticResource Color.Error.Dark}"/>
+    
+    <!-- Accent Brushes -->
+    <SolidColorBrush x:Key="Brush.Purple" Color="{StaticResource Color.Purple}"/>
+    <SolidColorBrush x:Key="Brush.Purple.Light" Color="{StaticResource Color.Purple.Light}"/>
+    <SolidColorBrush x:Key="Brush.Purple.Lighter" Color="{StaticResource Color.Purple.Lighter}"/>
+    <SolidColorBrush x:Key="Brush.Cyan" Color="{StaticResource Color.Cyan}"/>
+    <SolidColorBrush x:Key="Brush.Cyan.Lighter" Color="{StaticResource Color.Cyan.Lighter}"/>
+    <SolidColorBrush x:Key="Brush.Pink" Color="{StaticResource Color.Pink}"/>
+    <SolidColorBrush x:Key="Brush.Pink.Lighter" Color="{StaticResource Color.Pink.Lighter}"/>
+    
+    <!-- Slate Brushes -->
+    <SolidColorBrush x:Key="Brush.Slate.50" Color="{StaticResource Color.Slate.50}"/>
+    <SolidColorBrush x:Key="Brush.Slate.100" Color="{StaticResource Color.Slate.100}"/>
+    <SolidColorBrush x:Key="Brush.Slate.200" Color="{StaticResource Color.Slate.200}"/>
+    <SolidColorBrush x:Key="Brush.Slate.300" Color="{StaticResource Color.Slate.300}"/>
+    <SolidColorBrush x:Key="Brush.Slate.400" Color="{StaticResource Color.Slate.400}"/>
+    <SolidColorBrush x:Key="Brush.Slate.500" Color="{StaticResource Color.Slate.500}"/>
+    <SolidColorBrush x:Key="Brush.Slate.600" Color="{StaticResource Color.Slate.600}"/>
+    <SolidColorBrush x:Key="Brush.Slate.700" Color="{StaticResource Color.Slate.700}"/>
+    <SolidColorBrush x:Key="Brush.Slate.800" Color="{StaticResource Color.Slate.800}"/>
+    <SolidColorBrush x:Key="Brush.Slate.900" Color="{StaticResource Color.Slate.900}"/>
     
     <!-- Surface Brushes -->
     <SolidColorBrush x:Key="Brush.Background" Color="{StaticResource Color.Background}"/>
     <SolidColorBrush x:Key="Brush.Surface" Color="{StaticResource Color.Surface}"/>
     <SolidColorBrush x:Key="Brush.Surface.Elevated" Color="{StaticResource Color.Surface.Elevated}"/>
+    <SolidColorBrush x:Key="Brush.Surface.Overlay" Color="{StaticResource Color.Surface.Overlay}"/>
     
     <!-- Text Brushes -->
     <SolidColorBrush x:Key="Brush.Text.Primary" Color="{StaticResource Color.Text.Primary}"/>
     <SolidColorBrush x:Key="Brush.Text.Secondary" Color="{StaticResource Color.Text.Secondary}"/>
+    <SolidColorBrush x:Key="Brush.Text.Tertiary" Color="{StaticResource Color.Text.Tertiary}"/>
     <SolidColorBrush x:Key="Brush.Text.Disabled" Color="{StaticResource Color.Text.Disabled}"/>
     <SolidColorBrush x:Key="Brush.Text.OnPrimary" Color="{StaticResource Color.Text.OnPrimary}"/>
+    <SolidColorBrush x:Key="Brush.Text.OnDark" Color="{StaticResource Color.Text.OnDark}"/>
     
     <!-- Border Brushes -->
     <SolidColorBrush x:Key="Brush.Border.Light" Color="{StaticResource Color.Border.Light}"/>
     <SolidColorBrush x:Key="Brush.Border.Medium" Color="{StaticResource Color.Border.Medium}"/>
     <SolidColorBrush x:Key="Brush.Border.Dark" Color="{StaticResource Color.Border.Dark}"/>
+    <SolidColorBrush x:Key="Brush.Border.Focus" Color="{StaticResource Color.Border.Focus}"/>
     
     <!-- Sidebar Brushes -->
     <SolidColorBrush x:Key="Brush.Sidebar.Background" Color="{StaticResource Color.Sidebar.Background}"/>
+    <SolidColorBrush x:Key="Brush.Sidebar.Header" Color="{StaticResource Color.Sidebar.Header}"/>
     <SolidColorBrush x:Key="Brush.Sidebar.Text" Color="{StaticResource Color.Sidebar.Text}"/>
     <SolidColorBrush x:Key="Brush.Sidebar.Text.Active" Color="{StaticResource Color.Sidebar.Text.Active}"/>
     <SolidColorBrush x:Key="Brush.Sidebar.Hover" Color="{StaticResource Color.Sidebar.Hover}"/>
     <SolidColorBrush x:Key="Brush.Sidebar.Active" Color="{StaticResource Color.Sidebar.Active}"/>
+    <SolidColorBrush x:Key="Brush.Sidebar.Divider" Color="{StaticResource Color.Sidebar.Divider}"/>
     
     <!-- Interaction Brushes -->
     <SolidColorBrush x:Key="Brush.Hover" Color="{StaticResource Color.Hover}"/>
@@ -114,10 +228,76 @@
     <SolidColorBrush x:Key="Brush.Disabled" Color="{StaticResource Color.Disabled}"/>
     <SolidColorBrush x:Key="Brush.Divider" Color="{StaticResource Color.Divider}"/>
     
-    <!-- Gradient Brushes -->
-    <LinearGradientBrush x:Key="Gradient.Card.Hover" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#FFFFFF" Offset="0"/>
-        <GradientStop Color="#F9FAFB" Offset="1"/>
+    <!-- Dark Mode Brushes -->
+    <SolidColorBrush x:Key="Brush.Dark.Background" Color="{StaticResource Color.Dark.Background}"/>
+    <SolidColorBrush x:Key="Brush.Dark.Surface" Color="{StaticResource Color.Dark.Surface}"/>
+    <SolidColorBrush x:Key="Brush.Dark.Surface.Elevated" Color="{StaticResource Color.Dark.Surface.Elevated}"/>
+    <SolidColorBrush x:Key="Brush.Dark.Border" Color="{StaticResource Color.Dark.Border}"/>
+    <SolidColorBrush x:Key="Brush.Dark.Border.Light" Color="{StaticResource Color.Dark.Border.Light}"/>
+    <SolidColorBrush x:Key="Brush.Dark.Text.Primary" Color="{StaticResource Color.Dark.Text.Primary}"/>
+    <SolidColorBrush x:Key="Brush.Dark.Text.Secondary" Color="{StaticResource Color.Dark.Text.Secondary}"/>
+    <SolidColorBrush x:Key="Brush.Dark.Text.Muted" Color="{StaticResource Color.Dark.Text.Muted}"/>
+    
+    <!-- ══════════════════════════════════════════════════════════════════════════
+         GRADIENT BRUSHES - الفرش المتدرجة
+         ══════════════════════════════════════════════════════════════════════════ -->
+    
+    <!-- Card Gradients -->
+    <LinearGradientBrush x:Key="Gradient.Card.Blue" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#EFF6FF" Offset="0"/>
+        <GradientStop Color="#DBEAFE" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="Gradient.Card.Green" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#ECFDF5" Offset="0"/>
+        <GradientStop Color="#D1FAE5" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="Gradient.Card.Yellow" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#FFFBEB" Offset="0"/>
+        <GradientStop Color="#FEF3C7" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="Gradient.Card.Red" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#FEF2F2" Offset="0"/>
+        <GradientStop Color="#FEE2E2" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="Gradient.Card.Purple" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#F5F3FF" Offset="0"/>
+        <GradientStop Color="#EDE9FE" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="Gradient.Card.Cyan" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#ECFEFF" Offset="0"/>
+        <GradientStop Color="#CFFAFE" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <!-- Button Gradients -->
+    <LinearGradientBrush x:Key="Gradient.Button.Primary" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#3B82F6" Offset="0"/>
+        <GradientStop Color="#2563EB" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="Gradient.Button.Success" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#34D399" Offset="0"/>
+        <GradientStop Color="#10B981" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="Gradient.Button.Purple" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#A78BFA" Offset="0"/>
+        <GradientStop Color="#7C3AED" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <!-- Header Gradients -->
+    <LinearGradientBrush x:Key="Gradient.Header.Dark" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#1E293B" Offset="0"/>
+        <GradientStop Color="#334155" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="Gradient.Sidebar" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#1E293B" Offset="0"/>
+        <GradientStop Color="#0F172A" Offset="1"/>
     </LinearGradientBrush>
     
 </ResourceDictionary>

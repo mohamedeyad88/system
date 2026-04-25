@@ -23,13 +23,13 @@ namespace Apex.NumberedBooksEngine.Core
 
             // Try loading as bitmap first (for images)
             var bitmap = SKBitmap.Decode(templateStream);
-            if (bitmap != null)
+            if (bitmap == null)
             {
-                _cachedImage = SKImage.FromBitmap(bitmap);
-                return _cachedImage;
+                throw new InvalidOperationException("Failed to decode template image (bitmap is null).");
             }
-            
-            throw new NotSupportedException("Could not decode template. Ensure it is a valid image format (PNG, JPG) or specify PDF format.");
+
+            _cachedImage = SKImage.FromBitmap(bitmap) ?? throw new InvalidOperationException("Failed to create SKImage from decoded template bitmap.");
+            return _cachedImage;
         }
 
         private SKImage LoadPdfTemplate(Stream pdfStream)
@@ -47,7 +47,10 @@ namespace Apex.NumberedBooksEngine.Core
                 ms.Position = 0;
                 
                 var skBitmap = SKBitmap.Decode(ms);
-                _cachedImage = SKImage.FromBitmap(skBitmap);
+                if (skBitmap == null)
+                    throw new InvalidOperationException("Failed to decode PDF render to bitmap (skBitmap is null).");
+
+                _cachedImage = SKImage.FromBitmap(skBitmap) ?? throw new InvalidOperationException("Failed to create SKImage from PDF bitmap.");
                 return _cachedImage;
             }
             catch (Exception ex)

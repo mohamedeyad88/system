@@ -10,6 +10,7 @@ namespace Apex.Core.Models
     public class PrinterInfo : INotifyPropertyChanged
     {
         private bool _isSelected;
+        private bool _isChecked;
         private bool _isOnline;
         private int _queueLength;
         private string _statusText = "Unknown";
@@ -27,6 +28,15 @@ namespace Apex.Core.Models
         {
             get => _isSelected;
             set { _isSelected = value; OnPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// Whether this printer is checked for batch printing (multi-select).
+        /// </summary>
+        public bool IsChecked
+        {
+            get => _isChecked;
+            set { _isChecked = value; OnPropertyChanged(); }
         }
 
         public bool IsOnline

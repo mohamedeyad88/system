@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="900"
-             Background="#F8FAFC">
+             Background="#0F172A">
     
     <UserControl.Resources>
         <!-- Metric Card -->
@@ -192,7 +192,7 @@
                         <ItemsControl ItemsSource="{Binding RecentActivities}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="#F8FAFC" CornerRadius="8" Padding="12" Margin="0,0,0,8">
+                                    <Border Background="#0F172A" CornerRadius="8" Padding="12" Margin="0,0,0,8">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>

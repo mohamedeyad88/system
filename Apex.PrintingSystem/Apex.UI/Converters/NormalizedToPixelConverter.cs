@@ -34,7 +34,9 @@ namespace Apex.UI.Converters
                 
                 // Clamp to prevent negative or excessively large values
                 var result = normalized * totalSize;
-                return Math.Max(0, Math.Min(result, totalSize));
+                var clamped = Math.Max(0, Math.Min(result, totalSize));
+                
+                return clamped;
             }
             catch
             {
@@ -44,7 +46,7 @@ namespace Apex.UI.Converters
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return new object[] { Binding.DoNothing };
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -54,7 +56,7 @@ namespace Apex.UI.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return Binding.DoNothing;
         }
     }
 }

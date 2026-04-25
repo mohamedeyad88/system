@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.API\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0-windows\\staticwebassets\\msbuild.Apex.API.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0-windows\\staticwebassets\\msbuild.build.Apex.API.props",
+      "PackagePath": "build\\Apex.API.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0-windows\\staticwebassets\\msbuild.buildMultiTargeting.Apex.API.props",
+      "PackagePath": "buildMultiTargeting\\Apex.API.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0-windows\\staticwebassets\\msbuild.buildTransitive.Apex.API.props",
+      "PackagePath": "buildTransitive\\Apex.API.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

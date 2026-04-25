@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex — لوحة الطباعة الذكية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #0F172A; color: #F1F5F9; }
+        .card { background: #1E293B; border-radius: 12px; padding: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+        .stat-value { font-size: 2rem; font-weight: 800; }
+        .badge { display:inline-block; padding:2px 10px; border-radius:9999px; font-size:0.75rem; font-weight:600; }
+        .badge-success { background:#166534; color:#86efac; }
+        .badge-warning { background:#713f12; color:#fde68a; }
+        .badge-error   { background:#7f1d1d; color:#fca5a5; }
+        .badge-info    { background:#1e3a5f; color:#93c5fd; }
+        .badge-sending { background:#4c1d95; color:#c4b5fd; }
+        #activity-list { max-height: 340px; overflow-y: auto; }
+        #jobs-list     { max-height: 300px; overflow-y: auto; }
+        .job-row:hover { background: #334155; }
+        .pulse { animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:#1e293b; }
+        ::-webkit-scrollbar-thumb { background:#475569; border-radius:3px; }
+    </style>
+</head>
+<body class="min-h-screen p-6">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-white">🖨️ Apex — لوحة الطباعة الذكية</h1>
+            <p class="text-slate-400 text-sm mt-1">مراقبة مباشرة لجميع الطابعات والوظائف</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <div id="connection-status" class="flex items-center gap-2 text-sm">
+                <div id="status-dot" class="w-2 h-2 rounded-full bg-red-500 pulse"></div>
+                <span id="status-text" class="text-slate-400">جارٍ الاتصال...</span>
+            </div>
+            <span id="last-update" class="text-slate-500 text-xs"></span>
+        </div>
+    </div>
+
+    <!-- KPI Cards Row -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="card">
+            <p class="text-slate-400 text-sm mb-1">قيد الانتظار</p>
+            <p class="stat-value text-yellow-400" id="stat-pending">—</p>
+            <p class="text-slate-500 text-xs mt-1">وظيفة</p>
+        </div>
+        <div class="card">
+            <p class="text-slate-400 text-sm mb-1">نشطة الآن</p>
+            <p class="stat-value text-blue-400" id="stat-active">—</p>
+            <p class="text-slate-500 text-xs mt-1">وظيفة</p>
+        </div>
+        <div class="card">
+            <p class="text-slate-400 text-sm mb-1">مكتملة</p>
+            <p class="stat-value text-green-400" id="stat-completed">—</p>
+            <p class="text-slate-500 text-xs mt-1">وظيفة</p>
+        </div>
+        <div class="card">
+            <p class="text-slate-400 text-sm mb-1">معدل النجاح</p>
+            <p class="stat-value text-purple-400" id="stat-success-rate">—</p>
+            <p class="text-slate-500 text-xs mt-1">%</p>
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+        <!-- Live Jobs (2/3 width) -->
+        <div class="card lg:col-span-2">
+            <h2 class="font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                <span>وظائف الطباعة</span>
+                <span id="jobs-count" class="text-slate-500 text-sm font-normal"></span>
+            </h2>
+            <div id="jobs-list">
+                <p id="jobs-empty" class="text-slate-500 text-sm text-center py-8">لا توجد وظائف حالياً</p>
+            </div>
+        </div>
+
+        <!-- Activity Feed (1/3 width) -->
+        <div class="card">
+            <h2 class="font-semibold text-slate-200 mb-4">السجل الحي</h2>
+            <div id="activity-list">
+                <p class="text-slate-500 text-sm text-center py-4">في انتظار الأحداث...</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const jobsMap = new Map();   // jobId → job data
+        let activityItems = [];      // max 50
+
+        // ── SignalR connection ────────────────────────────────────────
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/hubs/print")
+            .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
+            .configureLogging(signalR.LogLevel.Warning)
+            .build();
+
+        connection.onreconnecting(() => setStatus(false, 'إعادة الاتصال...'));
+        connection.onreconnected(() => setStatus(true, 'متصل'));
+        connection.onclose(() => setStatus(false, 'منقطع'));
+
+        connection.on("OnJobUpdate", (job) => {
+            jobsMap.set(job.jobId, job);
+            renderJobs();
+            addActivity(job);
+        });
+
+        connection.on("OnPrinterHealth", (health) => {
+            addActivity({
+                jobName: health.printerName,
+                state: health.circuitState === 'Open' ? 'Failed' : 'Completed',
+                message: `صحة: ${health.healthScore}% | الدارة: ${translateCircuit(health.circuitState)}`,
+                updatedAt: health.updatedAt
+            });
+        });
+
+        connection.on("OnStatsUpdate", (stats) => {
+            document.getElementById('stat-pending').textContent    = stats.pendingJobs;
+            document.getElementById('stat-active').textContent     = stats.activeJobs;
+            document.getElementById('stat-completed').textContent  = stats.completedJobs;
+            document.getElementById('stat-success-rate').textContent = stats.successRate;
+            document.getElementById('last-update').textContent = 'آخر تحديث: ' + stats.timestamp;
+        });
+
+        async function start() {
+            try {
+                await connection.start();
+                setStatus(true, 'متصل');
+            } catch (e) {
+                setStatus(false, 'فشل الاتصال');
+                setTimeout(start, 5000);
+            }
+        }
+        start();
+
+        // ── Render functions ──────────────────────────────────────────
+        function renderJobs() {
+            const list  = document.getElementById('jobs-list');
+            const empty = document.getElementById('jobs-empty');
+            const jobs  = [...jobsMap.values()].filter(
+                j => j.state !== 'Completed' && j.state !== 'Failed' && j.state !== 'Cancelled'
+            );
+
+            document.getElementById('jobs-count').textContent = jobs.length > 0 ? `(${jobs.length})` : '';
+
+            if (jobs.length === 0) {
+                list.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+            empty.style.display = 'none';
+
+            list.innerHTML = jobs.map(j => `
+                <div class="job-row flex items-center gap-3 p-2 rounded-lg mb-1 transition-colors">
+                    <span class="${badgeClass(j.state)} badge">${translateState(j.state)}</span>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-slate-200 truncate">${escHtml(j.jobName)}</p>
+                        <p class="text-xs text-slate-400">${escHtml(j.printerName)} · ${escHtml(j.message || '')}</p>
+                    </div>
+                    <div class="text-right">
+                        ${j.progress > 0
+                            ? `<div class="w-16 bg-slate-700 rounded-full h-1.5 mb-1"><div class="bg-blue-500 h-1.5 rounded-full" style="width:${j.progress}%"></div></div>`
+                            : ''}
+                        <p class="text-xs text-slate-500">${j.updatedAt || ''}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addActivity(job) {
+            activityItems.unshift({
+                text:  job.jobName,
+                sub:   job.message || job.printerName || '',
+                state: job.state,
+                time:  job.updatedAt || new Date().toTimeString().slice(0, 5)
+            });
+            if (activityItems.length > 50) activityItems.pop();
+            renderActivity();
+        }
+
+        function renderActivity() {
+            const el = document.getElementById('activity-list');
+            el.innerHTML = activityItems.map(a => `
+                <div class="flex gap-2 mb-2 items-start">
+                    <span class="text-slate-500 text-xs pt-0.5 shrink-0">${a.time}</span>
+                    <div class="min-w-0">
+                        <p class="text-sm text-slate-200 truncate">${escHtml(a.text)}</p>
+                        <p class="text-xs text-slate-400 truncate">${escHtml(a.sub)}</p>
+                    </div>
+                    <span class="${badgeClass(a.state)} badge shrink-0">${stateIcon(a.state)}</span>
+                </div>
+            `).join('') || '<p class="text-slate-500 text-sm text-center py-4">لا أحداث</p>';
+        }
+
+        // ── Helpers ───────────────────────────────────────────────────
+        function setStatus(ok, text) {
+            document.getElementById('status-dot').className =
+                `w-2 h-2 rounded-full ${ok ? 'bg-green-500' : 'bg-red-500 pulse'}`;
+            document.getElementById('status-text').textContent = text;
+            document.getElementById('status-text').className =
+                ok ? 'text-green-400 text-sm' : 'text-red-400 text-sm';
+        }
+
+        function translateState(s) {
+            const m = {
+                Queued: 'انتظار', Preparing: 'تحضير', Sending: 'إرسال',
+                Completed: 'مكتمل', Failed: 'فشل', Cancelled: 'ملغي', Retrying: 'إعادة محاولة'
+            };
+            return m[s] || s;
+        }
+
+        function translateCircuit(s) {
+            const m = { Closed: 'مغلق ✅', Open: 'مفتوح ⛔', HalfOpen: 'نصف مفتوح 🔄' };
+            return m[s] || s;
+        }
+
+        function badgeClass(s) {
+            const m = {
+                Completed: 'badge-success', Failed: 'badge-error', Retrying: 'badge-warning',
+                Sending: 'badge-sending', Queued: 'badge-info', Preparing: 'badge-info'
+            };
+            return m[s] || 'badge-info';
+        }
+
+        function stateIcon(s) {
+            const m = {
+                Completed: '✅', Failed: '❌', Retrying: '🔄', Sending: '📤',
+                Queued: '⏳', Preparing: '⚙️', Cancelled: '🚫'
+            };
+            return m[s] || '•';
+        }
+
+        function escHtml(s) {
+            if (!s) return '';
+            return String(s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>

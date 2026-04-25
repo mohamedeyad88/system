@@ -1,0 +1,6 @@
+d:\Apex\system\Apex.PrintingSystem\Apex.UI\bin\Release\net8.0-windows\win-x64\publish\net8.0-windows\win-x64\publish\Apex.Services.pdb
+d:\Apex\system\Apex.PrintingSystem\Apex.UI\bin\Release\net8.0-windows\win-x64\publish\net8.0-windows\win-x64\publish\Apex.Core.pdb
+d:\Apex\system\Apex.PrintingSystem\Apex.UI\bin\Release\net8.0-windows\win-x64\publish\net8.0-windows\win-x64\publish\Apex.NumberedBooksEngine.UI.pdb
+d:\Apex\system\Apex.PrintingSystem\Apex.UI\bin\Release\net8.0-windows\win-x64\publish\net8.0-windows\win-x64\publish\Apex.NumberedBooksEngine.pdb
+d:\Apex\system\Apex.PrintingSystem\Apex.UI\bin\Release\net8.0-windows\win-x64\publish\net8.0-windows\win-x64\publish\Apex.Data.pdb
+d:\Apex\system\Apex.PrintingSystem\Apex.UI\bin\Release\net8.0-windows\win-x64\publish\net8.0-windows\win-x64\publish\Apex.UI.exe

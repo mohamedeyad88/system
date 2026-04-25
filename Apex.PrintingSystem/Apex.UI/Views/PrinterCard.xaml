@@ -7,6 +7,7 @@
              d:DesignHeight="200" d:DesignWidth="280">
     
     <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <!-- Modern Button -->
         <Style x:Key="CardButton" TargetType="Button">
             <Setter Property="Background" Value="#F1F5F9"/>

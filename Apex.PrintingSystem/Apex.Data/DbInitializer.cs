@@ -24,20 +24,25 @@ namespace Apex.Data
 
         public async Task InitializeAsync()
         {
-            // 1. Apply Migrations (Schema Update)
-            await _migrationService.ApplyMigrationsAsync();
-
-            // 2. Seed System Settings
-            if (!await _context.Settings.AnyAsync())
+            try
             {
-                var settings = new List<SystemSettings>
+                await _migrationService.ApplyMigrationsAsync();
+
+                if (!await _context.Settings.AnyAsync())
                 {
-                    new SystemSettings { Key = "CompanyName", Value = "Apex Printing Press" },
-                    new SystemSettings { Key = "Language", Value = "en" },
-                    new SystemSettings { Key = "Theme", Value = "Light" }
-                };
-                await _context.Settings.AddRangeAsync(settings);
-                await _context.SaveChangesAsync();
+                    var settings = new List<SystemSettings>
+                    {
+                        new SystemSettings { Key = "CompanyName", Value = "Apex Printing Press" },
+                        new SystemSettings { Key = "Language",     Value = "en" },
+                        new SystemSettings { Key = "Theme",        Value = "Light" }
+                    };
+                    await _context.Settings.AddRangeAsync(settings);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
     }

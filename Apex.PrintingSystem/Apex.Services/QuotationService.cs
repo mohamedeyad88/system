@@ -18,6 +18,13 @@ namespace Apex.Services
             int quantity,
             decimal pricePerSheet)
         {
+            if (pages <= 0)
+                throw new ArgumentException("Pages must be positive", nameof(pages));
+            if (quantity <= 0)
+                throw new ArgumentException("Quantity must be positive", nameof(quantity));
+            if (pricePerSheet < 0)
+                throw new ArgumentException("Price cannot be negative", nameof(pricePerSheet));
+
             var quote = new PrintJobQuotation
             {
                 TotalPages = pages,
@@ -43,6 +50,17 @@ namespace Apex.Services
             List<FinishingService> finishingServices,
             decimal profitMargin)
         {
+            if (pages <= 0)
+                throw new ArgumentException("Pages must be positive", nameof(pages));
+            if (quantity <= 0)
+                throw new ArgumentException("Quantity must be positive", nameof(quantity));
+            if (pricePerSheet < 0)
+                throw new ArgumentException("Price cannot be negative", nameof(pricePerSheet));
+            if (hasCover && coverPrice < 0)
+                throw new ArgumentException("Cover price cannot be negative", nameof(coverPrice));
+            if (profitMargin < 0)
+                throw new ArgumentException("Profit margin cannot be negative", nameof(profitMargin));
+
             var quote = new PrintJobQuotation
             {
                 TotalPages = pages,

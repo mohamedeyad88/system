@@ -13,6 +13,7 @@ namespace Apex.Core.Interfaces
         
         // Restored methods
         Task<bool> PrintFileAsync(string printerName, string filePath, int copies);
+        Task<bool> PrintFileAsync(string printerName, string filePath, PrintJob jobWithSettings);
         PrinterType GetPrinterType(string printerName);
 
         // Capabilities

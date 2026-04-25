@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Apex UI (Release)",
+      "runtimeExecutable": "D:\\Apex\\system\\Publish\\Apex.UI.exe",
+      "runtimeArgs": [],
+      "port": 0
+    },
+    {
+      "name": "Apex UI (Debug)",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.UI\\Apex.UI.csproj", "-c", "Debug"],
+      "port": 0
+    }
+  ]
+}

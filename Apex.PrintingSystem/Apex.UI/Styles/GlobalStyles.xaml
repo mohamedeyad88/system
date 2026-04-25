@@ -1,0 +1,519 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- ══════════════════════════════════════════════════════════════════════════
+         APEX PRINTING SYSTEM - GLOBAL STYLES
+         الأنماط العامة الموحدة
+         ══════════════════════════════════════════════════════════════════════════ -->
+    
+    <!-- ═══════════════════════════════════════════════════════════════════
+         📦 CARD STYLES - أنماط البطاقات
+         ═══════════════════════════════════════════════════════════════════ -->
+    
+    <Style x:Key="Card" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
+        <Setter Property="CornerRadius" Value="16"/>
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.08" Color="#1E293B"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style x:Key="Card.Compact" TargetType="Border" BasedOn="{StaticResource Card}">
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="16"/>
+    </Style>
+    
+    <Style x:Key="Card.Interactive" TargetType="Border" BasedOn="{StaticResource Card}">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect BlurRadius="25" ShadowDepth="6" Opacity="0.12" Color="#1E293B"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!-- Stat Card Styles -->
+    <Style x:Key="StatCard" TargetType="Border">
+        <Setter Property="CornerRadius" Value="16"/>
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="15" ShadowDepth="3" Opacity="0.06" Color="#1E293B"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- ═══════════════════════════════════════════════════════════════════
+         🔘 BUTTON STYLES - أنماط الأزرار
+         ═══════════════════════════════════════════════════════════════════ -->
+    
+    <Style x:Key="Button.Primary" TargetType="Button">
+        <Setter Property="Background" Value="{DynamicResource Brush.Primary}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Padding" Value="16,10"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="{TemplateBinding Background}" 
+                            CornerRadius="8" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Primary.Dark}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Primary.Darkest}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Slate.300}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style x:Key="Button.Success" TargetType="Button">
+        <Setter Property="Background" Value="{DynamicResource Brush.Success}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Padding" Value="16,10"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="{TemplateBinding Background}" 
+                            CornerRadius="8" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Success.Dark}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style x:Key="Button.Secondary" TargetType="Button">
+        <Setter Property="Background" Value="{DynamicResource Brush.Slate.100}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.600}"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Padding" Value="14,8"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="{TemplateBinding Background}" 
+                            CornerRadius="8" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Slate.200}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style x:Key="Button.Outline" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Primary}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Padding" Value="14,8"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="{TemplateBinding Background}" 
+                            BorderBrush="{DynamicResource Brush.Primary}" BorderThickness="1.5"
+                            CornerRadius="8" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Primary.Lightest}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style x:Key="Button.Danger" TargetType="Button">
+        <Setter Property="Background" Value="{DynamicResource Brush.Error}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Padding" Value="16,10"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="{TemplateBinding Background}" 
+                            CornerRadius="8" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Error.Dark}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style x:Key="Button.Danger.Outline" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Error}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Padding" Value="14,8"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="{TemplateBinding Background}" 
+                            BorderBrush="{DynamicResource Brush.Error}" BorderThickness="1.5"
+                            CornerRadius="8" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Error.Lighter}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style x:Key="Button.Icon" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.500}"/>
+        <Setter Property="Width" Value="36"/>
+        <Setter Property="Height" Value="36"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="8">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Slate.100}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- ═══════════════════════════════════════════════════════════════════
+         📝 TEXT STYLES - أنماط النص
+         ═══════════════════════════════════════════════════════════════════ -->
+    
+    <Style x:Key="Text.PageTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="28"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.900}"/>
+    </Style>
+    
+    <Style x:Key="Text.SectionTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.800}"/>
+    </Style>
+    
+    <Style x:Key="Text.CardTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.800}"/>
+    </Style>
+    
+    <Style x:Key="Text.Body" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.700}"/>
+    </Style>
+    
+    <Style x:Key="Text.Caption" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.500}"/>
+    </Style>
+    
+    <Style x:Key="Text.Small" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.400}"/>
+    </Style>
+    
+    <Style x:Key="Text.StatValue" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="32"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.900}"/>
+    </Style>
+    
+    <!-- ═══════════════════════════════════════════════════════════════════
+         📊 BADGE STYLES - أنماط الشارات
+         ═══════════════════════════════════════════════════════════════════ -->
+    
+    <Style x:Key="Badge" TargetType="Border">
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="Background" Value="{DynamicResource Brush.Slate.100}"/>
+    </Style>
+    
+    <Style x:Key="Badge.Primary" TargetType="Border" BasedOn="{StaticResource Badge}">
+        <Setter Property="Background" Value="{DynamicResource Brush.Primary.Lightest}"/>
+    </Style>
+    
+    <Style x:Key="Badge.Success" TargetType="Border" BasedOn="{StaticResource Badge}">
+        <Setter Property="Background" Value="{DynamicResource Brush.Success.Lighter}"/>
+    </Style>
+    
+    <Style x:Key="Badge.Warning" TargetType="Border" BasedOn="{StaticResource Badge}">
+        <Setter Property="Background" Value="{DynamicResource Brush.Warning.Lighter}"/>
+    </Style>
+    
+    <Style x:Key="Badge.Error" TargetType="Border" BasedOn="{StaticResource Badge}">
+        <Setter Property="Background" Value="{DynamicResource Brush.Error.Lighter}"/>
+    </Style>
+    
+    <!-- ═══════════════════════════════════════════════════════════════════
+         🔄 STATUS INDICATOR - مؤشر الحالة
+         ═══════════════════════════════════════════════════════════════════ -->
+    
+    <Style x:Key="StatusDot" TargetType="Ellipse">
+        <Setter Property="Width" Value="10"/>
+        <Setter Property="Height" Value="10"/>
+        <Setter Property="Fill" Value="{DynamicResource Brush.Slate.400}"/>
+    </Style>
+    
+    <Style x:Key="StatusDot.Online" TargetType="Ellipse" BasedOn="{StaticResource StatusDot}">
+        <Setter Property="Fill" Value="{DynamicResource Brush.Success}"/>
+    </Style>
+    
+    <Style x:Key="StatusDot.Offline" TargetType="Ellipse" BasedOn="{StaticResource StatusDot}">
+        <Setter Property="Fill" Value="{DynamicResource Brush.Error}"/>
+    </Style>
+    
+    <Style x:Key="StatusDot.Busy" TargetType="Ellipse" BasedOn="{StaticResource StatusDot}">
+        <Setter Property="Fill" Value="{DynamicResource Brush.Warning}"/>
+    </Style>
+    
+    <!-- ═══════════════════════════════════════════════════════════════════
+         📥 INPUT STYLES - أنماط الإدخال
+         ═══════════════════════════════════════════════════════════════════ -->
+    
+    <Style x:Key="Input.Text" TargetType="TextBox">
+        <Setter Property="Padding" Value="12,10"/>
+        <Setter Property="Background" Value="{DynamicResource Brush.Slate.50}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Light}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.800}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Border x:Name="border" Background="{TemplateBinding Background}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8" Padding="{TemplateBinding Padding}">
+                        <ScrollViewer x:Name="PART_ContentHost"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush.Border.Medium}"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush.Primary}"/>
+                            <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- ═══════════════════════════════════════════════════════════════════
+         📋 LIST STYLES - أنماط القوائم
+         ═══════════════════════════════════════════════════════════════════ -->
+    
+    <Style x:Key="ListItem" TargetType="Border">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Padding" Value="12,10"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource Brush.Slate.50}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!-- ═══════════════════════════════════════════════════════════════════
+         🎯 ICON CONTAINER - حاوية الأيقونات
+         ═══════════════════════════════════════════════════════════════════ -->
+    
+    <Style x:Key="IconContainer" TargetType="Border">
+        <Setter Property="Width" Value="40"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Background" Value="{DynamicResource Brush.Primary.Lightest}"/>
+    </Style>
+    
+    <Style x:Key="IconContainer.Large" TargetType="Border" BasedOn="{StaticResource IconContainer}">
+        <Setter Property="Width" Value="56"/>
+        <Setter Property="Height" Value="56"/>
+        <Setter Property="CornerRadius" Value="14"/>
+    </Style>
+    
+    <!-- ═══════════════════════════════════════════════════════════════════
+         🌙 DARK MODE STYLES - أنماط الوضع الداكن
+         ═══════════════════════════════════════════════════════════════════ -->
+    
+    <!-- Dark Card -->
+    <Style x:Key="Card.Dark" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource Brush.Dark.Surface}"/>
+        <Setter Property="CornerRadius" Value="16"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Dark.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="24"/>
+    </Style>
+    
+    <Style x:Key="Card.Dark.Glass" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource Brush.Dark.Surface}"/>
+        <Setter Property="CornerRadius" Value="16"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Dark.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="24"/>
+    </Style>
+    
+    <!-- Dark Button Primary -->
+    <Style x:Key="Button.Dark.Primary" TargetType="Button">
+        <Setter Property="Background" Value="#3B82F6"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="{TemplateBinding Background}" 
+                            CornerRadius="10" Padding="20,12">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="#475569"/>
+                            <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Dark Button Success -->
+    <Style x:Key="Button.Dark.Success" TargetType="Button">
+        <Setter Property="Background" Value="#22C55E"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="{TemplateBinding Background}" 
+                            CornerRadius="10" Padding="20,12">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#16A34A"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="#475569"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Dark Ghost Button -->
+    <Style x:Key="Button.Dark.Ghost" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="#94A3B8"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="{TemplateBinding Background}" 
+                            CornerRadius="8" Padding="12,8">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#334155"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Dark Text Styles -->
+    <Style x:Key="Text.Dark.Title" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="32"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    
+    <Style x:Key="Text.Dark.Subtitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="#64748B"/>
+    </Style>
+    
+    <Style x:Key="Text.Dark.Label" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="#64748B"/>
+    </Style>
+    
+    <Style x:Key="Text.Dark.Body" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="#94A3B8"/>
+    </Style>
+    
+</ResourceDictionary>

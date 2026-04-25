@@ -24,6 +24,38 @@ namespace Apex.Core.Models
         public string? ErrorMessage { get; set; }
         
         public int TotalCopies { get; set; } = 1;
+
+        // === Print Settings ===
+        
+        /// <summary>
+        /// Enable duplex (double-sided) printing.
+        /// </summary>
+        public bool Duplex { get; set; } = false;
+
+        /// <summary>
+        /// Enable color printing. False = grayscale.
+        /// </summary>
+        public bool Color { get; set; } = true;
+
+        /// <summary>
+        /// Page range to print (e.g., "1-5", "1,3,5", "All").
+        /// </summary>
+        public string PageRange { get; set; } = "All";
+
+        /// <summary>
+        /// Paper size (e.g., "A4", "Letter").
+        /// </summary>
+        public string PaperSize { get; set; } = "A4";
+
+        /// <summary>
+        /// Print orientation (Portrait or Landscape).
+        /// </summary>
+        public string Orientation { get; set; } = "Portrait";
+
+        /// <summary>
+        /// Print quality (Draft, Normal, High, Best).
+        /// </summary>
+        public string Quality { get; set; } = "Normal";
         
         /// <summary>
         /// Job priority for queue ordering. Higher priority jobs print first.

@@ -4,325 +4,577 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="1200"
-             Background="#F8FAFC">
-    
+             Background="Transparent">
+
     <UserControl.Resources>
-        <!-- Card Style -->
-        <Style x:Key="Card" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="12"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
+
+        <!-- Dark Modern Card Style -->
+        <Style x:Key="ModernCard" TargetType="Border">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.08" Color="#000"/>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.3" Color="#000000"/>
                 </Setter.Value>
             </Setter>
         </Style>
-        
-        <!-- Status Badge -->
-        <Style x:Key="StatusBadge" TargetType="Border">
-            <Setter Property="CornerRadius" Value="4"/>
-            <Setter Property="Padding" Value="8,4"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
+
+        <!-- Stat Card Style -->
+        <Style x:Key="StatCard" TargetType="Border">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="20,16"/>
+            <Setter Property="Margin" Value="0,0,16,0"/>
+            <Setter Property="MinWidth" Value="140"/>
         </Style>
 
-        <!-- Primary Button -->
+        <!-- Primary Action Button -->
         <Style x:Key="PrimaryButton" TargetType="Button">
-            <Setter Property="Background" Value="#3B82F6"/>
+            <Setter Property="Background" Value="#2563EB"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="24,12"/>
+            <Setter Property="Padding" Value="20,12"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
+                                CornerRadius="10" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1D4ED8"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1E40AF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
 
-        <!-- Secondary Button -->
+        <!-- Secondary Button - Dark -->
         <Style x:Key="SecondaryButton" TargetType="Button">
-            <Setter Property="Background" Value="#E2E8F0"/>
-            <Setter Property="Foreground" Value="#475569"/>
+            <Setter Property="Background" Value="#334155"/>
+            <Setter Property="Foreground" Value="#94A3B8"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="24,12"/>
+            <Setter Property="Padding" Value="16,10"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
+                                CornerRadius="8" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#475569"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Printer Card Button Style -->
+        <Style x:Key="PrinterActionButton" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
+                                CornerRadius="8" Padding="12,10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
     </UserControl.Resources>
 
-    <Grid Margin="24">
-        <!-- Main Layout: visible when not printing -->
-        <Grid x:Name="MainLayout" Visibility="Visible">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/> <!-- File Selector -->
-                <RowDefinition Height="*"/>    <!-- Printers Grid + Settings -->
-                <RowDefinition Height="Auto"/> <!-- Action Buttons -->
-            </Grid.RowDefinitions>
-            
-            <!-- 1️⃣ TOP: File Selector -->
-            <Border Grid.Row="0" Style="{StaticResource Card}" Padding="24" Margin="0,0,0,16">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Header -->
+            <RowDefinition Height="Auto"/>  <!-- Stats Row -->
+            <RowDefinition Height="*"/>      <!-- Printers Grid -->
+        </Grid.RowDefinitions>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             1️⃣ HEADER SECTION
+             ═══════════════════════════════════════════════════════════════════ -->
+        <Grid Grid.Row="0" Margin="0,0,0,24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Title & Subtitle -->
+            <StackPanel Grid.Column="0">
+                <StackPanel Orientation="Horizontal">
+                    <Border Background="#1E3A5F" CornerRadius="10" Padding="10" Margin="0,0,16,0" VerticalAlignment="Center">
+                        <TextBlock Text="🖨️" FontSize="24"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="{DynamicResource Monitor_Title}"
+                                   FontSize="28" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="{DynamicResource Monitor_Subtitle}"
+                                   FontSize="14" Foreground="#94A3B8" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Refresh Area -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <StackPanel VerticalAlignment="Center" Margin="0,0,20,0">
+                    <TextBlock Text="آخر تحديث" FontSize="11" Foreground="#64748B"/>
+                    <TextBlock Text="{Binding LastUpdated, StringFormat='{}{0:HH:mm:ss}'}"
+                               FontSize="14" FontWeight="SemiBold" Foreground="#CBD5E1"/>
+                </StackPanel>
+                <Button Command="{Binding RefreshCommand}" Style="{StaticResource PrimaryButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🔄" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource Monitor_Refresh}" FontSize="14"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             2️⃣ STATISTICS CARDS
+             ═══════════════════════════════════════════════════════════════════ -->
+        <Grid Grid.Row="1" Margin="0,0,0,24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Total Printers Card -->
+            <Border Grid.Column="0" Style="{StaticResource StatCard}" Margin="0,0,12,0">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#1E3A5F" Offset="0"/>
+                        <GradientStop Color="#1E40AF" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    
-                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                        <TextBlock FontSize="18" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,8">
-                            <Run Text="📄 "/><Run Text="{DynamicResource Distribution_SelectFile}"/>
-                        </TextBlock>
-                        <Button Command="{Binding ChooseFileCommand}" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left">
-                            <TextBlock Text="{DynamicResource Distribution_ChooseFile}"/>
-                        </Button>
-                        <TextBlock Text="{Binding FileName, TargetNullValue='No file selected'}" FontSize="14" Foreground="#64748B" Margin="0,12,0,0"/>
-                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0" Visibility="{Binding SelectedFilePath, Converter={StaticResource NullToVisConverter}}">
-                            <Border Background="#F0FDF4" CornerRadius="6" Padding="8,4" Margin="0,0,8,0">
-                                <TextBlock Text="{Binding FileType}" FontWeight="SemiBold" FontSize="11" Foreground="#166534"/>
-                            </Border>
-                            <Border Background="#F1F5F9" CornerRadius="6" Padding="8,4">
-                                <TextBlock Text="{Binding FileSize}" FontSize="11" Foreground="#475569"/>
-                            </Border>
-                        </StackPanel>
-                    </StackPanel>
-                    
-                    <!-- Preview Thumbnail (placeholder) -->
-                    <Border Grid.Column="1" Width="100" Height="100" Background="#EFF6FF" CornerRadius="8" BorderBrush="#CBD5E1" BorderThickness="1">
-                        <TextBlock Text="📄" FontSize="48" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Border Grid.Column="0" Background="#2563EB" CornerRadius="10"
+                            Width="48" Height="48" Margin="0,0,16,0">
+                        <TextBlock Text="📊" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="{DynamicResource Monitor_Total}" FontSize="13" Foreground="#93C5FD"/>
+                        <TextBlock Text="{Binding TotalPrinters}" FontSize="32" FontWeight="Bold" Foreground="White"/>
+                    </StackPanel>
                 </Grid>
             </Border>
 
-            <!-- 2️⃣ MIDDLE: Printers Grid + Settings -->
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="280"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- Printers Grid -->
-                <Border Grid.Column="0" Style="{StaticResource Card}" Padding="24" Margin="0,0,16,0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        
-                        <TextBlock Grid.Row="0" FontSize="18" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,16">
-                            <Run Text="🖨️ "/><Run Text="{DynamicResource Distribution_SelectPrinters}"/>
-                        </TextBlock>
-                        
-                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                            <ItemsControl ItemsSource="{Binding AvailablePrinters}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <UniformGrid Columns="3"/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Background="#F8FAFC" CornerRadius="8" Padding="16" Margin="0,0,12,12" BorderThickness="2" BorderBrush="#E2E8F0" Cursor="Hand">
-                                            <Border.Style>
-                                                <Style TargetType="Border">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                                            <Setter Property="Background" Value="#FEF2F8"/>
-                                                            <Setter Property="BorderBrush" Value="#3B82F6"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                </Grid.RowDefinitions>
-                                                
-                                                <CheckBox Grid.Row="0" IsChecked="{Binding IsSelected}" Margin="0,0,0,8">
-                                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" Foreground="#1E293B" FontSize="13"/>
-                                                </CheckBox>
-                                                
-                                                <Border Grid.Row="1">
-                                                    <Border.Style>
-                                                        <Style TargetType="Border">
-                                                            <Setter Property="CornerRadius" Value="4"/>
-                                                            <Setter Property="Padding" Value="8,4"/>
-                                                            <Setter Property="HorizontalAlignment" Value="Left"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Status}" Value="Online">
-                                                                    <Setter Property="Background" Value="#D1FAE5"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Status}" Value="Offline">
-                                                                    <Setter Property="Background" Value="#FEE2E2"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Status}" Value="Busy">
-                                                                    <Setter Property="Background" Value="#FEF3C7"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Border.Style>
-                                                    <TextBlock Text="{Binding Status}" FontSize="11" FontWeight="Medium">
-                                                        <TextBlock.Style>
-                                                            <Style TargetType="TextBlock">
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Status}" Value="Online">
-                                                                        <Setter Property="Foreground" Value="#047857"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Status}" Value="Offline">
-                                                                        <Setter Property="Foreground" Value="#B91C1C"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Status}" Value="Busy">
-                                                                        <Setter Property="Foreground" Value="#92400E"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </TextBlock.Style>
-                                                    </TextBlock>
-                                                </Border>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-                    </Grid>
-                </Border>
-
-                <!-- 3️⃣ SIDEBAR: Settings -->
-                <Border Grid.Column="1" Style="{StaticResource Card}" Padding="20">
-                    <StackPanel>
-                        <TextBlock FontSize="16" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,16">
-                            <Run Text="⚙️ "/><Run Text="{DynamicResource Distribution_PrintSettings}"/>
-                        </TextBlock>
-                        
-                        <!-- Copies -->
-                        <TextBlock Text="{DynamicResource Distribution_Copies}" FontSize="12" Foreground="#64748B" Margin="0,0,0,4"/>
-                        <TextBox Text="{Binding Copies}" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" Padding="10,8" Margin="0,0,0,12"/>
-                        
-                        <!-- Color -->
-                        <TextBlock Text="{DynamicResource Distribution_ColorMode}" FontSize="12" Foreground="#64748B" Margin="0,0,0,4"/>
-                        <CheckBox IsChecked="{Binding ColorMode}" Content="{DynamicResource Distribution_PrintInColor}" Margin="0,0,0,12"/>
-                        
-                        <!-- Duplex -->
-                        <TextBlock Text="{DynamicResource Distribution_Duplex}" FontSize="12" Foreground="#64748B" Margin="0,0,0,4"/>
-                        <CheckBox IsChecked="{Binding DuplexEnabled}" Content="{DynamicResource Distribution_TwoSided}" Margin="0,0,0,12"/>
-                        
-                        <!-- Page Range -->
-                        <TextBlock Text="{DynamicResource Distribution_PageRange}" FontSize="12" Foreground="#64748B" Margin="0,0,0,4"/>
-                        <TextBox Text="{Binding PageRange}" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" Padding="10,8" Margin="0,0,0,12"/>
-                        
-                        <!-- Timeout -->
-                        <TextBlock Text="{DynamicResource Distribution_Timeout}" FontSize="12" Foreground="#64748B" Margin="0,0,0,4"/>
-                        <TextBox Text="10" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" Padding="10,8" Margin="0,0,0,12"/>
-                        
-                        <!-- Retry -->
-                        <TextBlock Text="{DynamicResource Distribution_RetryAttempts}" FontSize="12" Foreground="#64748B" Margin="0,0,0,4"/>
-                        <TextBox Text="2" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" Padding="10,8"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
-
-            <!-- 4️⃣ BOTTOM: Action Buttons -->
-            <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="20" Margin="0,16,0,0">
+            <!-- Online Printers Card -->
+            <Border Grid.Column="1" Style="{StaticResource StatCard}" Margin="6,0,12,0">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#064E3B" Offset="0"/>
+                        <GradientStop Color="#065F46" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
                 <Grid>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                        <Button Command="{Binding SelectAllPrintersCommand}" Style="{StaticResource SecondaryButton}" Margin="0,0,12,0">
-                            <TextBlock Text="{DynamicResource Distribution_SelectAll}"/>
-                        </Button>
-                        <Button Command="{Binding DeselectAllPrintersCommand}" Style="{StaticResource SecondaryButton}">
-                            <TextBlock Text="{DynamicResource Distribution_Reset}"/>
-                        </Button>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="#10B981" CornerRadius="10"
+                            Width="48" Height="48" Margin="0,0,16,0">
+                        <TextBlock Text="✓" FontSize="24" Foreground="White" FontWeight="Bold"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="{DynamicResource Monitor_Online}" FontSize="13" Foreground="#6EE7B7"/>
+                        <TextBlock Text="{Binding OnlinePrinters}" FontSize="32" FontWeight="Bold" Foreground="White"/>
                     </StackPanel>
-                    
-                    <Button Command="{Binding PrintToSelectedCommand}" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Right" Padding="32,12" FontSize="14">
-                        <TextBlock><Run Text="🚀 "/><Run Text="{DynamicResource Distribution_StartPrinting}"/></TextBlock>
-                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Offline Printers Card -->
+            <Border Grid.Column="2" Style="{StaticResource StatCard}" Margin="6,0,12,0">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#450A0A" Offset="0"/>
+                        <GradientStop Color="#7F1D1D" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="#EF4444" CornerRadius="10"
+                            Width="48" Height="48" Margin="0,0,16,0">
+                        <TextBlock Text="✕" FontSize="24" Foreground="White" FontWeight="Bold"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="{DynamicResource Monitor_Offline}" FontSize="13" Foreground="#FCA5A5"/>
+                        <TextBlock Text="{Binding OfflinePrinters}" FontSize="32" FontWeight="Bold" Foreground="White"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Busy Printers Card -->
+            <Border Grid.Column="3" Style="{StaticResource StatCard}" Margin="6,0,0,0">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#451A03" Offset="0"/>
+                        <GradientStop Color="#78350F" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="#F59E0B" CornerRadius="10"
+                            Width="48" Height="48" Margin="0,0,16,0">
+                        <TextBlock Text="⏳" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="{DynamicResource Monitor_Busy}" FontSize="13" Foreground="#FDE68A"/>
+                        <TextBlock Text="{Binding BusyPrinters}" FontSize="32" FontWeight="Bold" Foreground="White"/>
+                    </StackPanel>
                 </Grid>
             </Border>
         </Grid>
 
-        <!-- 5️⃣ MONITOR: Live Printing Monitor (shown after start) -->
-        <Border x:Name="MonitorLayout" Style="{StaticResource Card}" Padding="24" Visibility="{Binding IsPrinting, Converter={StaticResource BoolToVisConverter}}">
+        <!-- ═══════════════════════════════════════════════════════════════════
+             3️⃣ PRINTERS GRID
+             ═══════════════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="2" Style="{StaticResource ModernCard}" Padding="24">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Header -->
-                <TextBlock Grid.Row="0" FontSize="20" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,16">
-                    <Run Text="📊 "/><Run Text="{DynamicResource Distribution_LiveMonitor}"/>
-                </TextBlock>
-
-                <!-- Counters -->
-                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,16">
-                    <Border Background="#D1FAE5" CornerRadius="8" Padding="16,8" Margin="0,0,12,0">
-                        <TextBlock FontWeight="SemiBold">
-                            <Run Text="✅ "/><Run Text="{DynamicResource Distribution_Success}"/><Run Text=":"/>
-                            <Run Text="{Binding SuccessCount}" Foreground="#047857" FontSize="16"/>
-                        </TextBlock>
+                <!-- Section Header -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+                    <Border Background="#334155" CornerRadius="8" Padding="8" Margin="0,0,12,0">
+                        <TextBlock Text="📋" FontSize="18"/>
                     </Border>
-                    <Border Background="#FEE2E2" CornerRadius="8" Padding="16,8" Margin="0,0,12,0">
-                        <TextBlock FontWeight="SemiBold">
-                            <Run Text="❌ "/><Run Text="{DynamicResource Distribution_Failed}"/><Run Text=":"/>
-                            <Run Text="{Binding FailedCount}" Foreground="#B91C1C" FontSize="16"/>
-                        </TextBlock>
-                    </Border>
-                    <Border Background="#DBEAFE" CornerRadius="8" Padding="16,8">
-                        <TextBlock FontWeight="SemiBold">
-                            <Run Text="⏳ PRINTING:" Foreground="#1E40AF"/>
-                            <Run Text="{Binding PendingCount}" Foreground="#1E40AF" FontSize="16"/>
-                        </TextBlock>
-                    </Border>
+                    <TextBlock Text="{DynamicResource Monitor_PrinterStatus}"
+                               FontSize="18" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <!-- Results Table -->
-                <DataGrid Grid.Row="2" ItemsSource="{Binding LiveResults}" AutoGenerateColumns="False" IsReadOnly="True"
-                          BorderThickness="0" Background="White" RowHeight="48"
-                          GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#F1F5F9">
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background" Value="#F8FAFC"/>
-                            <Setter Property="Foreground" Value="#64748B"/>
-                            <Setter Property="FontWeight" Value="SemiBold"/>
-                            <Setter Property="FontSize" Value="12"/>
-                            <Setter Property="Padding" Value="16,12"/>
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="{DynamicResource Distribution_PrinterName}" Binding="{Binding PrinterName}" Width="*"/>
-                        <DataGridTextColumn Header="{DynamicResource Distribution_StatusText}" Binding="{Binding StatusText}" Width="120"/>
-                        <DataGridTextColumn Header="{DynamicResource Distribution_JobId}" Binding="{Binding JobId}" Width="100"/>
-                        <DataGridTextColumn Header="{DynamicResource Distribution_Time}" Binding="{Binding DurationText}" Width="80"/>
-                        <DataGridTextColumn Header="{DynamicResource Distribution_Error}" Binding="{Binding ErrorMessage}" Width="200"/>
-                    </DataGrid.Columns>
-                </DataGrid>
+                <!-- Printers Cards Grid -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              PanningMode="VerticalOnly">
+                    <ItemsControl ItemsSource="{Binding AvailablePrinters}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="3"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <!-- Individual Printer Card - Neutral Dark, colored left-border only -->
+                                <Border Margin="0,0,16,16" CornerRadius="14" Padding="20"
+                                        Background="#1E293B" BorderThickness="0">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="16" ShadowDepth="2" Opacity="0.25" Color="#000000"/>
+                                    </Border.Effect>
 
-                <!-- Action Buttons -->
-                <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
-                    <Button Command="{Binding CancelAllCommand}" Style="{StaticResource SecondaryButton}" Margin="0,0,12,0">
-                        <TextBlock Text="{DynamicResource Distribution_CancelAll}"/>
-                    </Button>
-                    <Button Command="{Binding RetryFailedCommand}" Style="{StaticResource SecondaryButton}" Margin="0,0,12,0">
-                        <TextBlock Text="{DynamicResource Distribution_RetryFailed}"/>
-                    </Button>
-                    <Button Command="{Binding ExportReportCommand}" Style="{StaticResource PrimaryButton}">
-                        <TextBlock Text="{DynamicResource Distribution_ExportReport}"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="4"/>   <!-- Status accent bar -->
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Colored left-accent bar -->
+                                        <Border Grid.Column="0" CornerRadius="4,0,0,4" Margin="-20,-20,12,-20">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#334155"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Ready">
+                                                            <Setter Property="Background" Value="#10B981"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Offline">
+                                                            <Setter Property="Background" Value="#EF4444"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Error">
+                                                            <Setter Property="Background" Value="#EF4444"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Not Available">
+                                                            <Setter Property="Background" Value="#EF4444"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Busy">
+                                                            <Setter Property="Background" Value="#F59E0B"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Printing">
+                                                            <Setter Property="Background" Value="#F59E0B"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Paper Jam">
+                                                            <Setter Property="Background" Value="#F87171"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Out of Paper">
+                                                            <Setter Property="Background" Value="#F87171"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Toner Low">
+                                                            <Setter Property="Background" Value="#F59E0B"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                        </Border>
+
+                                        <!-- Card Content -->
+                                        <Grid Grid.Column="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>  <!-- Header: Icon + Name -->
+                                            <RowDefinition Height="Auto"/>  <!-- Status Badge -->
+                                            <RowDefinition Height="Auto"/>  <!-- Info Row -->
+                                            <RowDefinition Height="Auto"/>  <!-- Print Jobs -->
+                                            <RowDefinition Height="*"/>     <!-- Spacer -->
+                                            <RowDefinition Height="Auto"/>  <!-- Action Buttons -->
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Header: Large Icon + Printer Name -->
+                                        <Grid Grid.Row="0" Margin="0,0,0,16">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Printer Icon — always neutral -->
+                                            <Border Grid.Column="0" CornerRadius="12" Width="48" Height="48"
+                                                    Background="#334155" Margin="0,0,14,0" VerticalAlignment="Center">
+                                                <TextBlock FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="🖨️"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Type}" Value="Network">
+                                                                    <Setter Property="Text" Value="🌐"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Type}" Value="Virtual">
+                                                                    <Setter Property="Text" Value="💻"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Type}" Value="USB">
+                                                                    <Setter Property="Text" Value="🔌"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Border>
+
+                                            <!-- Printer Name & Type -->
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14"
+                                                           Foreground="#F1F5F9" TextTrimming="CharacterEllipsis"
+                                                           ToolTip="{Binding Name}"/>
+                                                <Border Background="#0F172A" CornerRadius="4" Padding="6,2"
+                                                        HorizontalAlignment="Left" Margin="0,5,0,0">
+                                                    <TextBlock Text="{Binding Type}" FontSize="10" Foreground="#64748B" FontWeight="Medium"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <!-- Status Badge — small pill only -->
+                                        <Border Grid.Row="1" CornerRadius="6" Padding="10,6"
+                                                HorizontalAlignment="Left" Margin="0,0,0,12"
+                                                Background="#0F172A">
+                                            <StackPanel Orientation="Horizontal">
+                                                <!-- Status Indicator Dot -->
+                                                <Ellipse Width="10" Height="10" Margin="0,0,8,0" VerticalAlignment="Center">
+                                                    <Ellipse.Style>
+                                                        <Style TargetType="Ellipse">
+                                                            <Setter Property="Fill" Value="#94A3B8"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Ready">
+                                                                    <Setter Property="Fill" Value="#10B981"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Offline">
+                                                                    <Setter Property="Fill" Value="#EF4444"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Busy">
+                                                                    <Setter Property="Fill" Value="#F59E0B"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Printing">
+                                                                    <Setter Property="Fill" Value="#F59E0B"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Error">
+                                                                    <Setter Property="Fill" Value="#EF4444"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Ellipse.Style>
+                                                </Ellipse>
+                                                <TextBlock Text="{Binding Status}" FontWeight="SemiBold" FontSize="13">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Foreground" Value="#94A3B8"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Ready">
+                                                                    <Setter Property="Foreground" Value="#34D399"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Offline">
+                                                                    <Setter Property="Foreground" Value="#F87171"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Busy">
+                                                                    <Setter Property="Foreground" Value="#FCD34D"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Printing">
+                                                                    <Setter Property="Foreground" Value="#FCD34D"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Error">
+                                                                    <Setter Property="Foreground" Value="#F87171"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- Queue Info -->
+                                        <Border Grid.Row="2" Background="#0F172A" CornerRadius="8" Padding="12,10" Margin="0,0,0,12">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="📋" FontSize="14" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                                <TextBlock FontSize="13" Foreground="#94A3B8" VerticalAlignment="Center">
+                                                    <Run Text="{DynamicResource Monitor_Queue}"/>
+                                                    <Run Text=": "/>
+                                                    <Run Text="{Binding QueueLength}" FontWeight="Bold" Foreground="#CBD5E1"/>
+                                                    <Run Text=" "/>
+                                                    <Run Text="{DynamicResource Monitor_Jobs}"/>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- Print Jobs for this Printer -->
+                                        <Border Grid.Row="3" Background="#0F172A" CornerRadius="8" Padding="12,10" Margin="0,0,0,16"
+                                                Visibility="{Binding HasPrintJobs, Converter={StaticResource BoolToVisConverter}}">
+                                            <StackPanel>
+                                                <TextBlock Text="مهام الطباعة النشطة" FontSize="12" FontWeight="SemiBold"
+                                                           Foreground="#94A3B8" Margin="0,0,0,8"/>
+                                                <ItemsControl ItemsSource="{Binding PrintJobs}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border Margin="0,0,0,6" Padding="10,8" CornerRadius="6"
+                                                                    BorderThickness="1" BorderBrush="#334155" Background="#1E293B">
+                                                                <Grid>
+                                                                    <Grid.RowDefinitions>
+                                                                        <RowDefinition Height="Auto"/>
+                                                                        <RowDefinition Height="Auto"/>
+                                                                    </Grid.RowDefinitions>
+                                                                    <Grid Grid.Row="0">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="*"/>
+                                                                            <ColumnDefinition Width="Auto"/>
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <StackPanel Grid.Column="0">
+                                                                            <TextBlock Text="{Binding FileName}"
+                                                                                       FontSize="11" FontWeight="Medium"
+                                                                                       Foreground="#F1F5F9" TextTrimming="CharacterEllipsis"/>
+                                                                            <TextBlock Text="{Binding ScaleMode}"
+                                                                                       FontSize="9"
+                                                                                       Foreground="#94A3B8"
+                                                                                       Margin="0,2,0,0"
+                                                                                       Visibility="{Binding ScaleMode, Converter={StaticResource NullToVisConverter}}"/>
+                                                                        </StackPanel>
+                                                                        <TextBlock Grid.Column="1" Text="{Binding StatusText}"
+                                                                                   FontSize="10" FontWeight="Medium"
+                                                                                   Foreground="{Binding StatusColor}"/>
+                                                                    </Grid>
+                                                                    <ProgressBar Grid.Row="1" Value="{Binding Progress}"
+                                                                                 Maximum="100" Height="4" Margin="0,6,0,0"
+                                                                                 Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisConverter}}">
+                                                                        <ProgressBar.Style>
+                                                                            <Style TargetType="ProgressBar">
+                                                                                <Setter Property="Background" Value="#334155"/>
+                                                                                <Setter Property="Foreground" Value="#2563EB"/>
+                                                                            </Style>
+                                                                        </ProgressBar.Style>
+                                                                    </ProgressBar>
+                                                                </Grid>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- Action Buttons -->
+                                        <Grid Grid.Row="5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="8"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Properties Button -->
+                                            <Button Grid.Column="0" Background="#2563EB"
+                                                    Style="{StaticResource PrinterActionButton}"
+                                                    Command="{Binding DataContext.OpenPropertiesCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding Name}">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <TextBlock Text="⚙️" FontSize="13" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{DynamicResource Monitor_Properties}"
+                                                               Foreground="White" FontWeight="SemiBold" FontSize="12"/>
+                                                </StackPanel>
+                                            </Button>
+
+                                            <!-- Preferences Button -->
+                                            <Button Grid.Column="2" Background="#7C3AED"
+                                                    Style="{StaticResource PrinterActionButton}"
+                                                    Command="{Binding DataContext.OpenPreferencesCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding Name}">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <TextBlock Text="🔧" FontSize="13" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{DynamicResource Monitor_Preferences}"
+                                                               Foreground="White" FontWeight="SemiBold" FontSize="12"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+                                        </Grid>  <!-- /inner content grid -->
+                                    </Grid>      <!-- /outer 2-col grid -->
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <!-- Empty State -->
+                <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Visibility="{Binding HasNoPrinters, Converter={StaticResource BoolToVisConverter}}">
+                    <Border Background="#1E293B" CornerRadius="50" Width="100" Height="100" Margin="0,0,0,24">
+                        <TextBlock Text="🖨️" FontSize="48" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{DynamicResource Monitor_NoPrinters}" FontSize="20" FontWeight="SemiBold"
+                               Foreground="#CBD5E1" HorizontalAlignment="Center"/>
+                    <TextBlock Text="لم يتم العثور على أي طابعات متصلة بالنظام" FontSize="14"
+                               Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,8,0,24"/>
+                    <Button Command="{Binding RefreshCommand}" Style="{StaticResource PrimaryButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🔍" FontSize="16" Margin="0,0,8,0"/>
+                            <TextBlock Text="{DynamicResource Monitor_ScanAgain}" FontSize="14"/>
+                        </StackPanel>
                     </Button>
                 </StackPanel>
             </Grid>

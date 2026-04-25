@@ -47,4 +47,13 @@
     <Thickness x:Key="Margin.Large">16</Thickness>
     <Thickness x:Key="Margin.XLarge">24</Thickness>
     
+    <!-- ═══════════════════════════════════════════════════════════════════
+         TEXT STYLES - Loaded early to ensure availability
+         ═══════════════════════════════════════════════════════════════════ -->
+    <Style x:Key="Text.PageTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="28"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="#0F172A"/>
+    </Style>
+    
 </ResourceDictionary>

@@ -4,70 +4,589 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
-             d:DesignHeight="800" d:DesignWidth="1200">
+             d:DesignHeight="900" d:DesignWidth="1200"
+             Background="#0F172A">
     
-    <Grid Background="{DynamicResource Brush.Background}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        
-        <!-- Header -->
-        <Border Grid.Row="0" Padding="32,24">
-            <StackPanel>
-                <TextBlock Text="{DynamicResource Dashboard}" 
-                          Style="{StaticResource Text.PageTitle}"/>
-                <TextBlock Text="{DynamicResource Welcome}" 
-                          Style="{StaticResource Text.Caption}"
-                          Margin="0,4,0,0"/>
-            </StackPanel>
-        </Border>
-        
-        <!-- Dashboard Content -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="32,0,32,32">
-                
-                <!-- Quick Stats Cards -->
-                <TextBlock Text="Dashboard Overview" 
-                          Style="{StaticResource Text.SectionTitle}"
-                          Margin="0,0,0,16"/>
-                
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="16"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="16"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    
-                    <!-- Card 1 -->
-                    <Border Grid.Column="0" Style="{StaticResource Card}">
-                        <StackPanel>
-                            <TextBlock Text="Active Printers" FontSize="14" Foreground="{DynamicResource Brush.Text.Secondary}"/>
-                            <TextBlock Text="--" FontSize="32" FontWeight="Bold" Margin="0,8,0,0"/>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="40,32">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>  <!-- Header -->
+                <RowDefinition Height="Auto"/>  <!-- Quick Stats -->
+                <RowDefinition Height="Auto"/>  <!-- Main Content -->
+            </Grid.RowDefinitions>
+
+            <!-- ═══════════════════════════════════════════════════════════════════
+                 1️⃣ HEADER
+                 ═══════════════════════════════════════════════════════════════════ -->
+            <Grid Grid.Row="0" Margin="0,0,0,32">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="{DynamicResource Dashboard}" FontSize="32" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Text="{DynamicResource Welcome}" FontSize="14" Foreground="#64748B" Margin="0,8,0,0"/>
+                </StackPanel>
+
+                <!-- Last Updated + Refresh -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Background="#1E293B" CornerRadius="10" Padding="14,10" Margin="0,0,12,0"
+                            BorderBrush="#334155" BorderThickness="1">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🕐" FontSize="12" Margin="0,0,8,0"/>
+                            <TextBlock Text="{Binding LastRefreshTime}" FontSize="12" FontWeight="Medium" Foreground="#94A3B8"/>
                         </StackPanel>
                     </Border>
-                    
-                    <!-- Card 2 -->
-                    <Border Grid.Column="2" Style="{StaticResource Card}">
-                        <StackPanel>
-                            <TextBlock Text="Print Jobs Today" FontSize="14" Foreground="{DynamicResource Brush.Text.Secondary}"/>
-                            <TextBlock Text="--" FontSize="32" FontWeight="Bold" Margin="0,8,0,0"/>
+                    <Button Command="{Binding RefreshDataCommand}" Style="{DynamicResource Button.Dark.Primary}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🔄" Margin="0,0,8,0"/>
+                            <TextBlock Text="Refresh"/>
                         </StackPanel>
-                    </Border>
-                    
-                    <!-- Card 3 -->
-                    <Border Grid.Column="4" Style="{StaticResource Card}">
-                        <StackPanel>
-                            <TextBlock Text="System Status" FontSize="14" Foreground="{DynamicResource Brush.Text.Secondary}"/>
-                            <TextBlock Text="Ready" FontSize="32" FontWeight="Bold" Margin="0,8,0,0" Foreground="{DynamicResource Brush.Success}"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- ═══════════════════════════════════════════════════════════════════
+                 2️⃣ QUICK STATS CARDS
+                 ═══════════════════════════════════════════════════════════════════ -->
+            <Grid Grid.Row="1" Margin="0,0,0,32">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Total Printers Card -->
+                <Border Grid.Column="0" Background="#1E293B" CornerRadius="16" Padding="20"
+                        BorderBrush="#334155" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Width="56" Height="56" CornerRadius="14" Background="#3B82F6" Margin="0,0,16,0">
+                            <TextBlock Text="🖨️" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="Total Printers" FontSize="12" Foreground="#64748B"/>
+                            <TextBlock Text="{Binding TotalPrinters}" FontSize="36" FontWeight="Bold" Foreground="White"/>
                         </StackPanel>
-                    </Border>
-                </Grid>
+                    </Grid>
+                </Border>
+
+                <!-- Online Printers Card -->
+                <Border Grid.Column="2" Background="#1E293B" CornerRadius="16" Padding="20"
+                        BorderBrush="#334155" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Width="56" Height="56" CornerRadius="14" Background="#22C55E" Margin="0,0,16,0">
+                            <TextBlock Text="✓" FontSize="24" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="Online" FontSize="12" Foreground="#64748B"/>
+                            <TextBlock Text="{Binding OnlinePrinters}" FontSize="36" FontWeight="Bold" Foreground="#22C55E"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Offline Printers Card -->
+                <Border Grid.Column="4" Background="#1E293B" CornerRadius="16" Padding="20"
+                        BorderBrush="#334155" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Width="56" Height="56" CornerRadius="14" Background="#EF4444" Margin="0,0,16,0">
+                            <TextBlock Text="✕" FontSize="24" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="Offline" FontSize="12" Foreground="#64748B"/>
+                            <TextBlock Text="{Binding OfflinePrinters}" FontSize="36" FontWeight="Bold" Foreground="#EF4444"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Jobs Today Card -->
+                <Border Grid.Column="6" Background="#1E293B" CornerRadius="16" Padding="20"
+                        BorderBrush="#334155" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Width="56" Height="56" CornerRadius="14" Background="#8B5CF6" Margin="0,0,16,0">
+                            <TextBlock Text="📋" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="Jobs Today" FontSize="12" Foreground="#64748B"/>
+                            <TextBlock Text="{Binding TodayJobs}" FontSize="36" FontWeight="Bold" Foreground="#A78BFA"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- ═══════════════════════════════════════════════════════════════════
+                 3️⃣ MAIN CONTENT AREA
+                 ═══════════════════════════════════════════════════════════════════ -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="380"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="24"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- ═══════════════════════════════════════════════════════════════════
+                     LEFT SIDE: Printers Overview + Quick Actions
+                     ═══════════════════════════════════════════════════════════════════ -->
                 
-            </StackPanel>
-        </ScrollViewer>
-        
-    </Grid>
+                <!-- Printers Overview -->
+                <Border Grid.Column="0" Grid.Row="0" Style="{DynamicResource Card.Dark}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Header -->
+                        <Grid Grid.Row="0" Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🖨️" FontSize="16" Margin="0,0,10,0"/>
+                                <TextBlock Text="Printers Overview" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                            </StackPanel>
+                            <Button Grid.Column="1" Style="{DynamicResource Button.Dark.Ghost}"
+                                    Command="{Binding NavigateToPrinterMonitoringCommand}">
+                                <TextBlock Text="View All →" FontSize="12" Foreground="#3B82F6"/>
+                            </Button>
+                        </Grid>
+
+                        <!-- Printers List -->
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding Printers}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="3" Rows="2"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,12,12" Padding="16" CornerRadius="12" Cursor="Hand"
+                                            Background="#0F172A" BorderThickness="1">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BorderBrush" Value="#334155"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="BorderBrush" Value="#475569"/>
+                                                        <Setter Property="Background" Value="#1E293B"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Row 0: Icon + Status dot -->
+                                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="🖨️" FontSize="24"/>
+                                                <Ellipse Grid.Column="1" Width="10" Height="10">
+                                                    <Ellipse.Style>
+                                                        <Style TargetType="Ellipse">
+                                                            <Setter Property="Fill" Value="#EF4444"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsOnline}" Value="True">
+                                                                    <Setter Property="Fill" Value="#22C55E"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Ellipse.Style>
+                                                </Ellipse>
+                                            </Grid>
+
+                                            <!-- Row 1: Printer name -->
+                                            <TextBlock Grid.Row="1" Text="{Binding Name}" FontWeight="SemiBold" FontSize="12"
+                                                       TextTrimming="CharacterEllipsis" Foreground="White" ToolTip="{Binding Name}"/>
+
+                                            <!-- Row 2: Status text -->
+                                            <TextBlock Grid.Row="2" Text="{Binding StatusText}" FontSize="11"
+                                                       Foreground="#94A3B8" Margin="0,4,0,6"/>
+
+                                            <!-- Row 3: Health score inline -->
+                                            <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,2,0,0">
+                                                <TextBlock FontSize="10" Foreground="{Binding HealthColor}">
+                                                    <TextBlock.Text>
+                                                        <Binding Path="HealthScore" StringFormat="{}صحة: {0}%"/>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                                <TextBlock Text=" • " FontSize="10" Foreground="#334155"
+                                                           Visibility="{Binding QueueLength, Converter={StaticResource GreaterThanZeroToVisibility}}"/>
+                                                <TextBlock FontSize="10" Foreground="#64748B"
+                                                           Visibility="{Binding QueueLength, Converter={StaticResource GreaterThanZeroToVisibility}}">
+                                                    <TextBlock.Text>
+                                                        <Binding Path="QueueLength" StringFormat="{}{0} في الطابور"/>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </Border>
+
+                <!-- Quick Actions -->
+                <Border Grid.Column="0" Grid.Row="2" Style="{DynamicResource Card.Dark}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+                            <TextBlock Text="⚡" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="{DynamicResource Dashboard_QuickActions}" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                        </StackPanel>
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- 📡 مراقبة الطابعات -->
+                            <Button Grid.Column="0" Command="{Binding DataContext.NavigateToPrintersCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="card" Padding="24" CornerRadius="16" Cursor="Hand"
+                                                Background="#22C55E">
+                                            <Border.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform x:Name="cardScale" ScaleX="1" ScaleY="1"/>
+                                                    <TranslateTransform x:Name="cardTranslate" Y="0"/>
+                                                </TransformGroup>
+                                            </Border.RenderTransform>
+                                            <StackPanel HorizontalAlignment="Center">
+                                                <Border Width="50" Height="50" CornerRadius="12" Background="#FFFFFF20" 
+                                                        Margin="0,0,0,12" HorizontalAlignment="Center">
+                                                    <TextBlock Text="📡" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text="{DynamicResource Dashboard_QuickActions_PrinterMonitor_Title}" 
+                                                           FontSize="13" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                                <TextBlock Text="{DynamicResource Dashboard_QuickActions_PrinterMonitor_Subtitle}" 
+                                                           FontSize="10" Foreground="#FFFFFFB0" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Trigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="cardScale" Storyboard.TargetProperty="ScaleX" To="1.03" Duration="0:0:0.15"/>
+                                                            <DoubleAnimation Storyboard.TargetName="cardScale" Storyboard.TargetProperty="ScaleY" To="1.03" Duration="0:0:0.15"/>
+                                                            <DoubleAnimation Storyboard.TargetName="cardTranslate" Storyboard.TargetProperty="Y" To="-4" Duration="0:0:0.15"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.EnterActions>
+                                                <Trigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="cardScale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.15"/>
+                                                            <DoubleAnimation Storyboard.TargetName="cardScale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.15"/>
+                                                            <DoubleAnimation Storyboard.TargetName="cardTranslate" Storyboard.TargetProperty="Y" To="0" Duration="0:0:0.15"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.ExitActions>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+
+                            <!-- 💰 عرض السعر -->
+                            <Button Grid.Column="2" Command="{Binding NavigateToQuotationCommand}">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="card" Padding="24" CornerRadius="16" Cursor="Hand"
+                                                Background="#8B5CF6">
+                                            <Border.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform x:Name="cardScale" ScaleX="1" ScaleY="1"/>
+                                                    <TranslateTransform x:Name="cardTranslate" Y="0"/>
+                                                </TransformGroup>
+                                            </Border.RenderTransform>
+                                            <StackPanel HorizontalAlignment="Center">
+                                                <Border Width="50" Height="50" CornerRadius="12" Background="#FFFFFF20" 
+                                                        Margin="0,0,0,12" HorizontalAlignment="Center">
+                                                    <TextBlock Text="💰" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text="{DynamicResource Dashboard_QuickActions_Quotation_Title}" 
+                                                           FontSize="13" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                                <TextBlock Text="{DynamicResource Dashboard_QuickActions_Quotation_Subtitle}" 
+                                                           FontSize="10" Foreground="#FFFFFFB0" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Trigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="cardScale" Storyboard.TargetProperty="ScaleX" To="1.03" Duration="0:0:0.15"/>
+                                                            <DoubleAnimation Storyboard.TargetName="cardScale" Storyboard.TargetProperty="ScaleY" To="1.03" Duration="0:0:0.15"/>
+                                                            <DoubleAnimation Storyboard.TargetName="cardTranslate" Storyboard.TargetProperty="Y" To="-4" Duration="0:0:0.15"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.EnterActions>
+                                                <Trigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="cardScale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.15"/>
+                                                            <DoubleAnimation Storyboard.TargetName="cardScale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.15"/>
+                                                            <DoubleAnimation Storyboard.TargetName="cardTranslate" Storyboard.TargetProperty="Y" To="0" Duration="0:0:0.15"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.ExitActions>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+
+                            <!-- 📚 ترقيم الدفاتر -->
+                            <Button Grid.Column="4" Command="{Binding DataContext.NavigateToNumberedBooksCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="card" Padding="24" CornerRadius="16" Cursor="Hand"
+                                                Background="#F59E0B">
+                                            <Border.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform x:Name="cardScale" ScaleX="1" ScaleY="1"/>
+                                                    <TranslateTransform x:Name="cardTranslate" Y="0"/>
+                                                </TransformGroup>
+                                            </Border.RenderTransform>
+                                            <StackPanel HorizontalAlignment="Center">
+                                                <Border Width="50" Height="50" CornerRadius="12" Background="#FFFFFF20" 
+                                                        Margin="0,0,0,12" HorizontalAlignment="Center">
+                                                    <TextBlock Text="📚" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text="{DynamicResource Dashboard_QuickActions_NumberedBooks_Title}" 
+                                                           FontSize="13" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                                <TextBlock Text="{DynamicResource Dashboard_QuickActions_NumberedBooks_Subtitle}" 
+                                                           FontSize="10" Foreground="#FFFFFFB0" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Trigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="cardScale" Storyboard.TargetProperty="ScaleX" To="1.03" Duration="0:0:0.15"/>
+                                                            <DoubleAnimation Storyboard.TargetName="cardScale" Storyboard.TargetProperty="ScaleY" To="1.03" Duration="0:0:0.15"/>
+                                                            <DoubleAnimation Storyboard.TargetName="cardTranslate" Storyboard.TargetProperty="Y" To="-4" Duration="0:0:0.15"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.EnterActions>
+                                                <Trigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="cardScale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.15"/>
+                                                            <DoubleAnimation Storyboard.TargetName="cardScale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.15"/>
+                                                            <DoubleAnimation Storyboard.TargetName="cardTranslate" Storyboard.TargetProperty="Y" To="0" Duration="0:0:0.15"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.ExitActions>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!-- ═══════════════════════════════════════════════════════════════════
+                     RIGHT SIDE: Stats + Activity
+                     ═══════════════════════════════════════════════════════════════════ -->
+                
+                <!-- System Status Card -->
+                <Border Grid.Column="2" Grid.Row="0" Style="{DynamicResource Card.Dark}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+                            <TextBlock Text="📈" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="System Status" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1">
+                            <!-- Connection Status -->
+                            <Border CornerRadius="12" Padding="16" Margin="0,0,0,16">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="#14532D"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSystemOnline}" Value="False">
+                                                <Setter Property="Background" Value="#7F1D1D"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="12" Height="12" Margin="0,0,12,0" VerticalAlignment="Center">
+                                        <Ellipse.Style>
+                                            <Style TargetType="Ellipse">
+                                                <Setter Property="Fill" Value="#22C55E"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsSystemOnline}" Value="False">
+                                                        <Setter Property="Fill" Value="#EF4444"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Ellipse.Style>
+                                    </Ellipse>
+                                    <TextBlock Text="{Binding SystemStatus}" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#22C55E"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsSystemOnline}" Value="False">
+                                                        <Setter Property="Foreground" Value="#EF4444"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Stats Grid -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="12"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Border Grid.Column="0" Grid.Row="0" Background="#0F172A" CornerRadius="10" Padding="14"
+                                        BorderBrush="#334155" BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock Text="قيد الانتظار" FontSize="11" Foreground="#64748B"/>
+                                        <TextBlock Text="{Binding PendingJobs}" FontSize="28" FontWeight="Bold" Foreground="#F59E0B"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="2" Grid.Row="0" Background="#0F172A" CornerRadius="10" Padding="14"
+                                        BorderBrush="#334155" BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock Text="مكتملة" FontSize="11" Foreground="#64748B"/>
+                                        <TextBlock Text="{Binding CompletedJobs}" FontSize="28" FontWeight="Bold" Foreground="#22C55E"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="0" Grid.Row="2" Background="#0F172A" CornerRadius="10" Padding="14"
+                                        BorderBrush="#334155" BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock Text="فاشلة" FontSize="11" Foreground="#64748B"/>
+                                        <TextBlock Text="{Binding FailedJobs}" FontSize="28" FontWeight="Bold" Foreground="#EF4444"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="2" Grid.Row="2" Background="#0F172A" CornerRadius="10" Padding="14"
+                                        BorderBrush="#334155" BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock Text="معدل النجاح" FontSize="11" Foreground="#64748B"/>
+                                        <TextBlock Text="{Binding SuccessRateText}" FontSize="28" FontWeight="Bold" Foreground="#3B82F6"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Recent Activity -->
+                <Border Grid.Column="2" Grid.Row="2" Style="{DynamicResource Card.Dark}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+                            <TextBlock Text="📋" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="Recent Activity" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                        </StackPanel>
+
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding RecentActivity}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="14,12" Margin="0,0,0,8" CornerRadius="10"
+                                            Background="#0F172A" BorderBrush="#334155" BorderThickness="1">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#1E293B"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Text="{Binding Icon}" FontSize="16" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding DisplayText}" FontSize="12" Foreground="#94A3B8"
+                                                       VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                                                       ToolTip="{Binding DisplayText}"/>
+                                            <TextBlock Grid.Column="2" Text="{Binding Time}" FontSize="11" Foreground="#64748B" 
+                                                       VerticalAlignment="Center" Margin="8,0,0,0"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

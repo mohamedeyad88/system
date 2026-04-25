@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -23,7 +23,7 @@ namespace Apex.Setup
     public class InstallerViewModel : INotifyPropertyChanged
     {
         private readonly Window _window;
-        private string _installPath;
+        private string _installPath = string.Empty;
         private string _statusText = "Ready to Install";
         private double _progressValue = 0;
         private Visibility _welcomeVisibility = Visibility.Visible;

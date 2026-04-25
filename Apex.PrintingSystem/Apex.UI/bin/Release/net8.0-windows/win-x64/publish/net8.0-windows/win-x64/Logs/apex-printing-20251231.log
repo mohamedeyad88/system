@@ -1,0 +1,25 @@
+2025-12-31 23:38:25.790 [INF] === Apex Printing System Logger Initialized ===
+2025-12-31 23:38:25.883 [INF] [PrintJobsManager] Initialized - All print jobs will be tracked
+2025-12-31 23:41:33.957 [WRN] ========== NEW PRINT JOB STARTED ==========
+JobId: "84b0c37b-e780-45c9-8a98-8e97dda9db5b"
+File: C:\Users\moham\OneDrive\سطح المكتب\مراية.pdf
+Printers: EPSON WF-C5210 Series
+Copies: 1
+Total Jobs Submitted: 1
+2025-12-31 23:41:33.970 [INF] [SmartPrintManager] Printer lock acquired for 'EPSON WF-C5210 Series'. Starting print job.
+2025-12-31 23:41:34.771 [WRN] [Gateway] EPSON WF-C5210 detected - Using PdfDirectPrinter (Windows native)
+2025-12-31 23:41:35.834 [INF] [SmartPrintManager] Printer lock released for 'EPSON WF-C5210 Series'
+2025-12-31 23:41:35.837 [WRN] ========== PRINT JOB ENDED ==========
+JobId: "84b0c37b-e780-45c9-8a98-8e97dda9db5b"
+Success: true
+Duration: 1880.3116ms
+Total Completed: 1
+Total Failed: 0
+2025-12-31 23:51:07.016 [INF] === Apex Printing System Logger Initialized ===
+2025-12-31 23:51:07.074 [INF] [PrintJobsManager] Initialized - All print jobs will be tracked
+2025-12-31 23:51:07.081 [DBG] [Lifecycle] Job 3466448c-91ce-43f6-be32-7bef3eecfcb0 created for 'EPSON WF-C5210 Series' - '11.pdf'
+2025-12-31 23:51:07.086 [INF] [PrintJobsManager] 📄 Job Created: 3466448c-91ce-43f6-be32-7bef3eecfcb0 | '11.pdf' → 'EPSON WF-C5210 Series' x1
+2025-12-31 23:51:07.092 [INF] [Lifecycle] Job 3466448c-91ce-43f6-be32-7bef3eecfcb0: "JobCreated" → "FileValidated" | File size: 1053303KB
+2025-12-31 23:51:07.096 [INF] [Lifecycle] Job 3466448c-91ce-43f6-be32-7bef3eecfcb0: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 23:52:08.695 [INF] === Apex Printing System Logger Initialized ===
+2025-12-31 23:52:08.762 [INF] [PrintJobsManager] Initialized - All print jobs will be tracked

@@ -137,7 +137,8 @@ namespace Apex.Services
                 
                 try
                 {
-                    success = await _printerService.PrintFileAsync(job.TargetPrinterName, job.FilePath, job.TotalCopies);
+                    // Use the overload that accepts the full job with settings
+                    success = await _printerService.PrintFileAsync(job.TargetPrinterName, job.FilePath, job);
                     
                     if (!success)
                     {

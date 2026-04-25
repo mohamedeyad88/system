@@ -1,5 +1,22 @@
 <Application x:Class="Apex.UI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!-- NO RESOURCES - Minimal app -->
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Apex.UI">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/Colors.xaml" />
+                <ResourceDictionary Source="Styles/Theme.xaml" />
+                <ResourceDictionary Source="Styles/Controls.xaml" />
+                <ResourceDictionary Source="Styles/GlobalStyles.xaml" />
+                <ResourceDictionary Source="Styles/Layouts.xaml" />
+                <!-- Language files: both loaded at startup, reordered by LocalizationService (last wins) -->
+                <ResourceDictionary Source="Resources/Language.ar.xaml" />
+                <ResourceDictionary Source="Resources/Language.en.xaml" />
+                <!-- Converters must be loaded before views that use them -->
+                <ResourceDictionary Source="Resources/Converters.xaml" />
+                <ResourceDictionary Source="Views/DataTemplates.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>

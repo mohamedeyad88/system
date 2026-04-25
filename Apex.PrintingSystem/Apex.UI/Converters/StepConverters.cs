@@ -17,7 +17,7 @@ namespace Apex.UI.Converters
             return Visibility.Collapsed;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => Binding.DoNothing;
     }
 
     public class StepWeightConverter : IValueConverter
@@ -31,7 +31,7 @@ namespace Apex.UI.Converters
             return FontWeights.Normal;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => Binding.DoNothing;
     }
 
     public class StepBackgroundConverter : IValueConverter
@@ -49,7 +49,7 @@ namespace Apex.UI.Converters
             return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CBD5E1"));
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => Binding.DoNothing;
     }
 
     public class BoolToVisConverter : IValueConverter
@@ -61,7 +61,7 @@ namespace Apex.UI.Converters
             return Visibility.Collapsed;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => Binding.DoNothing;
     }
 }
 

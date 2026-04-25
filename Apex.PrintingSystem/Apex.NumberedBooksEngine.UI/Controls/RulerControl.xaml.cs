@@ -172,13 +172,19 @@ namespace Apex.NumberedBooksEngine.UI.Controls
 
             if (Orientation == Orientation.Horizontal)
             {
+                // Horizontal ruler: labels at top, centered
                 Canvas.SetLeft(label, pos - label.DesiredSize.Width / 2);
                 Canvas.SetTop(label, 2);
             }
             else
             {
-                Canvas.SetLeft(label, 2);
-                Canvas.SetTop(label, pos - label.DesiredSize.Height / 2);
+                // Vertical ruler: labels rotated correctly, positioned at left side
+                label.RenderTransform = new RotateTransform(-90);
+                label.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+                
+                // Position: left side of ruler, centered vertically
+                Canvas.SetLeft(label, thickness / 2 - label.DesiredSize.Height / 2);
+                Canvas.SetTop(label, pos - label.DesiredSize.Width / 2);
             }
 
             RulerCanvas.Children.Add(label);

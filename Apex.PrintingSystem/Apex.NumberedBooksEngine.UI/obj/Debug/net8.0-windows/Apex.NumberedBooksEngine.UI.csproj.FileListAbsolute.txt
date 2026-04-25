@@ -1,5 +1,5 @@
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Debug\net8.0-windows\x64\pdfium.dll
-d:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Debug\net8.0-windows\Apex.NumberedBooksEngine.UI.deps.json
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Debug\net8.0-windows\Apex.NumberedBooksEngine.UI.deps.json
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Debug\net8.0-windows\Apex.NumberedBooksEngine.UI.dll
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Debug\net8.0-windows\Apex.NumberedBooksEngine.UI.pdb
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\bin\Debug\net8.0-windows\Apex.Core.dll
@@ -36,8 +36,8 @@ D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Debug\net8.0-
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Debug\net8.0-windows\Apex.NumberedBooksEngine.UI.AssemblyInfo.cs
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Debug\net8.0-windows\Apex.NumberedBooksEngine.UI.csproj.CoreCompileInputs.cache
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Debug\net8.0-windows\Apex.NumberedBooksEngine.UI.sourcelink.json
-d:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Debug\net8.0-windows\Apex.Num.204A429D.Up2Date
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Debug\net8.0-windows\Apex.Num.204A429D.Up2Date
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Debug\net8.0-windows\Apex.NumberedBooksEngine.UI.dll
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Debug\net8.0-windows\refint\Apex.NumberedBooksEngine.UI.dll
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Debug\net8.0-windows\Apex.NumberedBooksEngine.UI.pdb
-d:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Debug\net8.0-windows\ref\Apex.NumberedBooksEngine.UI.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.UI\obj\Debug\net8.0-windows\ref\Apex.NumberedBooksEngine.UI.dll

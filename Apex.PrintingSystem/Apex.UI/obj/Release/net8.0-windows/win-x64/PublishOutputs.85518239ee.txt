@@ -1,0 +1,7 @@
+D:\Apex\publish\v2.0.0-beta.1\app\Apex.Services.pdb
+D:\Apex\publish\v2.0.0-beta.1\app\Apex.Core.pdb
+D:\Apex\publish\v2.0.0-beta.1\app\Apex.NumberedBooksEngine.UI.pdb
+D:\Apex\publish\v2.0.0-beta.1\app\Apex.NumberedBooksEngine.pdb
+D:\Apex\publish\v2.0.0-beta.1\app\Apex.Licensing.pdb
+D:\Apex\publish\v2.0.0-beta.1\app\Apex.Data.pdb
+D:\Apex\publish\v2.0.0-beta.1\app\Apex.UI.exe

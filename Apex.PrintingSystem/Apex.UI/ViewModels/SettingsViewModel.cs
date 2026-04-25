@@ -75,13 +75,13 @@ namespace Apex.UI.ViewModels
             await _settingsService.SetValueAsync("BackupPath", BackupPath);
             await _settingsService.SetValueAsync("Language", SelectedLanguage);
 
+            // FIX: Apply language change immediately
+            Services.LocalizationService.Instance.SwitchLanguage(SelectedLanguage);
+
             // Notify user
             var message = Services.LocalizationService.Instance.GetString("SettingsSavedSuccessfully") + ". " + 
                          Services.LocalizationService.Instance.GetString("SomeChangesMayRequireRestart");
             MessageBox.Show(message, Services.LocalizationService.Instance.GetString("Settings"), MessageBoxButton.OK, MessageBoxImage.Information);
-            
-            // Trigger Language Change if needed
-            // LocalizationService.SetLanguage(SelectedLanguage); // Assuming static or injected
         }
 
         [RelayCommand]

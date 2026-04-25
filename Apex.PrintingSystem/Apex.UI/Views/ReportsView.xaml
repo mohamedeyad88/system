@@ -1,0 +1,279 @@
+<UserControl x:Class="Apex.UI.Views.ReportsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:analytics="clr-namespace:Apex.Services.Analytics;assembly=Apex.Services"
+             FlowDirection="RightToLeft"
+             FontFamily="Tahoma"
+             Background="#0F172A">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- LEFT: Report list -->
+        <Border Grid.Column="0" Background="#1E293B" Margin="0,0,1,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <Border Grid.Row="0" Background="#0F172A" Padding="16,12">
+                    <StackPanel>
+                        <TextBlock Text="&#x1F4CA; &#x0627;&#x0644;&#x062A;&#x0642;&#x0627;&#x0631;&#x064A;&#x0631;" Foreground="#F1F5F9"
+                                   FontSize="15" FontWeight="SemiBold"/>
+                        <TextBlock Text="&#x0627;&#x0644;&#x062A;&#x0642;&#x0627;&#x0631;&#x064A;&#x0631; &#x0627;&#x0644;&#x0645;&#x062C;&#x062F;&#x0648;&#x0644;&#x0629; &#x0648;&#x0627;&#x0644;&#x0633;&#x0631;&#x064A;&#x0639;&#x0629;"
+                                   Foreground="#64748B" FontSize="11" Margin="0,2,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Report list -->
+                <ListBox Grid.Row="1"
+                         ItemsSource="{Binding ReportDefinitions}"
+                         SelectedItem="{Binding SelectedDefinition}"
+                         Background="Transparent" BorderThickness="0"
+                         Margin="8,8,8,0">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="#CBD5E1"/>
+                            <Setter Property="Padding" Value="10,8"/>
+                            <Setter Property="Margin" Value="0,2"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border Background="{TemplateBinding Background}"
+                                                CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="#334155"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#1E3A5F"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold"
+                                           Foreground="#F1F5F9" FontSize="12"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                                    <Border Background="#1E3A5F" CornerRadius="4" Padding="4,1" Margin="0,0,4,0">
+                                        <TextBlock Text="{Binding Type}" FontSize="10" Foreground="#93C5FD"/>
+                                    </Border>
+                                    <Border Background="#1C3829" CornerRadius="4" Padding="4,1">
+                                        <TextBlock Text="{Binding Schedule}" FontSize="10" Foreground="#86EFAC"/>
+                                    </Border>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Quick Reports -->
+                <Border Grid.Row="2" Margin="8,8,8,4" Padding="12"
+                        Background="#0F172A" CornerRadius="8">
+                    <StackPanel>
+                        <TextBlock Text="&#x062A;&#x0642;&#x0627;&#x0631;&#x064A;&#x0631; &#x0633;&#x0631;&#x064A;&#x0639;&#x0629;" Foreground="#64748B"
+                                   FontSize="11" Margin="0,0,0,8"/>
+                        <Button Command="{Binding GenerateTodayQuickReportCommand}"
+                                Margin="0,0,0,4" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="#1E3A5F" CornerRadius="6" Padding="10,7">
+                                        <TextBlock Text="&#x1F4C5; &#x062A;&#x0642;&#x0631;&#x064A;&#x0631; &#x0627;&#x0644;&#x064A;&#x0648;&#x0645;" Foreground="#93C5FD" FontSize="12"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        <Button Command="{Binding OpenOutputFolderCommand}" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="#1E293B" CornerRadius="6" Padding="10,7">
+                                        <TextBlock Text="&#x1F4C1; &#x0641;&#x062A;&#x062D; &#x0645;&#x062C;&#x0644;&#x062F; &#x0627;&#x0644;&#x0625;&#x062E;&#x0631;&#x0627;&#x062C;" Foreground="#94A3B8" FontSize="12"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <!-- Status bar -->
+                <Border Grid.Row="3" Background="#0F172A" Padding="12,8">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding StatusText}" Foreground="#64748B" FontSize="11"/>
+                        <TextBlock Text=" &#x23F3;" FontSize="11"
+                                   Visibility="{Binding IsGenerating,
+                                   Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- RIGHT: Details panel -->
+        <Grid Grid.Column="1" Margin="16">
+            <!-- Empty state -->
+            <TextBlock Text="&#x0627;&#x062E;&#x062A;&#x0631; &#x062A;&#x0642;&#x0631;&#x064A;&#x0631;&#x0627;&#x064B; &#x0644;&#x0639;&#x0631;&#x0636; &#x062A;&#x0641;&#x0627;&#x0635;&#x064A;&#x0644;&#x0647; &#x0648;&#x062A;&#x0634;&#x063A;&#x064A;&#x0644;&#x0647;"
+                       Foreground="#475569" FontSize="16"
+                       HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedDefinition}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+
+            <!-- Details (when selected) -->
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedDefinition}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+
+                <!-- Report name -->
+                <TextBlock Text="{Binding SelectedDefinition.Name}"
+                           Foreground="#F1F5F9" FontSize="22" FontWeight="Bold"
+                           Margin="0,0,0,4"/>
+
+                <!-- Meta row -->
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                    <Border Background="#1E293B" CornerRadius="6" Padding="8,4" Margin="0,0,8,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#x0627;&#x0644;&#x0646;&#x0648;&#x0639;: " Foreground="#64748B" FontSize="12"/>
+                            <TextBlock Text="{Binding SelectedDefinition.Type}"
+                                       Foreground="#93C5FD" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Background="#1E293B" CornerRadius="6" Padding="8,4" Margin="0,0,8,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#x0627;&#x0644;&#x062A;&#x0646;&#x0633;&#x064A;&#x0642;: " Foreground="#64748B" FontSize="12"/>
+                            <TextBlock Text="{Binding SelectedDefinition.Format}"
+                                       Foreground="#86EFAC" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Background="#1E293B" CornerRadius="6" Padding="8,4">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#x0627;&#x0644;&#x062C;&#x062F;&#x0648;&#x0644;: " Foreground="#64748B" FontSize="12"/>
+                            <TextBlock Text="{Binding SelectedDefinition.Schedule}"
+                                       Foreground="#FDE68A" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- Action buttons -->
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
+                    <Button Command="{Binding GenerateNowCommand}"
+                            IsEnabled="{Binding IsGenerating, Converter={StaticResource InverseBoolConverter}}"
+                            Margin="0,0,8,0" Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="#2563EB" CornerRadius="8" Padding="20,10">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.5"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock Text="&#x25B6; &#x0625;&#x0646;&#x0634;&#x0627;&#x0621; &#x0627;&#x0644;&#x0622;&#x0646;" Foreground="White" FontWeight="SemiBold"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                    <Button Command="{Binding DeleteSelectedDefinitionCommand}" Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="#7F1D1D" CornerRadius="8" Padding="16,10">
+                                    <TextBlock Text="&#x1F5D1; &#x062D;&#x0630;&#x0641;" Foreground="#FCA5A5"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
+
+                <!-- Divider -->
+                <Border Height="1" Background="#1E293B" Margin="0,0,0,16"/>
+
+                <!-- Recent results -->
+                <TextBlock Text="&#x0622;&#x062E;&#x0631; &#x0627;&#x0644;&#x0646;&#x062A;&#x0627;&#x0626;&#x062C;" Foreground="#94A3B8"
+                           FontSize="13" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                <ItemsControl ItemsSource="{Binding RecentResults}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#1E293B" CornerRadius="8" Padding="12,10" Margin="0,0,0,6">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="{Binding ReportName}"
+                                                   Foreground="#E2E8F0" FontSize="12" FontWeight="SemiBold"/>
+                                        <TextBlock Foreground="#64748B" FontSize="11" Margin="0,2,0,0">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} · {1} bytes">
+                                                    <Binding Path="GeneratedAt" StringFormat="HH:mm:ss"/>
+                                                    <Binding Path="FileSizeBytes"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" CornerRadius="12" Padding="8,3" VerticalAlignment="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#166534"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Success}" Value="False">
+                                                        <Setter Property="Background" Value="#7F1D1D"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock FontSize="11" FontWeight="SemiBold">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text" Value="&#x2705; &#x0646;&#x062C;&#x062D;"/>
+                                                    <Setter Property="Foreground" Value="#86EFAC"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Success}" Value="False">
+                                                            <Setter Property="Text" Value="&#x274C; &#x0641;&#x0634;&#x0644;"/>
+                                                            <Setter Property="Foreground" Value="#FCA5A5"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

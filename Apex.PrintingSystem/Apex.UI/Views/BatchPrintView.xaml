@@ -3,14 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignHeight="700" d:DesignWidth="1000"
-             Background="{StaticResource Brush.Background}">
+             mc:Ignorable="d" d:DesignHeight="700" d:DesignWidth="1000">
     
     <UserControl.Resources>
         <!-- Converters -->
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
     
-    <Grid Margin="24">
+    <Grid Margin="24" Background="{StaticResource Brush.Background}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -97,7 +97,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- DropZone for Drag and Drop -->
-                <Border Grid.Row="0" x:Name="DropZone" Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="2" 
+                <Border Grid.Row="0" x:Name="DropZone" Background="#0F172A" BorderBrush="#CBD5E1" BorderThickness="2" 
                         CornerRadius="12" Padding="32" Margin="0,0,0,16" AllowDrop="True"
                         Drop="DropZone_Drop" DragOver="DropZone_DragOver" DragLeave="DropZone_DragLeave">
                     <Border.Style>
@@ -232,7 +232,7 @@
                          BorderThickness="0" Background="Transparent">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="#F8FAFC" CornerRadius="12" Padding="16" Margin="0,0,16,12" MinWidth="250">
+                            <Border Background="#0F172A" CornerRadius="12" Padding="16" Margin="0,0,16,12" MinWidth="250">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -252,7 +252,7 @@
                 </ListBox>
 
                 <!-- Printer Details -->
-                <Border Grid.Column="1" Background="#F8FAFC" CornerRadius="12" Padding="20" DataContext="{Binding SelectedPrinter}">
+                <Border Grid.Column="1" Background="#0F172A" CornerRadius="12" Padding="20" DataContext="{Binding SelectedPrinter}">
                     <StackPanel>
                         <TextBlock Text="📋 Printer Details" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,20"/>
                         
@@ -313,7 +313,7 @@
                 <TextBlock Text="⚙️ Batch Settings" FontSize="18" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,24"/>
                 
                 <!-- Stop on Error -->
-                <Border Background="#F8FAFC" CornerRadius="12" Padding="20" Margin="0,0,0,16">
+                <Border Background="#0F172A" CornerRadius="12" Padding="20" Margin="0,0,0,16">
                     <CheckBox IsChecked="{Binding Settings.StopOnError}" FontSize="14" Foreground="#475569">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="⏹️ Stop batch on error" Margin="8,0,0,0"/>
@@ -322,7 +322,7 @@
                 </Border>
                 
                 <!-- Copies per File -->
-                <Border Background="#F8FAFC" CornerRadius="12" Padding="20" Margin="0,0,0,16">
+                <Border Background="#0F172A" CornerRadius="12" Padding="20" Margin="0,0,0,16">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -337,7 +337,7 @@
                 </Border>
                 
                 <!-- Duplex Mode (Two-Sided) -->
-                <Border Background="#F8FAFC" CornerRadius="12" Padding="20" Margin="0,0,0,16">
+                <Border Background="#0F172A" CornerRadius="12" Padding="20" Margin="0,0,0,16">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -352,7 +352,7 @@
                 </Border>
                 
                 <!-- Color Mode -->
-                <Border Background="#F8FAFC" CornerRadius="12" Padding="20" Margin="0,0,0,16">
+                <Border Background="#0F172A" CornerRadius="12" Padding="20" Margin="0,0,0,16">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -370,7 +370,7 @@
                 </Border>
                 
                 <!-- Delay Between Jobs -->
-                <Border Background="#F8FAFC" CornerRadius="12" Padding="20" Margin="0,0,0,16">
+                <Border Background="#0F172A" CornerRadius="12" Padding="20" Margin="0,0,0,16">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -385,7 +385,7 @@
                 </Border>
                 
                 <!-- Retry Attempts -->
-                <Border Background="#F8FAFC" CornerRadius="12" Padding="20">
+                <Border Background="#0F172A" CornerRadius="12" Padding="20">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -411,7 +411,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- Status Bar -->
-                <Border Grid.Row="0" Background="#F8FAFC" CornerRadius="12" Padding="20" Margin="0,0,0,16">
+                <Border Grid.Row="0" Background="#0F172A" CornerRadius="12" Padding="20" Margin="0,0,0,16">
                     <StackPanel>
                         <Grid>
                             <Grid.ColumnDefinitions>

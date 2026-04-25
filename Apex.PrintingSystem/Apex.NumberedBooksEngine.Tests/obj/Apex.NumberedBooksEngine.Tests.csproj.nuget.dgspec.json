@@ -25,7 +25,11 @@
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\Apex.NumberedBooksEngine.csproj": {
+                "projectPath": "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.NumberedBooksEngine\\Apex.NumberedBooksEngine.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -46,6 +50,10 @@
             "CommunityToolkit.Mvvm": {
               "target": "Package",
               "version": "[8.4.0, )"
+            },
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[8.0.0, )"
             }
           },
           "imports": [

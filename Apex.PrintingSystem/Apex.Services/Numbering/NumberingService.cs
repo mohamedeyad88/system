@@ -3,25 +3,36 @@ using Apex.NumberedBooksEngine.Models;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Apex.Services.Numbering
 {
+    /// <summary>
+    /// Service for managing numbering print jobs, including cycle-based printing.
+    /// </summary>
     public class NumberingService
     {
         private readonly JobOrchestrator _orchestrator;
         private readonly Composer _composer;
         private readonly TemplateLoader _templateLoader;
+        private readonly CycleStatePersistenceManager _stateManager;
+        private CyclePrintRunner? _currentCycleRunner;
 
         public NumberingService()
         {
             _orchestrator = new JobOrchestrator();
             _composer = new Composer();
             _templateLoader = new TemplateLoader();
+            _stateManager = new CycleStatePersistenceManager();
         }
 
+        /// <summary>
+        /// Runs a traditional print job (legacy method).
+        /// </summary>
         public async Task<JobResult> RunJobAsync(BookJobOptions options, IProgress<ProgressInfo> progress, CancellationToken ct)
         {
             return await _orchestrator.RunJobAsync(options, progress, ct);
@@ -37,9 +48,24 @@ namespace Apex.Services.Numbering
             long startNumber,
             long totalNumbers,
             int copiesPerPage,
-            IProgress<ProgressInfo> progress, 
-            CancellationToken ct)
+            Dictionary<int, PaperSourceKind>? copyTrayMapping = null,
+            PrintScaleMode scaleMode = PrintScaleMode.ActualSize,
+            IProgress<ProgressInfo>? progress = null,
+            CancellationToken ct = default,
+            NumberingMode? numberingMode = null,
+            bool useSmartPrinting = true)  // true = Interleaved (Page→Copies), false = Batch (Copy→Pages)
         {
+            var copyTypes = new List<CopyType> { CopyType.Original };
+            for (int i = 1; i < copiesPerPage; i++)
+            {
+                copyTypes.Add((CopyType)i);
+            }
+
+            var copyTrayMappingDict = copyTrayMapping ?? new Dictionary<int, PaperSourceKind>();
+            
+            // Determine NumberingMode from parameter or default to Auto
+            var mode = numberingMode ?? NumberingMode.Auto;
+            
             var options = new NumberedPrintJobOptions(
                 PrinterName: printerName,
                 TemplatePath: templatePath,
@@ -51,100 +77,184 @@ namespace Apex.Services.Numbering
                 UsePrinterStoredTemplate: false,
                 LowResourceMode: false,
                 CheckpointEvery: 100,
-                CopyTypes: null
+                CopyTypes: copyTypes,
+                CopyTrayMapping: copyTrayMappingDict,
+                ScaleMode: scaleMode,
+                NumberingMode: mode,
+                UseSmartPrinting: useSmartPrinting  // Pass printing mode to orchestrator
             );
 
             return await _orchestrator.RunStreamingPrintJobAsync(options, progress, ct);
         }
 
-        public SKImage GeneratePreview(Stream templateStream, List<SlotSpec> slots, long startNumber, TemplateFormat format = TemplateFormat.Image)
+        /// <summary>
+        /// Runs cycle-based printing: each number is a CycleJob with its own print job, dependencies enforced.
+        /// Fail-fast tray verification; sequential execution with dependency manager.
+        /// </summary>
+        public async Task<CycleRunResult> RunCyclePrintAsync(
+            string printerName,
+            string templatePath,
+            IReadOnlyList<SlotSpec> slots,
+            long startNumber,
+            long totalNumbers,
+            int copiesPerPage,
+            Dictionary<int, PaperSourceKind> trayMapping,
+            int dpi = 300,
+            CancellationToken ct = default)
         {
-            // Create a dummy options object for preview
-            var options = new BookJobOptions(
-                TemplateStream: templateStream,
-                TemplatePath: null,
-                TemplateFormat: format,
-                Layout: LayoutSpec.A4, // Default for preview
-                Slots: slots,
-                StartNumber: startNumber,
-                TotalNumbers: 1,
-                PagesPerBook: 1,
-                CopiesPerPage: 1,
-                Mode: NumberingMode.Linear,
-                LowResourceMode: false,
-                DegreeOfParallelism: 1,
-                CheckpointEvery: 100,
-                OutputMode: "SinglePdf",
-                OutputPath: "preview.pdf"
-            );
+            var dependencyManager = new JobDependencyManager();
+            var sequencedQueue = new SequencedJobQueue(dependencyManager);
+            var trayVerifier = new TrayVerificationService();
+            var executor = new CycleJobExecutor(dependencyManager, trayVerifier);
+            _currentCycleRunner = new CyclePrintRunner(dependencyManager, sequencedQueue, trayVerifier, executor, _stateManager);
 
-            // Load template
-            using var templateImage = _templateLoader.LoadTemplate(templateStream, format);
-            
-            // Generate single page numbers
-            var pageNumbers = new List<long> { startNumber }; // Simplified for preview
-
-            // Compose
-            return _composer.ComposePage(templateImage, pageNumbers.ToArray(), options, 0);
+            var jobId = Guid.NewGuid().ToString();
+            try
+            {
+                var result = await _currentCycleRunner.RunAsync(
+                    printerName,
+                    templatePath,
+                    slots,
+                    startNumber,
+                    totalNumbers,
+                    copiesPerPage,
+                    trayMapping,
+                    dpi,
+                    ct,
+                    jobId);
+                
+                result.JobId = jobId;
+                return result;
+            }
+            finally
+            {
+                // Keep runner reference for control operations
+            }
         }
 
         /// <summary>
-        /// Generates multiple preview pages (in-memory, no file output).
+        /// Resumes cycle printing from a saved state.
         /// </summary>
-        /// <param name="templateStream">Template stream (image or PDF).</param>
-        /// <param name="slots">Slot specifications.</param>
-        /// <param name="startNumber">Starting number.</param>
-        /// <param name="totalNumbers">Total numbers to generate.</param>
-        /// <param name="format">Template format.</param>
-        /// <param name="mode">Numbering mode.</param>
-        /// <param name="pageCount">Number of preview pages to generate (default 4).</param>
-        /// <returns>List of SKImage objects representing preview pages.</returns>
-        public List<SKImage> GeneratePreviewPages(
-            Stream templateStream, 
-            List<SlotSpec> slots, 
-            long startNumber, 
-            long totalNumbers,
-            TemplateFormat format = TemplateFormat.Image,
-            NumberingMode mode = NumberingMode.Auto,
-            int pageCount = 4)
+        public async Task<CycleRunResult> ResumeCyclePrintAsync(
+            string jobId,
+            CancellationToken ct = default)
+        {
+            if (_currentCycleRunner == null)
+            {
+                var dependencyManager = new JobDependencyManager();
+                var sequencedQueue = new SequencedJobQueue(dependencyManager);
+                var trayVerifier = new TrayVerificationService();
+                var executor = new CycleJobExecutor(dependencyManager, trayVerifier);
+                _currentCycleRunner = new CyclePrintRunner(dependencyManager, sequencedQueue, trayVerifier, executor, _stateManager);
+            }
+
+            var result = await _currentCycleRunner.ResumeFromStateAsync(jobId, ct);
+            result.JobId = jobId;
+            return result;
+        }
+
+        // Control methods for cycle-based printing
+        public void PauseCyclePrinting()
+        {
+            _currentCycleRunner?.Pause();
+        }
+
+        public void ResumeCyclePrinting()
+        {
+            _currentCycleRunner?.Resume();
+        }
+
+        public bool IsCyclePrintingPaused => _currentCycleRunner?.IsPaused ?? false;
+
+        public bool RetryCycle(string jobId)
+        {
+            return _currentCycleRunner?.RetryCycle(jobId) ?? false;
+        }
+
+        public bool SkipCycle(string jobId, string? reason = null)
+        {
+            return _currentCycleRunner?.SkipCycle(jobId, reason) ?? false;
+        }
+
+        public IReadOnlyCollection<Apex.Core.Models.CycleJob>? GetAllCycles()
+        {
+            return _currentCycleRunner?.GetAllCycles();
+        }
+
+        public string? GetCurrentCycleJobId()
+        {
+            return _currentCycleRunner?.CurrentJobId;
+        }
+
+        /// <summary>
+        /// Gets all pending cycle print states (for recovery on app restart).
+        /// </summary>
+        public async Task<List<CyclePrintState>> GetPendingStatesAsync()
+        {
+            return await _stateManager.GetPendingStatesAsync();
+        }
+
+        /// <summary>
+        /// Generates a preview image for a single number.
+        /// </summary>
+        public SKImage GeneratePreview(Stream templateStream, List<SlotSpec> slots, long startNumber, TemplateFormat format = TemplateFormat.Image)
         {
             var options = new BookJobOptions(
-                TemplateStream: templateStream,
+                TemplateStream: null,
                 TemplatePath: null,
                 TemplateFormat: format,
                 Layout: LayoutSpec.A4,
                 Slots: slots,
                 StartNumber: startNumber,
-                TotalNumbers: totalNumbers,
+                TotalNumbers: 1,
                 PagesPerBook: 1,
                 CopiesPerPage: 1,
-                Mode: mode,
+                Mode: NumberingMode.Auto,
                 LowResourceMode: false,
                 DegreeOfParallelism: 1,
-                CheckpointEvery: 100,
+                CheckpointEvery: 0,
                 OutputMode: "Preview",
-                OutputPath: ""
-            );
+                OutputPath: "");
 
-            // Load template once
             using var templateImage = _templateLoader.LoadTemplate(templateStream, format);
-            
-            // Get numbering strategy
-            var strategy = NumberingStrategyFactory.Create(options);
-            
-            var previewPages = new List<SKImage>();
-            int generated = 0;
+            var pageImage = _composer.ComposePage(templateImage, new[] { startNumber }, options, 0);
+            return pageImage;
+        }
 
-            foreach (var pageNumbers in strategy.GeneratePageNumbers(options))
+        /// <summary>
+        /// Generates preview images for multiple pages.
+        /// </summary>
+        public List<SKImage> GeneratePreviewPages(Stream templateStream, List<SlotSpec> slots, long startNumber, int pageCount, TemplateFormat format = TemplateFormat.Image)
+        {
+            var options = new BookJobOptions(
+                TemplateStream: null,
+                TemplatePath: null,
+                TemplateFormat: format,
+                Layout: LayoutSpec.A4,
+                Slots: slots,
+                StartNumber: startNumber,
+                TotalNumbers: pageCount,
+                PagesPerBook: 1,
+                CopiesPerPage: 1,
+                Mode: NumberingMode.Auto,
+                LowResourceMode: false,
+                DegreeOfParallelism: 1,
+                CheckpointEvery: 0,
+                OutputMode: "Preview",
+                OutputPath: "");
+
+            var previews = new List<SKImage>();
+            using var templateImage = _templateLoader.LoadTemplate(templateStream, format);
+
+            for (int i = 0; i < pageCount; i++)
             {
-                if (generated >= pageCount) break;
-                
-                var page = _composer.ComposePage(templateImage, pageNumbers, options, 0);
-                previewPages.Add(page);
-                generated++;
+                var number = startNumber + i;
+                var pageImage = _composer.ComposePage(templateImage, new[] { number }, options, 0);
+                previews.Add(pageImage);
             }
 
-            return previewPages;
+            return previews;
         }
     }
 }
+

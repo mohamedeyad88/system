@@ -135,14 +135,13 @@ namespace Apex.NumberedBooksEngine.UI
                     totalNumbers = 100;
 
                 // Generate 4 preview pages
+                var previewCount = (int)Math.Min(totalNumbers, 4);
                 var previewPages = _numberingService.GeneratePreviewPages(
                     _templateStream!, 
                     slotSpecs, 
                     startNumber, 
-                    totalNumbers,
-                    format,
-                    NumberingMode.Auto,
-                    4);
+                    previewCount,
+                    format);
 
                 // Show in PreviewViewer
                 var viewer = new PreviewViewer();

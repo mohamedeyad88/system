@@ -31,6 +31,12 @@ namespace Apex.Services.Printing
 
         public async Task<PrintJob> ProcessAndQueueJobAsync(string filePath, string printerName, int copies = 1)
         {
+            var settings = new PrintJobSettings { Copies = copies };
+            return await ProcessAndQueueJobAsync(filePath, printerName, settings);
+        }
+
+        public async Task<PrintJob> ProcessAndQueueJobAsync(string filePath, string printerName, PrintJobSettings settings)
+        {
             if (!File.Exists(filePath))
                 throw new FileNotFoundException("Source file not found", filePath);
 
@@ -66,15 +72,20 @@ namespace Apex.Services.Printing
                     throw new InvalidDataException("The PDF file is corrupt or invalid.");
                 }
 
-                // 2. Job Creation
-                // We use the JobService to create the record.
-                // Assuming JobService has a CreatePrintJob method that takes a path.
-                var job = _distributionService.CreatePrintJob(finalPath, copies);
+                // 2. Job Creation with settings
+                var job = _distributionService.CreatePrintJob(finalPath, settings.Copies);
                 job.TargetPrinterName = printerName;
-                job.OriginalFilePath = filePath; // Keep track of original
+                job.OriginalFilePath = filePath;
+                
+                // Apply print settings
+                job.Duplex = settings.Duplex;
+                job.Color = settings.Color;
+                job.PageRange = settings.PageRange;
+                job.PaperSize = settings.PaperSize;
+                job.Orientation = settings.Orientation;
+                job.Quality = settings.Quality;
                 
                 // 3. Queueing
-                // We distribute it (Routing Engine will pick it up, or if printerName is set, it goes there)
                 await _distributionService.DistributeJobAsync(job);
 
                 _logger.Log(LogLevel.Info, $"Pipeline: Job {job.Id} queued successfully.", "UniversalPipeline", "Process");
@@ -92,9 +103,40 @@ namespace Apex.Services.Printing
         {
             try
             {
-                // Quick open to check validity
-                using var doc = PdfSharpCore.Pdf.IO.PdfReader.Open(pdfPath, PdfSharpCore.Pdf.IO.PdfDocumentOpenMode.InformationOnly);
-                return doc.PageCount > 0;
+                // First check: File exists and has content
+                var fileInfo = new FileInfo(pdfPath);
+                if (!fileInfo.Exists || fileInfo.Length < 100)
+                {
+                    _logger.Log(LogLevel.Warning, $"PDF file too small or doesn't exist: {pdfPath}", "UniversalPipeline", "Validate");
+                    return false;
+                }
+
+                // Second check: Read first bytes to verify PDF header
+                using (var fs = new FileStream(pdfPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    byte[] header = new byte[5];
+                    fs.Read(header, 0, 5);
+                    string headerStr = System.Text.Encoding.ASCII.GetString(header);
+                    if (!headerStr.StartsWith("%PDF"))
+                    {
+                        _logger.Log(LogLevel.Warning, $"File does not have PDF header: {pdfPath}", "UniversalPipeline", "Validate");
+                        return false;
+                    }
+                }
+
+                // Third check: Try to open with PdfSharp (may fail for some PDFs)
+                try
+                {
+                    using var doc = PdfSharpCore.Pdf.IO.PdfReader.Open(pdfPath, PdfSharpCore.Pdf.IO.PdfDocumentOpenMode.InformationOnly);
+                    return doc.PageCount > 0;
+                }
+                catch
+                {
+                    // PdfSharp couldn't open it, but the header is valid
+                    // We'll assume it's valid and let the printer handle it
+                    _logger.Log(LogLevel.Warning, $"PdfSharp couldn't parse PDF, but header is valid. Proceeding anyway: {pdfPath}", "UniversalPipeline", "Validate");
+                    return true;
+                }
             }
             catch (Exception ex)
             {

@@ -51,4 +51,32 @@
         <v:QuotationView />
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type vm:LicensingViewModel}">
+        <v:LicensingView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:AnalyticsDashboardViewModel}">
+        <v:AnalyticsDashboardView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:UserManagementViewModel}">
+        <v:UserManagementView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:ReportsViewModel}">
+        <v:ReportsView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:LoadBalancerViewModel}">
+        <v:LoadBalancerView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:ColorCalibrationViewModel}">
+        <v:ColorCalibrationView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:TemplateDesignerViewModel}">
+        <v:TemplateDesignerView />
+    </DataTemplate>
+
 </ResourceDictionary>

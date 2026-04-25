@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -6,6 +6,19 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+
+    <!-- Product Identity -->
+    <AssemblyName>Apex.UI</AssemblyName>
+    <RootNamespace>Apex.UI</RootNamespace>
+    <AssemblyTitle>Apex Print OS</AssemblyTitle>
+    <Product>Apex Print OS</Product>
+    <Company>Apex</Company>
+    <Copyright>Copyright © Apex 2026</Copyright>
+    <Description>نظام إدارة الطباعة المتكامل</Description>
+    <Version>2.0.0</Version>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+    <InformationalVersion>2.0.0-beta.1+5f05501</InformationalVersion>
     <!-- Nullable Reference Types Warnings (تحذيرات القيم الفارغة)
          تم تعطيل التحذيرات التالية مؤقتاً لحين مراجعة الكود:
          CS8603: Possible null reference return
@@ -13,15 +26,40 @@
          CS8602: Dereference of a possibly null reference
          CS8604: Possible null reference argument
          TODO: مراجعة وإصلاح تدريجياً في الإصدارات القادمة -->
-    <NoWarn>$(NoWarn);CS8603;CS8618;CS8602;CS8604</NoWarn>
+    <NoWarn>$(NoWarn);CS8600;CS8603;CS8618;CS8602;CS8604</NoWarn>
     <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
-    <PublishSingleFile>true</PublishSingleFile>
-    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-    <EnableCompressionInSingleFile Condition="'$(SelfContained)' == 'true'">true</EnableCompressionInSingleFile>
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
     <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
+  </PropertyGroup>
+
+  <!-- Production Build Settings -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <!-- Single File Publishing -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    
+    <!-- Performance Optimizations -->
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <PublishReadyToRunComposite>false</PublishReadyToRunComposite>
+    
+    <!-- Debug Symbols Removal -->
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    
+    <!-- Trimming disabled for WPF (WPF doesn't fully support trimming) -->
+    <!-- Note: This results in a larger file size but ensures stability -->
+    <PublishTrimmed>false</PublishTrimmed>
+    
+    <!-- Runtime Identifier -->
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    
+    <!-- Output Settings -->
+    <OutputPath>bin\Release\net8.0-windows\win-x64\publish\</OutputPath>
+    <PublishDir>D:\Apex\publish\v2.0.0-beta.1\app\</PublishDir>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,6 +75,7 @@
     <ProjectReference Include="..\Apex.Core\Apex.Core.csproj" />
     <ProjectReference Include="..\Apex.NumberedBooksEngine.UI\Apex.NumberedBooksEngine.UI.csproj" />
     <ProjectReference Include="..\Apex.NumberedBooksEngine\Apex.NumberedBooksEngine.csproj" />
+    <ProjectReference Include="..\Apex.Licensing\Apex.Licensing.csproj" />
   </ItemGroup>
 
   <ItemGroup>

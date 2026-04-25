@@ -95,20 +95,85 @@ namespace Apex.Services
             }
         }
 
-        private Task SendJobToPrinter(PrintJob job)
+        private async Task SendJobToPrinter(PrintJob job)
         {
-            return Task.Run(() =>
+            try
             {
-                var info = new System.Diagnostics.ProcessStartInfo
+                // ═══════════════════════════════════════════════════════════════════
+                // VENDOR-AWARE PRINT GATEWAY (MANDATORY)
+                // All print jobs MUST pass through this gateway for:
+                // - Silent vendor detection (HP, Epson, etc.)
+                // - Automatic profile optimization
+                // - Error handling with vendor-specific recovery
+                // ═══════════════════════════════════════════════════════════════════
+                
+                var gateway = Printing.VendorDetection.VendorAwarePrintGateway.Instance;
+                
+                var result = await gateway.PrintAsync(
+                    job.PrinterName,
+                    job.FilePath,
+                    job.TotalCopies,
+                    job);
+                
+                if (!result.Success)
                 {
-                    FileName = job.FilePath,
-                    Verb = "printto",
-                    Arguments = $"\"{job.PrinterName}\"",
-                    CreateNoWindow = true,
-                    WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
-                    UseShellExecute = true
+                    System.Diagnostics.Debug.WriteLine($"[VendorGateway] Print failed: {result.ErrorMessage}");
+                    System.Diagnostics.Debug.WriteLine($"[VendorGateway] Vendor: {result.Vendor}, Profile: {result.ProfileUsed}");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"[VendorGateway] Print succeeded in {result.ElapsedMs}ms");
+                    System.Diagnostics.Debug.WriteLine($"[VendorGateway] Vendor: {result.Vendor}, Profile: {result.ProfileUsed}");
+                }
+            }
+            catch (System.Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SendJobToPrinter failed: {ex.Message}");
+            }
+        }
+
+        private async Task PrintImageAsync(string printerName, string filePath)
+        {
+            await Task.Run(() =>
+            {
+                using var image = System.Drawing.Image.FromFile(filePath);
+                using var pd = new System.Drawing.Printing.PrintDocument();
+                pd.PrinterSettings.PrinterName = printerName;
+                pd.PrintPage += (s, e) =>
+                {
+                    if (e.Graphics != null)
+                        e.Graphics.DrawImage(image, e.MarginBounds);
                 };
-                System.Diagnostics.Process.Start(info);
+                pd.Print();
+            });
+        }
+
+        private async Task PrintTextFileAsync(string printerName, string filePath)
+        {
+            await Task.Run(() =>
+            {
+                try
+                {
+                    var text = System.IO.File.ReadAllText(filePath);
+                    using var pd = new System.Drawing.Printing.PrintDocument();
+                    pd.PrinterSettings.PrinterName = printerName;
+                    var lines = text.Split('\n');
+                    int idx = 0;
+                    pd.PrintPage += (s, e) =>
+                    {
+                        if (e.Graphics == null) return;
+                        using var font = new System.Drawing.Font("Arial", 10);
+                        float y = e.MarginBounds.Top;
+                        while (idx < lines.Length && y < e.MarginBounds.Bottom)
+                        {
+                            e.Graphics.DrawString(lines[idx++], font, System.Drawing.Brushes.Black, e.MarginBounds.Left, y);
+                            y += font.GetHeight(e.Graphics);
+                        }
+                        e.HasMorePages = idx < lines.Length;
+                    };
+                    pd.Print();
+                }
+                catch { }
             });
         }
     }

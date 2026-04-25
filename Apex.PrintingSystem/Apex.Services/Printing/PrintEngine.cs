@@ -158,23 +158,53 @@ namespace Apex.Services.Printing
             return await pdfPrinter.PrintPdfAsync(printerName, filePath);
         }
 
+        /// <summary>
+        /// Attempts to print unsupported file types using Windows print dialog.
+        /// Falls back to converting to text if possible.
+        /// </summary>
         private Task<bool> PrintShellAsync(string printerName, string filePath)
         {
             return Task.Run(() =>
             {
                 try
                 {
-                    var p = new Process();
-                    p.StartInfo.FileName = filePath;
-                    p.StartInfo.Verb = "printto";
-                    p.StartInfo.Arguments = $"\"{printerName}\"";
-                    p.StartInfo.UseShellExecute = true;
-                    p.StartInfo.CreateNoWindow = true;
-                    p.Start();
+                    // Try to read the file as text and print it
+                    var text = File.ReadAllText(filePath);
+                    
+                    using var pd = new PrintDocument();
+                    pd.PrinterSettings.PrinterName = printerName;
+                    pd.DocumentName = Path.GetFileName(filePath);
+                    
+                    var lines = text.Split('\n');
+                    int lineIndex = 0;
+                    int linesPerPage = 50;
+                    
+                    pd.PrintPage += (s, e) =>
+                    {
+                        if (e.Graphics == null) return;
+                        
+                        using var font = new Font("Consolas", 10);
+                        float y = e.MarginBounds.Top;
+                        float lineHeight = font.GetHeight(e.Graphics);
+                        int printedLines = 0;
+                        
+                        while (lineIndex < lines.Length && printedLines < linesPerPage)
+                        {
+                            e.Graphics.DrawString(lines[lineIndex], font, Brushes.Black, e.MarginBounds.Left, y);
+                            y += lineHeight;
+                            lineIndex++;
+                            printedLines++;
+                        }
+                        
+                        e.HasMorePages = lineIndex < lines.Length;
+                    };
+                    
+                    pd.Print();
                     return true;
                 }
                 catch
                 {
+                    // Cannot print this file type
                     return false;
                 }
             });

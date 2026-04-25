@@ -5,7 +5,7 @@
     <sys:String x:Key="Welcome">مرحباً بك في أبيكس</sys:String>
     <sys:String x:Key="Dashboard">لوحة التحكم</sys:String>
     <sys:String x:Key="PrintManager">إدارة الطباعة</sys:String>
-    <sys:String x:Key="NumberedBooks">الكتب المرقمة</sys:String>
+    <sys:String x:Key="NumberedBooks">ترقيم الدفاتر</sys:String>
     <sys:String x:Key="PrintingOps">عمليات الطباعة</sys:String>
     <sys:String x:Key="Diagnostics">التشخيصات</sys:String>
     <sys:String x:Key="Performance">الأداء</sys:String>
@@ -16,7 +16,7 @@
     <sys:String x:Key="ProfessionalSuite">الجناح الاحترافي</sys:String>
 
     <!-- Navigation & Main -->
-    <sys:String x:Key="Distribution">التوزيع</sys:String>
+    <sys:String x:Key="Distribution">مراقبة الطابعات</sys:String>
     <sys:String x:Key="Quotation">عرض السعر</sys:String>
     <sys:String x:Key="Settings">الإعدادات</sys:String>
     
@@ -76,6 +76,21 @@
     <sys:String x:Key="Quotation_FinalPrice">السعر النهائي</sys:String>
     <sys:String x:Key="Quotation_DetailedBreakdown">التفصيل الكامل</sys:String>
     <sys:String x:Key="Quotation_Sheets">ورقة</sys:String>
+    <sys:String x:Key="Quotation_JobDescription">وصف المهمة</sys:String>
+    <sys:String x:Key="Quotation_PrintDetails">تفاصيل الطباعة</sys:String>
+    <sys:String x:Key="Quotation_CopyButton">📋 نسخ</sys:String>
+    <sys:String x:Key="Quotation_ExportHtmlButton">🌐 تصدير HTML</sys:String>
+    <sys:String x:Key="Quotation_PrintButton">🖨️ طباعة</sys:String>
+    <sys:String x:Key="Quotation_ManualDiscount">خصم مخصص</sys:String>
+    <sys:String x:Key="Quotation_ManualDiscountHint">أدخل نسبة الخصم % (يلغي خصم الكمية)</sys:String>
+    <sys:String x:Key="Quotation_ComparisonTable">مقارنة الأسعار</sys:String>
+    <sys:String x:Key="Quotation_Qty">الكمية</sys:String>
+    <sys:String x:Key="Quotation_PerCopy">سعر النسخة</sys:String>
+    <sys:String x:Key="Quotation_Total">الإجمالي</sys:String>
+    <sys:String x:Key="Quotation_Discount">الخصم %</sys:String>
+    <sys:String x:Key="Quotation_SaveQuote">💾 حفظ العرض</sys:String>
+    <sys:String x:Key="Quotation_ShareWhatsApp">💬 واتساب</sys:String>
+    <sys:String x:Key="Quotation_SavedQuotes">العروض المحفوظة</sys:String>
     
     <!-- Distribution Module -->
     <sys:String x:Key="Distribution_SelectFile">اختر الملف للطباعة</sys:String>
@@ -160,9 +175,6 @@
     <sys:String x:Key="Numbering_NumberingMode">وضع الترقيم</sys:String>
     <sys:String x:Key="Numbering_SlotActions">إجراءات الخانة</sys:String>
     <sys:String x:Key="Numbering_Typography">الطباعة</sys:String>
-    <sys:String x:Key="Numbering_Font">الخط</sys:String>
-    <sys:String x:Key="Numbering_FontSize">حجم الخط</sys:String>
-    <sys:String x:Key="Numbering_FontWeight">سمك الخط</sys:String>
     <sys:String x:Key="Numbering_Regular">عادي</sys:String>
     <sys:String x:Key="Numbering_Bold">عريض</sys:String>
     <sys:String x:Key="Numbering_Color">اللون</sys:String>
@@ -178,18 +190,135 @@
     <sys:String x:Key="Numbering_AddSlot">إضافة خانة</sys:String>
     <sys:String x:Key="Numbering_DeleteSlot">حذف خانة</sys:String>
     <sys:String x:Key="Numbering_Printer">الطابعة</sys:String>
+    <sys:String x:Key="Numbering_PrintMode">وضع الطباعة</sys:String>
+    <sys:String x:Key="Numbering_Traditional">تقليدي</sys:String>
+    <sys:String x:Key="Numbering_SmartTray">صواني ذكية</sys:String>
+    <sys:String x:Key="Numbering_TrayMapping">تعيين الصواني</sys:String>
+    <sys:String x:Key="Numbering_Status">الحالة</sys:String>
+    <sys:String x:Key="Numbering_Actions">الإجراءات</sys:String>
+    <sys:String x:Key="Numbering_Print">طباعة</sys:String>
+    <sys:String x:Key="Numbering_Stream">تدفق</sys:String>
+    <sys:String x:Key="Numbering_Size">الحجم</sys:String>
+    <sys:String x:Key="Numbering_Weight">الوزن</sys:String>
+    <sys:String x:Key="Numbering_Tab_Home">الرئيسية</sys:String>
+    <sys:String x:Key="Numbering_Tab_Design">التصميم</sys:String>
+    <sys:String x:Key="Numbering_Tab_Print">الطباعة</sys:String>
+    <sys:String x:Key="Numbering_Design">التصميم</sys:String>
+    <sys:String x:Key="Numbering_InsertDesign">إدراج التصميم</sys:String>
+    <sys:String x:Key="Numbering_Numbering">الترقيم</sys:String>
+    <sys:String x:Key="Numbering_From">من</sys:String>
+    <sys:String x:Key="Numbering_To">إلى</sys:String>
+    <sys:String x:Key="Numbering_Copies">النسخ</sys:String>
+    <sys:String x:Key="Numbering_NumberingType">نوع الترقيم</sys:String>
+    <sys:String x:Key="Numbering_LinearMode">ترقيم الشرشرة (خطي)</sys:String>
+    <sys:String x:Key="Numbering_ImposedMode">ترقيم القص (مطبوعة)</sys:String>
+    <sys:String x:Key="Numbering_Mode">الوضع</sys:String>
+    <sys:String x:Key="Numbering_TraditionalMode">تقليدي</sys:String>
+    <sys:String x:Key="Numbering_SmartMode">ذكي</sys:String>
+    <sys:String x:Key="Numbering_StartLayout">بدء التصميم</sys:String>
+    <sys:String x:Key="Numbering_Zoom">التكبير</sys:String>
+    <sys:String x:Key="Numbering_Grid">الشبكة</sys:String>
+    <sys:String x:Key="Numbering_TrayDistribution">توزيع الدرج</sys:String>
+    <sys:String x:Key="Numbering_Copy1">النسخة 1:</sys:String>
+    <sys:String x:Key="Numbering_Copy2">النسخة 2:</sys:String>
+    <sys:String x:Key="Numbering_Copy3">النسخة 3:</sys:String>
+    <sys:String x:Key="Numbering_Original">الأصل:</sys:String>
+    <sys:String x:Key="Numbering_Copy1Label">الصورة 1:</sys:String>
+    <sys:String x:Key="Numbering_Copy2Label">الصورة 2:</sys:String>
+    <sys:String x:Key="Numbering_PrintSummary">ملخص الطباعة</sys:String>
+    <sys:String x:Key="Numbering_PrinterLabel">الطابعة:</sys:String>
+    <sys:String x:Key="Numbering_StartNumberLabel">رقم البداية:</sys:String>
+    <sys:String x:Key="Numbering_TotalNumbersLabel">إجمالي الأرقام:</sys:String>
+    <sys:String x:Key="Numbering_CopiesCountLabel">عدد النسخ:</sys:String>
+    <sys:String x:Key="Numbering_TotalPagesLabel">إجمالي الصفحات:</sys:String>
+    <sys:String x:Key="Numbering_ModeLabel">الوضع:</sys:String>
+    <sys:String x:Key="Numbering_SmartPrint">دفتر مترتب تلقائيًا</sys:String>
+    <sys:String x:Key="Numbering_TraditionalPrint">دفتر للتجميع اليدوي</sys:String>
+    <sys:String x:Key="Numbering_SmartPrint_Description">الدفتر المترتب: كل صفحة تطبع مع صورها</sys:String>
+    <sys:String x:Key="Numbering_TraditionalPrint_Description">التجميع اليدوي: يتم طباعة كل نسخة كاملة</sys:String>
+    <sys:String x:Key="Numbering_ScalingOptions">خيارات التحجيم</sys:String>
+    <sys:String x:Key="Numbering_ActualSize">الحجم الفعلي (100%)</sys:String>
+    <sys:String x:Key="Numbering_FitToPage">ملاءمة للصفحة</sys:String>
+    <sys:String x:Key="Numbering_Back">رجوع</sys:String>
+    <sys:String x:Key="Numbering_ContinueToPrint">متابعة إلى الطباعة</sys:String>
+    <sys:String x:Key="Numbering_JobProperties">خصائص الوظيفة</sys:String>
+    <sys:String x:Key="Numbering_DesignProperties">خصائص التصميم</sys:String>
+    <sys:String x:Key="Numbering_Font">الخط</sys:String>
+    <sys:String x:Key="Numbering_FontFamily">نوع الخط</sys:String>
+    <sys:String x:Key="Numbering_FontSizeLabel">حجم الخط</sys:String>
+    <sys:String x:Key="Numbering_FontWeightLabel">سمك الخط</sys:String>
+    <sys:String x:Key="Numbering_FontWeightNormal">عادي</sys:String>
+    <sys:String x:Key="Numbering_FontWeightBold">عريض</sys:String>
+    <sys:String x:Key="Numbering_ColorLabel">اللون</sys:String>
+    <sys:String x:Key="Numbering_SelectSlot">اختر فتحة لرؤية الخصائص</sys:String>
+    <sys:String x:Key="Numbering_PrintType">نوع الطباعة</sys:String>
+    <sys:String x:Key="Numbering_CopiesTooltip">عدد النسخ (1-3)</sys:String>
+    <!-- إفراغ نصوص البانر لإزالته نهائياً -->
+    <sys:String x:Key="Numbering_Title"></sys:String>
+    <sys:String x:Key="Numbering_Description"></sys:String>
+    <sys:String x:Key="Numbering_Badge"></sys:String>
+    <sys:String x:Key="Numbering_PrintStatus">حالة الطباعة</sys:String>
+    <sys:String x:Key="Numbering_PrintNow">طباعة الآن</sys:String>
+    <sys:String x:Key="Numbering_Preview_Label">معاينة</sys:String>
+    <sys:String x:Key="Numbering_Preview4PagesToolTip">معاينة أول 4 صفحات بالأرقام الفعلية</sys:String>
+    <sys:String x:Key="Numbering_FourPages">4 صفحات</sys:String>
+    <sys:String x:Key="Numbering_AutoPreviewTooltip">تحديث المعاينة تلقائياً عند تغيير الإعدادات</sys:String>
+    <sys:String x:Key="Numbering_Automatic">تلقائي</sys:String>
+    <sys:String x:Key="Numbering_Statistics">إحصائيات</sys:String>
+    <sys:String x:Key="Numbering_SheetsUnit">ورقة</sys:String>
+    <sys:String x:Key="Numbering_NotesToolTip">ملاحظات المشروع</sys:String>
+    <sys:String x:Key="Numbering_Notes">ملاحظات</sys:String>
+    <sys:String x:Key="Numbering_Project">المشروع</sys:String>
+    <sys:String x:Key="Numbering_SaveProjectToolTip">حفظ كل الإعدادات في ملف .apex-job</sys:String>
+    <sys:String x:Key="Numbering_SaveButton">حفظ</sys:String>
+    <sys:String x:Key="Numbering_LoadProjectToolTip">تحميل مشروع محفوظ .apex-job</sys:String>
+    <sys:String x:Key="Numbering_LoadButton">تحميل</sys:String>
+    <sys:String x:Key="Numbering_CheckpointResume">استمرار من إيقاف</sys:String>
+    <sys:String x:Key="Numbering_CheckCheckpointsToolTip">فحص نقاط الإيقاف المحفوظة</sys:String>
+    <sys:String x:Key="Numbering_NoCheckpoints">لا توجد نقاط إيقاف • اضغط ↺ للفحص</sys:String>
+    <sys:String x:Key="Numbering_ResumeCheckpointToolTip">استمرار من آخر نقطة إيقاف</sys:String>
+    <sys:String x:Key="Numbering_ResumeButton">استمرار</sys:String>
+    <sys:String x:Key="Numbering_DeleteCheckpointToolTip">حذف نقطة الإيقاف</sys:String>
+    <sys:String x:Key="Numbering_DeleteButton">حذف</sys:String>
+    <sys:String x:Key="Numbering_DuplicateFieldToolTip">تكرار الحقل المختار (Ctrl+D)</sys:String>
+    <sys:String x:Key="Numbering_ExportLabel">تصدير</sys:String>
+    <sys:String x:Key="Numbering_ExportPreviewToolTip">تصدير المعاينة الحالية كـ PNG أو JPG</sys:String>
+    <sys:String x:Key="Numbering_HistoryLabel">السجل</sys:String>
+    <sys:String x:Key="Numbering_PrintHistoryToolTip">سجل مهام الطباعة السابقة</sys:String>
+    <sys:String x:Key="Numbering_RecentProjectsToolTip">المشاريع الأخيرة</sys:String>
+    <sys:String x:Key="Numbering_RecentButton">الأخيرة</sys:String>
+    <sys:String x:Key="Numbering_PauseButton">إيقاف مؤقت</sys:String>
+    <sys:String x:Key="Numbering_CancelPrintingButton">إلغاء الطباعة</sys:String>
+    <sys:String x:Key="Numbering_GeneratingPreview">جارٍ توليد المعاينة...</sys:String>
+    <sys:String x:Key="Numbering_PreviewFirstPages">معاينة الصفحات الأولى</sys:String>
+    <sys:String x:Key="Numbering_PreviewFirstPagesSubtitle">— أول 4 صفحات بالأرقام الفعلية</sys:String>
+    <sys:String x:Key="Numbering_ProjectNotes">ملاحظات المشروع</sys:String>
+    <sys:String x:Key="Numbering_NotesSavedAutomatically">تُحفظ الملاحظات تلقائياً مع المشروع (.apex-job)</sys:String>
+    <sys:String x:Key="Numbering_PrintHistory">سجل الطباعة</sys:String>
+    <sys:String x:Key="Numbering_NoPrintJobs">لا توجد مهام طباعة مسجّلة بعد</sys:String>
+    <sys:String x:Key="Numbering_RecentProjects">المشاريع الأخيرة</sys:String>
+    <sys:String x:Key="Numbering_NoRecentProjects">لا توجد مشاريع أخيرة</sys:String>
 
     <sys:String x:Key="PrintOps_SearchPlaceholder">بحث عن طابعة...</sys:String>
     <sys:String x:Key="PrintOps_Refresh">تحديث</sys:String>
     <sys:String x:Key="PrintOps_QueueLength">قائمة الإنتظار: {0}</sys:String>
     <sys:String x:Key="PrintOps_Properties">خصائص الطابعة</sys:String>
     <sys:String x:Key="PrintOps_OperationsCenter">مركز العمليات</sys:String>
+    <sys:String x:Key="Dashboard_QuickActions">إجراءات سريعة</sys:String>
+    <sys:String x:Key="Dashboard_QuickActions_PrinterMonitor_Title">مراقبة الطابعات</sys:String>
+    <sys:String x:Key="Dashboard_QuickActions_PrinterMonitor_Subtitle">حالة جميع الأجهزة</sys:String>
+    <sys:String x:Key="Dashboard_QuickActions_Quotation_Title">عرض السعر</sys:String>
+    <sys:String x:Key="Dashboard_QuickActions_Quotation_Subtitle">احسب التكلفة</sys:String>
+    <sys:String x:Key="Dashboard_QuickActions_NumberedBooks_Title">ترقيم الدفاتر</sys:String>
+    <sys:String x:Key="Dashboard_QuickActions_NumberedBooks_Subtitle">إنشاء دفاتر مرقمة</sys:String>
 
     <!-- Upload View -->
-    <sys:String x:Key="Upload_Title">تحميل الملفات</sys:String>
+    <sys:String x:Key="Upload_Title">طباعة دفعة ملفات</sys:String>
+    <sys:String x:Key="Upload_Description">طباعة عدة ملفات على طابعة واحدة بالترتيب</sys:String>
+    <sys:String x:Key="Upload_Tooltip">مناسب لطباعة ملفات كثيرة على نفس الطابعة مثل الفواتير والعقود</sys:String>
+    <sys:String x:Key="Upload_Badge">وضع الطباعة: دفعة ملفات</sys:String>
     <sys:String x:Key="Upload_AddFiles">أضف ملفات +</sys:String>
     <sys:String x:Key="Upload_AddFolder">مجلد</sys:String>
-    <sys:String x:Key="Upload_ListEmpty">قائمة المستندات فارغة</sys:String>
     
     <!-- Print Operations Module -->
     <sys:String x:Key="PrintOps_UnifiedCommand">القيادة والتحكم الموحد</sys:String>
@@ -239,5 +368,74 @@
     <sys:String x:Key="FreeForm_Size">الحجم</sys:String>
     <sys:String x:Key="FreeForm_Width">العرض</sys:String>
     <sys:String x:Key="FreeForm_Height">الارتفاع</sys:String>
+
+    <!-- Printer Monitor / مراقبة الطابعات -->
+    <sys:String x:Key="Monitor_Title">مراقبة الطابعات</sys:String>
+    <sys:String x:Key="Monitor_Subtitle">حالة جميع الطابعات المتصلة في الوقت الفعلي</sys:String>
+    <sys:String x:Key="Monitor_Total">الإجمالي</sys:String>
+    <sys:String x:Key="Monitor_Online">متصل</sys:String>
+    <sys:String x:Key="Monitor_Offline">غير متصل</sys:String>
+    <sys:String x:Key="Monitor_Busy">مشغول</sys:String>
+    <sys:String x:Key="Monitor_Refresh">تحديث</sys:String>
+    <sys:String x:Key="Monitor_PrinterStatus">حالة الطابعات</sys:String>
+    <sys:String x:Key="Monitor_Queue">قائمة الانتظار</sys:String>
+    <sys:String x:Key="Monitor_Jobs">مهام</sys:String>
+    <sys:String x:Key="Monitor_NoPrinters">لم يتم العثور على طابعات</sys:String>
+    <sys:String x:Key="Monitor_ScanAgain">إعادة البحث</sys:String>
+    <sys:String x:Key="Monitor_Properties">الخصائص</sys:String>
+    <sys:String x:Key="Monitor_Preferences">التفضيلات</sys:String>
+
+    <!-- Sidebar Navigation -->
+    <sys:String x:Key="Nav_Section_Main">الرئيسية</sys:String>
+    <sys:String x:Key="Nav_Section_Printing">الطباعة</sys:String>
+    <sys:String x:Key="Nav_Section_Business">الأعمال</sys:String>
+    <sys:String x:Key="Nav_Section_System">النظام</sys:String>
+    
+    <sys:String x:Key="Nav_Dashboard">لوحة التحكم</sys:String>
+    <sys:String x:Key="Nav_Dashboard_Desc">نظرة عامة على النظام</sys:String>
+    <sys:String x:Key="Nav_QuickPrint">طباعة سريعة</sys:String>
+    <sys:String x:Key="Nav_QuickPrint_Desc">اطبع ملفاتك بسهولة</sys:String>
+    <sys:String x:Key="Nav_PrinterMonitor">مراقبة الطابعات</sys:String>
+    <sys:String x:Key="Nav_PrinterMonitor_Desc">حالة جميع الطابعات</sys:String>
+    <sys:String x:Key="Nav_NumberedBooks">ترقيم الدفاتر</sys:String>
+    <sys:String x:Key="Nav_NumberedBooks_Desc">إنشاء دفاتر مرقمة</sys:String>
+    <sys:String x:Key="Nav_PrintOps">عمليات الطباعة</sys:String>
+    <sys:String x:Key="Nav_PrintOps_Desc">إدارة متقدمة للطباعة</sys:String>
+    <sys:String x:Key="Nav_Quotation">عرض السعر</sys:String>
+    <sys:String x:Key="Nav_Quotation_Desc">احسب تكلفة الطباعة</sys:String>
+    <sys:String x:Key="Nav_Performance">الأداء</sys:String>
+    <sys:String x:Key="Nav_Performance_Desc">إحصائيات النظام</sys:String>
+    <sys:String x:Key="Nav_Settings">الإعدادات</sys:String>
+    <sys:String x:Key="Nav_Settings_Desc">الإعدادات العامة</sys:String>
+    <sys:String x:Key="Nav_Licensing">الترخيص</sys:String>
+    <sys:String x:Key="Nav_Licensing_Desc">إدارة التفعيل</sys:String>
+    <sys:String x:Key="Nav_SystemLogs">سجلات النظام</sys:String>
+    <sys:String x:Key="Nav_SystemLogs_Desc">عرض الأحداث والأخطاء</sys:String>
+    
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Print Execution Workspace - شاشة تنفيذ الطباعة
+         ═══════════════════════════════════════════════════════════════════ -->
+    <sys:String x:Key="PrintExecution_Title">طباعة ملف على كل الطابعات</sys:String>
+    <sys:String x:Key="PrintExecution_Subtitle">إرسال نفس الملف إلى عدة طابعات في نفس الوقت</sys:String>
+    <sys:String x:Key="PrintExecution_Tooltip">كل طابعة تُعتبر عملية طباعة مستقلة</sys:String>
+    <sys:String x:Key="PrintExecution_Badge">وضع الطباعة: ملف واحد × عدة طابعات</sys:String>
+    <sys:String x:Key="PrintExecution_FileSummary">معلومات الملف</sys:String>
+    <sys:String x:Key="PrintExecution_NoFileSelected">لم يتم اختيار ملف</sys:String>
+    <sys:String x:Key="PrintExecution_ChooseFile">اختيار ملف</sys:String>
+    <sys:String x:Key="PrintExecution_TargetPrinters">الطابعات المستهدفة</sys:String>
+    <sys:String x:Key="PrintExecution_SelectAll">تحديد الكل</sys:String>
+    <sys:String x:Key="PrintExecution_DeselectAll">إلغاء التحديد</sys:String>
+    <sys:String x:Key="PrintExecution_Ready">جاهز</sys:String>
+    <sys:String x:Key="PrintExecution_Offline">غير متصل</sys:String>
+    <sys:String x:Key="PrintExecution_SmartRules">إعدادات الطباعة الذكية</sys:String>
+    <sys:String x:Key="PrintExecution_Copies">عدد النسخ</sys:String>
+    <sys:String x:Key="PrintExecution_PageRange">نطاق الصفحات</sys:String>
+    <sys:String x:Key="PrintExecution_AllPages">جميع الصفحات</sys:String>
+    <sys:String x:Key="PrintExecution_Sides">الوجه</sys:String>
+    <sys:String x:Key="PrintExecution_SingleSided">وجه واحد</sys:String>
+    <sys:String x:Key="PrintExecution_DoubleSided">وجهين</sys:String>
+    <sys:String x:Key="PrintExecution_SmartEngineNotice">محسّن تلقائياً بواسطة محرك الطباعة الذكي</sys:String>
+    <sys:String x:Key="PrintExecution_StartPrinting">بدء الطباعة</sys:String>
+    <sys:String x:Key="PrintExecution_PrintersOnline">طابعات متصلة</sys:String>
 
 </ResourceDictionary>

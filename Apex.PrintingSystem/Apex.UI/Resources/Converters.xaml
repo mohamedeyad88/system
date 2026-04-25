@@ -22,6 +22,17 @@
     <converters:PercentToOpacityConverter x:Key="PercentToOpacityConverter"/>
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     <converters:BooleanToTextConverter x:Key="BooleanToTextConverter"/>
+    <converters:GreaterThanZeroToVisibilityConverter x:Key="GreaterThanZeroToVisibility"/>
+    <converters:BoolToStatusColorConverter x:Key="BoolToStatusColorConverter"/>
+    <converters:BoolToStatusBorderConverter x:Key="BoolToStatusBorderConverter"/>
+    <converters:BoolToStatusTextConverter x:Key="BoolToStatusTextConverter"/>
+    <converters:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
+    <converters:LongToStringConverter x:Key="LongToStringConverter"/>
+    <converters:WorkflowModeToBoolConverter x:Key="WorkflowModeToBoolConverter"/>
+    
+    <!-- Aliases for common converters -->
+    <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+    <converters:NonEmptyStringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
 
 </ResourceDictionary>
 

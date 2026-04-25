@@ -1,0 +1,42 @@
+2025-12-30 23:17:40.288 [INF] === Apex Printing System Logger Initialized ===
+2025-12-30 23:17:40.339 [INF] [PrintJobsManager] Initialized - All print jobs will be tracked
+2025-12-30 23:17:40.343 [DBG] [Lifecycle] Job 3e214ef1-dc99-4e1e-9979-5e6e134785e9 created for 'Adobe PDF' - 'Invoice_1.pdf'
+2025-12-30 23:17:40.346 [INF] [PrintJobsManager] 📄 Job Created: 3e214ef1-dc99-4e1e-9979-5e6e134785e9 | 'Invoice_1.pdf' → 'Adobe PDF' x1
+2025-12-30 23:17:40.351 [INF] [Lifecycle] Job 3e214ef1-dc99-4e1e-9979-5e6e134785e9: "JobCreated" → "FileValidated" | File size: 48KB
+2025-12-30 23:17:40.355 [INF] [Lifecycle] Job 3e214ef1-dc99-4e1e-9979-5e6e134785e9: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-30 23:17:40.361 [DBG] [Lifecycle] Job fc29bab0-e89c-49b2-9f78-e1fc1d39ff3b created for 'AnyDesk Printer' - 'Invoice_1.pdf'
+2025-12-30 23:17:40.361 [INF] [PrintJobsManager] 📄 Job Created: fc29bab0-e89c-49b2-9f78-e1fc1d39ff3b | 'Invoice_1.pdf' → 'AnyDesk Printer' x1
+2025-12-30 23:17:40.361 [INF] [Lifecycle] Job fc29bab0-e89c-49b2-9f78-e1fc1d39ff3b: "JobCreated" → "FileValidated" | File size: 48KB
+2025-12-30 23:17:40.361 [INF] [Lifecycle] Job fc29bab0-e89c-49b2-9f78-e1fc1d39ff3b: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-30 23:17:40.361 [DBG] [Lifecycle] Job 69325ce3-f356-4607-a459-c7b1c20229e9 created for 'EPSON Universal Print Driver' - 'Invoice_1.pdf'
+2025-12-30 23:17:40.362 [INF] [PrintJobsManager] 📄 Job Created: 69325ce3-f356-4607-a459-c7b1c20229e9 | 'Invoice_1.pdf' → 'EPSON Universal Print Driver' x1
+2025-12-30 23:17:40.362 [INF] [Lifecycle] Job 69325ce3-f356-4607-a459-c7b1c20229e9: "JobCreated" → "FileValidated" | File size: 48KB
+2025-12-30 23:17:40.362 [INF] [Lifecycle] Job 69325ce3-f356-4607-a459-c7b1c20229e9: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-30 23:17:40.362 [DBG] [Lifecycle] Job e07469e2-46e8-4f34-a73c-1825f6051b3c created for 'EPSON WF-C5210 Series' - 'Invoice_1.pdf'
+2025-12-30 23:17:40.362 [INF] [PrintJobsManager] 📄 Job Created: e07469e2-46e8-4f34-a73c-1825f6051b3c | 'Invoice_1.pdf' → 'EPSON WF-C5210 Series' x1
+2025-12-30 23:17:40.362 [INF] [Lifecycle] Job e07469e2-46e8-4f34-a73c-1825f6051b3c: "JobCreated" → "FileValidated" | File size: 48KB
+2025-12-30 23:17:40.362 [INF] [Lifecycle] Job e07469e2-46e8-4f34-a73c-1825f6051b3c: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-30 23:17:40.362 [DBG] [Lifecycle] Job 980eb42a-8890-466d-8cac-522f490c9a12 created for 'Foxit PDF Editor Printer' - 'Invoice_1.pdf'
+2025-12-30 23:17:40.362 [INF] [PrintJobsManager] 📄 Job Created: 980eb42a-8890-466d-8cac-522f490c9a12 | 'Invoice_1.pdf' → 'Foxit PDF Editor Printer' x1
+2025-12-30 23:17:40.363 [INF] [Lifecycle] Job 980eb42a-8890-466d-8cac-522f490c9a12: "JobCreated" → "FileValidated" | File size: 48KB
+2025-12-30 23:17:40.363 [INF] [Lifecycle] Job 980eb42a-8890-466d-8cac-522f490c9a12: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-30 23:17:40.363 [DBG] [Lifecycle] Job 56cfc914-1700-4ecb-895c-f168fe3d5201 created for 'Microsoft Print to PDF' - 'Invoice_1.pdf'
+2025-12-30 23:17:40.363 [INF] [PrintJobsManager] 📄 Job Created: 56cfc914-1700-4ecb-895c-f168fe3d5201 | 'Invoice_1.pdf' → 'Microsoft Print to PDF' x1
+2025-12-30 23:17:40.363 [INF] [Lifecycle] Job 56cfc914-1700-4ecb-895c-f168fe3d5201: "JobCreated" → "FileValidated" | File size: 48KB
+2025-12-30 23:17:40.363 [INF] [Lifecycle] Job 56cfc914-1700-4ecb-895c-f168fe3d5201: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-30 23:17:40.363 [DBG] [Lifecycle] Job 89543cb1-cf9b-4479-8a9b-c6c83010ac7e created for 'OneNote (Desktop)' - 'Invoice_1.pdf'
+2025-12-30 23:17:40.363 [INF] [PrintJobsManager] 📄 Job Created: 89543cb1-cf9b-4479-8a9b-c6c83010ac7e | 'Invoice_1.pdf' → 'OneNote (Desktop)' x1
+2025-12-30 23:17:40.363 [INF] [Lifecycle] Job 89543cb1-cf9b-4479-8a9b-c6c83010ac7e: "JobCreated" → "FileValidated" | File size: 48KB
+2025-12-30 23:17:40.363 [INF] [Lifecycle] Job 89543cb1-cf9b-4479-8a9b-c6c83010ac7e: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-30 23:17:40.364 [DBG] [Lifecycle] Job 9da563f4-0ac0-4c76-830e-7125a57fcf25 created for 'OneNote (Desktop) - Protected' - 'Invoice_1.pdf'
+2025-12-30 23:17:40.364 [INF] [PrintJobsManager] 📄 Job Created: 9da563f4-0ac0-4c76-830e-7125a57fcf25 | 'Invoice_1.pdf' → 'OneNote (Desktop) - Protected' x1
+2025-12-30 23:17:40.364 [INF] [Lifecycle] Job 9da563f4-0ac0-4c76-830e-7125a57fcf25: "JobCreated" → "FileValidated" | File size: 48KB
+2025-12-30 23:17:40.364 [INF] [Lifecycle] Job 9da563f4-0ac0-4c76-830e-7125a57fcf25: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-30 23:17:40.364 [DBG] [Lifecycle] Job 60a13450-5ecd-4a66-bb13-31ce897365f3 created for 'PDF-XChange Standard' - 'Invoice_1.pdf'
+2025-12-30 23:17:40.364 [INF] [PrintJobsManager] 📄 Job Created: 60a13450-5ecd-4a66-bb13-31ce897365f3 | 'Invoice_1.pdf' → 'PDF-XChange Standard' x1
+2025-12-30 23:17:40.364 [INF] [Lifecycle] Job 60a13450-5ecd-4a66-bb13-31ce897365f3: "JobCreated" → "FileValidated" | File size: 48KB
+2025-12-30 23:17:40.364 [INF] [Lifecycle] Job 60a13450-5ecd-4a66-bb13-31ce897365f3: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-30 23:17:40.365 [DBG] [Lifecycle] Job 5188926c-14f9-4b21-b5e1-63cbfcde1343 created for 'Print to Evernote' - 'Invoice_1.pdf'
+2025-12-30 23:17:40.365 [INF] [PrintJobsManager] 📄 Job Created: 5188926c-14f9-4b21-b5e1-63cbfcde1343 | 'Invoice_1.pdf' → 'Print to Evernote' x1
+2025-12-30 23:17:40.365 [INF] [Lifecycle] Job 5188926c-14f9-4b21-b5e1-63cbfcde1343: "JobCreated" → "FileValidated" | File size: 48KB
+2025-12-30 23:17:40.365 [INF] [Lifecycle] Job 5188926c-14f9-4b21-b5e1-63cbfcde1343: "FileValidated" → "FilePrepared" | Submitted to print queue

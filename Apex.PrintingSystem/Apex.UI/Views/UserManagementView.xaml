@@ -1,0 +1,525 @@
+<UserControl x:Class="Apex.UI.Views.UserManagementView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             FlowDirection="RightToLeft"
+             Background="#0F172A"
+             d:DesignHeight="800" d:DesignWidth="1200">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- LEFT: User List Panel -->
+        <Border Grid.Column="0" Background="#1E293B" BorderBrush="#334155" BorderThickness="0,0,1,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <Border Grid.Row="0" Padding="16,20,16,12" Background="#1E293B">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="إدارة المستخدمين" FontSize="16" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
+                        <Button Grid.Column="1" Content="+ مستخدم جديد" Padding="10,6" FontSize="11" FontWeight="SemiBold" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="btn" Background="#16A34A" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="btn" Property="Background" Value="#15803D"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Button.Foreground>White</Button.Foreground>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- Search -->
+                <Border Grid.Row="1" Padding="12,0,12,12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Background="#0F172A" CornerRadius="8" BorderBrush="#334155" BorderThickness="1" Padding="10,8" Margin="0,0,8,0">
+                            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                     Background="Transparent" BorderThickness="0"
+                                     Foreground="White" FontSize="13"
+                                     VerticalAlignment="Center">
+                                <TextBox.Resources>
+                                    <Style TargetType="TextBox">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="TextBox">
+                                                    <ScrollViewer x:Name="PART_ContentHost"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </TextBox.Resources>
+                            </TextBox>
+                        </Border>
+                        <Button Grid.Column="1" Content="بحث" Command="{Binding SearchUsersCommand}" Padding="10,8" FontSize="12" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="btn" Background="#2563EB" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="btn" Property="Background" Value="#1D4ED8"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Button.Foreground>White</Button.Foreground>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- User List -->
+                <ListBox Grid.Row="2"
+                         ItemsSource="{Binding Users}"
+                         SelectedItem="{Binding SelectedUser}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border x:Name="itemBorder" Background="Transparent" CornerRadius="8" Margin="8,2" Padding="12,10">
+                                            <ContentPresenter/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="itemBorder" Property="Background" Value="#334155"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="itemBorder" Property="Background" Value="#2563EB"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="{Binding DisplayName}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,4,0,0">
+                                    <TextBlock Text="{Binding Username}" FontSize="11" Foreground="#9CA3AF" Margin="0,0,6,0"/>
+                                    <Border CornerRadius="4" Padding="5,2">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#6B7280"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Role}" Value="Admin">
+                                                        <Setter Property="Background" Value="#7C3AED"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Role}" Value="Supervisor">
+                                                        <Setter Property="Background" Value="#2563EB"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Role}" Value="Operator">
+                                                        <Setter Property="Background" Value="#16A34A"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="{Binding Role}" FontSize="10" Foreground="White" FontWeight="SemiBold"/>
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock Grid.Row="2" Text="{Binding Department}" FontSize="11" Foreground="#6B7280" Margin="0,2,0,0"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+
+        <!-- RIGHT: Details / Edit Panel -->
+        <Grid Grid.Column="1" Margin="24">
+
+            <!-- Details Panel (SelectedUser != null && !IsEditing) -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ScrollViewer.Style>
+                    <Style TargetType="ScrollViewer">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedUser}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ScrollViewer.Style>
+                <StackPanel>
+                    <!-- Name Header -->
+                    <TextBlock Text="{Binding SelectedUser.DisplayName}" FontSize="26" FontWeight="Bold" Foreground="White" Margin="0,0,0,16"/>
+
+                    <!-- Role / Dept / Status row -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                        <Border CornerRadius="6" Padding="10,4" Margin="0,0,10,0">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Background" Value="#6B7280"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedUser.Role}" Value="Admin">
+                                            <Setter Property="Background" Value="#7C3AED"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SelectedUser.Role}" Value="Supervisor">
+                                            <Setter Property="Background" Value="#2563EB"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SelectedUser.Role}" Value="Operator">
+                                            <Setter Property="Background" Value="#16A34A"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <TextBlock Text="{Binding SelectedUser.Role}" FontSize="12" Foreground="White" FontWeight="SemiBold"/>
+                        </Border>
+                        <Border Background="#334155" CornerRadius="6" Padding="10,4" Margin="0,0,10,0">
+                            <TextBlock Text="{Binding SelectedUser.Department}" FontSize="12" Foreground="#D1D5DB"/>
+                        </Border>
+                        <Border CornerRadius="6" Padding="10,4">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Background" Value="#DC2626"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedUser.IsActive}" Value="True">
+                                            <Setter Property="Background" Value="#16A34A"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <TextBlock FontSize="12" Foreground="White" FontWeight="SemiBold">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="غير نشط"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedUser.IsActive}" Value="True">
+                                                <Setter Property="Text" Value="نشط"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Stats Card -->
+                    <Border Background="#1E293B" CornerRadius="12" Padding="20" Margin="0,0,0,20">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="صفحات اليوم" FontSize="13" Foreground="#9CA3AF" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{Binding SelectedUserTodayPages}" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="صفحات الشهر" FontSize="13" Foreground="#9CA3AF" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{Binding SelectedUserMonthPages}" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                            </Grid>
+                            <Grid Grid.Row="2" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="استخدام الحصة" FontSize="13" Foreground="#9CA3AF" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{Binding SelectedUserQuotaPercent, StringFormat={}{0}%}" FontSize="13" Foreground="#60A5FA"/>
+                            </Grid>
+                            <ProgressBar Grid.Row="3"
+                                         Value="{Binding SelectedUserQuotaPercent}"
+                                         Minimum="0" Maximum="100"
+                                         Height="8" Background="#334155"
+                                         Margin="0,0,0,8">
+                                <ProgressBar.Foreground>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#3B82F6" Offset="0"/>
+                                        <GradientStop Color="#60A5FA" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </ProgressBar.Foreground>
+                            </ProgressBar>
+                            <TextBlock Grid.Row="3" Text="{Binding SelectedUserStatusText}" FontSize="11" Foreground="#6B7280" Margin="0,12,0,0"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Action Buttons -->
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="تعديل" Command="{Binding EditUserCommand}" Padding="16,10" Margin="0,0,8,0" FontSize="13" FontWeight="SemiBold" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="btn" Background="#2563EB" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="btn" Property="Background" Value="#1D4ED8"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Button.Foreground>White</Button.Foreground>
+                        </Button>
+                        <Button Content="إعادة تعيين كلمة المرور" Command="{Binding ResetPasswordCommand}" Padding="16,10" Margin="0,0,8,0" FontSize="13" FontWeight="SemiBold" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="btn" Background="#D97706" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="btn" Property="Background" Value="#B45309"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Button.Foreground>White</Button.Foreground>
+                        </Button>
+                        <Button Content="حذف" Command="{Binding DeleteUserCommand}" Padding="16,10" FontSize="13" FontWeight="SemiBold" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="btn" Background="#DC2626" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="btn" Property="Background" Value="#B91C1C"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Button.Foreground>White</Button.Foreground>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Edit Form (IsEditing=True) -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ScrollViewer.Style>
+                    <Style TargetType="ScrollViewer">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ScrollViewer.Style>
+                <StackPanel MaxWidth="500">
+                    <TextBlock Text="تعديل المستخدم" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,0,0,24"/>
+
+                    <!-- Display Name -->
+                    <TextBlock Text="اسم العرض" FontSize="12" Foreground="#9CA3AF" Margin="0,0,0,6"/>
+                    <Border Background="#1E293B" CornerRadius="8" BorderBrush="#334155" BorderThickness="1" Padding="12,10" Margin="0,0,0,16">
+                        <TextBox Text="{Binding EditDisplayName, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="Transparent" BorderThickness="0" Foreground="White" FontSize="13">
+                            <TextBox.Resources>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="TextBox">
+                                                <ScrollViewer x:Name="PART_ContentHost"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </TextBox.Resources>
+                        </TextBox>
+                    </Border>
+
+                    <!-- Username -->
+                    <TextBlock Text="اسم المستخدم" FontSize="12" Foreground="#9CA3AF" Margin="0,0,0,6"/>
+                    <Border Background="#1E293B" CornerRadius="8" BorderBrush="#334155" BorderThickness="1" Padding="12,10" Margin="0,0,0,16">
+                        <TextBox Text="{Binding EditUsername, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="Transparent" BorderThickness="0" Foreground="White" FontSize="13">
+                            <TextBox.Resources>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="TextBox">
+                                                <ScrollViewer x:Name="PART_ContentHost"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </TextBox.Resources>
+                        </TextBox>
+                    </Border>
+
+                    <!-- Password -->
+                    <TextBlock Text="كلمة المرور" FontSize="12" Foreground="#9CA3AF" Margin="0,0,0,6"/>
+                    <Border Background="#1E293B" CornerRadius="8" BorderBrush="#334155" BorderThickness="1" Padding="12,10" Margin="0,0,0,16">
+                        <PasswordBox x:Name="PasswordBox" Background="Transparent" BorderThickness="0" Foreground="White" FontSize="13">
+                            <PasswordBox.Resources>
+                                <Style TargetType="PasswordBox">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="PasswordBox">
+                                                <ScrollViewer x:Name="PART_ContentHost"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </PasswordBox.Resources>
+                        </PasswordBox>
+                    </Border>
+
+                    <!-- Role -->
+                    <TextBlock Text="الدور" FontSize="12" Foreground="#9CA3AF" Margin="0,0,0,6"/>
+                    <Border Background="#1E293B" CornerRadius="8" BorderBrush="#334155" BorderThickness="1" Padding="4,4" Margin="0,0,0,16">
+                        <ComboBox ItemsSource="{Binding AvailableRoles}"
+                                  SelectedItem="{Binding EditRole}"
+                                  Background="Transparent" BorderThickness="0" Foreground="White" FontSize="13" Padding="8,6"/>
+                    </Border>
+
+                    <!-- Department -->
+                    <TextBlock Text="القسم" FontSize="12" Foreground="#9CA3AF" Margin="0,0,0,6"/>
+                    <Border Background="#1E293B" CornerRadius="8" BorderBrush="#334155" BorderThickness="1" Padding="4,4" Margin="0,0,0,16">
+                        <ComboBox ItemsSource="{Binding AvailableDepartments}"
+                                  SelectedItem="{Binding EditDepartment}"
+                                  Background="Transparent" BorderThickness="0" Foreground="White" FontSize="13" Padding="8,6"/>
+                    </Border>
+
+                    <!-- Checkboxes -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <CheckBox IsChecked="{Binding EditIsActive}" Foreground="White" FontSize="13" Margin="0,0,20,0" Content="حساب نشط"/>
+                        <CheckBox IsChecked="{Binding EditColorAllowed}" Foreground="White" FontSize="13" Content="سماح بالطباعة الملونة"/>
+                    </StackPanel>
+
+                    <!-- Daily Quota -->
+                    <TextBlock Text="حصة الصفحات اليومية" FontSize="12" Foreground="#9CA3AF" Margin="0,0,0,6"/>
+                    <Border Background="#1E293B" CornerRadius="8" BorderBrush="#334155" BorderThickness="1" Padding="12,10" Margin="0,0,0,16">
+                        <TextBox Text="{Binding EditDailyPageQuota, UpdateSourceTrigger=PropertyChanged, TargetNullValue=''}"
+                                 Background="Transparent" BorderThickness="0" Foreground="White" FontSize="13">
+                            <TextBox.Resources>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="TextBox">
+                                                <ScrollViewer x:Name="PART_ContentHost"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </TextBox.Resources>
+                        </TextBox>
+                    </Border>
+
+                    <!-- Monthly Quota -->
+                    <TextBlock Text="حصة الصفحات الشهرية" FontSize="12" Foreground="#9CA3AF" Margin="0,0,0,6"/>
+                    <Border Background="#1E293B" CornerRadius="8" BorderBrush="#334155" BorderThickness="1" Padding="12,10" Margin="0,0,0,24">
+                        <TextBox Text="{Binding EditMonthlyPageQuota, UpdateSourceTrigger=PropertyChanged, TargetNullValue=''}"
+                                 Background="Transparent" BorderThickness="0" Foreground="White" FontSize="13">
+                            <TextBox.Resources>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="TextBox">
+                                                <ScrollViewer x:Name="PART_ContentHost"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </TextBox.Resources>
+                        </TextBox>
+                    </Border>
+
+                    <!-- Save / Cancel -->
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="حفظ" Command="{Binding SaveUserCommand}" Padding="20,10" Margin="0,0,10,0" FontSize="13" FontWeight="SemiBold" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="btn" Background="#2563EB" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="btn" Property="Background" Value="#1D4ED8"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Button.Foreground>White</Button.Foreground>
+                        </Button>
+                        <Button Content="إلغاء" Command="{Binding CancelEditCommand}" Padding="20,10" FontSize="13" FontWeight="SemiBold" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="btn" Background="#4B5563" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="btn" Property="Background" Value="#374151"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Button.Foreground>White</Button.Foreground>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Empty State -->
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedUser}" Value="{x:Null}"/>
+                                    <Condition Binding="{Binding IsEditing}" Value="False"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <TextBlock Text="👤" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                <TextBlock Text="اختر مستخدماً لعرض تفاصيله" FontSize="15" Foreground="#6B7280" HorizontalAlignment="Center"/>
+            </StackPanel>
+
+        </Grid>
+    </Grid>
+</UserControl>

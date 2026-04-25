@@ -15,7 +15,6 @@ namespace Apex.UI.Modules
             services.AddTransient<PrintManagerViewModel>();
             services.AddTransient<NumberedBooksViewModel>();
             services.AddTransient<SystemPerformanceViewModel>();
-            services.AddTransient<PrinterDiagnosticsViewModel>();
             services.AddTransient<LogViewerViewModel>();
 
             // Views

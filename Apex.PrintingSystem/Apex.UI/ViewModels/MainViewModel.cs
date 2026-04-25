@@ -14,50 +14,107 @@ namespace Apex.UI.ViewModels
         [ObservableProperty]
         private ViewModelBase? _currentViewModel;
 
+        // ── Active-state properties for sidebar navigation highlight ──
+        public bool IsDashboardActive       => CurrentViewModel is DashboardViewModel;
+        public bool IsPrintManagerActive    => CurrentViewModel is PrintManagerViewModel;
+        public bool IsDistributionActive    => CurrentViewModel is DistributionViewModel;
+        public bool IsNumberedBooksActive   => CurrentViewModel is NumberingWizardViewModel;
+        public bool IsPrintOperationsActive => CurrentViewModel is PrintOperationsViewModel;
+        public bool IsPerformanceActive     => CurrentViewModel is SystemPerformanceViewModel;
+        public bool IsQuotationActive       => CurrentViewModel is QuotationViewModel;
+        public bool IsSettingsActive        => CurrentViewModel is SettingsViewModel;
+        public bool IsLicensingActive       => CurrentViewModel is LicensingViewModel;
+        public bool IsAnalyticsActive      => CurrentViewModel is AnalyticsDashboardViewModel;
+        public bool IsUserManagementActive => CurrentViewModel is UserManagementViewModel;
+        public bool IsReportsActive        => CurrentViewModel is ReportsViewModel;
+        public bool IsLoadBalancerActive      => CurrentViewModel is LoadBalancerViewModel;
+        public bool IsColorCalibrationActive  => CurrentViewModel is ColorCalibrationViewModel;
+        public bool IsTemplateDesignerActive  => CurrentViewModel is TemplateDesignerViewModel;
+
         public MainViewModel(IServiceScopeFactory scopeFactory)
         {
             _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
-            // Default view
-            NavigateTo<DashboardViewModel>();
         }
 
         partial void OnCurrentViewModelChanged(ViewModelBase? value)
         {
-            // When the current ViewModel changes, initialize it asynchronously
             if (value != null)
-            {
                 _ = InitializeCurrentViewModelAsync(value);
-            }
+
+            OnPropertyChanged(nameof(IsDashboardActive));
+            OnPropertyChanged(nameof(IsPrintManagerActive));
+            OnPropertyChanged(nameof(IsDistributionActive));
+            OnPropertyChanged(nameof(IsNumberedBooksActive));
+            OnPropertyChanged(nameof(IsPrintOperationsActive));
+            OnPropertyChanged(nameof(IsPerformanceActive));
+            OnPropertyChanged(nameof(IsQuotationActive));
+            OnPropertyChanged(nameof(IsSettingsActive));
+            OnPropertyChanged(nameof(IsLicensingActive));
+            OnPropertyChanged(nameof(IsAnalyticsActive));
+            OnPropertyChanged(nameof(IsUserManagementActive));
+            OnPropertyChanged(nameof(IsReportsActive));
+            OnPropertyChanged(nameof(IsLoadBalancerActive));
+            OnPropertyChanged(nameof(IsColorCalibrationActive));
+            OnPropertyChanged(nameof(IsTemplateDesignerActive));
         }
 
         private async Task InitializeCurrentViewModelAsync(ViewModelBase viewModel)
         {
             try
             {
-                await viewModel.InitializeAsync();
+                await Task.Run(async () =>
+                {
+                    await viewModel.InitializeAsync().ConfigureAwait(false);
+                }).ConfigureAwait(true);
             }
             catch (Exception ex)
             {
-                System.IO.File.AppendAllText("viewmodel_error.log", $"[{DateTime.Now}] Error initializing {viewModel.GetType().Name}:\n{ex}\n\n");
+                _ = Task.Run(() =>
+                {
+                    try
+                    {
+                        var logPath = System.IO.Path.Combine(
+                            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                            "ApexPrintingSystem", "Logs", "viewmodel_error.log");
+                        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(logPath)!);
+                        System.IO.File.AppendAllText(logPath,
+                            $"[{DateTime.Now}] Error initializing {viewModel.GetType().Name}:\n{ex}\n\n");
+                    }
+                    catch { }
+                });
             }
         }
 
         private void NavigateTo<T>() where T : ViewModelBase
         {
-            try 
+            try
             {
-                // Dispose previous scope to free resources (DbContext, etc.)
                 _currentScope?.Dispose();
-                
-                // Create new scope for the new ViewModel
                 _currentScope = _scopeFactory.CreateScope();
-                
-                // Resolve ViewModel within the new scope
-                CurrentViewModel = _currentScope.ServiceProvider.GetRequiredService<T>();
+                var viewModel = _currentScope.ServiceProvider.GetRequiredService<T>();
+                CurrentViewModel = viewModel;
             }
             catch (Exception ex)
             {
-                System.IO.File.AppendAllText("navigation_error.log", $"[{DateTime.Now}] Error navigating to {typeof(T).Name}:\n{ex}\n\n");
+                _ = Task.Run(() =>
+                {
+                    try
+                    {
+                        var logPath = System.IO.Path.Combine(
+                            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                            "ApexPrintingSystem", "Logs", "navigation_error.log");
+                        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(logPath)!);
+                        System.IO.File.AppendAllText(logPath,
+                            $"[{DateTime.Now}] Error navigating to {typeof(T).Name}:\n{ex.Message}\n{ex.StackTrace}\n\n");
+                    }
+                    catch { }
+                });
+
+                System.Windows.MessageBox.Show(
+                    $"Error navigating to {typeof(T).Name}:\n{ex.Message}",
+                    "Navigation Error",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
             }
         }
 
@@ -83,59 +140,66 @@ namespace Apex.UI.ViewModels
         public void NavigateToQuotation() => NavigateTo<QuotationViewModel>();
 
         [RelayCommand]
+        public void NavigateToSettings() => NavigateTo<SettingsViewModel>();
+
+        [RelayCommand]
+        public void NavigateToLicensing() => NavigateTo<LicensingViewModel>();
+
+        [RelayCommand]
         public void SwitchLanguage(string cultureCode)
         {
             Services.LocalizationService.Instance.SwitchLanguage(cultureCode);
         }
 
-        /// <summary>
-        /// Parameterized navigation command for Quick Actions and other dynamic navigation
-        /// </summary>
+        [RelayCommand]
+        public void NavigateToAnalytics() => NavigateTo<AnalyticsDashboardViewModel>();
+
+        [RelayCommand]
+        public void NavigateToUserManagement() => NavigateTo<UserManagementViewModel>();
+
+        [RelayCommand]
+        public void NavigateToReports() => NavigateTo<ReportsViewModel>();
+
+        [RelayCommand]
+        public void NavigateToLoadBalancer() => NavigateTo<LoadBalancerViewModel>();
+
+        [RelayCommand]
+        public void NavigateToColorCalibration() => NavigateTo<ColorCalibrationViewModel>();
+
+        [RelayCommand]
+        public void NavigateToTemplateDesigner() => NavigateTo<TemplateDesignerViewModel>();
+
         [RelayCommand]
         public void Navigate(string viewName)
         {
             switch (viewName)
             {
-                case "Dashboard":
-                    NavigateToDashboard();
-                    break;
-                case "Printers":
-                    NavigateToPrinters();
-                    break;
-                case "PrintManager":
-                    NavigateToPrintManager();
-                    break;
-                case "NumberedBooks":
-                    NavigateToNumberedBooks();
-                    break;
-                case "BatchPrint":
-                    NavigateTo<BatchPrintViewModel>();
-                    break;
-                case "Distribution":
-                    NavigateTo<DistributionViewModel>();
-                    break;
-                case "Performance":
-                    NavigateToPerformance();
-                    break;
-                case "Settings":
-                    NavigateTo<SettingsViewModel>();
-                    break;
-                default:
-                    // Unknown view, stay on current
-                    break;
+                case "Dashboard":    NavigateToDashboard();   break;
+                case "Printers":     NavigateToPrinters();    break;
+                case "PrintManager": NavigateToPrintManager(); break;
+                case "NumberedBooks": NavigateToNumberedBooks(); break;
+                case "BatchPrint":   NavigateTo<BatchPrintViewModel>(); break;
+                case "Distribution": NavigateTo<DistributionViewModel>(); break;
+                case "Performance":  NavigateToPerformance(); break;
+                case "Settings":     NavigateToSettings();    break;
+                case "Quotation":    NavigateToQuotation();   break;
+                case "Analytics":       NavigateToAnalytics();       break;
+                case "UserManagement":  NavigateToUserManagement();  break;
+                case "Reports":         NavigateToReports();         break;
+                case "LoadBalancer":       NavigateToLoadBalancer();       break;
+                case "ColorCalibration":  NavigateToColorCalibration();   break;
+                case "TemplateDesigner":  NavigateToTemplateDesigner();   break;
             }
         }
 
         [RelayCommand]
         public void OpenLogViewer()
         {
-            using (var scope = _scopeFactory.CreateScope())
-            {
-                var logger = scope.ServiceProvider.GetRequiredService<Apex.Core.Interfaces.ILoggerService>();
-                var logReader = scope.ServiceProvider.GetRequiredService<Apex.Core.Interfaces.ILogReaderService>();
-                var window = new Views.LogViewerWindow(logger, logReader);
-                window.Show();
-            }
+            using var scope = _scopeFactory.CreateScope();
+            var logger    = scope.ServiceProvider.GetRequiredService<Apex.Core.Interfaces.ILoggerService>();
+            var logReader = scope.ServiceProvider.GetRequiredService<Apex.Core.Interfaces.ILogReaderService>();
+            var window    = new Views.LogViewerWindow(logger, logReader);
+            window.Show();
         }
     }
 }

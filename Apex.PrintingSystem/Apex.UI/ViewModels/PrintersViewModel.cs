@@ -26,7 +26,10 @@ namespace Apex.UI.ViewModels
 
         // All printers from discovery
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(TotalPrintersCount))]
         private ObservableCollection<PrinterInfo> _printers = new();
+        
+        public int TotalPrintersCount => Printers?.Count ?? 0;
 
         // Selected/Active printer for Quick Print
         [ObservableProperty]
@@ -123,6 +126,13 @@ namespace Apex.UI.ViewModels
             _monitoringService = monitoringService;
             
             _monitoringService.PrinterStatusChanged += OnPrinterStatusChanged;
+
+            // Subscribe to collection changes to update computed properties
+            Printers.CollectionChanged += (s, e) =>
+            {
+                OnPropertyChanged(nameof(TotalPrintersCount));
+                OnPropertyChanged(nameof(FilteredPrinters));
+            };
 
             // Auto-refresh status every 5 seconds
             _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };

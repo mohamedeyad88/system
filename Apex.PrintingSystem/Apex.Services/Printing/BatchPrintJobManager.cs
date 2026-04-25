@@ -234,11 +234,21 @@ namespace Apex.Services.Printing
                         NotifyJobStatus(job);
                     });
 
-                    success = await _printEngine.PrintAsync(printerName, fileToPrint);
+                    // ═══════════════════════════════════════════════════════════════════
+                    // MANDATORY: All printing through SmartPrintManager
+                    // Direct printing to _printEngine is DEPRECATED.
+                    // ═══════════════════════════════════════════════════════════════════
+                    var smartResult = await SmartPrintManager.Instance.SubmitAsync(
+                        fileToPrint, 
+                        printerName, 
+                        settings.Copies,
+                        ct);
+                    
+                    success = smartResult.Success;
                     
                     if (!success)
                     {
-                        job.ErrorMessage = "Print engine returned failure.";
+                        job.ErrorMessage = smartResult.ErrorMessage ?? "Print engine returned failure.";
                     }
                 }
                 catch (Exception ex)

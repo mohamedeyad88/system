@@ -1,0 +1,7 @@
+D:\Apex\publish\field-trial-v1.2\Apex.Services.pdb
+D:\Apex\publish\field-trial-v1.2\Apex.Core.pdb
+D:\Apex\publish\field-trial-v1.2\Apex.NumberedBooksEngine.UI.pdb
+D:\Apex\publish\field-trial-v1.2\Apex.NumberedBooksEngine.pdb
+D:\Apex\publish\field-trial-v1.2\Apex.Licensing.pdb
+D:\Apex\publish\field-trial-v1.2\Apex.Data.pdb
+D:\Apex\publish\field-trial-v1.2\Apex.UI.exe

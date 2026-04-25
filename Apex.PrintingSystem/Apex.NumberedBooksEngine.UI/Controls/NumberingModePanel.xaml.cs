@@ -52,12 +52,12 @@ namespace Apex.NumberedBooksEngine.UI.Controls
         {
             ModeDescription.Text = SelectedMode switch
             {
-                NumberingMode.Auto => "Auto-detect mode based on slot layout.",
+                NumberingMode.Auto => "كشف تلقائي لوضع الترقيم بناءً على تخطيط الخانات",
                 NumberingMode.Shershara or NumberingMode.Linear => 
-                    "Linear top-to-bottom numbering for perforated pads. Numbers: 1, 2, 3, 4...",
+                    "ترقيم خطي من الأعلى للأسفل للدفاتر المثقوبة (الشرشرة). مثال: 1، 2، 3، 4...",
                 NumberingMode.Cutting or NumberingMode.Imposed => 
-                    "Imposed grid numbering for cut sheets. Example: [1, 2501, 5001, 7501]",
-                NumberingMode.Custom => "User-defined custom numbering pattern.",
+                    "ترقيم شبكي للورق المفروز (القص). مثال: [1، 2501، 5001، 7501]",
+                NumberingMode.Custom => "نمط ترقيم مخصص من تعريف المستخدم",
                 _ => ""
             };
 
@@ -72,16 +72,16 @@ namespace Apex.NumberedBooksEngine.UI.Controls
         {
             if (slots == null || slots.Count == 0)
             {
-                DetectedModeText.Text = "Unable to detect";
+                DetectedModeText.Text = "غير قادر على الكشف";
                 return;
             }
 
             var detected = LayoutAutoDetector.DetectMode(slots);
             DetectedModeText.Text = detected switch
             {
-                NumberingMode.Linear or NumberingMode.Shershara => "Shershara (Linear)",
-                NumberingMode.Imposed or NumberingMode.Cutting => "Cutting (Imposed)",
-                _ => "Unknown"
+                NumberingMode.Linear or NumberingMode.Shershara => "ترقيم الشرشرة (خطي)",
+                NumberingMode.Imposed or NumberingMode.Cutting => "ترقيم القص (مفروز)",
+                _ => "غير معروف"
             };
         }
     }

@@ -16,7 +16,7 @@
     <sys:String x:Key="ProfessionalSuite">Professional Suite</sys:String>
     
     <!-- Navigation & Main -->
-    <sys:String x:Key="Distribution">Distribution</sys:String>
+    <sys:String x:Key="Distribution">Printer Monitoring</sys:String>
     <sys:String x:Key="Quotation">Quotation</sys:String>
     <sys:String x:Key="Settings">Settings</sys:String>
     
@@ -76,6 +76,21 @@
     <sys:String x:Key="Quotation_FinalPrice">Final Price</sys:String>
     <sys:String x:Key="Quotation_DetailedBreakdown">Detailed Breakdown</sys:String>
     <sys:String x:Key="Quotation_Sheets">sheets</sys:String>
+    <sys:String x:Key="Quotation_JobDescription">Job Description</sys:String>
+    <sys:String x:Key="Quotation_PrintDetails">Print Details</sys:String>
+    <sys:String x:Key="Quotation_CopyButton">📋 Copy</sys:String>
+    <sys:String x:Key="Quotation_ExportHtmlButton">🌐 Export HTML</sys:String>
+    <sys:String x:Key="Quotation_PrintButton">🖨️ Print</sys:String>
+    <sys:String x:Key="Quotation_ManualDiscount">Custom Discount</sys:String>
+    <sys:String x:Key="Quotation_ManualDiscountHint">Enter discount % (overrides volume discount)</sys:String>
+    <sys:String x:Key="Quotation_ComparisonTable">Price Comparison</sys:String>
+    <sys:String x:Key="Quotation_Qty">Qty</sys:String>
+    <sys:String x:Key="Quotation_PerCopy">Per Copy</sys:String>
+    <sys:String x:Key="Quotation_Total">Total</sys:String>
+    <sys:String x:Key="Quotation_Discount">Disc %</sys:String>
+    <sys:String x:Key="Quotation_SaveQuote">💾 Save Quote</sys:String>
+    <sys:String x:Key="Quotation_ShareWhatsApp">💬 WhatsApp</sys:String>
+    <sys:String x:Key="Quotation_SavedQuotes">Saved Quotes</sys:String>
     
     <!-- Distribution Module -->
     <sys:String x:Key="Distribution_SelectFile">Select File to Print</sys:String>
@@ -160,9 +175,6 @@
     <sys:String x:Key="Numbering_NumberingMode">Numbering Mode</sys:String>
     <sys:String x:Key="Numbering_SlotActions">Slot Actions</sys:String>
     <sys:String x:Key="Numbering_Typography">Typography</sys:String>
-    <sys:String x:Key="Numbering_Font">Font</sys:String>
-    <sys:String x:Key="Numbering_FontSize">Font size</sys:String>
-    <sys:String x:Key="Numbering_FontWeight">Font Weight</sys:String>
     <sys:String x:Key="Numbering_Regular">Regular</sys:String>
     <sys:String x:Key="Numbering_Bold">Bold</sys:String>
     <sys:String x:Key="Numbering_Color">Color</sys:String>
@@ -178,6 +190,114 @@
     <sys:String x:Key="Numbering_AddSlot">Add Slot</sys:String>
     <sys:String x:Key="Numbering_DeleteSlot">Delete Slot</sys:String>
     <sys:String x:Key="Numbering_Printer">Printer</sys:String>
+    <sys:String x:Key="Numbering_Tab_Home">Home</sys:String>
+    <sys:String x:Key="Numbering_Tab_Design">Design</sys:String>
+    <sys:String x:Key="Numbering_Tab_Print">Print</sys:String>
+    <sys:String x:Key="Numbering_Design">Design</sys:String>
+    <sys:String x:Key="Numbering_InsertDesign">Insert Design</sys:String>
+    <sys:String x:Key="Numbering_Numbering">Numbering</sys:String>
+    <sys:String x:Key="Numbering_From">From</sys:String>
+    <sys:String x:Key="Numbering_To">To</sys:String>
+    <sys:String x:Key="Numbering_Copies">Copies</sys:String>
+    <sys:String x:Key="Numbering_NumberingType">Numbering Type</sys:String>
+    <sys:String x:Key="Numbering_LinearMode">Linear (Shershara)</sys:String>
+    <sys:String x:Key="Numbering_ImposedMode">Imposed (Cutting)</sys:String>
+    <sys:String x:Key="Numbering_Mode">Mode</sys:String>
+    <sys:String x:Key="Numbering_TraditionalMode">Traditional</sys:String>
+    <sys:String x:Key="Numbering_SmartMode">Smart</sys:String>
+    <sys:String x:Key="Numbering_StartLayout">Start Layout</sys:String>
+    <sys:String x:Key="Numbering_Zoom">Zoom</sys:String>
+    <sys:String x:Key="Numbering_Grid">Grid</sys:String>
+    <sys:String x:Key="Numbering_TrayDistribution">Tray Distribution</sys:String>
+    <sys:String x:Key="Numbering_Copy1">Copy 1:</sys:String>
+    <sys:String x:Key="Numbering_Copy2">Copy 2:</sys:String>
+    <sys:String x:Key="Numbering_Copy3">Copy 3:</sys:String>
+    <sys:String x:Key="Numbering_Original">Original:</sys:String>
+    <sys:String x:Key="Numbering_Copy1Label">Copy 1:</sys:String>
+    <sys:String x:Key="Numbering_Copy2Label">Copy 2:</sys:String>
+    <sys:String x:Key="Numbering_PrintSummary">Print Summary</sys:String>
+    <sys:String x:Key="Numbering_PrinterLabel">Printer:</sys:String>
+    <sys:String x:Key="Numbering_StartNumberLabel">Start Number:</sys:String>
+    <sys:String x:Key="Numbering_TotalNumbersLabel">Total Numbers:</sys:String>
+    <sys:String x:Key="Numbering_CopiesCountLabel">Copies:</sys:String>
+    <sys:String x:Key="Numbering_TotalPagesLabel">Total Pages:</sys:String>
+    <sys:String x:Key="Numbering_ModeLabel">Mode:</sys:String>
+    <sys:String x:Key="Numbering_SmartPrint">Smart Print</sys:String>
+    <sys:String x:Key="Numbering_TraditionalPrint">Traditional Print</sys:String>
+    <sys:String x:Key="Numbering_SmartPrint_Description">Imposed book: Each page prints with its copies</sys:String>
+    <sys:String x:Key="Numbering_TraditionalPrint_Description">Manual assembly: Each copy is printed completely</sys:String>
+    <sys:String x:Key="Numbering_ScalingOptions">Scaling Options</sys:String>
+    <sys:String x:Key="Numbering_ActualSize">Actual Size (100%)</sys:String>
+    <sys:String x:Key="Numbering_FitToPage">Fit to Page</sys:String>
+    <sys:String x:Key="Numbering_Back">Back</sys:String>
+    <sys:String x:Key="Numbering_ContinueToPrint">Continue to Print</sys:String>
+    <sys:String x:Key="Numbering_JobProperties">Job Properties</sys:String>
+    <sys:String x:Key="Numbering_DesignProperties">Design Properties</sys:String>
+    <sys:String x:Key="Numbering_Font">Font</sys:String>
+    <sys:String x:Key="Numbering_FontFamily">Font Family</sys:String>
+    <sys:String x:Key="Numbering_FontSizeLabel">Font Size</sys:String>
+    <sys:String x:Key="Numbering_FontWeightLabel">Font Weight</sys:String>
+    <sys:String x:Key="Numbering_FontWeightNormal">Normal</sys:String>
+    <sys:String x:Key="Numbering_FontWeightBold">Bold</sys:String>
+    <sys:String x:Key="Numbering_ColorLabel">Color</sys:String>
+    <sys:String x:Key="Numbering_SelectSlot">Select a slot to view properties</sys:String>
+    <sys:String x:Key="Numbering_PrintType">Print Type</sys:String>
+    <sys:String x:Key="Numbering_CopiesTooltip">Copies (1-3)</sys:String>
+    <!-- Banner strings intentionally emptied to remove numbered books banner -->
+    <sys:String x:Key="Numbering_Title"></sys:String>
+    <sys:String x:Key="Numbering_Description"></sys:String>
+    <sys:String x:Key="Numbering_Badge"></sys:String>
+    <sys:String x:Key="Numbering_PrintStatus">Print Status</sys:String>
+    <sys:String x:Key="Numbering_PrintNow">Print Now</sys:String>
+    <sys:String x:Key="Numbering_Actions">Actions</sys:String>
+    <sys:String x:Key="Numbering_Print">Print</sys:String>
+    <sys:String x:Key="Numbering_PrintMode">Print Mode</sys:String>
+    <sys:String x:Key="Numbering_Size">Size</sys:String>
+    <sys:String x:Key="Numbering_SmartTray">Smart Trays</sys:String>
+    <sys:String x:Key="Numbering_Status">Status</sys:String>
+    <sys:String x:Key="Numbering_Stream">Stream</sys:String>
+    <sys:String x:Key="Numbering_Traditional">Traditional</sys:String>
+    <sys:String x:Key="Numbering_TrayMapping">Tray Mapping</sys:String>
+    <sys:String x:Key="Numbering_Weight">Weight</sys:String>
+    <sys:String x:Key="Numbering_Preview_Label">Preview</sys:String>
+    <sys:String x:Key="Numbering_Preview4PagesToolTip">Preview first 4 pages with actual numbers</sys:String>
+    <sys:String x:Key="Numbering_FourPages">4 pages</sys:String>
+    <sys:String x:Key="Numbering_AutoPreviewTooltip">Auto-update preview when settings change</sys:String>
+    <sys:String x:Key="Numbering_Automatic">Auto</sys:String>
+    <sys:String x:Key="Numbering_Statistics">Statistics</sys:String>
+    <sys:String x:Key="Numbering_SheetsUnit">sheets</sys:String>
+    <sys:String x:Key="Numbering_NotesToolTip">Project notes</sys:String>
+    <sys:String x:Key="Numbering_Notes">Notes</sys:String>
+    <sys:String x:Key="Numbering_Project">Project</sys:String>
+    <sys:String x:Key="Numbering_SaveProjectToolTip">Save all settings to .apex-job file</sys:String>
+    <sys:String x:Key="Numbering_SaveButton">Save</sys:String>
+    <sys:String x:Key="Numbering_LoadProjectToolTip">Load saved .apex-job project</sys:String>
+    <sys:String x:Key="Numbering_LoadButton">Load</sys:String>
+    <sys:String x:Key="Numbering_CheckpointResume">Resume from checkpoint</sys:String>
+    <sys:String x:Key="Numbering_CheckCheckpointsToolTip">Check saved checkpoints</sys:String>
+    <sys:String x:Key="Numbering_NoCheckpoints">No checkpoints • Click ↺ to check</sys:String>
+    <sys:String x:Key="Numbering_ResumeCheckpointToolTip">Resume from last checkpoint</sys:String>
+    <sys:String x:Key="Numbering_ResumeButton">Resume</sys:String>
+    <sys:String x:Key="Numbering_DeleteCheckpointToolTip">Delete checkpoint</sys:String>
+    <sys:String x:Key="Numbering_DeleteButton">Delete</sys:String>
+    <sys:String x:Key="Numbering_DuplicateFieldToolTip">Duplicate selected field (Ctrl+D)</sys:String>
+    <sys:String x:Key="Numbering_ExportLabel">Export</sys:String>
+    <sys:String x:Key="Numbering_ExportPreviewToolTip">Export current preview as PNG or JPG</sys:String>
+    <sys:String x:Key="Numbering_HistoryLabel">History</sys:String>
+    <sys:String x:Key="Numbering_PrintHistoryToolTip">Previous print job history</sys:String>
+    <sys:String x:Key="Numbering_RecentProjectsToolTip">Recent projects</sys:String>
+    <sys:String x:Key="Numbering_RecentButton">Recent</sys:String>
+    <sys:String x:Key="Numbering_PauseButton">Pause</sys:String>
+    <sys:String x:Key="Numbering_CancelPrintingButton">Cancel Printing</sys:String>
+    <sys:String x:Key="Numbering_GeneratingPreview">Generating preview...</sys:String>
+    <sys:String x:Key="Numbering_PreviewFirstPages">Preview first pages</sys:String>
+    <sys:String x:Key="Numbering_PreviewFirstPagesSubtitle">— First 4 pages with actual numbers</sys:String>
+    <sys:String x:Key="Numbering_ProjectNotes">Project Notes</sys:String>
+    <sys:String x:Key="Numbering_NotesSavedAutomatically">Notes are saved automatically with the project (.apex-job)</sys:String>
+    <sys:String x:Key="Numbering_PrintHistory">Print History</sys:String>
+    <sys:String x:Key="Numbering_NoPrintJobs">No print jobs recorded yet</sys:String>
+    <sys:String x:Key="Numbering_RecentProjects">Recent Projects</sys:String>
+    <sys:String x:Key="Numbering_NoRecentProjects">No recent projects</sys:String>
 
     <sys:String x:Key="PrintOps_SearchPlaceholder">Search printers...</sys:String>
     <sys:String x:Key="PrintOps_Refresh">Refresh</sys:String>
@@ -187,9 +307,11 @@
 
     <!-- Upload View -->
     <sys:String x:Key="Upload_Title">Upload Files</sys:String>
+    <sys:String x:Key="Upload_Description">Print multiple files to a single printer in order</sys:String>
+    <sys:String x:Key="Upload_Tooltip">Ideal for printing many files on the same printer, such as invoices and contracts</sys:String>
+    <sys:String x:Key="Upload_Badge">Print Mode: File Batch</sys:String>
     <sys:String x:Key="Upload_AddFiles">Files +</sys:String>
     <sys:String x:Key="Upload_AddFolder">Folder</sys:String>
-    <sys:String x:Key="Upload_ListEmpty">List of documents is empty</sys:String>
     
     <!-- Print Operations Module -->
     <sys:String x:Key="PrintOps_UnifiedCommand">Unified Command &amp; Control</sys:String>
@@ -199,6 +321,13 @@
     <sys:String x:Key="PrintOps_JobMonitor">Job Monitor</sys:String>
     <sys:String x:Key="PrintOps_RuleEditor">Rule Editor</sys:String>
     <sys:String x:Key="PrintOps_ActivityLog">Activity Log</sys:String>
+    <sys:String x:Key="Dashboard_QuickActions">Quick Actions</sys:String>
+    <sys:String x:Key="Dashboard_QuickActions_PrinterMonitor_Title">Printer Monitor</sys:String>
+    <sys:String x:Key="Dashboard_QuickActions_PrinterMonitor_Subtitle">All devices status</sys:String>
+    <sys:String x:Key="Dashboard_QuickActions_Quotation_Title">Quotation</sys:String>
+    <sys:String x:Key="Dashboard_QuickActions_Quotation_Subtitle">Calculate cost</sys:String>
+    <sys:String x:Key="Dashboard_QuickActions_NumberedBooks_Title">Numbered Books</sys:String>
+    <sys:String x:Key="Dashboard_QuickActions_NumberedBooks_Subtitle">Create numbered booklets</sys:String>
     
     <!-- Printers Module -->
     <sys:String x:Key="Printers_SelectAndPrint">Select a printer and print documents with ease</sys:String>
@@ -239,5 +368,74 @@
     <sys:String x:Key="FreeForm_Size">Size</sys:String>
     <sys:String x:Key="FreeForm_Width">Width</sys:String>
     <sys:String x:Key="FreeForm_Height">Height</sys:String>
+
+    <!-- Printer Monitor -->
+    <sys:String x:Key="Monitor_Title">Printer Monitor</sys:String>
+    <sys:String x:Key="Monitor_Subtitle">Real-time status of all connected printers</sys:String>
+    <sys:String x:Key="Monitor_Total">Total</sys:String>
+    <sys:String x:Key="Monitor_Online">Online</sys:String>
+    <sys:String x:Key="Monitor_Offline">Offline</sys:String>
+    <sys:String x:Key="Monitor_Busy">Busy</sys:String>
+    <sys:String x:Key="Monitor_Refresh">Refresh</sys:String>
+    <sys:String x:Key="Monitor_PrinterStatus">Printer Status</sys:String>
+    <sys:String x:Key="Monitor_Queue">Queue</sys:String>
+    <sys:String x:Key="Monitor_Jobs">jobs</sys:String>
+    <sys:String x:Key="Monitor_NoPrinters">No printers found</sys:String>
+    <sys:String x:Key="Monitor_ScanAgain">Scan Again</sys:String>
+    <sys:String x:Key="Monitor_Properties">Properties</sys:String>
+    <sys:String x:Key="Monitor_Preferences">Preferences</sys:String>
+
+    <!-- Sidebar Navigation -->
+    <sys:String x:Key="Nav_Section_Main">Main</sys:String>
+    <sys:String x:Key="Nav_Section_Printing">Printing</sys:String>
+    <sys:String x:Key="Nav_Section_Business">Business</sys:String>
+    <sys:String x:Key="Nav_Section_System">System</sys:String>
+    
+    <sys:String x:Key="Nav_Dashboard">Dashboard</sys:String>
+    <sys:String x:Key="Nav_Dashboard_Desc">System overview</sys:String>
+    <sys:String x:Key="Nav_QuickPrint">Quick Print</sys:String>
+    <sys:String x:Key="Nav_QuickPrint_Desc">Print files easily</sys:String>
+    <sys:String x:Key="Nav_PrinterMonitor">Printer Monitor</sys:String>
+    <sys:String x:Key="Nav_PrinterMonitor_Desc">All printers status</sys:String>
+    <sys:String x:Key="Nav_NumberedBooks">Numbered Books</sys:String>
+    <sys:String x:Key="Nav_NumberedBooks_Desc">Create numbered booklets</sys:String>
+    <sys:String x:Key="Nav_PrintOps">Print Operations</sys:String>
+    <sys:String x:Key="Nav_PrintOps_Desc">Advanced print management</sys:String>
+    <sys:String x:Key="Nav_Quotation">Quotation</sys:String>
+    <sys:String x:Key="Nav_Quotation_Desc">Calculate print cost</sys:String>
+    <sys:String x:Key="Nav_Performance">Performance</sys:String>
+    <sys:String x:Key="Nav_Performance_Desc">System statistics</sys:String>
+    <sys:String x:Key="Nav_Settings">Settings</sys:String>
+    <sys:String x:Key="Nav_Settings_Desc">General settings</sys:String>
+    <sys:String x:Key="Nav_Licensing">License</sys:String>
+    <sys:String x:Key="Nav_Licensing_Desc">Manage activation</sys:String>
+    <sys:String x:Key="Nav_SystemLogs">System Logs</sys:String>
+    <sys:String x:Key="Nav_SystemLogs_Desc">View events and errors</sys:String>
+    
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Print Execution Workspace
+         ═══════════════════════════════════════════════════════════════════ -->
+    <sys:String x:Key="PrintExecution_Title">Print Execution</sys:String>
+    <sys:String x:Key="PrintExecution_Subtitle">Execute print jobs with Smart Background Printing</sys:String>
+    <sys:String x:Key="PrintExecution_Tooltip">Each printer is treated as an independent print job</sys:String>
+    <sys:String x:Key="PrintExecution_Badge">Print Mode: One File × Multiple Printers</sys:String>
+    <sys:String x:Key="PrintExecution_FileSummary">File Summary</sys:String>
+    <sys:String x:Key="PrintExecution_NoFileSelected">No file selected</sys:String>
+    <sys:String x:Key="PrintExecution_ChooseFile">Choose File</sys:String>
+    <sys:String x:Key="PrintExecution_TargetPrinters">Target Printers</sys:String>
+    <sys:String x:Key="PrintExecution_SelectAll">Select All</sys:String>
+    <sys:String x:Key="PrintExecution_DeselectAll">Deselect All</sys:String>
+    <sys:String x:Key="PrintExecution_Ready">Ready</sys:String>
+    <sys:String x:Key="PrintExecution_Offline">Offline</sys:String>
+    <sys:String x:Key="PrintExecution_SmartRules">Smart Print Rules</sys:String>
+    <sys:String x:Key="PrintExecution_Copies">Copies</sys:String>
+    <sys:String x:Key="PrintExecution_PageRange">Page Range</sys:String>
+    <sys:String x:Key="PrintExecution_AllPages">All Pages</sys:String>
+    <sys:String x:Key="PrintExecution_Sides">Sides</sys:String>
+    <sys:String x:Key="PrintExecution_SingleSided">Single-sided</sys:String>
+    <sys:String x:Key="PrintExecution_DoubleSided">Double-sided</sys:String>
+    <sys:String x:Key="PrintExecution_SmartEngineNotice">Optimized automatically by Smart Printing Engine</sys:String>
+    <sys:String x:Key="PrintExecution_StartPrinting">START PRINTING</sys:String>
+    <sys:String x:Key="PrintExecution_PrintersOnline">printers online</sys:String>
 
 </ResourceDictionary>

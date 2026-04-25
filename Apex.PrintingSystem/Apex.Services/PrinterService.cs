@@ -34,28 +34,77 @@ namespace Apex.Services
 
         public async Task<bool> PrintFileAsync(string printerName, string filePath, int copies)
         {
-            return await Task.Run(() =>
+            // Create a basic job without custom settings
+            var job = new PrintJob { TotalCopies = copies };
+            return await PrintFileAsync(printerName, filePath, job);
+        }
+
+        public async Task<bool> PrintFileAsync(string printerName, string filePath, PrintJob jobWithSettings)
+        {
+            // ═══════════════════════════════════════════════════════════════════
+            // VENDOR-AWARE PRINT GATEWAY (MANDATORY)
+            // All print operations MUST pass through the vendor gateway for:
+            // - Automatic HP/Epson/Generic optimization
+            // - Silent vendor detection
+            // - Intelligent error recovery
+            // ═══════════════════════════════════════════════════════════════════
+            
+            var gateway = Printing.VendorDetection.VendorAwarePrintGateway.Instance;
+            
+            var result = await gateway.PrintAsync(
+                printerName,
+                filePath,
+                jobWithSettings.TotalCopies,
+                jobWithSettings);
+            
+            return result.Success;
+        }
+
+        private bool PrintImageWithSettings(string printerName, string filePath, PrintJob settings)
+        {
+            try
             {
-                try
+                using var fs = new System.IO.FileStream(filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read);
+                using var ms = new System.IO.MemoryStream();
+                fs.CopyTo(ms);
+                ms.Position = 0;
+                using var image = System.Drawing.Image.FromStream(ms);
+                
+                using var pd = new System.Drawing.Printing.PrintDocument();
+                pd.PrinterSettings.PrinterName = printerName;
+                pd.PrinterSettings.Copies = (short)settings.TotalCopies;
+                
+                // Apply custom settings to a cloned page settings instance (job scope only)
+                var jobPageSettings = (System.Drawing.Printing.PageSettings)pd.DefaultPageSettings.Clone();
+
+                if (settings.Duplex && pd.PrinterSettings.CanDuplex)
                 {
-                    // Uses RawPrinterHelper to send file directly to the spooler
-                    // Future: Add rendering logic for non-raw formats (PDF, Images) if needed
-                    
-                    // Simple loop for copies (RawPrinterHelper handles one copy at a time)
-                    for (int i = 0; i < copies; i++)
+                    pd.PrinterSettings.Duplex = System.Drawing.Printing.Duplex.Vertical;
+                }
+                
+                jobPageSettings.Color = settings.Color;
+                jobPageSettings.Landscape = settings.Orientation?.Equals("Landscape", StringComparison.OrdinalIgnoreCase) ?? false;
+
+                pd.QueryPageSettings += (s, e) =>
+                {
+                    e.PageSettings = (System.Drawing.Printing.PageSettings)jobPageSettings.Clone();
+                };
+                
+                pd.PrintPage += (s, e) =>
+                {
+                    if (e.Graphics != null)
                     {
-                        if (!Helpers.RawPrinterHelper.SendFileToPrinter(printerName, filePath))
-                        {
-                            return false; 
-                        }
+                        e.Graphics.DrawImage(image, e.MarginBounds);
                     }
-                    return true;
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
-            });
+                };
+                
+                pd.Print();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public PrinterType GetPrinterType(string printerName)

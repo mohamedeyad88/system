@@ -1,252 +1,259 @@
 using SkiaSharp;
 using System;
-using System.Drawing;
-using System.Drawing.Printing;
-using System.IO;
-using System.Runtime.Versioning;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Apex.NumberedBooksEngine.Core
 {
     /// <summary>
-    /// GDI-based spooler printer implementation.
-    /// Uses "template once" strategy: caches template bitmap in memory,
-    /// blits it per page, and draws text overlays using vector GDI.
+    /// GDI-based printer wrapper for cycle-based printing.
+    /// Uses WindowsPrintSpoolerService internally with template caching support.
     /// </summary>
-    [SupportedOSPlatform("windows")]
-    public class GdiSpoolPrinter : IPrintOutputService, IDisposable
+    public class GdiSpoolPrinter : IDisposable
     {
-        private PrintDocument? _printDocument;
-        private Bitmap? _cachedTemplateBitmap;
-        private PagePrintCommand? _currentCommand;
-        private TaskCompletionSource<bool>? _pageCompletion;
-        private ManualResetEventSlim _pauseEvent = new(true);
-        private CancellationToken _ct;
-        private bool _jobEnded;
-        private long _pagesProcessed;
-        private readonly System.Diagnostics.Stopwatch _stopwatch = new();
+        private readonly WindowsPrintSpoolerService _spoolerService;
+        private SKImage? _cachedTemplate;
+        private SKBitmap? _cachedTemplateBitmap; // Guaranteed raster copy for reliable pixel access
+        private int _currentCopyIndex = 0;
+        private bool _templateReady = false;
 
-        public PrintJobStatus Status { get; private set; } = new();
-        public event EventHandler<PrintJobStatus>? StatusChanged;
+        public GdiSpoolPrinter()
+        {
+            _spoolerService = new WindowsPrintSpoolerService();
+        }
 
         /// <summary>
-        /// Sets the cached template bitmap to use for all pages.
-        /// This is the "template once" optimization.
+        /// CRITICAL: Reset all state before starting a new job.
+        /// Must be called before SetCachedTemplate for each new job.
+        /// </summary>
+        public void ResetForNewJob()
+        {
+            _cachedTemplate?.Dispose();
+            _cachedTemplate = null;
+            _cachedTemplateBitmap?.Dispose();
+            _cachedTemplateBitmap = null;
+            _currentCopyIndex = 0;
+            _templateReady = false;
+            
+            System.Diagnostics.Debug.WriteLine($"[NUMBERING] GdiSpoolPrinter reset for new job");
+        }
+
+        /// <summary>
+        /// Sets the cached template image (rasterized once, reused for all pages).
+        /// CRITICAL: Uses guaranteed raster copy to prevent pixmap null errors.
         /// </summary>
         public void SetCachedTemplate(SKImage templateImage)
         {
-            // Convert SKImage to System.Drawing.Bitmap
-            using var data = templateImage.Encode(SKEncodedImageFormat.Png, 100);
-            using var stream = new MemoryStream();
-            data.SaveTo(stream);
-            stream.Position = 0;
-
+            if (templateImage == null)
+                throw new ArgumentNullException(nameof(templateImage), "Template image cannot be null");
+            
+            // Reset any previous template
+            _cachedTemplate?.Dispose();
             _cachedTemplateBitmap?.Dispose();
-            _cachedTemplateBitmap = new Bitmap(stream);
-        }
-
-        /// <summary>
-        /// Sets the cached template from a file path.
-        /// </summary>
-        public void SetCachedTemplate(string templatePath, int dpi = 300)
-        {
-            using var templateManager = new TemplateManager();
-            var (image, _) = templateManager.RasterizeTemplate(templatePath, dpi);
-            SetCachedTemplate(image);
-        }
-
-        public Task StartJobAsync(PrintJobSettings settings, CancellationToken ct)
-        {
-            _ct = ct;
-            _pagesProcessed = 0;
-            _jobEnded = false;
-            _stopwatch.Restart();
-
-            Status = new PrintJobStatus
-            {
-                Status = "Starting",
-                CurrentPage = 0
-            };
-            OnStatusChanged();
-
-            _printDocument = new PrintDocument();
-            _printDocument.PrinterSettings.PrinterName = settings.PrinterName;
-            _printDocument.PrinterSettings.Copies = (short)settings.Copies;
-            _printDocument.PrintPage += PrintDocument_PrintPage;
-
-            return Task.CompletedTask;
-        }
-
-        public async Task PrintPageAsync(SKImage page)
-        {
-            // This method is for compatibility; for streaming, use PrintPageWithOverlaysAsync
-            await PrintPageWithOverlaysAsync(null);
-        }
-
-        /// <summary>
-        /// Prints a page using the cached template and the given overlay command.
-        /// This is the optimized streaming path.
-        /// </summary>
-        public async Task PrintPageWithOverlaysAsync(PagePrintCommand? command)
-        {
-            if (_ct.IsCancellationRequested || Status.IsCancelled)
-                throw new OperationCanceledException();
-
-            _pauseEvent.Wait(_ct);
-
-            _currentCommand = command;
-            _pageCompletion = new TaskCompletionSource<bool>();
-
-            // Start printing if first page
-            if (_pagesProcessed == 0)
-            {
-                _ = Task.Run(() =>
-                {
-                    try
-                    {
-                        _printDocument?.Print();
-                    }
-                    catch (Exception ex)
-                    {
-                        Status.Error = ex.Message;
-                        Status.Status = "Error";
-                        OnStatusChanged();
-                        _pageCompletion?.TrySetException(ex);
-                    }
-                });
-            }
-
-            await _pageCompletion.Task;
-
-            _pagesProcessed++;
-            Status.CurrentPage = _pagesProcessed;
-            Status.PagesPerSecond = _pagesProcessed / Math.Max(_stopwatch.Elapsed.TotalSeconds, 0.001);
-            Status.ElapsedTime = _stopwatch.Elapsed;
-            Status.Status = "Printing";
-            OnStatusChanged();
-        }
-
-        private void PrintDocument_PrintPage(object sender, PrintPageEventArgs e)
-        {
-            if (_jobEnded || e.Graphics == null)
-            {
-                e.HasMorePages = false;
-                return;
-            }
-
+            _cachedTemplate = null;
+            _cachedTemplateBitmap = null;
+            _templateReady = false;
+            
+            System.Diagnostics.Debug.WriteLine($"[NUMBERING] SetCachedTemplate - Input size: {templateImage.Width}x{templateImage.Height}");
+            
+            // ═══════════════════════════════════════════════════════════════════
+            // CRITICAL FIX: Always create a guaranteed raster bitmap copy
+            // Do NOT use PeekPixels - it can return null for non-raster images
+            // Instead, encode to PNG and decode to ensure we have a raster copy
+            // ═══════════════════════════════════════════════════════════════════
+            
             try
             {
-                // Step 1: Blit the cached template (fast operation)
-                if (_cachedTemplateBitmap != null)
+                // Encode to PNG (lossless, preserves quality)
+                using var encoded = templateImage.Encode(SKEncodedImageFormat.Png, 100);
+                if (encoded == null)
                 {
-                    e.Graphics.DrawImage(_cachedTemplateBitmap, e.MarginBounds);
+                    throw new InvalidOperationException("Failed to cache template: could not encode image to PNG.");
                 }
-
-                // Step 2: Draw text overlays (vector text, very efficient)
-                if (_currentCommand != null)
+                
+                // Decode to create guaranteed raster bitmap
+                _cachedTemplateBitmap = SKBitmap.Decode(encoded);
+                if (_cachedTemplateBitmap == null)
                 {
-                    foreach (var slot in _currentCommand.Slots)
-                    {
-                        DrawSlotText(e.Graphics, slot, e.MarginBounds);
-                    }
+                    throw new InvalidOperationException("Failed to cache template: could not decode PNG to bitmap.");
                 }
-
-                _pageCompletion?.TrySetResult(true);
-
-                // Wait briefly for next page
-                Thread.Sleep(10);
-                e.HasMorePages = !_jobEnded;
+                
+                // Create SKImage from bitmap for composing
+                _cachedTemplate = SKImage.FromBitmap(_cachedTemplateBitmap);
+                if (_cachedTemplate == null)
+                {
+                    _cachedTemplateBitmap.Dispose();
+                    _cachedTemplateBitmap = null;
+                    throw new InvalidOperationException("Failed to cache template: could not create SKImage from bitmap.");
+                }
+                
+                _templateReady = true;
+                System.Diagnostics.Debug.WriteLine($"[NUMBERING] ✅ Template cached successfully - Size: {_cachedTemplate.Width}x{_cachedTemplate.Height}");
             }
             catch (Exception ex)
             {
-                _pageCompletion?.TrySetException(ex);
-                e.HasMorePages = false;
+                _templateReady = false;
+                System.Diagnostics.Debug.WriteLine($"[NUMBERING] ❌ SetCachedTemplate failed: {ex.Message}");
+                throw;
             }
         }
+        
+        /// <summary>
+        /// Checks if template is ready for printing.
+        /// </summary>
+        public bool IsTemplateReady => _templateReady && _cachedTemplate != null;
 
-        private readonly Dictionary<string, Font> _fontCache = new();
-
-        private Font GetCachedFont(string family, float size, FontStyle style)
+        /// <summary>
+        /// Sets the current copy index for tray routing (0 = Original, 1 = Copy 1, etc.)
+        /// </summary>
+        public void SetCurrentCopyIndex(int copyIndex)
         {
-            var key = $"{family}|{size}|{style}";
-            if (!_fontCache.TryGetValue(key, out var font))
+            _currentCopyIndex = copyIndex;
+            _spoolerService.SetCurrentCopyIndex(copyIndex);
+        }
+
+        /// <summary>
+        /// Starts a print job with the given settings.
+        /// </summary>
+        public Task StartJobAsync(PrintJobSettings settings, CancellationToken ct)
+        {
+            return _spoolerService.StartJobAsync(settings, ct);
+        }
+
+        /// <summary>
+        /// Prints a page with overlays (numbers) on top of the cached template.
+        /// </summary>
+        public async Task PrintPageWithOverlaysAsync(PagePrintCommand command)
+        {
+            if (_cachedTemplate == null)
+                throw new InvalidOperationException("Template not set. Call SetCachedTemplate first.");
+
+            // Convert PagePrintCommand to GdiPagePrintCommand
+            var gdiCommand = new GdiPagePrintCommand
             {
-                font = new Font(family, size, style, GraphicsUnit.Point);
-                _fontCache[key] = font;
-            }
-            return font;
+                PageNumbers = ExtractPageNumbers(command),
+                Slots = ExtractSlots(command),
+                CopyType = Models.CopyType.Original // Default, can be enhanced later
+            };
+
+            await PrintPageWithOverlaysAsync(gdiCommand);
         }
 
-        private void DrawSlotText(Graphics g, SlotOverlayCommand slot, Rectangle bounds)
+        /// <summary>
+        /// Prints a page with overlays (numbers) on top of the cached template.
+        /// CRITICAL: Validates template is ready and page generation succeeds before printing.
+        /// </summary>
+        public async Task PrintPageWithOverlaysAsync(GdiPagePrintCommand command)
         {
-            // Parse color
-            var color = ColorTranslator.FromHtml(slot.ColorHex.StartsWith("#") ? slot.ColorHex : $"#{slot.ColorHex}");
+            // ═══════════════════════════════════════════════════════════════════
+            // FAIL-FAST: Validate template is ready before attempting to compose
+            // ═══════════════════════════════════════════════════════════════════
+            if (!_templateReady || _cachedTemplate == null)
+            {
+                throw new InvalidOperationException(
+                    "فشل في تحضير القالب للطباعة. يرجى التأكد من صحة ملف القالب وإعادة المحاولة.");
+            }
 
-            // Use cached font (DO NOT dispose here)
-            var font = GetCachedFont(slot.FontFamily, slot.FontSize, FontStyle.Regular);
-            using var brush = new SolidBrush(color);
+            // Compose the page with overlays
+            var composer = new Composer();
+            
+            // Create page assignment from command - FRESH for each page
+            var slotAssignments = new List<SlotAssignment>();
+            for (int i = 0; i < command.PageNumbers.Length && i < command.Slots.Count; i++)
+            {
+                slotAssignments.Add(new SlotAssignment(command.Slots[i].Id, command.PageNumbers[i]));
+            }
+            
+            var pageAssignment = new PageAssignment(0, slotAssignments);
+            
+            System.Diagnostics.Debug.WriteLine($"[NUMBERING] Composing page - Numbers: [{string.Join(", ", command.PageNumbers)}], CopyType: {command.CopyType}");
+            
+            var pageImage = composer.ComposePageFromAssignment(
+                _cachedTemplate,
+                pageAssignment,
+                command.Slots,
+                command.CopyType);
+            
+            // ═══════════════════════════════════════════════════════════════════
+            // FAIL-FAST: Validate page image was created successfully
+            // ═══════════════════════════════════════════════════════════════════
+            if (pageImage == null)
+            {
+                throw new InvalidOperationException(
+                    "فشل في إنشاء صورة الصفحة للطباعة. تأكد من صحة إعدادات الترقيم.");
+            }
+            
+            System.Diagnostics.Debug.WriteLine($"[NUMBERING] ✅ Page composed - Size: {pageImage.Width}x{pageImage.Height}");
 
-            // Calculate position relative to print bounds (using Normalized coordinates 0..1)
-            // This works for any paper size (A4, Letter) and any DPI
-            float x = bounds.Left + (slot.NormalizedX * bounds.Width);
-            float y = bounds.Top + (slot.NormalizedY * bounds.Height);
-
-            // Draw text (vector, not raster - very efficient)
-            g.DrawString(slot.Text, font, brush, x, y);
+            // ═══════════════════════════════════════════════════════════════════
+            // CRITICAL: Do NOT dispose pageImage here!
+            // The spooler will queue it and PrintDocument_PrintPage will dispose
+            // it after actual printing completes. Disposing here causes
+            // AccessViolationException when PrintDocument tries to use the image.
+            // ═══════════════════════════════════════════════════════════════════
+            await _spoolerService.PrintPageAsync(pageImage);
+            
+            System.Diagnostics.Debug.WriteLine($"[NUMBERING] ✅ Page sent to spooler queue");
         }
 
+        /// <summary>
+        /// Ends the current print job.
+        /// </summary>
         public Task EndJobAsync()
         {
-            _jobEnded = true;
-            _stopwatch.Stop();
-
-            Status.Status = "Completed";
-            Status.ElapsedTime = _stopwatch.Elapsed;
-            OnStatusChanged();
-
-            return Task.CompletedTask;
+            return _spoolerService.EndJobAsync();
         }
 
-        public void Pause()
+        private long[] ExtractPageNumbers(PagePrintCommand command)
         {
-            _pauseEvent.Reset();
-            Status.IsPaused = true;
-            Status.Status = "Paused";
-            OnStatusChanged();
+            // Extract page numbers from slot overlays
+            // This is a simplified extraction - may need enhancement based on actual usage
+            return command.Slots.Select(s => long.TryParse(s.Text, out var num) ? num : -1)
+                .Where(n => n >= 0)
+                .ToArray();
         }
 
-        public void Resume()
+        private IReadOnlyList<Models.SlotSpec> ExtractSlots(PagePrintCommand command)
         {
-            _pauseEvent.Set();
-            Status.IsPaused = false;
-            Status.Status = "Printing";
-            OnStatusChanged();
-        }
-
-        public void Cancel()
-        {
-            Status.IsCancelled = true;
-            Status.Status = "Cancelled";
-            _pauseEvent.Set();
-            _pageCompletion?.TrySetCanceled();
-            OnStatusChanged();
-        }
-
-        private void OnStatusChanged()
-        {
-            StatusChanged?.Invoke(this, Status);
+            // Convert SlotOverlayCommand to SlotSpec
+            return command.Slots.Select(s => new Models.SlotSpec(
+                Id: s.SlotId,
+                X: s.NormalizedX,
+                Y: s.NormalizedY,
+                Width: 0.1f, // Default width
+                Height: 0.05f, // Default height
+                FontFamily: s.FontFamily,
+                FontSize: s.FontSize,
+                FontColorHex: s.ColorHex,
+                Align: Models.TextAlign.Left,
+                Rotation: 0,
+                CopyStyles: null
+            )).ToList();
         }
 
         public void Dispose()
         {
-            _printDocument?.Dispose();
+            _cachedTemplate?.Dispose();
+            _cachedTemplate = null;
             _cachedTemplateBitmap?.Dispose();
-            _pauseEvent.Dispose();
+            _cachedTemplateBitmap = null;
+            _templateReady = false;
+            _spoolerService.Cancel();
             
-            foreach (var font in _fontCache.Values)
-                font.Dispose();
-            _fontCache.Clear();
+            System.Diagnostics.Debug.WriteLine($"[NUMBERING] GdiSpoolPrinter disposed");
         }
     }
+
+    /// <summary>
+    /// Command for printing a page with overlays (GDI-specific).
+    /// </summary>
+    public class GdiPagePrintCommand
+    {
+        public long[] PageNumbers { get; set; } = Array.Empty<long>();
+        public IReadOnlyList<Models.SlotSpec> Slots { get; set; } = Array.Empty<Models.SlotSpec>();
+        public Models.CopyType CopyType { get; set; } = Models.CopyType.Original;
+    }
 }
+

@@ -58,6 +58,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  
+  <!-- Main Navigation -->
   <data name="Dashboard" xml:space="preserve">
     <value>لوحة التحكم</value>
   </data>
@@ -91,173 +93,9 @@
   <data name="Welcome" xml:space="preserve">
     <value>مرحباً بك في نظام أبيكس للطباعة</value>
   </data>
-  <data name="AddClient" xml:space="preserve">
-    <value>إضافة عميل</value>
-  </data>
-  <data name="Name" xml:space="preserve">
-    <value>الاسم</value>
-  </data>
-  <data name="Email" xml:space="preserve">
-    <value>البريد الإلكتروني</value>
-  </data>
-  <data name="Phone" xml:space="preserve">
-    <value>الهاتف</value>
-  </data>
-  <data name="Address" xml:space="preserve">
-    <value>العنوان</value>
-  </data>
-  <data name="Save" xml:space="preserve">
-    <value>حفظ</value>
-  </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>إلغاء</value>
-  </data>
-  <data name="Delete" xml:space="preserve">
-    <value>حذف</value>
-  </data>
-  <data name="Edit" xml:space="preserve">
-    <value>تعديل</value>
-  </data>
-  <data name="Total" xml:space="preserve">
-    <value>المجموع</value>
-  </data>
-  <data name="Date" xml:space="preserve">
-    <value>التاريخ</value>
-  </data>
-  <data name="Status" xml:space="preserve">
-    <value>الحالة</value>
-  </data>
-  <data name="GenerateInvoice" xml:space="preserve">
-    <value>إصدار فاتورة</value>
-  </data>
-  <data name="AddOrder" xml:space="preserve">
-    <value>إضافة طلب</value>
-  </data>
   <data name="Printers" xml:space="preserve">
     <value>الطابعات</value>
   </data>
-  <data name="Jobs" xml:space="preserve">
-    <value>المهام</value>
-  </data>
-  <data name="AddPrinter" xml:space="preserve">
-    <value>إضافة طابعة</value>
-  </data>
-  <data name="IPAddress" xml:space="preserve">
-    <value>عنوان IP</value>
-  </data>
-  <data name="Port" xml:space="preserve">
-    <value>المنفذ</value>
-  </data>
-  <data name="DistributeJob" xml:space="preserve">
-    <value>توزيع المهمة</value>
-  </data>
-  <data name="FileName" xml:space="preserve">
-    <value>اسم الملف</value>
-  </data>
-  <data name="Copies" xml:space="preserve">
-    <value>النسخ</value>
-  </data>
-  <data name="CheckIn" xml:space="preserve">
-    <value>تسجيل دخول</value>
-  </data>
-  <data name="CheckOut" xml:space="preserve">
-    <value>تسجيل خروج</value>
-  </data>
-  <data name="Employee" xml:space="preserve">
-    <value>الموظف</value>
-  </data>
-  <data name="AddEmployee" xml:space="preserve">
-    <value>إضافة موظف</value>
-  </data>
-  <data name="NetProfit" xml:space="preserve">
-    <value>صافي الربح</value>
-  </data>
-  <data name="Income" xml:space="preserve">
-    <value>الدخل</value>
-  </data>
-  <data name="Expense" xml:space="preserve">
-    <value>المصروفات</value>
-  </data>
-  <data name="Refresh" xml:space="preserve">
-    <value>تحديث</value>
-  </data>
-  <data name="ID" xml:space="preserve">
-    <value>المعرف</value>
-  </data>
-  <data name="Type" xml:space="preserve">
-    <value>النوع</value>
-  </data>
-  <data name="Contact" xml:space="preserve">
-    <value>معلومات الاتصال</value>
-  </data>
-  <data name="Client" xml:space="preserve">
-    <value>العميل</value>
-  </data>
-  <data name="From" xml:space="preserve">
-    <value>من</value>
-  </data>
-  <data name="To" xml:space="preserve">
-    <value>إلى</value>
-  </data>
-  <data name="Category" xml:space="preserve">
-    <value>التصنيف</value>
-  </data>
-  <data name="Description" xml:space="preserve">
-    <value>الوصف</value>
-  </data>
-  <data name="Amount" xml:space="preserve">
-    <value>المبلغ</value>
-  </data>
-  <data name="Employees" xml:space="preserve">
-    <value>الموظفين</value>
-  </data>
-  <data name="TodaysAttendance" xml:space="preserve">
-    <value>حضور اليوم</value>
-  </data>
-  <data name="EmployeeID" xml:space="preserve">
-    <value>معرف الموظف</value>
-  </data>
-  <data name="AddMockPrinter" xml:space="preserve">
-    <value>إضافة طابعة تجريبية</value>
-  </data>
-  <data name="CompanyName" xml:space="preserve">
-    <value>اسم الشركة</value>
-  </data>
-  <data name="CompanyAddress" xml:space="preserve">
-    <value>عنوان الشركة</value>
-  </data>
-  <data name="CompanyPhone" xml:space="preserve">
-    <value>هاتف الشركة</value>
-  </data>
-  <data name="Logo" xml:space="preserve">
-    <value>الشعار</value>
-  </data>
-  <data name="InvoiceHeader" xml:space="preserve">
-    <value>ترويسة الفاتورة</value>
-  </data>
-  <data name="InvoiceFooter" xml:space="preserve">
-    <value>تذييل الفاتورة</value>
-  </data>
-  <data name="DefaultPricePerPage" xml:space="preserve">
-    <value>سعر الصفحة الافتراضي</value>
-  </data>
-  <data name="DefaultCoverPrice" xml:space="preserve">
-    <value>سعر الغلاف الافتراضي</value>
-  </data>
-  <data name="BackupPath" xml:space="preserve">
-    <value>مسار النسخ الاحتياطي</value>
-  </data>
-  <data name="Browse" xml:space="preserve">
-    <value>تصفح</value>
-  </data>
-  <data name="SelectFolder" xml:space="preserve">
-    <value>اختر مجلد</value>
-  </data>
-  <data name="SelectFile" xml:space="preserve">
-    <value>اختر ملف</value>
-  </data>
-  
-  <!-- Main Navigation -->
   <data name="PrintManager" xml:space="preserve">
     <value>إدارة الطباعة</value>
   </data>
@@ -276,16 +114,343 @@
   <data name="ProfessionalSuite" xml:space="preserve">
     <value>مجموعة احترافية</value>
   </data>
-  
-  <!-- Distribution Printing -->
   <data name="Distribution" xml:space="preserve">
     <value>التوزيع</value>
   </data>
-  <data name="DistributionPrinting" xml:space="preserve">
-    <value>الطباعة الموزعة</value>
+  <data name="Quotation" xml:space="preserve">
+    <value>التسعير</value>
+  </data>
+  
+  <!-- Client Management -->
+  <data name="AddClient" xml:space="preserve">
+    <value>إضافة عميل</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>البريد الإلكتروني</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>الهاتف</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>العنوان</value>
+  </data>
+  <data name="Client" xml:space="preserve">
+    <value>العميل</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>معلومات الاتصال</value>
+  </data>
+  
+  <!-- Common Actions -->
+  <data name="Save" xml:space="preserve">
+    <value>حفظ</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>تعديل</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>إضافة</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>إزالة</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>مسح</value>
+  </data>
+  <data name="ClearAll" xml:space="preserve">
+    <value>مسح الكل</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>بحث</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>تصفية</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>ترتيب</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>عرض</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>التفاصيل</value>
+  </data>
+  <data name="Properties" xml:space="preserve">
+    <value>الخصائص</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>تحديث</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>إعادة تعيين</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>تطبيق</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>رجوع</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>التالي</value>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>إنهاء</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>طباعة</value>
+  </data>
+  <data name="Preview" xml:space="preserve">
+    <value>معاينة</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>رفع</value>
+  </data>
+  <data name="Browse" xml:space="preserve">
+    <value>تصفح</value>
+  </data>
+  <data name="Choose" xml:space="preserve">
+    <value>اختر</value>
+  </data>
+  <data name="ChooseFile" xml:space="preserve">
+    <value>اختر ملف</value>
+  </data>
+  <data name="SelectFile" xml:space="preserve">
+    <value>اختر ملف</value>
+  </data>
+  <data name="SelectFolder" xml:space="preserve">
+    <value>اختر مجلد</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>فتح</value>
+  </data>
+  <data name="OpenFile" xml:space="preserve">
+    <value>فتح ملف</value>
+  </data>
+  <data name="OpenFolder" xml:space="preserve">
+    <value>فتح مجلد</value>
+  </data>
+  <data name="SaveAs" xml:space="preserve">
+    <value>حفظ باسم</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>تصدير</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>استيراد</value>
+  </data>
+  <data name="Load" xml:space="preserve">
+    <value>تحميل</value>
+  </data>
+  
+  <!-- Orders & Invoices -->
+  <data name="Total" xml:space="preserve">
+    <value>المجموع</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>التاريخ</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+  <data name="GenerateInvoice" xml:space="preserve">
+    <value>إصدار فاتورة</value>
+  </data>
+  <data name="AddOrder" xml:space="preserve">
+    <value>إضافة طلب</value>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>المعرف</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>النوع</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>التصنيف</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>الوصف</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>المبلغ</value>
+  </data>
+  
+  <!-- Printers -->
+  <data name="Jobs" xml:space="preserve">
+    <value>المهام</value>
+  </data>
+  <data name="AddPrinter" xml:space="preserve">
+    <value>إضافة طابعة</value>
+  </data>
+  <data name="IPAddress" xml:space="preserve">
+    <value>عنوان IP</value>
+  </data>
+  <data name="Port" xml:space="preserve">
+    <value>المنفذ</value>
+  </data>
+  <data name="AddMockPrinter" xml:space="preserve">
+    <value>إضافة طابعة تجريبية</value>
+  </data>
+  <data name="PrinterName" xml:space="preserve">
+    <value>اسم الطابعة</value>
+  </data>
+  <data name="PrinterStatus" xml:space="preserve">
+    <value>حالة الطابعة</value>
+  </data>
+  <data name="PrinterProperties" xml:space="preserve">
+    <value>خصائص الطابعة</value>
+  </data>
+  <data name="Queue" xml:space="preserve">
+    <value>الطابور</value>
+  </data>
+  <data name="QueueLength" xml:space="preserve">
+    <value>طول الطابور</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>ملون</value>
+  </data>
+  <data name="Duplex" xml:space="preserve">
+    <value>وجهين</value>
+  </data>
+  <data name="PaperSize" xml:space="preserve">
+    <value>حجم الورق</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>متصل</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>غير متصل</value>
+  </data>
+  <data name="Busy" xml:space="preserve">
+    <value>مشغول</value>
+  </data>
+  <data name="SelectPrinter" xml:space="preserve">
+    <value>اختر طابعة</value>
   </data>
   <data name="SelectPrinters" xml:space="preserve">
     <value>اختر الطابعات</value>
+  </data>
+  <data name="SelectedPrinter" xml:space="preserve">
+    <value>الطابعة المحددة</value>
+  </data>
+  
+  <!-- Files & Documents -->
+  <data name="File" xml:space="preserve">
+    <value>ملف</value>
+  </data>
+  <data name="Files" xml:space="preserve">
+    <value>ملفات</value>
+  </data>
+  <data name="Folder" xml:space="preserve">
+    <value>مجلد</value>
+  </data>
+  <data name="FileName" xml:space="preserve">
+    <value>اسم الملف</value>
+  </data>
+  <data name="FileType" xml:space="preserve">
+    <value>نوع الملف</value>
+  </data>
+  <data name="FileSize" xml:space="preserve">
+    <value>حجم الملف</value>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>الحجم</value>
+  </data>
+  <data name="FolderPath" xml:space="preserve">
+    <value>مسار المجلد</value>
+  </data>
+  <data name="DateModified" xml:space="preserve">
+    <value>تاريخ التعديل</value>
+  </data>
+  <data name="UploadFiles" xml:space="preserve">
+    <value>رفع الملفات</value>
+  </data>
+  <data name="ListOfDocuments" xml:space="preserve">
+    <value>قائمة المستندات</value>
+  </data>
+  <data name="DropYourFilesHere" xml:space="preserve">
+    <value>أسقط ملفاتك هنا</value>
+  </data>
+  <data name="OrAddThemFromMenu" xml:space="preserve">
+    <value>أو أضفها من القائمة</value>
+  </data>
+  
+  <!-- Print Settings -->
+  <data name="Copies" xml:space="preserve">
+    <value>النسخ</value>
+  </data>
+  <data name="Pages" xml:space="preserve">
+    <value>الصفحات</value>
+  </data>
+  <data name="Sheets" xml:space="preserve">
+    <value>الأوراق</value>
+  </data>
+  <data name="PrintSettings" xml:space="preserve">
+    <value>إعدادات الطباعة</value>
+  </data>
+  <data name="Orientation" xml:space="preserve">
+    <value>الاتجاه</value>
+  </data>
+  <data name="Portrait" xml:space="preserve">
+    <value>عمودي</value>
+  </data>
+  <data name="Landscape" xml:space="preserve">
+    <value>أفقي</value>
+  </data>
+  <data name="Quality" xml:space="preserve">
+    <value>الجودة</value>
+  </data>
+  <data name="Draft" xml:space="preserve">
+    <value>مسودة</value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>عادي</value>
+  </data>
+  <data name="High" xml:space="preserve">
+    <value>عالي</value>
+  </data>
+  <data name="Best" xml:space="preserve">
+    <value>الأفضل</value>
+  </data>
+  <data name="PageRange" xml:space="preserve">
+    <value>نطاق الصفحات</value>
+  </data>
+  <data name="AllPages" xml:space="preserve">
+    <value>كل الصفحات</value>
+  </data>
+  <data name="CurrentPage" xml:space="preserve">
+    <value>الصفحة الحالية</value>
+  </data>
+  <data name="CustomRange" xml:space="preserve">
+    <value>نطاق مخصص</value>
+  </data>
+  <data name="DoubleSided" xml:space="preserve">
+    <value>وجهين</value>
+  </data>
+  <data name="SingleSided" xml:space="preserve">
+    <value>وجه واحد</value>
+  </data>
+  <data name="DoubleDesktop" xml:space="preserve">
+    <value>سطح المكتب المزدوج</value>
+  </data>
+  
+  <!-- Distribution Printing -->
+  <data name="DistributionPrinting" xml:space="preserve">
+    <value>الطباعة الموزعة</value>
+  </data>
+  <data name="DistributeJob" xml:space="preserve">
+    <value>توزيع المهمة</value>
   </data>
   <data name="SelectAll" xml:space="preserve">
     <value>اختر الكل</value>
@@ -302,11 +467,11 @@
   <data name="RetryFailed" xml:space="preserve">
     <value>إعادة محاولة الفاشل</value>
   </data>
+  <data name="Retry" xml:space="preserve">
+    <value>إعادة المحاولة</value>
+  </data>
   <data name="ExportReport" xml:space="preserve">
     <value>تصدير التقرير</value>
-  </data>
-  <data name="PrintSettings" xml:space="preserve">
-    <value>إعدادات الطباعة</value>
   </data>
   <data name="ParallelPrinting" xml:space="preserve">
     <value>الطباعة المتوازية</value>
@@ -317,49 +482,16 @@
   <data name="Timeout" xml:space="preserve">
     <value>المهلة</value>
   </data>
-  <data name="Retry" xml:space="preserve">
-    <value>إعادة المحاولة</value>
-  </data>
   <data name="LiveMonitor" xml:space="preserve">
     <value>المراقبة الحية</value>
   </data>
-  <data name="Success" xml:space="preserve">
-    <value>نجح</value>
-  </data>
-  <data name="Failed" xml:space="preserve">
-    <value>فشل</value>
-  </data>
-  <data name="Printing" xml:space="preserve">
-    <value>جاري الطباعة</value>
-  </data>
-  <data name="Online" xml:space="preserve">
-    <value>متصل</value>
-  </data>
-  <data name="Offline" xml:space="preserve">
-    <value>غير متصل</value>
-  </data>
-  <data name="Busy" xml:space="preserve">
-    <value>مشغول</value>
-  </data>
-  <data name="Error" xml:space="preserve">
-    <value>خطأ</value>
-  </data>
   
   <!-- Quotation System -->
-  <data name="Quotation" xml:space="preserve">
-    <value>التسعير</value>
-  </data>
   <data name="QuotationCalculator" xml:space="preserve">
     <value>حاسبة التسعير</value>
   </data>
   <data name="TotalPages" xml:space="preserve">
     <value>إجمالي الصفحات</value>
-  </data>
-  <data name="DoubleSided" xml:space="preserve">
-    <value>وجهين</value>
-  </data>
-  <data name="SingleSided" xml:space="preserve">
-    <value>وجه واحد</value>
   </data>
   <data name="Quantity" xml:space="preserve">
     <value>الكمية</value>
@@ -406,189 +538,28 @@
   <data name="ExportQuote" xml:space="preserve">
     <value>تصدير العرض</value>
   </data>
-  <data name="Reset" xml:space="preserve">
-    <value>إعادة تعيين</value>
-  </data>
   
-  <!-- Common Actions -->
-  <data name="Choose" xml:space="preserve">
-    <value>اختر</value>
+  <!-- Status -->
+  <data name="Success" xml:space="preserve">
+    <value>نجح</value>
   </data>
-  <data name="ChooseFile" xml:space="preserve">
-    <value>اختر ملف</value>
+  <data name="Failed" xml:space="preserve">
+    <value>فشل</value>
   </data>
-  <data name="Upload" xml:space="preserve">
-    <value>رفع</value>
+  <data name="Error" xml:space="preserve">
+    <value>خطأ</value>
   </data>
-  <data name="Print" xml:space="preserve">
-    <value>طباعة</value>
+  <data name="Warning" xml:space="preserve">
+    <value>تحذير</value>
   </data>
-  <data name="Preview" xml:space="preserve">
-    <value>معاينة</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>رجوع</value>
-  </data>
-  <data name="Next" xml:space="preserve">
-    <value>التالي</value>
-  </data>
-  <data name="Finish" xml:space="preserve">
-    <value>إنهاء</value>
-  </data>
-  <data name="Close" xml:space="preserve">
-    <value>إغلاق</value>
-  </data>
-  <data name="Apply" xml:space="preserve">
-    <value>تطبيق</value>
-  </data>
-  
-  <!-- File Info -->
-  <data name="FileType" xml:space="preserve">
-    <value>نوع الملف</value>
-  </data>
-  <data name="FileSize" xml:space="preserve">
-    <value>حجم الملف</value>
-  </data>
-  <data name="Pages" xml:space="preserve">
-    <value>الصفحات</value>
-  </data>
-  <data name="Sheets" xml:space="preserve">
-    <value>الأوراق</value>
-  </data>
-  
-  <!-- Printer Properties -->
-  <data name="PrinterName" xml:space="preserve">
-    <value>اسم الطابعة</value>
-  </data>
-  <data name="PrinterStatus" xml:space="preserve">
-    <value>حالة الطابعة</value>
-  </data>
-  <data name="Queue" xml:space="preserve">
-    <value>الطابور</value>
-  </data>
-  <data name="QueueLength" xml:space="preserve">
-    <value>طول الطابور</value>
-  </data>
-  <data name="Color" xml:space="preserve">
-    <value>ملون</value>
-  </data>
-  <data name="Duplex" xml:space="preserve">
-    <value>وجهين</value>
-  </data>
-  <data name="PaperSize" xml:space="preserve">
-    <value>حجم الورق</value>
-  </data>
-  
-  <!-- Time & Duration -->
-  <data name="Time" xml:space="preserve">
-    <value>الوقت</value>
-  </data>
-  <data name="Duration" xml:space="preserve">
-    <value>المدة</value>
-  </data>
-  <data name="StartTime" xml:space="preserve">
-    <value>وقت البدء</value>
-  </data>
-  <data name="EndTime" xml:space="preserve">
-    <value>وقت الانتهاء</value>
-  </data>
-  
-  <!-- Messages -->
-  <data name="NoFileSelected" xml:space="preserve">
-    <value>لم يتم اختيار ملف</value>
-  </data>
-  <data name="NoPrintersSelected" xml:space="preserve">
-    <value>لم يتم اختيار طابعات</value>
-  </data>
-  <data name="PrintingComplete" xml:space="preserve">
-    <value>اكتملت الطباعة</value>
-  </data>
-  <data name="ErrorOccurred" xml:space="preserve">
-    <value>حدث خطأ</value>
-  </data>
-  
-  <!-- Print Manager UI -->
-  <data name="ListOfDocuments" xml:space="preserve">
-    <value>قائمة المستندات</value>
-  </data>
-  <data name="UploadFiles" xml:space="preserve">
-    <value>رفع الملفات</value>
-  </data>
-  <data name="FolderPath" xml:space="preserve">
-    <value>مسار المجلد</value>
-  </data>
-  <data name="Size" xml:space="preserve">
-    <value>الحجم</value>
-  </data>
-  <data name="DateModified" xml:space="preserve">
-    <value>تاريخ التعديل</value>
-  </data>
-  <data name="DropYourFilesHere" xml:space="preserve">
-    <value>أسقط ملفاتك هنا</value>
-  </data>
-  <data name="OrAddThemFromMenu" xml:space="preserve">
-    <value>أو أضفها من القائمة</value>
-  </data>
-  <data name="SelectPrinter" xml:space="preserve">
-    <value>اختر طابعة</value>
-  </data>
-  <data name="DoubleDesktop" xml:space="preserve">
-    <value>سطح المكتب المزدوج</value>
-  </data>
-  <data name="PrinterProperties" xml:space="preserve">
-    <value>خصائص الطابعة</value>
-  </data>
-  <data name="Print" xml:space="preserve">
-    <value>طباعة</value>
-  </data>
-  <data name="Settings" xml:space="preserve">
-    <value>الإعدادات</value>
-  </data>
-  <data name="ListOfDocumentsIsEmpty" xml:space="preserve">
-    <value>قائمة المستندات فارغة</value>
-  </data>
-  <data name="PleaseAddDocuments" xml:space="preserve">
-    <value>الرجاء إضافة مستندات للطباعة</value>
-  </data>
-  
-  <!-- Buttons & Actions -->
-  <data name="Add" xml:space="preserve">
-    <value>إضافة</value>
-  </data>
-  <data name="Remove" xml:space="preserve">
-    <value>إزالة</value>
-  </data>
-  <data name="Clear" xml:space="preserve">
-    <value>مسح</value>
-  </data>
-  <data name="ClearAll" xml:space="preserve">
-    <value>مسح الكل</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>بحث</value>
-  </data>
-  <data name="Filter" xml:space="preserve">
-    <value>تصفية</value>
-  </data>
-  <data name="Sort" xml:space="preserve">
-    <value>ترتيب</value>
-  </data>
-  <data name="View" xml:space="preserve">
-    <value>عرض</value>
-  </data>
-  <data name="Details" xml:space="preserve">
-    <value>التفاصيل</value>
-  </data>
-  <data name="Properties" xml:space="preserve">
-    <value>الخصائص</value>
-  </data>
-  
-  <!-- Status Messages -->
   <data name="Ready" xml:space="preserve">
     <value>جاهز</value>
   </data>
   <data name="Processing" xml:space="preserve">
     <value>جاري المعالجة</value>
+  </data>
+  <data name="Printing" xml:space="preserve">
+    <value>جاري الطباعة</value>
   </data>
   <data name="Completed" xml:space="preserve">
     <value>مكتمل</value>
@@ -602,66 +573,49 @@
   <data name="Paused" xml:space="preserve">
     <value>متوقف مؤقتاً</value>
   </data>
-  
-  <!-- File Operations -->
-  <data name="Open" xml:space="preserve">
-    <value>فتح</value>
+  <data name="Selected" xml:space="preserve">
+    <value>محدد</value>
   </data>
-  <data name="OpenFile" xml:space="preserve">
-    <value>فتح ملف</value>
+  <data name="Deleted" xml:space="preserve">
+    <value>محذوف</value>
   </data>
-  <data name="OpenFolder" xml:space="preserve">
-    <value>فتح مجلد</value>
+  <data name="Extracted" xml:space="preserve">
+    <value>مستخرج</value>
   </data>
-  <data name="SaveAs" xml:space="preserve">
-    <value>حفظ باسم</value>
+  <data name="Standard" xml:space="preserve">
+    <value>قياسي</value>
   </data>
-  <data name="Export" xml:space="preserve">
-    <value>تصدير</value>
-  </data>
-  <data name="Import" xml:space="preserve">
-    <value>استيراد</value>
+  <data name="Output" xml:space="preserve">
+    <value>المخرجات</value>
   </data>
   
-  <!-- Print Settings -->
-  <data name="Orientation" xml:space="preserve">
-    <value>الاتجاه</value>
+  <!-- Time -->
+  <data name="Time" xml:space="preserve">
+    <value>الوقت</value>
   </data>
-  <data name="Portrait" xml:space="preserve">
-    <value>عمودي</value>
+  <data name="Duration" xml:space="preserve">
+    <value>المدة</value>
   </data>
-  <data name="Landscape" xml:space="preserve">
-    <value>أفقي</value>
+  <data name="StartTime" xml:space="preserve">
+    <value>وقت البدء</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>الجودة</value>
+  <data name="EndTime" xml:space="preserve">
+    <value>وقت الانتهاء</value>
   </data>
-  <data name="Draft" xml:space="preserve">
-    <value>مسودة</value>
+  <data name="Progress" xml:space="preserve">
+    <value>التقدم</value>
   </data>
-  <data name="Normal" xml:space="preserve">
-    <value>عادي</value>
+  <data name="ETA" xml:space="preserve">
+    <value>الوقت المتبقي</value>
   </data>
-  <data name="High" xml:space="preserve">
-    <value>عالي</value>
+  <data name="From" xml:space="preserve">
+    <value>من</value>
   </data>
-  <data name="Best" xml:space="preserve">
-    <value>الأفضل</value>
-  </data>
-  <data name="PageRange" xml:space="preserve">
-    <value>نطاق الصفحات</value>
-  </data>
-  <data name="AllPages" xml:space="preserve">
-    <value>كل الصفحات</value>
-  </data>
-  <data name="CurrentPage" xml:space="preserve">
-    <value>الصفحة الحالية</value>
-  </data>
-  <data name="CustomRange" xml:space="preserve">
-    <value>نطاق مخصص</value>
+  <data name="To" xml:space="preserve">
+    <value>إلى</value>
   </data>
   
-  <!-- Dashboard Elements -->
+  <!-- Dashboard -->
   <data name="TotalJobs" xml:space="preserve">
     <value>إجمالي المهام</value>
   </data>
@@ -683,15 +637,24 @@
   <data name="OfflinePrinters" xml:space="preserve">
     <value>الطابعات غير المتصلة</value>
   </data>
+  <data name="NetProfit" xml:space="preserve">
+    <value>صافي الربح</value>
+  </data>
+  <data name="Income" xml:space="preserve">
+    <value>الدخل</value>
+  </data>
+  <data name="Expense" xml:space="preserve">
+    <value>المصروفات</value>
+  </data>
   
-  <!-- Notifications -->
+  <!-- Notifications & Dialogs -->
   <data name="Notification" xml:space="preserve">
     <value>إشعار</value>
   </data>
-  <data name="Warning" xml:space="preserve">
-    <value>تحذير</value>
-  </data>
   <data name="Information" xml:space="preserve">
+    <value>معلومات</value>
+  </data>
+  <data name="Info" xml:space="preserve">
     <value>معلومات</value>
   </data>
   <data name="Confirmation" xml:space="preserve">
@@ -708,6 +671,58 @@
   </data>
   <data name="OK" xml:space="preserve">
     <value>موافق</value>
+  </data>
+  
+  <!-- Company Settings -->
+  <data name="CompanyName" xml:space="preserve">
+    <value>اسم الشركة</value>
+  </data>
+  <data name="CompanyAddress" xml:space="preserve">
+    <value>عنوان الشركة</value>
+  </data>
+  <data name="CompanyPhone" xml:space="preserve">
+    <value>هاتف الشركة</value>
+  </data>
+  <data name="Logo" xml:space="preserve">
+    <value>الشعار</value>
+  </data>
+  <data name="InvoiceHeader" xml:space="preserve">
+    <value>ترويسة الفاتورة</value>
+  </data>
+  <data name="InvoiceFooter" xml:space="preserve">
+    <value>تذييل الفاتورة</value>
+  </data>
+  <data name="DefaultPricePerPage" xml:space="preserve">
+    <value>سعر الصفحة الافتراضي</value>
+  </data>
+  <data name="DefaultCoverPrice" xml:space="preserve">
+    <value>سعر الغلاف الافتراضي</value>
+  </data>
+  <data name="BackupPath" xml:space="preserve">
+    <value>مسار النسخ الاحتياطي</value>
+  </data>
+  
+  <!-- Employees & Attendance -->
+  <data name="Employees" xml:space="preserve">
+    <value>الموظفين</value>
+  </data>
+  <data name="Employee" xml:space="preserve">
+    <value>الموظف</value>
+  </data>
+  <data name="EmployeeID" xml:space="preserve">
+    <value>معرف الموظف</value>
+  </data>
+  <data name="AddEmployee" xml:space="preserve">
+    <value>إضافة موظف</value>
+  </data>
+  <data name="TodaysAttendance" xml:space="preserve">
+    <value>حضور اليوم</value>
+  </data>
+  <data name="CheckIn" xml:space="preserve">
+    <value>تسجيل دخول</value>
+  </data>
+  <data name="CheckOut" xml:space="preserve">
+    <value>تسجيل خروج</value>
   </data>
   
   <!-- Operations Center -->
@@ -729,17 +744,8 @@
   <data name="PrintNow" xml:space="preserve">
     <value>اطبع الآن</value>
   </data>
-  <data name="Copies" xml:space="preserve">
-    <value>النسخ</value>
-  </data>
   <data name="CancelActive" xml:space="preserve">
     <value>إلغاء النشط</value>
-  </data>
-  <data name="CancelAll" xml:space="preserve">
-    <value>إلغاء الكل</value>
-  </data>
-  <data name="Retry" xml:space="preserve">
-    <value>إعادة المحاولة</value>
   </data>
   <data name="QuickPrint" xml:space="preserve">
     <value>طباعة سريعة</value>
@@ -753,115 +759,38 @@
   <data name="RoutingRules" xml:space="preserve">
     <value>قواعد التوجيه</value>
   </data>
-  <data name="SelectedPrinter" xml:space="preserve">
-    <value>الطابعة المحددة</value>
-  </data>
   <data name="OperationsCenterInitialized" xml:space="preserve">
     <value>تم تهيئة مركز العمليات</value>
-  </data>
-  
-  <!-- Print Manager Specific -->
-  <data name="Pages" xml:space="preserve">
-    <value>الصفحات</value>
-  </data>
-  <data name="Copies" xml:space="preserve">
-    <value>النسخ</value>
-  </data>
-  <data name="FolderPath" xml:space="preserve">
-    <value>مسار المجلد</value>
-  </data>
-  <data name="Size" xml:space="preserve">
-    <value>الحجم</value>
-  </data>
-  <data name="Type" xml:space="preserve">
-    <value>النوع</value>
-  </data>
-  <data name="DateModified" xml:space="preserve">
-    <value>تاريخ التعديل</value>
-  </data>
-  <data name="Name" xml:space="preserve">
-    <value>الاسم</value>
-  </data>
-  <data name="Folder" xml:space="preserve">
-    <value>مجلد</value>
-  </data>
-  <data name="Files" xml:space="preserve">
-    <value>ملفات</value>
-  </data>
-  <data name="UploadFiles" xml:space="preserve">
-    <value>رفع الملفات</value>
-  </data>
-  <data name="SelectPrinter" xml:space="preserve">
-    <value>اختر طابعة</value>
-  </data>
-  <data name="PrinterProperties" xml:space="preserve">
-    <value>خصائص الطابعة</value>
-  </data>
-  <data name="Print" xml:space="preserve">
-    <value>طباعة</value>
-  </data>
-  <data name="Settings" xml:space="preserve">
-    <value>الإعدادات</value>
-  </data>
-  <data name="Status" xml:space="preserve">
-    <value>الحالة</value>
-  </data>
-  <data name="PleaseAddDocumentsOrFolders" xml:space="preserve">
-    <value>الرجاء إضافة مستندات أو مجلدات للقائمة</value>
-  </data>
-  
-  <!-- Printer Status -->
-  <data name="Queue" xml:space="preserve">
-    <value>الطابور</value>
-  </data>
-  <data name="Output" xml:space="preserve">
-    <value>المخرجات</value>
-  </data>
-  <data name="Standard" xml:space="preserve">
-    <value>قياسي</value>
-  </data>
-  <data name="Selected" xml:space="preserve">
-    <value>محدد</value>
-  </data>
-  <data name="Deleted" xml:space="preserve">
-    <value>محذوف</value>
-  </data>
-  <data name="Extracted" xml:space="preserve">
-    <value>مستخرج</value>
-  </data>
-  
-  <!-- Progress & ETA -->
-  <data name="Progress" xml:space="preserve">
-    <value>التقدم</value>
-  </data>
-  <data name="ETA" xml:space="preserve">
-    <value>الوقت المتبقي</value>
-  </data>
-  <data name="File" xml:space="preserve">
-    <value>ملف</value>
   </data>
   <data name="Del" xml:space="preserve">
     <value>حذف</value>
   </data>
-  <data name="Edit" xml:space="preserve">
-    <value>تعديل</value>
+  <data name="Resolution" xml:space="preserve">
+    <value>الدقة</value>
   </data>
   
-  <!-- Additional Operations -->
-  <data name="Refresh" xml:space="preserve">
-    <value>تحديث</value>
+  <!-- Messages -->
+  <data name="NoFileSelected" xml:space="preserve">
+    <value>لم يتم اختيار ملف</value>
   </data>
-  <data name="Clear" xml:space="preserve">
-    <value>مسح</value>
+  <data name="NoPrintersSelected" xml:space="preserve">
+    <value>لم يتم اختيار طابعات</value>
   </data>
-  <data name="Load" xml:space="preserve">
-    <value>تحميل</value>
+  <data name="PrintingComplete" xml:space="preserve">
+    <value>اكتملت الطباعة</value>
   </data>
-  <data name="Jobs" xml:space="preserve">
-    <value>المهام</value>
+  <data name="ErrorOccurred" xml:space="preserve">
+    <value>حدث خطأ</value>
   </data>
-  
-  <!-- Error Messages -->
+  <data name="ListOfDocumentsIsEmpty" xml:space="preserve">
+    <value>قائمة المستندات فارغة</value>
+  </data>
+  <data name="PleaseAddDocuments" xml:space="preserve">
+    <value>الرجاء إضافة مستندات للطباعة</value>
+  </data>
+  <data name="PleaseAddDocumentsOrFolders" xml:space="preserve">
+    <value>الرجاء إضافة مستندات أو مجلدات للقائمة</value>
+  </data>
   <data name="PrintError" xml:space="preserve">
     <value>حدث خطأ أثناء الطباعة</value>
   </data>
@@ -886,24 +815,15 @@
   <data name="DistributionComplete" xml:space="preserve">
     <value>اكتمل التوزيع!</value>
   </data>
-  
-  <!-- Settings Messages -->
   <data name="SettingsSavedSuccessfully" xml:space="preserve">
     <value>تم حفظ الإعدادات بنجاح</value>
   </data>
   <data name="SomeChangesMayRequireRestart" xml:space="preserve">
     <value>قد تتطلب بعض التغييرات إعادة تشغيل البرنامج</value>
   </data>
-  
-  <!-- Quotation Messages -->
   <data name="QuotationCopiedToClipboard" xml:space="preserve">
     <value>تم نسخ التسعير إلى الحافظة!</value>
   </data>
-  <data name="Success" xml:space="preserve">
-    <value>نجح</value>
-  </data>
-  
-  <!-- Printer Messages -->
   <data name="PleaseSelectPrinterFirst" xml:space="preserve">
     <value>الرجاء اختيار طابعة أولاً</value>
   </data>
@@ -925,11 +845,8 @@
   <data name="NoPrinterSelected" xml:space="preserve">
     <value>لم يتم اختيار طابعة</value>
   </data>
-  <data name="PrinterProperties" xml:space="preserve">
-    <value>خصائص الطابعة</value>
-  </data>
   
-  <!-- Numbering Wizard Messages -->
+  <!-- Numbering Wizard -->
   <data name="ErrorLoadingTemplate" xml:space="preserve">
     <value>خطأ في تحميل القالب</value>
   </data>
@@ -942,17 +859,11 @@
   <data name="PleaseAddAtLeastOneSlot" xml:space="preserve">
     <value>الرجاء إضافة خانة واحدة على الأقل</value>
   </data>
-  <data name="Info" xml:space="preserve">
-    <value>معلومات</value>
-  </data>
   <data name="TemplateFileNotFound" xml:space="preserve">
     <value>لم يتم العثور على ملف القالب</value>
   </data>
   <data name="CleanPreviewGeneratedSuccessfully" xml:space="preserve">
     <value>تم إنشاء المعاينة النظيفة بنجاح</value>
-  </data>
-  <data name="Resolution" xml:space="preserve">
-    <value>الدقة</value>
   </data>
   <data name="ErrorGeneratingPreview" xml:space="preserve">
     <value>خطأ في إنشاء المعاينة</value>
@@ -978,11 +889,6 @@
   <data name="PrintFailedWithErrors" xml:space="preserve">
     <value>فشلت الطباعة مع أخطاء</value>
   </data>
-  <data name="Warning" xml:space="preserve">
-    <value>تحذير</value>
-  </data>
-  
-  <!-- Numbered Books Messages -->
   <data name="PleaseSelectTemplatePDF" xml:space="preserve">
     <value>الرجاء اختيار ملف PDF كقالب</value>
   </data>
@@ -992,18 +898,11 @@
   <data name="GenerationFailed" xml:space="preserve">
     <value>فشل الإنشاء</value>
   </data>
-  
-  <!-- Free Form Editor Messages -->
   <data name="TemplateLoaded" xml:space="preserve">
     <value>تم تحميل القالب</value>
   </data>
-  
-  <!-- Batch Print Messages -->
   <data name="UnsupportedFormat" xml:space="preserve">
     <value>صيغة غير مدعومة</value>
-  </data>
-  <data name="File" xml:space="preserve">
-    <value>ملف</value>
   </data>
   <data name="PleaseAddAtLeastOneFile" xml:space="preserve">
     <value>الرجاء إضافة ملف واحد على الأقل</value>

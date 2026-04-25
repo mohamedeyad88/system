@@ -12,30 +12,61 @@ namespace Apex.UI.Views.Dialogs
             DataContext = this;
         }
 
-        public string TitleText { get; set; } = "Confirmation";
-        public string Message { get; set; } = "Are you sure?";
+        private string _titleText = "Confirmation";
+        public string TitleText
+        {
+            get => _titleText;
+            set
+            {
+                _titleText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _message = "Are you sure?";
+        public string Message
+        {
+            get => _message;
+            set
+            {
+                _message = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string ConfirmText { get; set; } = "Confirm";
         public string CancelText { get; set; } = "Cancel";
-        
-        // IsDestructive logic can be handled by swapping styles in code-behind if needed, 
-        // or binding the Confirm Button Style. For simplicity, we use Style.
 
         public bool Result { get; private set; } = false;
 
         private void BtnConfirm_Click(object sender, RoutedEventArgs e)
         {
-            Result = true;
-            Close();
+            try
+            {
+                Result = true;
+                Close();
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show($"Error closing dialog: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
-            Result = false;
-            Close();
+            try
+            {
+                Result = false;
+                Close();
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show($"Error closing dialog: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        protected void OnPropertyChanged([CallerMemberName] string? name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }

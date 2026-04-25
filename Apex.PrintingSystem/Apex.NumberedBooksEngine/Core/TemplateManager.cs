@@ -55,16 +55,51 @@ namespace Apex.NumberedBooksEngine.Core
         /// </summary>
         public (SKImage Image, string Checksum) RasterizeTemplate(string templatePath, int dpi = 300)
         {
-            var checksum = ComputeFileChecksum(templatePath);
-            var cacheKey = $"{checksum}_{dpi}";
-
-            if (_cache.TryGetValue(cacheKey, out var cached))
+            System.Diagnostics.Debug.WriteLine($"[NUMBERING] TemplateManager.RasterizeTemplate - Path: {templatePath}, DPI: {dpi}");
+            
+            // ═══════════════════════════════════════════════════════════════════
+            // VALIDATION: Ensure template file exists and is accessible
+            // ═══════════════════════════════════════════════════════════════════
+            if (string.IsNullOrEmpty(templatePath))
             {
-                return (cached.Image, cached.Checksum);
+                throw new ArgumentException("مسار القالب فارغ. يرجى اختيار ملف قالب صالح.", nameof(templatePath));
             }
+            
+            if (!File.Exists(templatePath))
+            {
+                throw new FileNotFoundException($"ملف القالب غير موجود: {templatePath}", templatePath);
+            }
+            
+            try
+            {
+                var checksum = ComputeFileChecksum(templatePath);
+                var cacheKey = $"{checksum}_{dpi}";
 
-            using var stream = File.OpenRead(templatePath);
-            return RasterizeTemplate(stream, GetTemplateFormat(templatePath), dpi, checksum);
+                if (_cache.TryGetValue(cacheKey, out var cached))
+                {
+                    System.Diagnostics.Debug.WriteLine($"[NUMBERING] ✅ Template found in cache: {cacheKey}");
+                    return (cached.Image, cached.Checksum);
+                }
+
+                System.Diagnostics.Debug.WriteLine($"[NUMBERING] Loading template from file...");
+                
+                // Open file with sharing to support OneDrive/cloud files
+                using var stream = new FileStream(templatePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                var result = RasterizeTemplate(stream, GetTemplateFormat(templatePath), dpi, checksum);
+                
+                System.Diagnostics.Debug.WriteLine($"[NUMBERING] ✅ Template loaded: {result.Image.Width}x{result.Image.Height}");
+                return result;
+            }
+            catch (IOException ioEx)
+            {
+                System.Diagnostics.Debug.WriteLine($"[NUMBERING] ❌ IO Error loading template: {ioEx.Message}");
+                throw new InvalidOperationException($"فشل في قراءة ملف القالب. تأكد من أن الملف غير مفتوح في برنامج آخر.\n{ioEx.Message}", ioEx);
+            }
+            catch (Exception ex) when (ex is not ArgumentException && ex is not FileNotFoundException && ex is not InvalidOperationException)
+            {
+                System.Diagnostics.Debug.WriteLine($"[NUMBERING] ❌ Error loading template: {ex.Message}");
+                throw new InvalidOperationException($"حدث خطأ أثناء تحميل القالب: {ex.Message}", ex);
+            }
         }
 
         /// <summary>
@@ -177,21 +212,84 @@ namespace Apex.NumberedBooksEngine.Core
 
         private SKImage RasterizePdf(Stream stream, int dpi)
         {
-            // Use PDFium to rasterize PDF at specified DPI
-            using var doc = PdfiumViewer.PdfDocument.Load(stream);
-            using var rendered = doc.Render(0, dpi, dpi, PdfiumViewer.PdfRenderFlags.Annotations);
+            System.Diagnostics.Debug.WriteLine($"[NUMBERING] RasterizePdf - DPI: {dpi}");
             
-            using var bitmap = new System.Drawing.Bitmap(rendered);
-            using var ms = new MemoryStream();
-            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-            ms.Position = 0;
+            try
+            {
+                // Reset stream position
+                if (stream.CanSeek)
+                {
+                    stream.Position = 0;
+                }
+                
+                // Use PDFium to rasterize PDF at specified DPI
+                using var doc = PdfiumViewer.PdfDocument.Load(stream);
+                
+                if (doc.PageCount == 0)
+                {
+                    throw new InvalidOperationException("ملف PDF فارغ أو تالف.");
+                }
+                
+                System.Diagnostics.Debug.WriteLine($"[NUMBERING] PDF loaded: {doc.PageCount} pages");
+                
+                using var rendered = doc.Render(0, dpi, dpi, PdfiumViewer.PdfRenderFlags.Annotations);
+                
+                if (rendered == null)
+                {
+                    throw new InvalidOperationException("فشل في تحويل صفحة PDF إلى صورة.");
+                }
+                
+                System.Diagnostics.Debug.WriteLine($"[NUMBERING] PDF rendered: {rendered.Width}x{rendered.Height}");
+                
+                using var bitmap = new System.Drawing.Bitmap(rendered);
+                using var ms = new MemoryStream();
+                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                ms.Position = 0;
 
-            return SKImage.FromEncodedData(ms);
+                var image = SKImage.FromEncodedData(ms);
+                
+                if (image == null)
+                {
+                    throw new InvalidOperationException("فشل في إنشاء صورة من PDF المحول.");
+                }
+                
+                System.Diagnostics.Debug.WriteLine($"[NUMBERING] ✅ PDF rasterized successfully: {image.Width}x{image.Height}");
+                return image;
+            }
+            catch (Exception ex) when (ex is not InvalidOperationException)
+            {
+                System.Diagnostics.Debug.WriteLine($"[NUMBERING] ❌ PDF rasterization failed: {ex.Message}");
+                throw new InvalidOperationException($"فشل في معالجة ملف PDF. تأكد من صحة الملف.\n{ex.Message}", ex);
+            }
         }
 
         private SKImage RasterizeImage(Stream stream)
         {
-            return SKImage.FromEncodedData(stream);
+            System.Diagnostics.Debug.WriteLine($"[NUMBERING] RasterizeImage - Loading image from stream");
+            
+            try
+            {
+                // Reset stream position
+                if (stream.CanSeek)
+                {
+                    stream.Position = 0;
+                }
+                
+                var image = SKImage.FromEncodedData(stream);
+                
+                if (image == null)
+                {
+                    throw new InvalidOperationException("فشل في تحميل الصورة. تأكد من صحة تنسيق الملف (PNG, JPG, BMP).");
+                }
+                
+                System.Diagnostics.Debug.WriteLine($"[NUMBERING] ✅ Image loaded: {image.Width}x{image.Height}");
+                return image;
+            }
+            catch (Exception ex) when (ex is not InvalidOperationException)
+            {
+                System.Diagnostics.Debug.WriteLine($"[NUMBERING] ❌ Image loading failed: {ex.Message}");
+                throw new InvalidOperationException($"فشل في تحميل ملف الصورة.\n{ex.Message}", ex);
+            }
         }
 
         private string ComputeFileChecksum(string path)

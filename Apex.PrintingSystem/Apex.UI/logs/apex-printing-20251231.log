@@ -1,0 +1,134 @@
+2025-12-31 00:03:35.653 [INF] === Apex Printing System Logger Initialized ===
+2025-12-31 00:03:35.714 [INF] [PrintJobsManager] Initialized - All print jobs will be tracked
+2025-12-31 00:03:35.721 [DBG] [Lifecycle] Job 9521cc4a-e80f-4c6d-8f27-5d551e2b3e7c created for 'Adobe PDF' - '11.pdf'
+2025-12-31 00:03:35.726 [INF] [PrintJobsManager] 📄 Job Created: 9521cc4a-e80f-4c6d-8f27-5d551e2b3e7c | '11.pdf' → 'Adobe PDF' x1
+2025-12-31 00:03:35.731 [INF] [Lifecycle] Job 9521cc4a-e80f-4c6d-8f27-5d551e2b3e7c: "JobCreated" → "FileValidated" | File size: 1053303KB
+2025-12-31 00:03:35.735 [INF] [Lifecycle] Job 9521cc4a-e80f-4c6d-8f27-5d551e2b3e7c: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:03:35.745 [DBG] [Lifecycle] Job 8f46913c-55fc-44c1-b7c4-8d2f6e6ead77 created for 'AnyDesk Printer' - '11.pdf'
+2025-12-31 00:03:35.745 [INF] [PrintJobsManager] 📄 Job Created: 8f46913c-55fc-44c1-b7c4-8d2f6e6ead77 | '11.pdf' → 'AnyDesk Printer' x1
+2025-12-31 00:03:35.745 [INF] [Lifecycle] Job 8f46913c-55fc-44c1-b7c4-8d2f6e6ead77: "JobCreated" → "FileValidated" | File size: 1053303KB
+2025-12-31 00:03:35.746 [INF] [Lifecycle] Job 8f46913c-55fc-44c1-b7c4-8d2f6e6ead77: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:03:35.746 [DBG] [Lifecycle] Job e5c0b957-36ea-42ea-b742-26e501bc29a7 created for 'EPSON Universal Print Driver' - '11.pdf'
+2025-12-31 00:03:35.746 [INF] [PrintJobsManager] 📄 Job Created: e5c0b957-36ea-42ea-b742-26e501bc29a7 | '11.pdf' → 'EPSON Universal Print Driver' x1
+2025-12-31 00:03:35.747 [INF] [Lifecycle] Job e5c0b957-36ea-42ea-b742-26e501bc29a7: "JobCreated" → "FileValidated" | File size: 1053303KB
+2025-12-31 00:03:35.747 [INF] [Lifecycle] Job e5c0b957-36ea-42ea-b742-26e501bc29a7: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:03:35.748 [DBG] [Lifecycle] Job 483ae359-8962-4b0f-853e-8f32a94168c2 created for 'EPSON WF-C5210 Series' - '11.pdf'
+2025-12-31 00:03:35.748 [INF] [PrintJobsManager] 📄 Job Created: 483ae359-8962-4b0f-853e-8f32a94168c2 | '11.pdf' → 'EPSON WF-C5210 Series' x1
+2025-12-31 00:03:35.748 [INF] [Lifecycle] Job 483ae359-8962-4b0f-853e-8f32a94168c2: "JobCreated" → "FileValidated" | File size: 1053303KB
+2025-12-31 00:03:35.748 [INF] [Lifecycle] Job 483ae359-8962-4b0f-853e-8f32a94168c2: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:03:35.749 [DBG] [Lifecycle] Job 7861dd9d-290a-4ead-8df7-df9189af36bb created for 'Foxit PDF Editor Printer' - '11.pdf'
+2025-12-31 00:03:35.749 [INF] [PrintJobsManager] 📄 Job Created: 7861dd9d-290a-4ead-8df7-df9189af36bb | '11.pdf' → 'Foxit PDF Editor Printer' x1
+2025-12-31 00:03:35.750 [INF] [Lifecycle] Job 7861dd9d-290a-4ead-8df7-df9189af36bb: "JobCreated" → "FileValidated" | File size: 1053303KB
+2025-12-31 00:03:35.750 [INF] [Lifecycle] Job 7861dd9d-290a-4ead-8df7-df9189af36bb: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:03:35.751 [DBG] [Lifecycle] Job b258b7b3-315b-4cd4-a487-87f52f1fe8b0 created for 'Microsoft Print to PDF' - '11.pdf'
+2025-12-31 00:03:35.751 [INF] [PrintJobsManager] 📄 Job Created: b258b7b3-315b-4cd4-a487-87f52f1fe8b0 | '11.pdf' → 'Microsoft Print to PDF' x1
+2025-12-31 00:03:35.751 [INF] [Lifecycle] Job b258b7b3-315b-4cd4-a487-87f52f1fe8b0: "JobCreated" → "FileValidated" | File size: 1053303KB
+2025-12-31 00:03:35.751 [INF] [Lifecycle] Job b258b7b3-315b-4cd4-a487-87f52f1fe8b0: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:03:35.752 [DBG] [Lifecycle] Job fdb3df47-47e4-4a8e-aebb-b6f4dd20f11e created for 'OneNote (Desktop)' - '11.pdf'
+2025-12-31 00:03:35.752 [INF] [PrintJobsManager] 📄 Job Created: fdb3df47-47e4-4a8e-aebb-b6f4dd20f11e | '11.pdf' → 'OneNote (Desktop)' x1
+2025-12-31 00:03:35.752 [INF] [Lifecycle] Job fdb3df47-47e4-4a8e-aebb-b6f4dd20f11e: "JobCreated" → "FileValidated" | File size: 1053303KB
+2025-12-31 00:03:35.752 [INF] [Lifecycle] Job fdb3df47-47e4-4a8e-aebb-b6f4dd20f11e: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:03:35.753 [DBG] [Lifecycle] Job 610f9f3c-04a3-4850-8b32-466e6772628a created for 'OneNote (Desktop) - Protected' - '11.pdf'
+2025-12-31 00:03:35.753 [INF] [PrintJobsManager] 📄 Job Created: 610f9f3c-04a3-4850-8b32-466e6772628a | '11.pdf' → 'OneNote (Desktop) - Protected' x1
+2025-12-31 00:03:35.754 [INF] [Lifecycle] Job 610f9f3c-04a3-4850-8b32-466e6772628a: "JobCreated" → "FileValidated" | File size: 1053303KB
+2025-12-31 00:03:35.754 [INF] [Lifecycle] Job 610f9f3c-04a3-4850-8b32-466e6772628a: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:03:35.756 [DBG] [Lifecycle] Job 50095486-1f35-4083-9757-487a7c65f3ec created for 'PDF-XChange Standard' - '11.pdf'
+2025-12-31 00:03:35.756 [INF] [PrintJobsManager] 📄 Job Created: 50095486-1f35-4083-9757-487a7c65f3ec | '11.pdf' → 'PDF-XChange Standard' x1
+2025-12-31 00:03:35.756 [INF] [Lifecycle] Job 50095486-1f35-4083-9757-487a7c65f3ec: "JobCreated" → "FileValidated" | File size: 1053303KB
+2025-12-31 00:03:35.756 [INF] [Lifecycle] Job 50095486-1f35-4083-9757-487a7c65f3ec: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:03:35.757 [DBG] [Lifecycle] Job 4f133965-ae24-443a-a6ff-81e4af08b0e2 created for 'Print to Evernote' - '11.pdf'
+2025-12-31 00:03:35.757 [INF] [PrintJobsManager] 📄 Job Created: 4f133965-ae24-443a-a6ff-81e4af08b0e2 | '11.pdf' → 'Print to Evernote' x1
+2025-12-31 00:03:35.757 [INF] [Lifecycle] Job 4f133965-ae24-443a-a6ff-81e4af08b0e2: "JobCreated" → "FileValidated" | File size: 1053303KB
+2025-12-31 00:03:35.757 [INF] [Lifecycle] Job 4f133965-ae24-443a-a6ff-81e4af08b0e2: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:03:38.760 [WRN] [Gateway] EPSON WF-C5210 detected - Using PdfDirectPrinter (Windows native)
+2025-12-31 00:09:09.074 [INF] === Apex Printing System Logger Initialized ===
+2025-12-31 00:09:09.130 [INF] [PrintJobsManager] Initialized - All print jobs will be tracked
+2025-12-31 00:09:09.138 [DBG] [Lifecycle] Job 884cf534-7092-4ec0-a7fd-9903d9110186 created for 'Adobe PDF' - '2121حسابات.pdf'
+2025-12-31 00:09:09.142 [INF] [PrintJobsManager] 📄 Job Created: 884cf534-7092-4ec0-a7fd-9903d9110186 | '2121حسابات.pdf' → 'Adobe PDF' x1
+2025-12-31 00:09:09.147 [INF] [Lifecycle] Job 884cf534-7092-4ec0-a7fd-9903d9110186: "JobCreated" → "FileValidated" | File size: 138KB
+2025-12-31 00:09:09.151 [INF] [Lifecycle] Job 884cf534-7092-4ec0-a7fd-9903d9110186: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:09:09.159 [DBG] [Lifecycle] Job 6a7e8aab-054f-486d-aa4f-93c2a5f9d359 created for 'AnyDesk Printer' - '2121حسابات.pdf'
+2025-12-31 00:09:09.159 [INF] [PrintJobsManager] 📄 Job Created: 6a7e8aab-054f-486d-aa4f-93c2a5f9d359 | '2121حسابات.pdf' → 'AnyDesk Printer' x1
+2025-12-31 00:09:09.159 [INF] [Lifecycle] Job 6a7e8aab-054f-486d-aa4f-93c2a5f9d359: "JobCreated" → "FileValidated" | File size: 138KB
+2025-12-31 00:09:09.159 [INF] [Lifecycle] Job 6a7e8aab-054f-486d-aa4f-93c2a5f9d359: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:09:09.160 [DBG] [Lifecycle] Job 7ac05570-6693-4815-a12a-d9594ac92c1a created for 'EPSON Universal Print Driver' - '2121حسابات.pdf'
+2025-12-31 00:09:09.160 [INF] [PrintJobsManager] 📄 Job Created: 7ac05570-6693-4815-a12a-d9594ac92c1a | '2121حسابات.pdf' → 'EPSON Universal Print Driver' x1
+2025-12-31 00:09:09.160 [INF] [Lifecycle] Job 7ac05570-6693-4815-a12a-d9594ac92c1a: "JobCreated" → "FileValidated" | File size: 138KB
+2025-12-31 00:09:09.160 [INF] [Lifecycle] Job 7ac05570-6693-4815-a12a-d9594ac92c1a: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:09:09.161 [DBG] [Lifecycle] Job 11b3c2c9-2d27-432d-a2a6-88420eb5a127 created for 'EPSON WF-C5210 Series' - '2121حسابات.pdf'
+2025-12-31 00:09:09.161 [INF] [PrintJobsManager] 📄 Job Created: 11b3c2c9-2d27-432d-a2a6-88420eb5a127 | '2121حسابات.pdf' → 'EPSON WF-C5210 Series' x1
+2025-12-31 00:09:09.162 [INF] [Lifecycle] Job 11b3c2c9-2d27-432d-a2a6-88420eb5a127: "JobCreated" → "FileValidated" | File size: 138KB
+2025-12-31 00:09:09.162 [INF] [Lifecycle] Job 11b3c2c9-2d27-432d-a2a6-88420eb5a127: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:09:09.162 [DBG] [Lifecycle] Job 279eeb81-8278-4dc8-a10b-058e51fcd6f4 created for 'Foxit PDF Editor Printer' - '2121حسابات.pdf'
+2025-12-31 00:09:09.162 [INF] [PrintJobsManager] 📄 Job Created: 279eeb81-8278-4dc8-a10b-058e51fcd6f4 | '2121حسابات.pdf' → 'Foxit PDF Editor Printer' x1
+2025-12-31 00:09:09.163 [INF] [Lifecycle] Job 279eeb81-8278-4dc8-a10b-058e51fcd6f4: "JobCreated" → "FileValidated" | File size: 138KB
+2025-12-31 00:09:09.163 [INF] [Lifecycle] Job 279eeb81-8278-4dc8-a10b-058e51fcd6f4: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:09:09.163 [DBG] [Lifecycle] Job abe28c11-3d5e-4a90-9286-a603e87e8e9e created for 'Microsoft Print to PDF' - '2121حسابات.pdf'
+2025-12-31 00:09:09.164 [INF] [PrintJobsManager] 📄 Job Created: abe28c11-3d5e-4a90-9286-a603e87e8e9e | '2121حسابات.pdf' → 'Microsoft Print to PDF' x1
+2025-12-31 00:09:09.164 [INF] [Lifecycle] Job abe28c11-3d5e-4a90-9286-a603e87e8e9e: "JobCreated" → "FileValidated" | File size: 138KB
+2025-12-31 00:09:09.164 [INF] [Lifecycle] Job abe28c11-3d5e-4a90-9286-a603e87e8e9e: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:09:09.165 [DBG] [Lifecycle] Job 285d568f-e551-49f4-b0fe-f6a525cdb644 created for 'OneNote (Desktop)' - '2121حسابات.pdf'
+2025-12-31 00:09:09.165 [INF] [PrintJobsManager] 📄 Job Created: 285d568f-e551-49f4-b0fe-f6a525cdb644 | '2121حسابات.pdf' → 'OneNote (Desktop)' x1
+2025-12-31 00:09:09.165 [INF] [Lifecycle] Job 285d568f-e551-49f4-b0fe-f6a525cdb644: "JobCreated" → "FileValidated" | File size: 138KB
+2025-12-31 00:09:09.165 [INF] [Lifecycle] Job 285d568f-e551-49f4-b0fe-f6a525cdb644: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:09:09.166 [DBG] [Lifecycle] Job e7dcc59c-0f14-46d1-94d3-ead2c230b922 created for 'OneNote (Desktop) - Protected' - '2121حسابات.pdf'
+2025-12-31 00:09:09.166 [INF] [PrintJobsManager] 📄 Job Created: e7dcc59c-0f14-46d1-94d3-ead2c230b922 | '2121حسابات.pdf' → 'OneNote (Desktop) - Protected' x1
+2025-12-31 00:09:09.166 [INF] [Lifecycle] Job e7dcc59c-0f14-46d1-94d3-ead2c230b922: "JobCreated" → "FileValidated" | File size: 138KB
+2025-12-31 00:09:09.166 [INF] [Lifecycle] Job e7dcc59c-0f14-46d1-94d3-ead2c230b922: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:09:09.167 [DBG] [Lifecycle] Job fd0e9fe3-36e7-475b-8279-a60cdc7e93e4 created for 'PDF-XChange Standard' - '2121حسابات.pdf'
+2025-12-31 00:09:09.167 [INF] [PrintJobsManager] 📄 Job Created: fd0e9fe3-36e7-475b-8279-a60cdc7e93e4 | '2121حسابات.pdf' → 'PDF-XChange Standard' x1
+2025-12-31 00:09:09.167 [INF] [Lifecycle] Job fd0e9fe3-36e7-475b-8279-a60cdc7e93e4: "JobCreated" → "FileValidated" | File size: 138KB
+2025-12-31 00:09:09.167 [INF] [Lifecycle] Job fd0e9fe3-36e7-475b-8279-a60cdc7e93e4: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:09:09.168 [DBG] [Lifecycle] Job 0f928c86-2e27-4450-9c00-764df1c3d242 created for 'Print to Evernote' - '2121حسابات.pdf'
+2025-12-31 00:09:09.168 [INF] [PrintJobsManager] 📄 Job Created: 0f928c86-2e27-4450-9c00-764df1c3d242 | '2121حسابات.pdf' → 'Print to Evernote' x1
+2025-12-31 00:09:09.168 [INF] [Lifecycle] Job 0f928c86-2e27-4450-9c00-764df1c3d242: "JobCreated" → "FileValidated" | File size: 138KB
+2025-12-31 00:09:09.168 [INF] [Lifecycle] Job 0f928c86-2e27-4450-9c00-764df1c3d242: "FileValidated" → "FilePrepared" | Submitted to print queue
+2025-12-31 00:09:12.449 [WRN] [Gateway] EPSON WF-C5210 detected - Using PdfDirectPrinter (Windows native)
+2025-12-31 00:09:15.839 [WRN] [UniversalRIP] ========== PDF HAS 1 PAGES ==========
+2025-12-31 00:09:15.840 [WRN] [UniversalRIP] ========== PROCESSING PAGE 1 of 1 ==========
+2025-12-31 00:09:15.853 [WRN] [UniversalRIP] ========== PDF HAS 1 PAGES ==========
+2025-12-31 00:09:15.854 [WRN] [UniversalRIP] ========== PROCESSING PAGE 1 of 1 ==========
+2025-12-31 00:09:15.879 [WRN] [UniversalRIP] ========== PDF HAS 1 PAGES ==========
+2025-12-31 00:09:15.879 [WRN] [UniversalRIP] ========== PROCESSING PAGE 1 of 1 ==========
+2025-12-31 00:09:15.893 [WRN] [UniversalRIP] ========== PDF HAS 1 PAGES ==========
+2025-12-31 00:09:15.893 [WRN] [UniversalRIP] ========== PROCESSING PAGE 1 of 1 ==========
+2025-12-31 00:09:15.939 [WRN] [UniversalRIP] ========== PDF HAS 1 PAGES ==========
+2025-12-31 00:09:15.939 [WRN] [UniversalRIP] ========== PROCESSING PAGE 1 of 1 ==========
+2025-12-31 00:09:16.137 [WRN] [UniversalRIP] ========== PDF HAS 1 PAGES ==========
+2025-12-31 00:09:16.137 [WRN] [UniversalRIP] ========== PROCESSING PAGE 1 of 1 ==========
+2025-12-31 00:09:16.155 [WRN] [UniversalRIP] ========== PDF HAS 1 PAGES ==========
+2025-12-31 00:09:16.155 [WRN] [UniversalRIP] ========== PROCESSING PAGE 1 of 1 ==========
+2025-12-31 00:09:16.180 [WRN] [UniversalRIP] ========== PDF HAS 1 PAGES ==========
+2025-12-31 00:09:16.180 [WRN] [UniversalRIP] ========== PROCESSING PAGE 1 of 1 ==========
+2025-12-31 00:09:16.321 [WRN] [UniversalRIP] ========== PDF HAS 1 PAGES ==========
+2025-12-31 00:09:16.321 [WRN] [UniversalRIP] ========== PROCESSING PAGE 1 of 1 ==========
+2025-12-31 00:09:16.454 [INF] Print job submitted successfully. Printer: 'Print to Evernote', Bytes: 2001634
+2025-12-31 00:09:16.455 [INF] [UniversalRIP] Successfully sent 2001634 bytes to printer 'Print to Evernote' as "GDI"
+2025-12-31 00:09:16.599 [INF] [SafeOutput] Converting image to ESC/P raster commands (FIXED VERSION)
+2025-12-31 00:09:16.664 [INF] Print job submitted successfully. Printer: 'PDF-XChange Standard', Bytes: 142251
+2025-12-31 00:09:16.665 [INF] [UniversalRIP] Successfully sent 142251 bytes to printer 'PDF-XChange Standard' as "PDF"
+2025-12-31 00:09:16.681 [INF] Print job submitted successfully. Printer: 'AnyDesk Printer', Bytes: 2001634
+2025-12-31 00:09:16.682 [INF] [UniversalRIP] Successfully sent 2001634 bytes to printer 'AnyDesk Printer' as "GDI"
+2025-12-31 00:09:16.692 [INF] Print job submitted successfully. Printer: 'Adobe PDF', Bytes: 62099
+2025-12-31 00:09:16.694 [INF] [UniversalRIP] Successfully sent 62099 bytes to printer 'Adobe PDF' as "PostScript"
+2025-12-31 00:09:16.902 [INF] Print job submitted successfully. Printer: 'Foxit PDF Editor Printer', Bytes: 142251
+2025-12-31 00:09:16.903 [INF] [UniversalRIP] Successfully sent 142251 bytes to printer 'Foxit PDF Editor Printer' as "PDF"
+2025-12-31 00:09:16.913 [INF] Print job submitted successfully. Printer: 'OneNote (Desktop)', Bytes: 2001634
+2025-12-31 00:09:16.914 [INF] [UniversalRIP] Successfully sent 2001634 bytes to printer 'OneNote (Desktop)' as "GDI"
+2025-12-31 00:09:16.929 [INF] [SafeOutput] ESC/P raster generated successfully: 63105 bytes, 595x841, 841 lines
+2025-12-31 00:09:17.460 [INF] Print job submitted successfully. Printer: 'Microsoft Print to PDF', Bytes: 142251
+2025-12-31 00:09:17.463 [INF] [UniversalRIP] Successfully sent 142251 bytes to printer 'Microsoft Print to PDF' as "PDF"
+2025-12-31 00:09:17.477 [INF] Print job submitted successfully. Printer: 'EPSON Universal Print Driver', Bytes: 63105
+2025-12-31 00:09:17.477 [INF] [UniversalRIP] Successfully sent 63105 bytes to printer 'EPSON Universal Print Driver' as "ESCPOS"
+2025-12-31 00:09:17.816 [INF] Print job submitted successfully. Printer: 'OneNote (Desktop) - Protected', Bytes: 2001634
+2025-12-31 00:09:17.816 [INF] [UniversalRIP] Successfully sent 2001634 bytes to printer 'OneNote (Desktop) - Protected' as "GDI"
+2025-12-31 01:28:43.834 [INF] === Apex Printing System Logger Initialized ===
+2025-12-31 01:28:43.888 [INF] [PrintJobsManager] Initialized - All print jobs will be tracked
+2025-12-31 01:29:04.684 [WRN] ========== NEW PRINT JOB STARTED ==========
+JobId: "15ab4bbd-7c45-4c8d-8cf2-2e556dde1c1c"
+File: C:\Users\moham\OneDrive\سطح المكتب\11.pdf
+Printers: EPSON WF-C5210 Series
+Copies: 1
+Total Jobs Submitted: 1
+2025-12-31 01:29:04.697 [INF] [SmartPrintManager] Printer lock acquired for 'EPSON WF-C5210 Series'. Starting print job.
+2025-12-31 01:29:05.752 [WRN] [Gateway] EPSON WF-C5210 detected - Using PdfDirectPrinter (Windows native)

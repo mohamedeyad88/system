@@ -1,6 +1,8 @@
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
+using Apex.Services.Logging;
 
 namespace Apex.Services.Helpers
 {
@@ -58,35 +60,98 @@ namespace Apex.Services.Helpers
 
         private static bool TrySendBytesToPrinter(string szPrinterName, IntPtr pBytes, Int32 dwCount)
         {
-            Int32 dwError = 0, dwWritten = 0;
-            IntPtr hPrinter = new IntPtr(0);
+            Int32 dwWritten = 0;
+            IntPtr hPrinter = IntPtr.Zero;
             DOCINFOA di = new DOCINFOA();
-            bool bSuccess = false;
 
             di.pDocName = "Apex Print Job";
             di.pDataType = "RAW";
 
-            if (OpenPrinter(szPrinterName.Normalize(), out hPrinter, IntPtr.Zero))
+            try
             {
-                if (StartDocPrinter(hPrinter, 1, di))
+                // CRITICAL: Check each Win32 API call and throw detailed exception on failure
+                
+                if (!OpenPrinter(szPrinterName.Normalize(), out hPrinter, IntPtr.Zero))
                 {
-                    if (StartPagePrinter(hPrinter))
-                    {
-                        bSuccess = WritePrinter(hPrinter, pBytes, dwCount, out dwWritten);
-                        EndPagePrinter(hPrinter);
-                    }
-                    EndDocPrinter(hPrinter);
+                    int error = Marshal.GetLastWin32Error();
+                    PrintLogger.Win32Error(error, "OpenPrinter", szPrinterName, 
+                        "Failed to open printer handle. Printer may not exist, be offline, or insufficient permissions.");
+                    throw new Win32Exception(error, 
+                        $"OpenPrinter failed for '{szPrinterName}': {GetWin32ErrorMessage(error)}");
                 }
-                ClosePrinter(hPrinter);
-            }
 
-            if (!bSuccess)
-            {
-                dwError = Marshal.GetLastWin32Error();
-                // Log error here if logging service was available statically, 
-                // or throw exception to be caught by caller
+                if (!StartDocPrinter(hPrinter, 1, di))
+                {
+                    int error = Marshal.GetLastWin32Error();
+                    PrintLogger.Win32Error(error, "StartDocPrinter", szPrinterName, 
+                        "Failed to start print job. Spooler may be stopped or printer busy.");
+                    throw new Win32Exception(error, 
+                        $"StartDocPrinter failed for '{szPrinterName}': {GetWin32ErrorMessage(error)}");
+                }
+
+                if (!StartPagePrinter(hPrinter))
+                {
+                    int error = Marshal.GetLastWin32Error();
+                    EndDocPrinter(hPrinter); // Clean up document
+                    PrintLogger.Win32Error(error, "StartPagePrinter", szPrinterName);
+                    throw new Win32Exception(error, 
+                        $"StartPagePrinter failed for '{szPrinterName}': {GetWin32ErrorMessage(error)}");
+                }
+
+                if (!WritePrinter(hPrinter, pBytes, dwCount, out dwWritten))
+                {
+                    int error = Marshal.GetLastWin32Error();
+                    EndPagePrinter(hPrinter);
+                    EndDocPrinter(hPrinter);
+                    PrintLogger.Win32Error(error, "WritePrinter", szPrinterName, 
+                        $"Attempted to write {dwCount} bytes, wrote {dwWritten} bytes");
+                    throw new Win32Exception(error, 
+                        $"WritePrinter failed for '{szPrinterName}': {GetWin32ErrorMessage(error)}. Bytes to write: {dwCount}, Written: {dwWritten}");
+                }
+
+                if (dwWritten != dwCount)
+                {
+                    EndPagePrinter(hPrinter);
+                    EndDocPrinter(hPrinter);
+                    PrintLogger.Error(null, 
+                        "WritePrinter incomplete write. Printer: {Printer}, Expected: {Expected}, Written: {Written}", 
+                        szPrinterName, dwCount, dwWritten);
+                    throw new IOException(
+                        $"WritePrinter incomplete write for '{szPrinterName}'. Expected: {dwCount}, Written: {dwWritten}");
+                }
+
+                EndPagePrinter(hPrinter);
+                EndDocPrinter(hPrinter);
+                
+                PrintLogger.Info("Print job submitted successfully. Printer: '{Printer}', Bytes: {Bytes}", 
+                    szPrinterName, dwWritten);
+                
+                return true;
             }
-            return bSuccess;
+            finally
+            {
+                if (hPrinter != IntPtr.Zero)
+                {
+                    ClosePrinter(hPrinter);
+                }
+            }
+        }
+
+        private static string GetWin32ErrorMessage(int errorCode)
+        {
+            return errorCode switch
+            {
+                1801 => "Invalid printer name or printer not found (ERROR_INVALID_PRINTER_NAME)",
+                5 => "Access denied - check permissions (ERROR_ACCESS_DENIED)",
+                1722 => "RPC server unavailable - printer offline or network issue (ERROR_RPC_S_SERVER_UNAVAILABLE)",
+                2 => "File not found (ERROR_FILE_NOT_FOUND)",
+                1814 => "Printer driver not installed (ERROR_UNKNOWN_PRINTER_DRIVER)",
+                1804 => "Invalid datatype (ERROR_INVALID_DATATYPE)",
+                3 => "Path not found (ERROR_PATH_NOT_FOUND)",
+                1117 => "Spooler service timeout (ERROR_SERVICE_REQUEST_TIMEOUT)",
+                31 => "Device attached to system not functioning (ERROR_GEN_FAILURE)",
+                _ => $"Win32 error code {errorCode}"
+            };
         }
 
         public static bool SendFileToPrinter(string szPrinterName, string szFileName)
@@ -123,5 +188,60 @@ namespace Apex.Services.Helpers
             Marshal.FreeCoTaskMem(pBytes);
             return success;
         }
+        
+        #region Extended API for Vendor-Aware Streaming
+        
+        /// <summary>
+        /// Open printer and return handle (for chunked writing).
+        /// </summary>
+        public static bool OpenPrinter(string printerName, out IntPtr hPrinter)
+        {
+            return OpenPrinter(printerName.Normalize(), out hPrinter, IntPtr.Zero);
+        }
+        
+        /// <summary>
+        /// Start a document for chunked writing.
+        /// </summary>
+        public static bool StartDocument(IntPtr hPrinter, string documentName, string dataType = "RAW")
+        {
+            var di = new DOCINFOA
+            {
+                pDocName = documentName,
+                pDataType = dataType
+            };
+            
+            if (!StartDocPrinter(hPrinter, 1, di))
+                return false;
+            
+            return StartPagePrinter(hPrinter);
+        }
+        
+        /// <summary>
+        /// Write a chunk of data to printer.
+        /// </summary>
+        public static bool WritePrinter(IntPtr hPrinter, byte[] data)
+        {
+            var pBytes = Marshal.AllocCoTaskMem(data.Length);
+            try
+            {
+                Marshal.Copy(data, 0, pBytes, data.Length);
+                return WritePrinter(hPrinter, pBytes, data.Length, out _);
+            }
+            finally
+            {
+                Marshal.FreeCoTaskMem(pBytes);
+            }
+        }
+        
+        /// <summary>
+        /// End document after chunked writing.
+        /// </summary>
+        public static bool EndDocument(IntPtr hPrinter)
+        {
+            EndPagePrinter(hPrinter);
+            return EndDocPrinter(hPrinter);
+        }
+        
+        #endregion
     }
 }

@@ -42,6 +42,13 @@ C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\obj\Release\net8.0\Apex.NumberedBooksEngine.CLI.pdb
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\obj\Release\net8.0\Apex.NumberedBooksEngine.CLI.genruntimeconfig.cache
 C:\Users\moham\OneDrive\سطح المكتب\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\obj\Release\net8.0\ref\Apex.NumberedBooksEngine.CLI.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\Serilog.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\runtimes\linux-musl-x64\native\libSkiaSharp.so
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\runtimes\linux-x64\native\libSkiaSharp.so
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\runtimes\osx\native\libSkiaSharp.dylib
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\runtimes\win-arm64\native\libSkiaSharp.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\runtimes\win-x64\native\libSkiaSharp.dll
+D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\runtimes\win-x86\native\libSkiaSharp.dll
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\Apex.NumberedBooksEngine.CLI.exe
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\x64\pdfium.dll
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\Apex.NumberedBooksEngine.CLI.deps.json
@@ -51,7 +58,6 @@ D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\Microsoft.Win32.SystemEvents.dll
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\PdfiumViewer.dll
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\PdfSharpCore.dll
-D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\Serilog.dll
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\ICSharpCode.SharpZipLib.dll
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\SixLabors.Fonts.dll
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\SixLabors.ImageSharp.dll
@@ -65,12 +71,6 @@ D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\runtimes\linux-arm\native\libSkiaSharp.so
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\runtimes\linux-arm64\native\libSkiaSharp.so
-D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\runtimes\linux-musl-x64\native\libSkiaSharp.so
-D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\runtimes\linux-x64\native\libSkiaSharp.so
-D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\runtimes\osx\native\libSkiaSharp.dylib
-D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\runtimes\win-arm64\native\libSkiaSharp.dll
-D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\runtimes\win-x64\native\libSkiaSharp.dll
-D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\runtimes\win-x86\native\libSkiaSharp.dll
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\runtimes\win\lib\net8.0\System.Management.dll
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\Apex.NumberedBooksEngine.dll
 D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.CLI\bin\Release\net8.0\Apex.NumberedBooksEngine.pdb

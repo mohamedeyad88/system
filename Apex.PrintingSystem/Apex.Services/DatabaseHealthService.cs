@@ -9,12 +9,18 @@ namespace Apex.Services
     public class DatabaseHealthService : IDatabaseHealthService
     {
         private readonly ILoggerService _logger;
-        private readonly string _dbPath = @"C:\ProgramData\ApexPrintingSystem\Database\apex.db";
-        private readonly string _backupFolder = @"C:\ProgramData\ApexPrintingSystem\Backups";
+        private readonly string _dbPath;
+        private readonly string _backupFolder;
 
         public DatabaseHealthService(ILoggerService logger)
         {
             _logger = logger;
+            var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            var dbDirectory = Path.Combine(appDataPath, "ApexPrintingSystem", "Database");
+            Directory.CreateDirectory(dbDirectory);
+            _dbPath = Path.Combine(dbDirectory, "apex.db");
+            _backupFolder = Path.Combine(appDataPath, "ApexPrintingSystem", "Backups");
+            Directory.CreateDirectory(_backupFolder);
         }
 
         public async Task<bool> CheckHealthAsync()
