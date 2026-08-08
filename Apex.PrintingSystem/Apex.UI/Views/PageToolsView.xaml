@@ -1,0 +1,214 @@
+﻿<UserControl x:Class="Apex.UI.Views.PageToolsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:svc="clr-namespace:Apex.UI.Services"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Apex.UI.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:PageToolsViewModel}"
+             FlowDirection="{Binding Source={x:Static svc:LocalizationService.Instance},
+                                     Path=FlowDirection, Mode=OneWay}"
+             Background="{DynamicResource Brush.Background}">
+
+    <UserControl.Resources>
+        <!-- All screen styles derive from the shared design system (Styles/*.xaml):
+             values flow from tokens â€” no hardcoded palette in this view. -->
+        <Style x:Key="LocalCard" TargetType="Border" BasedOn="{StaticResource CardStyle}">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+        <Style x:Key="Section" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+        <Style x:Key="Lbl" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="Inp" TargetType="TextBox" BasedOn="{StaticResource InputBox}">
+            <Setter Property="Background" Value="{DynamicResource Brush.Background}"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="Width" Value="52"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource Brush.Text.Primary}"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <!-- Operation buttons inherit the app-wide primary button (incl. hover/disabled). -->
+        <Style x:Key="Btn" TargetType="Button" BasedOn="{StaticResource Button.Primary}">
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="MinWidth" Value="150"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+        <Style x:Key="SaveBtn" TargetType="Button" BasedOn="{StaticResource Button.Success}">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="MinWidth" Value="150"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+        <Style x:Key="Row" TargetType="StackPanel">
+            <Setter Property="Orientation" Value="Horizontal"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="{DynamicResource PT_001}"
+                   Foreground="White" FontSize="20" FontWeight="Bold" Margin="0,0,0,16"/>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="470"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ══ Controls (right, RTL col 0) ══ -->
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+
+                    <!-- Source + Save -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource PT_002}" Style="{StaticResource Section}"/>
+                            <StackPanel Style="{StaticResource Row}">
+                                <Button Content="{DynamicResource PT_003}" Command="{Binding LoadSourceCommand}" Style="{StaticResource Btn}"/>
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource Lbl}" TextTrimming="CharacterEllipsis">
+                                <Run Text="{DynamicResource PT_004}"/><Run Text=" "/><Run Text="{Binding PageCount}" Foreground="White"/>
+                            </TextBlock>
+                            <Button Content="{DynamicResource PT_005}" Command="{Binding SaveResultCommand}"
+                                    Style="{StaticResource SaveBtn}" IsEnabled="{Binding HasResult}" Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Page management -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource PT_006}" Style="{StaticResource Section}"/>
+
+                            <StackPanel Style="{StaticResource Row}">
+                                <Button Content="{DynamicResource PT_007}" Command="{Binding ReverseCommand}" Style="{StaticResource Btn}"/>
+                            </StackPanel>
+                            <StackPanel Style="{StaticResource Row}">
+                                <CheckBox Content="{DynamicResource PT_008}" IsChecked="{Binding BacksReversed}" Foreground="{DynamicResource Brush.Text.Secondary}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                <Button Content="{DynamicResource PT_009}" Command="{Binding InterleaveCommand}" Style="{StaticResource Btn}"/>
+                            </StackPanel>
+                            <StackPanel Style="{StaticResource Row}">
+                                <TextBlock Text="{DynamicResource PT_010}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding InsertCount, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_011}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding InsertAfter, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <Button Content="{DynamicResource PT_012}" Command="{Binding InsertCommand}" Style="{StaticResource Btn}"/>
+                            </StackPanel>
+                            <StackPanel Style="{StaticResource Row}">
+                                <TextBlock Text="{DynamicResource PT_013}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding JoinGapMm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <Button Content="{DynamicResource PT_014}" Command="{Binding JoinTwoUpCommand}" Style="{StaticResource Btn}"/>
+                            </StackPanel>
+                            <StackPanel Style="{StaticResource Row}">
+                                <TextBlock Text="{DynamicResource PT_015}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding TileOverlapMm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_016}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding TileRows, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_017}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding TileCols, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <Button Content="{DynamicResource PT_018}" Command="{Binding TileCommand}" Style="{StaticResource Btn}"/>
+                            </StackPanel>
+                            <StackPanel Style="{StaticResource Row}">
+                                <TextBlock Text="{DynamicResource PT_019}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding BleedMm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <Button Content="{DynamicResource PT_020}" Command="{Binding BleedCommand}" Style="{StaticResource Btn}"/>
+                            </StackPanel>
+                            <StackPanel Style="{StaticResource Row}">
+                                <TextBlock Text="{DynamicResource PT_021}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding ShiftYmm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_022}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding ShiftXmm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_023}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding TrimMm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <Button Content="{DynamicResource PT_024}" Command="{Binding TrimCommand}" Style="{StaticResource Btn}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Sample document -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource PT_025}" Style="{StaticResource Section}"/>
+                            <StackPanel Style="{StaticResource Row}">
+                                <TextBlock Text="{DynamicResource PT_026}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding SampleHeightMm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_027}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding SampleWidthMm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_028}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding SamplePages, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <Button Content="{DynamicResource PT_029}" Command="{Binding SampleCommand}" Style="{StaticResource Btn}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource Brush.Success.Light}" FontSize="13" Margin="2,4,0,0" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Brush.Error.Light}" FontSize="13" Margin="2,4,0,0" TextWrapping="Wrap"
+                               Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- ══ Live preview (left, RTL col 2) ══ -->
+            <Border Grid.Column="2" Background="{DynamicResource Brush.Surface.Sunken}" CornerRadius="12" Padding="16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Result page navigation -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,12"
+                                Visibility="{Binding CanNavigate, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Button Content="{DynamicResource PT_030}" Command="{Binding PrevPageCommand}" Style="{StaticResource Btn}" MinWidth="90" Margin="0,0,8,0"/>
+                        <Border Background="{DynamicResource Brush.Background}" CornerRadius="6" Padding="12,6" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding PreviewPageLabel}" Foreground="{DynamicResource Brush.Primary.Light}" FontSize="12" FontWeight="SemiBold"/>
+                        </Border>
+                        <Button Content="{DynamicResource PT_031}" Command="{Binding NextPageCommand}" Style="{StaticResource Btn}" MinWidth="90" Margin="8,0,0,0"/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="1">
+                    <!-- Placeholder -->
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Visibility="{Binding HasPreviewImage, Converter={StaticResource InverseBoolConverter}}">
+                        <TextBlock Text="👁" FontSize="40" Foreground="{DynamicResource Brush.Text.Disabled}" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource PT_032}" Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                        <TextBlock Text="{DynamicResource PT_033}" Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="12" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <!-- Rendered page as paper with soft shadow -->
+                    <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="White"
+                            Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="28" ShadowDepth="0" Opacity="0.55" Color="Black"/>
+                        </Border.Effect>
+                        <Image Source="{Binding PreviewImage}" MaxHeight="620" Stretch="Uniform"
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </Border>
+
+                    <!-- Loading -->
+                    <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="{DynamicResource Brush.Background}" CornerRadius="8" Padding="16,10"
+                            Visibility="{Binding IsPreviewLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock Text="{DynamicResource PT_034}" Foreground="{DynamicResource Brush.Text.Secondary}" FontSize="13"/>
+                    </Border>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

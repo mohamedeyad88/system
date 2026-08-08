@@ -25,10 +25,10 @@ namespace Apex.Services.Maintenance
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.Log(LogLevel.Info, "Temp File Cleanup Service starting.", "TempFileCleanupService", "StartAsync");
-            
+
             // Run cleanup immediately on startup, then periodically
             _timer = new Timer(DoCleanup, null, TimeSpan.Zero, _cleanupInterval);
-            
+
             return Task.CompletedTask;
         }
 

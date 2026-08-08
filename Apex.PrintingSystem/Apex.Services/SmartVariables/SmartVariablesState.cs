@@ -10,8 +10,8 @@ namespace Apex.Services.SmartVariables
     /// </summary>
     public class SmartVariablesState
     {
-        public string  Version      { get; set; } = "1.0";
-        public DateTime LastSaved   { get; set; } = DateTime.Now;
+        public string Version { get; set; } = "1.0";
+        public DateTime LastSaved { get; set; } = DateTime.Now;
 
         // ── Data source ────────────────────────────────────────────────────────
         public SmartDataSource DataSource { get; set; } = new();
@@ -20,18 +20,18 @@ namespace Apex.Services.SmartVariables
         public List<VariableMapping> Mappings { get; set; } = new();
 
         // ── Image matching configuration ───────────────────────────────────────
-        public string         ImageFolder     { get; set; } = "";
-        public ImageMatchMode ImageMatchMode  { get; set; } = ImageMatchMode.ByFileName;
-        public string         ImageKeyColumn  { get; set; } = "";
-        public string         StaticImagePath { get; set; } = "";
+        public string ImageFolder { get; set; } = "";
+        public ImageMatchMode ImageMatchMode { get; set; } = ImageMatchMode.ByFileName;
+        public string ImageKeyColumn { get; set; } = "";
+        public string StaticImagePath { get; set; } = "";
 
         // ── Export settings ────────────────────────────────────────────────────
-        public ExportSettings ExportSettings  { get; set; } = new();
+        public ExportSettings ExportSettings { get; set; } = new();
 
         // ── UI state (restored on reopen) ──────────────────────────────────────
-        public int  PreviewRowIndex      { get; set; } = 0;
-        public int  ActiveTabIndex       { get; set; } = 0;
-        public bool ShowPreviewOverlay   { get; set; }
+        public int PreviewRowIndex { get; set; } = 0;
+        public int ActiveTabIndex { get; set; } = 0;
+        public bool ShowPreviewOverlay { get; set; }
 
         // ── Helpers ────────────────────────────────────────────────────────────
 
@@ -42,15 +42,15 @@ namespace Apex.Services.SmartVariables
         /// <summary>Resets to a clean initial state (new project).</summary>
         public void Reset()
         {
-            DataSource       = new SmartDataSource();
-            Mappings         = new List<VariableMapping>();
-            ImageFolder      = "";
-            ImageMatchMode   = ImageMatchMode.ByFileName;
-            ImageKeyColumn   = "";
-            StaticImagePath  = "";
-            ExportSettings   = new ExportSettings();
-            PreviewRowIndex  = 0;
-            ActiveTabIndex   = 0;
+            DataSource = new SmartDataSource();
+            Mappings = new List<VariableMapping>();
+            ImageFolder = "";
+            ImageMatchMode = ImageMatchMode.ByFileName;
+            ImageKeyColumn = "";
+            StaticImagePath = "";
+            ExportSettings = new ExportSettings();
+            PreviewRowIndex = 0;
+            ActiveTabIndex = 0;
             ShowPreviewOverlay = false;
         }
     }

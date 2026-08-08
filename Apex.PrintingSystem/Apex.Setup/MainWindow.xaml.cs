@@ -109,7 +109,7 @@ namespace Apex.Setup
             try
             {
                 await Task.Run(() => PerformInstallation());
-                
+
                 ProgressVisibility = Visibility.Collapsed;
                 CompleteVisibility = Visibility.Visible;
                 CloseButtonVisibility = Visibility.Visible;
@@ -133,7 +133,7 @@ namespace Apex.Setup
             Directory.CreateDirectory(InstallPath);
 
             UpdateStatus("Extracting files...", 40);
-            
+
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Apex.Setup.publish.zip"))
             {
                 if (stream == null) throw new Exception("Installer payload not found.");
@@ -164,7 +164,7 @@ namespace Apex.Setup
                 string startMenuPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs", shortcutName + ".lnk");
 
                 string powershellCommand = $"$s=(New-Object -COM WScript.Shell).CreateShortcut('{shortcutPath}');$s.TargetPath='{targetPath}';$s.WorkingDirectory='{Path.GetDirectoryName(targetPath)}';$s.IconLocation='{targetPath}';$s.Save()";
-                
+
                 var psi = new ProcessStartInfo
                 {
                     FileName = "powershell",

@@ -16,7 +16,7 @@ namespace Apex.NumberedBooksEngine.UI
 
             using var stream = File.OpenRead(path);
             using var loader = new TemplateLoader();
-            
+
             // Load using the core loader
             using var skImage = loader.LoadTemplate(stream, format);
 

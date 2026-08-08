@@ -37,16 +37,16 @@ namespace Apex.Services.Printing.UniversalRIP
             string key = $"{printerName}_{pdfPath}";
             if (!_failureCounts.ContainsKey(key))
                 _failureCounts[key] = 0;
-            
+
             _failureCounts[key]++;
 
             // Strategy 1: Retry with delay (for transient errors)
             if (_failureCounts[key] <= MaxRetriesPerPrinter)
             {
                 Debug.WriteLine($"[Recovery] Retry attempt {_failureCounts[key]} of {MaxRetriesPerPrinter}");
-                
+
                 await Task.Delay(2000 * _failureCounts[key], cancellationToken); // Exponential backoff
-                
+
                 // Retry with GDI fallback (most reliable)
                 try
                 {
@@ -54,7 +54,7 @@ namespace Apex.Services.Printing.UniversalRIP
                         pdfPath,
                         printerName,
                         cancellationToken);
-                    
+
                     if (fallbackResult.Success)
                     {
                         Debug.WriteLine("[Recovery] Recovery successful with GDI fallback");
@@ -72,7 +72,7 @@ namespace Apex.Services.Printing.UniversalRIP
             Debug.WriteLine("[Recovery] All recovery attempts failed, reporting failure");
             originalResult.Success = false;
             originalResult.ErrorMessage = $"Recovery failed after {_failureCounts[key]} attempts: {originalException.Message}";
-            
+
             _failureCounts.Remove(key);
             return originalResult;
         }
@@ -84,7 +84,7 @@ namespace Apex.Services.Printing.UniversalRIP
         {
             // Fallback to GDI (always available, but raster-only)
             var fallbackEngine = new UniversalRipEngine();
-            
+
             // Force GDI by creating a raster-only printer profile
             var gdiProfile = new UniversalPrinterProfile
             {
@@ -98,7 +98,7 @@ namespace Apex.Services.Printing.UniversalRIP
                 MaxDpi = 600,
                 PrimaryLanguage = PrintLanguage.GDI
             };
-            
+
             // This would require modifying the engine to accept a forced profile
             // For now, return a result indicating fallback is needed
             return new UniversalPrintResult

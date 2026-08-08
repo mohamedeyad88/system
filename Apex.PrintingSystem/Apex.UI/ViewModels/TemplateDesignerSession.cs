@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Apex.Services.SmartVariables;
 using Apex.Services.SmartVariables.Models;
+using Apex.Services.Templates;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -28,7 +29,7 @@ namespace Apex.UI.ViewModels
 
         // ── Canvas fields (synced from slots every time user enters a Smart step) ──
         private List<SmartTemplateField> _fields = new();
-        public  IReadOnlyList<SmartTemplateField> Fields => _fields;
+        public IReadOnlyList<SmartTemplateField> Fields => _fields;
 
         // ── Data (Step 1 — Paste) ─────────────────────────────────────────────
         public SmartDataSource DataSource { get; set; } = new();
@@ -39,17 +40,17 @@ namespace Apex.UI.ViewModels
         /// </summary>
         [ObservableProperty] private DataView? _dataTableView;
 
-        public bool         HasData     => DataSource.HasData;
+        public bool HasData => DataSource.HasData;
         public List<string> DataColumns => DataSource.Columns;
 
         // ── Mappings (Step 2 — Map) ───────────────────────────────────────────
         public List<VariableMapping> Mappings { get; set; } = new();
 
         // ── Images (Step 3) ───────────────────────────────────────────────────
-        [ObservableProperty] private string        _imageFolder     = "";
-        [ObservableProperty] private ImageMatchMode _imageMatchMode  = ImageMatchMode.ByFileName;
-        [ObservableProperty] private string        _imageKeyColumn  = "";
-        [ObservableProperty] private string        _staticImagePath = "";
+        [ObservableProperty] private string _imageFolder = "";
+        [ObservableProperty] private ImageMatchMode _imageMatchMode = ImageMatchMode.ByFileName;
+        [ObservableProperty] private string _imageKeyColumn = "";
+        [ObservableProperty] private string _staticImagePath = "";
         public List<ImageAsset> ImageLibrary { get; set; } = new();
 
         // ── Preview (Step 4) ──────────────────────────────────────────────────
@@ -58,10 +59,26 @@ namespace Apex.UI.ViewModels
         // ── Export (Step 5) ───────────────────────────────────────────────────
         public ExportSettings ExportSettings { get; set; } = new();
 
+        // ── Rendering context (set by TemplateDesignerViewModel) ─────────────
+        /// <summary>
+        /// The currently loaded template page (slots + background).
+        /// Set by <see cref="TemplateDesignerViewModel.SyncFieldsToSession"/> whenever
+        /// the user enters a Smart Variables step.  Used by TemplateRenderingService
+        /// to render the live preview and export PNG.
+        /// </summary>
+        public TemplatePageDefinition? CurrentPage { get; set; }
+
+        /// <summary>
+        /// Binary assets (background images, static image slots) from the loaded .apext file.
+        /// Keyed by asset filename (case-insensitive).
+        /// </summary>
+        public Dictionary<string, byte[]> Assets { get; set; } =
+            new(StringComparer.OrdinalIgnoreCase);
+
         // ── Computed ──────────────────────────────────────────────────────────
 
-        public bool CanMap       => HasData && _fields.Count > 0;
-        public bool NeedsImages  => _fields.Any(f => f.FieldType == SmartFieldType.ImageVariable);
+        public bool CanMap => HasData && _fields.Count > 0;
+        public bool NeedsImages => _fields.Any(f => f.FieldType == SmartFieldType.ImageVariable);
 
         /// <summary>
         /// Resolved display value for a specific field at the current preview record.
@@ -70,9 +87,9 @@ namespace Apex.UI.ViewModels
         public string GetPreviewValue(string fieldId)
         {
             if (!HasData || DataSource.Rows.Count == 0) return "";
-            int  idx     = Math.Clamp(PreviewRecordIndex, 0, DataSource.Rows.Count - 1);
-            var  row     = DataSource.Rows[idx];
-            var  mapping = Mappings.FirstOrDefault(m => m.FieldId == fieldId && m.IsMapped);
+            int idx = Math.Clamp(PreviewRecordIndex, 0, DataSource.Rows.Count - 1);
+            var row = DataSource.Rows[idx];
+            var mapping = Mappings.FirstOrDefault(m => m.FieldId == fieldId && m.IsMapped);
             if (mapping == null) return "";
             return row.Get(mapping.ColumnName!, "");
         }
@@ -99,6 +116,20 @@ namespace Apex.UI.ViewModels
         {
             Mappings = mappings;
             OnPropertyChanged(nameof(CanMap));
+        }
+
+        /// <summary>
+        /// Push the current page definition and asset bytes from the loaded template
+        /// into the session so <see cref="Services.TemplateRenderingService"/> has
+        /// everything it needs to render the live preview and export PNG.
+        /// Called by <see cref="TemplateDesignerViewModel.SyncFieldsToSession"/>.
+        /// </summary>
+        public void SyncRenderingContext(
+            TemplatePageDefinition? page,
+            Dictionary<string, byte[]> assets)
+        {
+            CurrentPage = page;
+            Assets = new Dictionary<string, byte[]>(assets, StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -150,11 +181,11 @@ namespace Apex.UI.ViewModels
         /// <summary>Reset all Smart Variables data (keeps template fields).</summary>
         public void ResetSmartData()
         {
-            DataSource        = new SmartDataSource();
-            DataTableView     = null;
-            Mappings          = new List<VariableMapping>();
-            ImageLibrary      = new List<ImageAsset>();
-            ImageFolder       = "";
+            DataSource = new SmartDataSource();
+            DataTableView = null;
+            Mappings = new List<VariableMapping>();
+            ImageLibrary = new List<ImageAsset>();
+            ImageFolder = "";
             PreviewRecordIndex = 0;
             OnPropertyChanged(nameof(HasData));
             OnPropertyChanged(nameof(DataColumns));
@@ -178,29 +209,29 @@ namespace Apex.UI.ViewModels
         /// <summary>Serialize to SmartVariablesState for saving inside the .apext ZIP.</summary>
         public SmartVariablesState ToSmartVariablesState(int activeStep) => new()
         {
-            Version          = "1.0",
-            LastSaved        = DateTime.Now,
-            DataSource       = DataSource,
-            Mappings         = Mappings,
-            ImageFolder      = ImageFolder,
-            ImageMatchMode   = ImageMatchMode,
-            ImageKeyColumn   = ImageKeyColumn,
-            StaticImagePath  = StaticImagePath,
-            ExportSettings   = ExportSettings,
-            PreviewRowIndex  = PreviewRecordIndex,
-            ActiveTabIndex   = activeStep,
+            Version = "1.0",
+            LastSaved = DateTime.Now,
+            DataSource = DataSource,
+            Mappings = Mappings,
+            ImageFolder = ImageFolder,
+            ImageMatchMode = ImageMatchMode,
+            ImageKeyColumn = ImageKeyColumn,
+            StaticImagePath = StaticImagePath,
+            ExportSettings = ExportSettings,
+            PreviewRowIndex = PreviewRecordIndex,
+            ActiveTabIndex = activeStep,
         };
 
         /// <summary>Restore from a previously persisted SmartVariablesState.</summary>
         public void LoadFromState(SmartVariablesState state)
         {
-            DataSource         = state.DataSource;
-            Mappings           = state.Mappings;
-            ImageFolder        = state.ImageFolder;
-            ImageMatchMode     = state.ImageMatchMode;
-            ImageKeyColumn     = state.ImageKeyColumn;
-            StaticImagePath    = state.StaticImagePath;
-            ExportSettings     = state.ExportSettings;
+            DataSource = state.DataSource;
+            Mappings = state.Mappings;
+            ImageFolder = state.ImageFolder;
+            ImageMatchMode = state.ImageMatchMode;
+            ImageKeyColumn = state.ImageKeyColumn;
+            StaticImagePath = state.StaticImagePath;
+            ExportSettings = state.ExportSettings;
             PreviewRecordIndex = state.PreviewRowIndex;
             RebuildDataTableView();
             OnPropertyChanged(nameof(HasData));

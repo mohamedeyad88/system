@@ -137,7 +137,7 @@ admin-tool\ApexLicenseTool.exe  ($adminMB MB)  License issuing tool (admin only)
 
 TRIAL PERIOD
 ------------
-Duration  : 30 days from first launch
+Duration  : 7 days from first launch
 Storage   : AppData + ProgramData + Registry (triple anti-tamper)
 Protection: HMAC-SHA256 + Device ID binding + Clock rollback detection
 

@@ -28,13 +28,13 @@ namespace Apex.Services.Printing
         {
             _logger = logger;
             _checkpoints = new ConcurrentDictionary<Guid, PrintCheckpoint>();
-            
+
             _checkpointFolder = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "ApexPrintingSystem", "Checkpoints");
-            
+
             Directory.CreateDirectory(_checkpointFolder);
-            
+
             // Load existing checkpoints
             LoadCheckpointsAsync().Wait();
         }
@@ -52,13 +52,13 @@ namespace Apex.Services.Printing
             };
 
             _checkpoints[jobId] = checkpoint;
-            
+
             // Persist to disk
             await SaveCheckpointAsync(checkpoint);
-            
-            _logger.Log(LogLevel.Info, $"Checkpoint created for job {jobId} at page {lastSuccessfulPage}", 
+
+            _logger.Log(LogLevel.Info, $"Checkpoint created for job {jobId} at page {lastSuccessfulPage}",
                 "FaultTolerance", "Checkpoint");
-            
+
             return checkpoint;
         }
 
@@ -71,7 +71,7 @@ namespace Apex.Services.Printing
         public async Task ClearCheckpointAsync(Guid jobId)
         {
             _checkpoints.TryRemove(jobId, out _);
-            
+
             var filePath = GetCheckpointFilePath(jobId);
             if (File.Exists(filePath))
             {
@@ -81,11 +81,11 @@ namespace Apex.Services.Printing
                 }
                 catch (Exception ex)
                 {
-                    _logger.Log(LogLevel.Warning, $"Failed to delete checkpoint file: {ex.Message}", 
+                    _logger.Log(LogLevel.Warning, $"Failed to delete checkpoint file: {ex.Message}",
                         "FaultTolerance", "Clear");
                 }
             }
-            
+
             await Task.CompletedTask;
         }
 
@@ -103,27 +103,27 @@ namespace Apex.Services.Printing
                 {
                     // Use WMI to check printer status
                     var query = new SelectQuery($"SELECT * FROM Win32_Printer WHERE Name = '{printerName.Replace("'", "''")}'");
-                    
+
                     using var searcher = new ManagementObjectSearcher(query);
                     var printers = searcher.Get();
 
                     foreach (ManagementObject printer in printers)
                     {
                         status.IsOnline = true;
-                        
+
                         var printerStatus = printer["PrinterStatus"];
                         var detectedError = printer["DetectedErrorState"];
                         var workOffline = printer["WorkOffline"];
-                        
+
                         status.IsReady = printerStatus != null && (uint)printerStatus == 3; // 3 = Idle/Ready
-                        
+
                         if (workOffline != null && (bool)workOffline)
                         {
                             status.IsOnline = false;
                             status.ErrorType = PrinterErrorType.Offline;
                             status.ErrorMessage = "Printer is offline";
                         }
-                        
+
                         if (detectedError != null)
                         {
                             var errorState = (ushort)detectedError;
@@ -140,14 +140,14 @@ namespace Apex.Services.Printing
                                 default: status.ErrorType = PrinterErrorType.Unknown; break;
                             }
                         }
-                        
+
                         // Get queue depth
                         var jobs = printer["Jobs"];
                         if (jobs != null)
                         {
                             status.QueueDepth = Convert.ToInt32(jobs);
                         }
-                        
+
                         break;
                     }
 
@@ -164,14 +164,14 @@ namespace Apex.Services.Printing
                 status.HasError = true;
                 status.ErrorType = PrinterErrorType.Unknown;
                 status.ErrorMessage = ex.Message;
-                
-                _logger.Log(LogLevel.Warning, $"Error checking printer health: {ex.Message}", 
+
+                _logger.Log(LogLevel.Warning, $"Error checking printer health: {ex.Message}",
                     "FaultTolerance", "Health");
             }
 
             // Determine if ready
             status.IsReady = status.IsOnline && !status.HasError && status.ErrorType == null;
-            
+
             return status;
         }
 
@@ -272,14 +272,14 @@ namespace Apex.Services.Printing
                     }
                     catch (Exception ex)
                     {
-                        _logger.Log(LogLevel.Warning, $"Failed to load checkpoint: {ex.Message}", 
+                        _logger.Log(LogLevel.Warning, $"Failed to load checkpoint: {ex.Message}",
                             "FaultTolerance", "Load");
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Warning, $"Failed to load checkpoints: {ex.Message}", 
+                _logger.Log(LogLevel.Warning, $"Failed to load checkpoints: {ex.Message}",
                     "FaultTolerance", "Load");
             }
         }

@@ -20,7 +20,7 @@ namespace Apex.Core.Models
         public string Name { get; set; } = string.Empty;
         public string Type { get; set; } = "Local"; // Local, Network, Virtual
         public string PoolName { get; set; } = string.Empty;
-        
+
         /// <summary>
         /// Whether this printer is selected as the active printer for Quick Print.
         /// </summary>

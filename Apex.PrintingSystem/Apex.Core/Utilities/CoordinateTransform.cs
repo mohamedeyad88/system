@@ -9,37 +9,37 @@ namespace Apex.Core.Utilities
         /// <summary>
         /// Converts UI pixel X coordinate to normalized (0..1) coordinate.
         /// </summary>
-        public static double NormalizeX(double uiPixelX, double templateWidthPx) 
+        public static double NormalizeX(double uiPixelX, double templateWidthPx)
             => templateWidthPx > 0 ? uiPixelX / templateWidthPx : 0;
 
         /// <summary>
         /// Converts UI pixel Y coordinate to normalized (0..1) coordinate.
         /// </summary>
-        public static double NormalizeY(double uiPixelY, double templateHeightPx) 
+        public static double NormalizeY(double uiPixelY, double templateHeightPx)
             => templateHeightPx > 0 ? uiPixelY / templateHeightPx : 0;
 
         /// <summary>
         /// Converts normalized X coordinate to printer pixels.
         /// </summary>
-        public static int ToPrinterX(double normalizedX, int templatePrintWidthPx) 
+        public static int ToPrinterX(double normalizedX, int templatePrintWidthPx)
             => (int)Math.Round(normalizedX * templatePrintWidthPx);
 
         /// <summary>
         /// Converts normalized Y coordinate to printer pixels.
         /// </summary>
-        public static int ToPrinterY(double normalizedY, int templatePrintHeightPx) 
+        public static int ToPrinterY(double normalizedY, int templatePrintHeightPx)
             => (int)Math.Round(normalizedY * templatePrintHeightPx);
 
         /// <summary>
         /// Converts normalized X coordinate to UI pixels.
         /// </summary>
-        public static double ToUiX(double normalizedX, double templateUiWidthPx) 
+        public static double ToUiX(double normalizedX, double templateUiWidthPx)
             => normalizedX * templateUiWidthPx;
 
         /// <summary>
         /// Converts normalized Y coordinate to UI pixels.
         /// </summary>
-        public static double ToUiY(double normalizedY, double templateUiHeightPx) 
+        public static double ToUiY(double normalizedY, double templateUiHeightPx)
             => normalizedY * templateUiHeightPx;
 
         /// <summary>
@@ -55,38 +55,38 @@ namespace Apex.Core.Utilities
         /// <summary>
         /// Calculates physical dimensions in inches from pixel dimensions.
         /// </summary>
-        public static double PixelsToInches(double pixels, double dpi) 
+        public static double PixelsToInches(double pixels, double dpi)
             => dpi > 0 ? pixels / dpi : 0;
 
         /// <summary>
         /// Calculates pixel dimensions from physical inches.
         /// </summary>
-        public static double InchesToPixels(double inches, double dpi) 
+        public static double InchesToPixels(double inches, double dpi)
             => inches * dpi;
 
         /// <summary>
         /// Calculates physical dimensions in millimeters from pixel dimensions.
         /// </summary>
-        public static double PixelsToMm(double pixels, double dpi) 
+        public static double PixelsToMm(double pixels, double dpi)
             => PixelsToInches(pixels, dpi) * 25.4;
 
         /// <summary>
         /// Calculates pixel dimensions from physical millimeters.
         /// </summary>
-        public static double MmToPixels(double mm, double dpi) 
+        public static double MmToPixels(double mm, double dpi)
             => InchesToPixels(mm / 25.4, dpi);
 
         /// <summary>
         /// Clamps a normalized coordinate to valid range [0, 1].
         /// </summary>
-        public static double ClampNormalized(double value) 
+        public static double ClampNormalized(double value)
             => Math.Max(0, Math.Min(1, value));
 
         /// <summary>
         /// Validates that a normalized coordinate is within bounds.
         /// </summary>
         public static bool IsWithinBounds(double normalizedX, double normalizedY, double slotWidth, double slotHeight)
-            => normalizedX >= 0 && normalizedY >= 0 && 
+            => normalizedX >= 0 && normalizedY >= 0 &&
                normalizedX + slotWidth <= 1.0 && normalizedY + slotHeight <= 1.0;
     }
 }

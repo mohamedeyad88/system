@@ -54,8 +54,8 @@ namespace Apex.Services.Printing.RIP
                 // Step 1: Content Analysis (sample first few pages for performance)
                 Debug.WriteLine("[RIP] Analyzing content...");
                 var representativeProfile = await _contentAnalyzer.AnalyzeSampleAsync(
-                    pdfPath, 
-                    samplePages: 3, 
+                    pdfPath,
+                    samplePages: 3,
                     cancellationToken);
 
                 // Step 2: Decision Engine
@@ -69,7 +69,7 @@ namespace Apex.Services.Printing.RIP
                 Debug.WriteLine($"[RIP] Reason: {decision.DecisionReason}");
 
                 // Step 3: Process and print
-                if (decision.Strategy == RenderStrategy.NativeVector && 
+                if (decision.Strategy == RenderStrategy.NativeVector &&
                     decision.OutputFormat == PrintLanguage.PDF &&
                     printerMetadata.Capabilities?.SupportsPdf == true)
                 {
@@ -120,8 +120,8 @@ namespace Apex.Services.Printing.RIP
 
                         // Analyze this specific page
                         var pageProfile = await _contentAnalyzer.AnalyzePageAsync(
-                            pdfPath, 
-                            pageIndex, 
+                            pdfPath,
+                            pageIndex,
                             cancellationToken);
 
                         // Make page-specific decision (may differ from document-level)
@@ -244,20 +244,20 @@ namespace Apex.Services.Printing.RIP
                 {
                     // RawPrinterHelper now throws Win32Exception with detailed error messages
                     SendRawDataToPrinter(printerName, data, "RAW");
-                    PrintLogger.Info("[RIP] Successfully sent {Bytes} bytes to printer '{Printer}'", 
+                    PrintLogger.Info("[RIP] Successfully sent {Bytes} bytes to printer '{Printer}'",
                         data.Length, printerName);
                 }
                 catch (Win32Exception win32Ex)
                 {
-                    PrintLogger.Error(win32Ex, 
-                        "[RIP] Win32 print API failed. Printer: '{Printer}', Error Code: {ErrorCode}", 
+                    PrintLogger.Error(win32Ex,
+                        "[RIP] Win32 print API failed. Printer: '{Printer}', Error Code: {ErrorCode}",
                         printerName, win32Ex.NativeErrorCode);
                     throw;
                 }
                 catch (Exception ex)
                 {
-                    PrintLogger.Error(ex, 
-                        "[RIP] Print submission failed. Printer: '{Printer}', Bytes: {Bytes}", 
+                    PrintLogger.Error(ex,
+                        "[RIP] Print submission failed. Printer: '{Printer}', Bytes: {Bytes}",
                         printerName, data.Length);
                     throw;
                 }
@@ -268,18 +268,18 @@ namespace Apex.Services.Printing.RIP
         {
             // FIXED: Use the correct RawPrinterHelper.SendBytesToPrinter method
             // This method handles ALL Win32 API calls correctly with proper error handling
-            
+
             // Allocate unmanaged memory for the data
             IntPtr pUnmanagedBytes = System.Runtime.InteropServices.Marshal.AllocCoTaskMem(data.Length);
             try
             {
                 // Copy byte array to unmanaged memory
                 System.Runtime.InteropServices.Marshal.Copy(data, 0, pUnmanagedBytes, data.Length);
-                
+
                 // Send to printer with correct parameters
                 return RawPrinterHelper.SendBytesToPrinter(
-                    printerName, 
-                    pUnmanagedBytes, 
+                    printerName,
+                    pUnmanagedBytes,
                     data.Length);
             }
             finally

@@ -75,7 +75,7 @@ namespace Apex.Services.Printing.RIP
             // Assuming 300 DPI rendering → 1 pixel = 72/300 = 0.24 pts
             // Or use actual bitmap size scaled to letter/A4
             const float renderDpi = 300f;
-            float ptWidth  = bmp.Width  * 72f / renderDpi;
+            float ptWidth = bmp.Width * 72f / renderDpi;
             float ptHeight = bmp.Height * 72f / renderDpi;
 
             sb.AppendLine($"%%Page: {pageNumber} {pageNumber}");
@@ -140,15 +140,15 @@ namespace Apex.Services.Printing.RIP
 
             try
             {
-                int stride    = data.Stride;
-                int width     = bmp.Width;
-                int height    = bmp.Height;
-                var rgbBytes  = new byte[width * height * 3];
+                int stride = data.Stride;
+                int width = bmp.Width;
+                int height = bmp.Height;
+                var rgbBytes = new byte[width * height * 3];
 
                 unsafe
                 {
                     byte* ptr = (byte*)data.Scan0;
-                    int   dst = 0;
+                    int dst = 0;
 
                     for (int y = 0; y < height; y++)
                     {
@@ -179,15 +179,15 @@ namespace Apex.Services.Printing.RIP
         /// </summary>
         private static string EncodeAscii85(byte[] data)
         {
-            var sb     = new StringBuilder((int)(data.Length * 1.25) + 10);
+            var sb = new StringBuilder((int)(data.Length * 1.25) + 10);
             int length = data.Length;
-            int i      = 0;
+            int i = 0;
 
             while (i < length)
             {
                 // Read up to 4 bytes
                 int remaining = Math.Min(4, length - i);
-                uint group    = 0;
+                uint group = 0;
 
                 for (int j = 0; j < 4; j++)
                 {
@@ -208,7 +208,7 @@ namespace Apex.Services.Printing.RIP
                     for (int j = 4; j >= 0; j--)
                     {
                         chars[j] = (char)('!' + (group % 85));
-                        group    /= 85;
+                        group /= 85;
                     }
 
                     // Only emit as many chars as needed for partial final group
@@ -229,7 +229,7 @@ namespace Apex.Services.Printing.RIP
         private static string WrapLines(string text, int lineLength)
         {
             var sb = new StringBuilder(text.Length + text.Length / lineLength + 10);
-            int i  = 0;
+            int i = 0;
 
             while (i < text.Length)
             {

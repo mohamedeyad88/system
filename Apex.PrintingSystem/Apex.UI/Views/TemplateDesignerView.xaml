@@ -3,8 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Apex.UI.Views"
              xmlns:converters="clr-namespace:Apex.UI.Converters"
-             FlowDirection="RightToLeft"
-             Background="#0F172A">
+             xmlns:svc="clr-namespace:Apex.UI.Services"
+             FlowDirection="{Binding Source={x:Static svc:LocalizationService.Instance},
+                                     Path=FlowDirection, Mode=OneWay}"
+             Background="{DynamicResource Brush.Background}">
 
     <UserControl.Resources>
 
@@ -15,10 +17,12 @@
         <converters:NonEmptyStringToVisibilityConverter      x:Key="NonEmptyToVis"/>
         <converters:SlotDataTypeToArabicConverter            x:Key="DataTypeToArabic"/>
         <converters:HorizontalAlignToArabicConverter         x:Key="AlignToArabic"/>
+        <converters:VerticalAlignToArabicConverter           x:Key="VAlignToArabic"/>
+        <converters:ImageFitToArabicConverter                x:Key="ImageFitToArabic"/>
 
         <!-- ── Stepper button style ──────────────────────────────────────── -->
         <Style x:Key="StepBtn" TargetType="Button">
-            <Setter Property="Foreground"      Value="#94A3B8"/>
+            <Setter Property="Foreground"      Value="{DynamicResource Brush.Text.Secondary}"/>
             <Setter Property="FontSize"        Value="12"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor"          Value="Hand"/>
@@ -30,14 +34,14 @@
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="b"
                                 Background="{TemplateBinding Background}"
-                                BorderBrush="#334155"
+                                BorderBrush="{DynamicResource Brush.Border.Light}"
                                 BorderThickness="0,0,0,3"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="#1E293B"/>
+                                <Setter TargetName="b" Property="Background" Value="{DynamicResource Brush.Surface}"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.35"/>
@@ -48,6 +52,21 @@
             </Setter>
         </Style>
 
+        <!-- Glyph that prefixes a toolbar button's label.
+             Without the gap the two run together and read as a typo — "TText",
+             "#Number", "DDate" — which is exactly what customers reported. -->
+        <Style x:Key="BtnGlyph" TargetType="TextBlock">
+            <Setter Property="FontSize"   Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin"     Value="0,0,5,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="BtnLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
         <!-- ── Field-type toolbar button ─────────────────────────────────── -->
         <Style x:Key="FieldTypeBtn" TargetType="Button">
             <Setter Property="Height"          Value="28"/>
@@ -56,11 +75,11 @@
             <Setter Property="Cursor"          Value="Hand"/>
             <Setter Property="FontSize"        Value="11"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Foreground"      Value="#CBD5E1"/>
+            <Setter Property="Foreground"      Value="{DynamicResource Brush.Slate.300}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="b" Background="#334155" CornerRadius="5"
+                        <Border x:Name="b" Background="{DynamicResource Brush.Surface.Elevated}" CornerRadius="5"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         </Border>
@@ -74,12 +93,37 @@
             </Setter>
         </Style>
 
+        <!-- ── Zoom button ──────────────────────────────────────────────────── -->
+        <Style x:Key="ZoomBtn" TargetType="Button">
+            <Setter Property="Width"           Value="28"/>
+            <Setter Property="Height"          Value="28"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="b" Background="{DynamicResource Brush.Surface.Elevated}" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="b" Property="Background" Value="#475569"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.35"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- ── Shared styles ──────────────────────────────────────────────── -->
 
         <Style x:Key="DarkBox" TargetType="TextBox">
-            <Setter Property="Background"       Value="#0F172A"/>
-            <Setter Property="Foreground"       Value="#E2E8F0"/>
-            <Setter Property="BorderBrush"      Value="#334155"/>
+            <Setter Property="Background"       Value="{DynamicResource Brush.Background}"/>
+            <Setter Property="Foreground"       Value="{DynamicResource Brush.Slate.200}"/>
+            <Setter Property="BorderBrush"      Value="{DynamicResource Brush.Border.Light}"/>
             <Setter Property="BorderThickness"  Value="1"/>
             <Setter Property="Padding"          Value="8,5"/>
             <Setter Property="Height"           Value="32"/>
@@ -88,25 +132,28 @@
             <Setter Property="SelectionBrush"   Value="#2563EB"/>
         </Style>
 
-        <Style x:Key="DarkCombo" TargetType="ComboBox">
-            <Setter Property="Background"      Value="#0F172A"/>
-            <Setter Property="Foreground"      Value="#E2E8F0"/>
-            <Setter Property="BorderBrush"     Value="#334155"/>
+        <!-- Inherits the global dark ComboBox ControlTemplate via BasedOn so the popup,
+             arrow and item chrome stay dark; only surface colours are overridden here. -->
+        <Style x:Key="DarkCombo" TargetType="ComboBox"
+               BasedOn="{StaticResource {x:Type ComboBox}}">
+            <Setter Property="Background"      Value="{DynamicResource Brush.Background}"/>
+            <Setter Property="Foreground"      Value="{DynamicResource Brush.Slate.200}"/>
+            <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Border.Light}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Height"          Value="32"/>
             <Setter Property="FontSize"        Value="12"/>
             <Setter Property="ItemContainerStyle">
                 <Setter.Value>
                     <Style TargetType="ComboBoxItem">
-                        <Setter Property="Background" Value="#1E293B"/>
-                        <Setter Property="Foreground" Value="#E2E8F0"/>
+                        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
+                        <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.200}"/>
                         <Setter Property="Padding"    Value="10,5"/>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#334155"/>
+                                <Setter Property="Background" Value="{DynamicResource Brush.Surface.Elevated}"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="#2563EB"/>
+                                <Setter Property="Background" Value="{DynamicResource Brush.Primary}"/>
                                 <Setter Property="Foreground" Value="White"/>
                             </Trigger>
                         </Style.Triggers>
@@ -116,13 +163,13 @@
         </Style>
 
         <Style x:Key="FieldLabel" TargetType="TextBlock">
-            <Setter Property="Foreground"  Value="#94A3B8"/>
+            <Setter Property="Foreground"  Value="{DynamicResource Brush.Text.Secondary}"/>
             <Setter Property="FontSize"    Value="10"/>
             <Setter Property="Margin"      Value="0,0,0,3"/>
         </Style>
 
         <Style x:Key="SectionTitle" TargetType="TextBlock">
-            <Setter Property="Foreground"   Value="#CBD5E1"/>
+            <Setter Property="Foreground"   Value="{DynamicResource Brush.Slate.300}"/>
             <Setter Property="FontSize"     Value="11"/>
             <Setter Property="FontWeight"   Value="SemiBold"/>
             <Setter Property="Margin"       Value="0,0,0,10"/>
@@ -130,7 +177,7 @@
 
         <!-- Blue primary button -->
         <ControlTemplate x:Key="BlueBtnTpl" TargetType="Button">
-            <Border x:Name="b" Background="#2563EB" CornerRadius="6"
+            <Border x:Name="b" Background="{DynamicResource Brush.Primary}" CornerRadius="6"
                     Padding="{TemplateBinding Padding}">
                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
@@ -147,7 +194,7 @@
 
         <!-- Green save button -->
         <ControlTemplate x:Key="GreenBtnTpl" TargetType="Button">
-            <Border x:Name="b" Background="#059669" CornerRadius="6"
+            <Border x:Name="b" Background="{DynamicResource Brush.Success.Dark}" CornerRadius="6"
                     Padding="{TemplateBinding Padding}">
                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
@@ -174,14 +221,14 @@
         <!-- Ghost icon button -->
         <ControlTemplate x:Key="GhostBtnTpl" TargetType="Button">
             <Border x:Name="b" Background="Transparent" CornerRadius="6"
-                    BorderBrush="#334155" BorderThickness="1"
+                    BorderBrush="{DynamicResource Brush.Border.Light}" BorderThickness="1"
                     Padding="{TemplateBinding Padding}">
                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
             <ControlTemplate.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="b" Property="Background"   Value="#1E293B"/>
-                    <Setter TargetName="b" Property="BorderBrush"  Value="#475569"/>
+                    <Setter TargetName="b" Property="Background"   Value="{DynamicResource Brush.Surface}"/>
+                    <Setter TargetName="b" Property="BorderBrush"  Value="{DynamicResource Brush.Border.Medium}"/>
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
@@ -191,21 +238,27 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="56"/>   <!-- Header -->
-            <RowDefinition Height="48"/>   <!-- Stepper -->
+            <RowDefinition Height="60"/>   <!-- Stepper -->
             <RowDefinition Height="*"/>    <!-- Content (Designer OR Smart Variables) -->
         </Grid.RowDefinitions>
 
         <!-- ══════════════════════ HEADER ══════════════════════ -->
-        <Border Grid.Row="0" Background="#1E293B"
-                BorderBrush="#334155" BorderThickness="0,0,0,1">
+        <Border Grid.Row="0" Background="{DynamicResource Brush.Surface}"
+                BorderBrush="{DynamicResource Brush.Border.Light}" BorderThickness="0,0,0,1">
+            <!-- v2.0.9: proper 2-column Grid prevents title/buttons overlap in RTL -->
             <Grid Margin="20,0">
-                <!-- Title -->
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="📄" FontSize="18" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                    <TextBlock Text="مصمم القوالب" Foreground="White"
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>    <!-- Col 0: title  (RIGHT side in RTL) -->
+                    <ColumnDefinition Width="Auto"/> <!-- Col 1: actions (LEFT side in RTL) -->
+                </Grid.ColumnDefinitions>
+
+                <!-- Title — col 0 = logical start = RIGHT in RTL -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center"
+                            HorizontalAlignment="Right">
+                    <TextBlock Text="{DynamicResource TD_001}" Foreground="White"
                                FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
                     <!-- Loading indicator -->
-                    <Border Background="#2563EB" CornerRadius="4" Padding="8,3" Margin="12,0,0,0"
+                    <Border Background="{DynamicResource Brush.Primary}" CornerRadius="4" Padding="8,3" Margin="8,0,0,0"
                             VerticalAlignment="Center">
                         <Border.Style>
                             <Style TargetType="Border">
@@ -217,221 +270,646 @@
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>
-                        <TextBlock Text="جارٍ التحميل..." Foreground="White" FontSize="11"/>
+                        <TextBlock Text="{DynamicResource TD_002}" Foreground="White" FontSize="11"/>
                     </Border>
                 </StackPanel>
 
-                <!-- Header actions -->
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"
-                            VerticalAlignment="Center">
+                <!-- Header actions — col 1 = logical end = LEFT in RTL
+                     FlowDirection=LTR on the panel keeps button order (import, new, save) left-to-right -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal"
+                            FlowDirection="LeftToRight"
+                            VerticalAlignment="Center" Margin="0,0,0,0">
                     <Button x:Name="BtnImport" Height="34" Padding="12,0" Margin="0,0,6,0"
                             Cursor="Hand" Template="{StaticResource GhostBtnTpl}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="📥" FontSize="13" VerticalAlignment="Center"/>
-                            <TextBlock Text=" استيراد" Foreground="#CBD5E1" FontSize="12" VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <TextBlock Text="{DynamicResource TD_003}" Foreground="{DynamicResource Brush.Slate.300}" FontSize="12"
+                                   VerticalAlignment="Center"/>
                     </Button>
                     <Button Command="{Binding AddNewTemplateCommand}"
                             Height="34" Padding="14,0" Cursor="Hand"
                             Template="{StaticResource BlueBtnTpl}" Margin="0,0,6,0">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="➕" FontSize="12" VerticalAlignment="Center"/>
-                            <TextBlock Text=" قالب جديد" Foreground="White" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <TextBlock Text="{DynamicResource TD_004}" Foreground="White" FontSize="12"
+                                   FontWeight="SemiBold" VerticalAlignment="Center"/>
                     </Button>
-
-                    <!-- Save with Smart Data button (header quick-save) -->
+                    <!-- Save button -->
                     <Button Command="{Binding SaveWithSmartDataCommand}"
                             Height="34" Padding="14,0" Cursor="Hand"
                             IsEnabled="{Binding HasTemplate}"
                             Template="{StaticResource GhostBtnTpl}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="💾" FontSize="13" VerticalAlignment="Center"/>
-                            <TextBlock Text=" حفظ" Foreground="#CBD5E1" FontSize="12" VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <TextBlock Text="{DynamicResource TD_005}" Foreground="{DynamicResource Brush.Slate.300}" FontSize="12"
+                                   VerticalAlignment="Center"/>
                     </Button>
                 </StackPanel>
             </Grid>
         </Border>
 
         <!-- ══════════════════════ STEPPER ══════════════════════ -->
-        <Border Grid.Row="1" Background="#1E293B"
-                BorderBrush="#334155" BorderThickness="0,0,0,1">
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Stretch">
+        <Border Grid.Row="1" Background="{DynamicResource Brush.Surface}"
+                BorderBrush="{DynamicResource Brush.Border.Light}" BorderThickness="0,0,0,1">
+            <!-- ── New numbered-circle stepper ────────────────────────────────
+                 Layout: one Grid row with alternating step/connector columns.
+                 Each step column contains a Button whose template shows:
+                   • A 28×28 circle (gray / blue-active / green-complete)
+                   • A short label below the circle
+                 Connector columns hold a 2×28 Rectangle that fills green
+                 as the upstream step is completed.
+            ─────────────────────────────────────────────────────────────── -->
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="76"/> <!-- 0 -->
+                    <ColumnDefinition Width="30"/> <!-- conn -->
+                    <ColumnDefinition Width="76"/> <!-- 1 -->
+                    <ColumnDefinition Width="30"/> <!-- conn -->
+                    <ColumnDefinition Width="76"/> <!-- 2 -->
+                    <ColumnDefinition Width="30"/> <!-- conn -->
+                    <ColumnDefinition Width="76"/> <!-- 3 -->
+                    <ColumnDefinition Width="30"/> <!-- conn -->
+                    <ColumnDefinition Width="76"/> <!-- 4 -->
+                    <ColumnDefinition Width="30"/> <!-- conn -->
+                    <ColumnDefinition Width="76"/> <!-- 5 -->
+                </Grid.ColumnDefinitions>
 
-                <!-- Step 0 — Design -->
-                <Button Style="{StaticResource StepBtn}"
-                        Command="{Binding GoToStepCommand}" CommandParameter="0">
-                    <Button.Background>
-                        <Binding Path="ActiveStep" Converter="{StaticResource StepBgConv}" ConverterParameter="0"/>
-                    </Button.Background>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="📄 " FontSize="13"/>
-                        <TextBlock FontSize="12">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Text"       Value="تصميم القالب"/>
-                                    <Setter Property="Foreground" Value="#94A3B8"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ActiveStep}" Value="0">
-                                            <Setter Property="Foreground" Value="White"/>
-                                            <Setter Property="FontWeight" Value="SemiBold"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </StackPanel>
+                <!-- ── Step 0: تصميم ─────────────────────── -->
+                <Button Grid.Column="0"
+                        Command="{Binding GoToStepCommand}" CommandParameter="0"
+                        BorderThickness="0" Cursor="Hand" Padding="0" Background="Transparent">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <StackPanel HorizontalAlignment="Center">
+                                <Border HorizontalAlignment="Center" Width="28" Height="28"
+                                        CornerRadius="14" Margin="0,0,0,4">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background"      Value="{DynamicResource Brush.Background}"/>
+                                            <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Border.Medium}"/>
+                                            <Setter Property="BorderThickness" Value="2"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="0">
+                                                    <Setter Property="Background"      Value="{DynamicResource Brush.Primary}"/>
+                                                    <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Primary}"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Step0Complete}" Value="True">
+                                                    <Setter Property="Background"      Value="{DynamicResource Brush.Success.Dark}"/>
+                                                    <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Success.Dark}"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               FontSize="11" FontWeight="Bold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text"       Value="1"/>
+                                                <Setter Property="Foreground"  Value="{DynamicResource Brush.Text.Tertiary}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ActiveStep}" Value="0">
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Step0Complete}" Value="True">
+                                                        <Setter Property="Text"      Value="&#x2713;"/>
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Border>
+                                <TextBlock HorizontalAlignment="Center" Text="{DynamicResource TD_006}" FontSize="10">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground"  Value="{DynamicResource Brush.Text.StepInactive}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="0">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.200}"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Step0Complete}" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Success}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </ControlTemplate>
+                    </Button.Template>
                 </Button>
 
-                <TextBlock Text="›" Foreground="#475569" FontSize="18"
-                           VerticalAlignment="Center" Margin="0,0,0,0"/>
+                <!-- Connector 0→1 -->
+                <Rectangle Grid.Column="1" Height="2" VerticalAlignment="Center" Margin="0,-8,0,0">
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
+                            <Setter Property="Fill" Value="{DynamicResource Brush.Surface.Elevated}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Step0Complete}" Value="True">
+                                    <Setter Property="Fill" Value="{DynamicResource Brush.Success.Dark}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
 
-                <!-- Step 1 — Paste -->
-                <Button Style="{StaticResource StepBtn}"
+                <!-- ── Step 1: لصق ──────────────────────── -->
+                <Button Grid.Column="2"
                         Command="{Binding GoToStepCommand}" CommandParameter="1"
-                        IsEnabled="{Binding HasTemplate}">
-                    <Button.Background>
-                        <Binding Path="ActiveStep" Converter="{StaticResource StepBgConv}" ConverterParameter="1"/>
-                    </Button.Background>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="📋 " FontSize="13"/>
-                        <TextBlock FontSize="12">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Text"       Value="لصق البيانات"/>
-                                    <Setter Property="Foreground" Value="#94A3B8"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ActiveStep}" Value="1">
-                                            <Setter Property="Foreground" Value="White"/>
-                                            <Setter Property="FontWeight" Value="SemiBold"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </StackPanel>
+                        IsEnabled="{Binding HasTemplate}"
+                        ToolTip="{DynamicResource TD_007}"
+                        ToolTipService.ShowOnDisabled="True"
+                        BorderThickness="0" Cursor="Hand" Padding="0" Background="Transparent">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <StackPanel HorizontalAlignment="Center">
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsEnabled,
+                                                         RelativeSource={RelativeSource AncestorType=Button}}"
+                                                         Value="False">
+                                                <Setter Property="Opacity" Value="0.4"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+                                <Border HorizontalAlignment="Center" Width="28" Height="28"
+                                        CornerRadius="14" Margin="0,0,0,4">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background"      Value="{DynamicResource Brush.Background}"/>
+                                            <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Border.Medium}"/>
+                                            <Setter Property="BorderThickness" Value="2"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="1">
+                                                    <Setter Property="Background"      Value="{DynamicResource Brush.Primary}"/>
+                                                    <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Primary}"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding SmartVars.HasPastedData}" Value="True">
+                                                    <Setter Property="Background"      Value="{DynamicResource Brush.Success.Dark}"/>
+                                                    <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Success.Dark}"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               FontSize="11" FontWeight="Bold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text"       Value="2"/>
+                                                <Setter Property="Foreground"  Value="{DynamicResource Brush.Text.Tertiary}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ActiveStep}" Value="1">
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding SmartVars.HasPastedData}" Value="True">
+                                                        <Setter Property="Text"      Value="&#x2713;"/>
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Border>
+                                <TextBlock HorizontalAlignment="Center" Text="{DynamicResource TD_008}" FontSize="10">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground"  Value="{DynamicResource Brush.Text.StepInactive}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="1">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.200}"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding SmartVars.HasPastedData}" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Success}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </ControlTemplate>
+                    </Button.Template>
                 </Button>
 
-                <TextBlock Text="›" Foreground="#475569" FontSize="18"
-                           VerticalAlignment="Center"/>
+                <!-- Connector 1→2 -->
+                <Rectangle Grid.Column="3" Height="2" VerticalAlignment="Center" Margin="0,-8,0,0">
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
+                            <Setter Property="Fill" Value="{DynamicResource Brush.Surface.Elevated}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SmartVars.HasPastedData}" Value="True">
+                                    <Setter Property="Fill" Value="{DynamicResource Brush.Success.Dark}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
 
-                <!-- Step 2 — Map -->
-                <Button Style="{StaticResource StepBtn}"
+                <!-- ── Step 2: ربط ──────────────────────── -->
+                <Button Grid.Column="4"
                         Command="{Binding GoToStepCommand}" CommandParameter="2"
-                        IsEnabled="{Binding SmartVars.HasPastedData}">
-                    <Button.Background>
-                        <Binding Path="ActiveStep" Converter="{StaticResource StepBgConv}" ConverterParameter="2"/>
-                    </Button.Background>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="🔗 " FontSize="13"/>
-                        <TextBlock FontSize="12">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Text"       Value="ربط المتغيرات"/>
-                                    <Setter Property="Foreground" Value="#94A3B8"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ActiveStep}" Value="2">
-                                            <Setter Property="Foreground" Value="White"/>
-                                            <Setter Property="FontWeight" Value="SemiBold"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </StackPanel>
+                        IsEnabled="{Binding SmartVars.HasPastedData}"
+                        ToolTip="{DynamicResource TD_009}"
+                        ToolTipService.ShowOnDisabled="True"
+                        BorderThickness="0" Cursor="Hand" Padding="0" Background="Transparent">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <StackPanel HorizontalAlignment="Center">
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsEnabled,
+                                                         RelativeSource={RelativeSource AncestorType=Button}}"
+                                                         Value="False">
+                                                <Setter Property="Opacity" Value="0.4"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+                                <Border HorizontalAlignment="Center" Width="28" Height="28"
+                                        CornerRadius="14" Margin="0,0,0,4">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background"      Value="{DynamicResource Brush.Background}"/>
+                                            <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Border.Medium}"/>
+                                            <Setter Property="BorderThickness" Value="2"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="2">
+                                                    <Setter Property="Background"      Value="{DynamicResource Brush.Primary}"/>
+                                                    <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Primary}"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="3">
+                                                    <Setter Property="Background"      Value="{DynamicResource Brush.Success.Dark}"/>
+                                                    <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Success.Dark}"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="4">
+                                                    <Setter Property="Background"      Value="{DynamicResource Brush.Success.Dark}"/>
+                                                    <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Success.Dark}"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="5">
+                                                    <Setter Property="Background"      Value="{DynamicResource Brush.Success.Dark}"/>
+                                                    <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Success.Dark}"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               FontSize="11" FontWeight="Bold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text"       Value="3"/>
+                                                <Setter Property="Foreground"  Value="{DynamicResource Brush.Text.Tertiary}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ActiveStep}" Value="2">
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ActiveStep}" Value="3">
+                                                        <Setter Property="Text"       Value="&#x2713;"/>
+                                                        <Setter Property="Foreground"  Value="White"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ActiveStep}" Value="4">
+                                                        <Setter Property="Text"       Value="&#x2713;"/>
+                                                        <Setter Property="Foreground"  Value="White"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ActiveStep}" Value="5">
+                                                        <Setter Property="Text"       Value="&#x2713;"/>
+                                                        <Setter Property="Foreground"  Value="White"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Border>
+                                <TextBlock HorizontalAlignment="Center" Text="{DynamicResource TD_010}" FontSize="10">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground"  Value="{DynamicResource Brush.Text.StepInactive}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="2">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.200}"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="3">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Success}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="4">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Success}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="5">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Success}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </ControlTemplate>
+                    </Button.Template>
                 </Button>
 
-                <TextBlock Text="›" Foreground="#475569" FontSize="18"
-                           VerticalAlignment="Center"/>
+                <!-- Connector 2→3 -->
+                <Rectangle Grid.Column="5" Height="2" VerticalAlignment="Center" Margin="0,-8,0,0">
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
+                            <Setter Property="Fill" Value="{DynamicResource Brush.Surface.Elevated}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveStep}" Value="3">
+                                    <Setter Property="Fill" Value="{DynamicResource Brush.Success.Dark}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ActiveStep}" Value="4">
+                                    <Setter Property="Fill" Value="{DynamicResource Brush.Success.Dark}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ActiveStep}" Value="5">
+                                    <Setter Property="Fill" Value="{DynamicResource Brush.Success.Dark}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
 
-                <!-- Step 3 — Images -->
-                <Button Style="{StaticResource StepBtn}"
+                <!-- ── Step 3: صور ──────────────────────── -->
+                <Button Grid.Column="6"
                         Command="{Binding GoToStepCommand}" CommandParameter="3"
-                        IsEnabled="{Binding SmartVars.HasPastedData}">
-                    <Button.Background>
-                        <Binding Path="ActiveStep" Converter="{StaticResource StepBgConv}" ConverterParameter="3"/>
-                    </Button.Background>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="🖼 " FontSize="13"/>
-                        <TextBlock FontSize="12">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Text"       Value="إدارة الصور"/>
-                                    <Setter Property="Foreground" Value="#94A3B8"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ActiveStep}" Value="3">
-                                            <Setter Property="Foreground" Value="White"/>
-                                            <Setter Property="FontWeight" Value="SemiBold"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </StackPanel>
+                        IsEnabled="{Binding SmartVars.HasPastedData}"
+                        ToolTip="{DynamicResource TD_009}"
+                        ToolTipService.ShowOnDisabled="True"
+                        BorderThickness="0" Cursor="Hand" Padding="0" Background="Transparent">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <StackPanel HorizontalAlignment="Center">
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsEnabled,
+                                                         RelativeSource={RelativeSource AncestorType=Button}}"
+                                                         Value="False">
+                                                <Setter Property="Opacity" Value="0.4"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+                                <Border HorizontalAlignment="Center" Width="28" Height="28"
+                                        CornerRadius="14" Margin="0,0,0,4">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background"      Value="{DynamicResource Brush.Background}"/>
+                                            <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Border.Medium}"/>
+                                            <Setter Property="BorderThickness" Value="2"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="3">
+                                                    <Setter Property="Background"      Value="{DynamicResource Brush.Primary}"/>
+                                                    <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Primary}"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="4">
+                                                    <Setter Property="Background"      Value="{DynamicResource Brush.Success.Dark}"/>
+                                                    <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Success.Dark}"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="5">
+                                                    <Setter Property="Background"      Value="{DynamicResource Brush.Success.Dark}"/>
+                                                    <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Success.Dark}"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               FontSize="11" FontWeight="Bold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text"       Value="4"/>
+                                                <Setter Property="Foreground"  Value="{DynamicResource Brush.Text.Tertiary}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ActiveStep}" Value="3">
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ActiveStep}" Value="4">
+                                                        <Setter Property="Text"       Value="&#x2713;"/>
+                                                        <Setter Property="Foreground"  Value="White"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ActiveStep}" Value="5">
+                                                        <Setter Property="Text"       Value="&#x2713;"/>
+                                                        <Setter Property="Foreground"  Value="White"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Border>
+                                <TextBlock HorizontalAlignment="Center" Text="{DynamicResource TD_011}" FontSize="10">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground"  Value="{DynamicResource Brush.Text.StepInactive}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="3">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.200}"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="4">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Success}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="5">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Success}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </ControlTemplate>
+                    </Button.Template>
                 </Button>
 
-                <TextBlock Text="›" Foreground="#475569" FontSize="18"
-                           VerticalAlignment="Center"/>
+                <!-- Connector 3→4 -->
+                <Rectangle Grid.Column="7" Height="2" VerticalAlignment="Center" Margin="0,-8,0,0">
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
+                            <Setter Property="Fill" Value="{DynamicResource Brush.Surface.Elevated}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveStep}" Value="4">
+                                    <Setter Property="Fill" Value="{DynamicResource Brush.Success.Dark}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ActiveStep}" Value="5">
+                                    <Setter Property="Fill" Value="{DynamicResource Brush.Success.Dark}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
 
-                <!-- Step 4 — Preview -->
-                <Button Style="{StaticResource StepBtn}"
+                <!-- ── Step 4: معاينة ─────────────────────── -->
+                <Button Grid.Column="8"
                         Command="{Binding GoToStepCommand}" CommandParameter="4"
-                        IsEnabled="{Binding SmartVars.HasPastedData}">
-                    <Button.Background>
-                        <Binding Path="ActiveStep" Converter="{StaticResource StepBgConv}" ConverterParameter="4"/>
-                    </Button.Background>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="👁 " FontSize="13"/>
-                        <TextBlock FontSize="12">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Text"       Value="معاينة"/>
-                                    <Setter Property="Foreground" Value="#94A3B8"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ActiveStep}" Value="4">
-                                            <Setter Property="Foreground" Value="White"/>
-                                            <Setter Property="FontWeight" Value="SemiBold"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </StackPanel>
+                        IsEnabled="{Binding SmartVars.HasPastedData}"
+                        ToolTip="{DynamicResource TD_012}"
+                        ToolTipService.ShowOnDisabled="True"
+                        BorderThickness="0" Cursor="Hand" Padding="0" Background="Transparent">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <StackPanel HorizontalAlignment="Center">
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsEnabled,
+                                                         RelativeSource={RelativeSource AncestorType=Button}}"
+                                                         Value="False">
+                                                <Setter Property="Opacity" Value="0.4"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+                                <Border HorizontalAlignment="Center" Width="28" Height="28"
+                                        CornerRadius="14" Margin="0,0,0,4">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background"      Value="{DynamicResource Brush.Background}"/>
+                                            <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Border.Medium}"/>
+                                            <Setter Property="BorderThickness" Value="2"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="4">
+                                                    <Setter Property="Background"      Value="{DynamicResource Brush.Primary}"/>
+                                                    <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Primary}"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="5">
+                                                    <Setter Property="Background"      Value="{DynamicResource Brush.Success.Dark}"/>
+                                                    <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Success.Dark}"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               FontSize="11" FontWeight="Bold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text"       Value="5"/>
+                                                <Setter Property="Foreground"  Value="{DynamicResource Brush.Text.Tertiary}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ActiveStep}" Value="4">
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ActiveStep}" Value="5">
+                                                        <Setter Property="Text"       Value="&#x2713;"/>
+                                                        <Setter Property="Foreground"  Value="White"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Border>
+                                <TextBlock HorizontalAlignment="Center" Text="{DynamicResource TD_013}" FontSize="10">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground"  Value="{DynamicResource Brush.Text.StepInactive}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="4">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.200}"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="5">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Success}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </ControlTemplate>
+                    </Button.Template>
                 </Button>
 
-                <TextBlock Text="›" Foreground="#475569" FontSize="18"
-                           VerticalAlignment="Center"/>
+                <!-- Connector 4→5 -->
+                <Rectangle Grid.Column="9" Height="2" VerticalAlignment="Center" Margin="0,-8,0,0">
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
+                            <Setter Property="Fill" Value="{DynamicResource Brush.Surface.Elevated}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveStep}" Value="5">
+                                    <Setter Property="Fill" Value="{DynamicResource Brush.Success.Dark}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
 
-                <!-- Step 5 — Export -->
-                <Button Style="{StaticResource StepBtn}"
+                <!-- ── Step 5: تصدير ─────────────────────── -->
+                <Button Grid.Column="10"
                         Command="{Binding GoToStepCommand}" CommandParameter="5"
-                        IsEnabled="{Binding SmartVars.HasPastedData}">
-                    <Button.Background>
-                        <Binding Path="ActiveStep" Converter="{StaticResource StepBgConv}" ConverterParameter="5"/>
-                    </Button.Background>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="✅ " FontSize="13"/>
-                        <TextBlock FontSize="12">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Text"       Value="فحص وتصدير"/>
-                                    <Setter Property="Foreground" Value="#94A3B8"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ActiveStep}" Value="5">
-                                            <Setter Property="Foreground" Value="White"/>
-                                            <Setter Property="FontWeight" Value="SemiBold"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </StackPanel>
+                        IsEnabled="{Binding SmartVars.HasPastedData}"
+                        ToolTip="{DynamicResource TD_014}"
+                        ToolTipService.ShowOnDisabled="True"
+                        BorderThickness="0" Cursor="Hand" Padding="0" Background="Transparent">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <StackPanel HorizontalAlignment="Center">
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsEnabled,
+                                                         RelativeSource={RelativeSource AncestorType=Button}}"
+                                                         Value="False">
+                                                <Setter Property="Opacity" Value="0.4"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+                                <Border HorizontalAlignment="Center" Width="28" Height="28"
+                                        CornerRadius="14" Margin="0,0,0,4">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background"      Value="{DynamicResource Brush.Background}"/>
+                                            <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Border.Medium}"/>
+                                            <Setter Property="BorderThickness" Value="2"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="5">
+                                                    <Setter Property="Background"      Value="{DynamicResource Brush.Primary}"/>
+                                                    <Setter Property="BorderBrush"     Value="{DynamicResource Brush.Primary}"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               FontSize="11" FontWeight="Bold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text"       Value="6"/>
+                                                <Setter Property="Foreground"  Value="{DynamicResource Brush.Text.Tertiary}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ActiveStep}" Value="5">
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Border>
+                                <TextBlock HorizontalAlignment="Center" Text="{DynamicResource TD_015}" FontSize="10">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground"  Value="{DynamicResource Brush.Text.StepInactive}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ActiveStep}" Value="5">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Slate.200}"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </ControlTemplate>
+                    </Button.Template>
                 </Button>
 
-            </StackPanel>
+            </Grid>
         </Border>
 
         <!-- ══════════════════════ BODY (3 columns) — Step 0 only ═══════════ -->
@@ -453,8 +931,8 @@
             </Grid.ColumnDefinitions>
 
             <!-- ─────────────── LEFT: Library ─────────────── -->
-            <Border Grid.Column="0" Background="#1E293B"
-                    BorderBrush="#334155" BorderThickness="0,0,1,0">
+            <Border Grid.Column="0" Background="{DynamicResource Brush.Surface}"
+                    BorderBrush="{DynamicResource Brush.Border.Light}" BorderThickness="0,0,1,0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -465,7 +943,7 @@
                     </Grid.RowDefinitions>
 
                     <!-- Section title -->
-                    <TextBlock Grid.Row="0" Text="📚 المكتبة" Foreground="White"
+                    <TextBlock Grid.Row="0" Text="{DynamicResource TD_016}" Foreground="White"
                                FontSize="13" FontWeight="SemiBold" Margin="14,14,14,8"/>
 
                     <!-- Search -->
@@ -476,11 +954,11 @@
                              Tag="بحث في القوالب...">
                         <TextBox.Template>
                             <ControlTemplate TargetType="TextBox">
-                                <Border Background="#0F172A" BorderBrush="#334155"
+                                <Border Background="{DynamicResource Brush.Background}" BorderBrush="{DynamicResource Brush.Border.Light}"
                                         BorderThickness="1" CornerRadius="6" Padding="8,0">
                                     <Grid>
                                         <TextBlock Text="{TemplateBinding Tag}"
-                                                   Foreground="#475569" FontSize="11"
+                                                   Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="11"
                                                    VerticalAlignment="Center" Margin="0">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
@@ -495,7 +973,7 @@
                                         </TextBlock>
                                         <ScrollViewer x:Name="PART_ContentHost"
                                                       VerticalAlignment="Center"
-                                                      Foreground="#E2E8F0" FontSize="12"/>
+                                                      Foreground="{DynamicResource Brush.Slate.200}" FontSize="12"/>
                                     </Grid>
                                 </Border>
                             </ControlTemplate>
@@ -518,23 +996,24 @@
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0">
-                                        <TextBlock Text="{Binding Name}" Foreground="#E2E8F0"
+                                <Grid Margin="0,3">
+                                    <StackPanel>
+                                        <!-- Template name -->
+                                        <TextBlock Text="{Binding Name}" Foreground="{DynamicResource Brush.Slate.200}"
                                                    FontSize="12" FontWeight="SemiBold"
                                                    TextTrimming="CharacterEllipsis"/>
-                                        <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                            <Border Background="#334155" CornerRadius="3"
+                                        <!-- Meta row: category · pages · date -->
+                                        <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                                            <Border Background="#1E3A8A" CornerRadius="3"
                                                     Padding="5,1">
                                                 <TextBlock Text="{Binding Category}"
-                                                           Foreground="#64748B" FontSize="9"/>
+                                                           Foreground="#93C5FD" FontSize="9"/>
                                             </Border>
-                                            <TextBlock Text="{Binding PageCount, StringFormat=' · {0}ص'}"
-                                                       Foreground="#475569" FontSize="9"
+                                            <TextBlock Text="{Binding PageCount, StringFormat=' · {0} ص'}"
+                                                       Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="9"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding ModifiedAt, StringFormat=' · {0:dd/MM/yy}'}"
+                                                       Foreground="#334155" FontSize="9"
                                                        VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </StackPanel>
@@ -554,7 +1033,7 @@
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="b" Property="Background" Value="#334155"/>
+                                                    <Setter TargetName="b" Property="Background" Value="{DynamicResource Brush.Surface.Elevated}"/>
                                                 </Trigger>
                                                 <Trigger Property="IsSelected" Value="True">
                                                     <Setter TargetName="b" Property="Background" Value="#1E3A8A"/>
@@ -579,17 +1058,19 @@
                                 Height="30" Cursor="Hand"
                                 Template="{StaticResource GhostBtnTpl}" Padding="4,0">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="⧉" Foreground="#94A3B8" FontSize="13" VerticalAlignment="Center"/>
-                                <TextBlock Text=" نسخ" Foreground="#94A3B8" FontSize="11" VerticalAlignment="Center"/>
+                                <TextBlock Text="⧉" Foreground="{DynamicResource Brush.Text.Secondary}" FontSize="13" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource TD_017}" Foreground="{DynamicResource Brush.Text.Secondary}" FontSize="11" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                         <Button Grid.Column="2"
                                 Command="{Binding DeleteTemplateCommand}"
                                 Height="30" Cursor="Hand"
-                                Template="{StaticResource RedBtnTpl}" Padding="4,0">
+                                Template="{StaticResource RedBtnTpl}" Padding="8,0"
+                                ToolTip="{DynamicResource TD_DelTemplateTip}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="🗑️" FontSize="12" VerticalAlignment="Center"/>
-                                <TextBlock Text=" حذف" Foreground="White" FontSize="11" VerticalAlignment="Center"/>
+                                <TextBlock Text="🗑️" Style="{StaticResource BtnGlyph}"/>
+                                <TextBlock Text="{DynamicResource TD_DelTemplate}"
+                                           Foreground="White" Style="{StaticResource BtnLabel}"/>
                             </StackPanel>
                         </Button>
                     </Grid>
@@ -605,8 +1086,8 @@
                 </Grid.RowDefinitions>
 
                 <!-- Canvas toolbar (hidden when no template) -->
-                <Border Grid.Row="0" Background="#1E293B"
-                        BorderBrush="#334155" BorderThickness="0,0,0,1"
+                <Border Grid.Row="0" Background="{DynamicResource Brush.Surface}"
+                        BorderBrush="{DynamicResource Brush.Border.Light}" BorderThickness="0,0,0,1"
                         Padding="12,8">
                     <Border.Style>
                         <Style TargetType="Border">
@@ -621,21 +1102,38 @@
 
                         <!-- Page size preset -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,8,0">
-                            <TextBlock Text="الحجم:" Foreground="#64748B" FontSize="11"
+                            <TextBlock Text="{DynamicResource TD_019}" Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="11"
                                        VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <ComboBox ItemsSource="{Binding PageSizePresets}"
                                       SelectedItem="{Binding SelectedPageSize}"
                                       Style="{StaticResource DarkCombo}"
-                                      Width="100" Height="30"/>
+                                      Width="110" Height="30"/>
+
+                            <!-- Custom width × height (shown only when "مخصص" is selected) -->
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+                                        Margin="6,0,0,0"
+                                        Visibility="{Binding IsCustomPageSize, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBox Text="{Binding CustomWidthMm, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource DarkBox}" Width="52" Height="30"
+                                         ToolTip="{DynamicResource TD_020}"/>
+                                <TextBlock Text="×" Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="13"
+                                           VerticalAlignment="Center" Margin="4,0"/>
+                                <TextBox Text="{Binding CustomHeightMm, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource DarkBox}" Width="52" Height="30"
+                                         ToolTip="{DynamicResource TD_021}"/>
+                                <TextBlock Text="{DynamicResource TD_022}" Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="10"
+                                           VerticalAlignment="Center" Margin="3,0,0,0"/>
+                            </StackPanel>
+
                             <Button Command="{Binding ApplyPageSizeCommand}"
                                     Height="30" Padding="8,0" Margin="4,0,0,0"
                                     Cursor="Hand" Template="{StaticResource GhostBtnTpl}">
-                                <TextBlock Text="تطبيق" Foreground="#94A3B8" FontSize="11"/>
+                                <TextBlock Text="{DynamicResource TD_023}" Foreground="{DynamicResource Brush.Text.Secondary}" FontSize="11"/>
                             </Button>
                         </StackPanel>
 
                         <!-- Separator -->
-                        <Border Width="1" Height="20" Background="#334155"
+                        <Border Width="1" Height="20" Background="{DynamicResource Brush.Surface.Elevated}"
                                 VerticalAlignment="Center" Margin="4,0"/>
 
                         <!-- Background upload -->
@@ -643,17 +1141,17 @@
                                 Cursor="Hand" Template="{StaticResource GhostBtnTpl}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="🖼️" FontSize="13" VerticalAlignment="Center"/>
-                                <TextBlock Text=" خلفية" Foreground="#94A3B8" FontSize="11" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource TD_024}" Foreground="{DynamicResource Brush.Text.Secondary}" FontSize="11" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                         <Button Command="{Binding RemoveBackgroundCommand}"
                                 Height="30" Padding="8,0" Margin="0,0,6,0"
                                 Cursor="Hand" Template="{StaticResource GhostBtnTpl}">
-                            <TextBlock Text="× حذف الخلفية" Foreground="#64748B" FontSize="11"/>
+                            <TextBlock Text="{DynamicResource TD_025}" Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="11"/>
                         </Button>
 
                         <!-- Separator -->
-                        <Border Width="1" Height="20" Background="#334155"
+                        <Border Width="1" Height="20" Background="{DynamicResource Brush.Surface.Elevated}"
                                 VerticalAlignment="Center" Margin="4,0"/>
 
                         <!-- Add / Delete slot (generic) -->
@@ -662,96 +1160,226 @@
                                 Cursor="Hand" Template="{StaticResource BlueBtnTpl}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="➕" FontSize="12" VerticalAlignment="Center"/>
-                                <TextBlock Text=" حقل" Foreground="White" FontSize="11" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource TD_026}" Foreground="White" FontSize="11" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                         <Button Command="{Binding DeleteSlotCommand}"
                                 Height="30" Padding="8,0" Margin="0,0,4,0"
-                                Cursor="Hand" Template="{StaticResource GhostBtnTpl}">
+                                Cursor="Hand" Template="{StaticResource GhostBtnTpl}"
+                                ToolTip="{DynamicResource TD_DelFieldTip}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="🗑️" FontSize="12" VerticalAlignment="Center"/>
-                                <TextBlock Text=" حذف" Foreground="#EF4444" FontSize="11" VerticalAlignment="Center"/>
+                                <TextBlock Text="🗑️" Style="{StaticResource BtnGlyph}"/>
+                                <TextBlock Text="{DynamicResource TD_DelField}"
+                                           Foreground="{DynamicResource Brush.Error}"
+                                           Style="{StaticResource BtnLabel}"/>
                             </StackPanel>
                         </Button>
 
                         <!-- Separator -->
-                        <Border Width="1" Height="20" Background="#334155"
+                        <Border Width="1" Height="20" Background="{DynamicResource Brush.Surface.Elevated}"
                                 VerticalAlignment="Center" Margin="4,0"/>
 
                         <!-- ── Field-type toolbar ─────────────────────────────────────────
                              Each button adds a slot of the matching type directly to canvas.
                              typeStr maps to SlotDataType enum names in AddFieldOfTypeCommand.
                         ── -->
-                        <TextBlock Text="أضف:" Foreground="#64748B" FontSize="11"
+                        <TextBlock Text="{DynamicResource TD_027}" Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="11"
                                    VerticalAlignment="Center" Margin="6,0,6,0"/>
 
                         <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Text"
-                                Style="{StaticResource FieldTypeBtn}" ToolTip="متغير نصي">
+                                Style="{StaticResource FieldTypeBtn}" ToolTip="{DynamicResource TD_028}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="ن" Foreground="#3B82F6" FontWeight="Bold" FontSize="11"/>
-                                <TextBlock Text=" نص" FontSize="11"/>
+                                <TextBlock Text="{DynamicResource TD_029}" Foreground="#3B82F6" Style="{StaticResource BtnGlyph}"/>
+                                <TextBlock Text="{DynamicResource TD_030}" Style="{StaticResource BtnLabel}"/>
                             </StackPanel>
                         </Button>
 
                         <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Number"
-                                Style="{StaticResource FieldTypeBtn}" ToolTip="رقم / كود">
+                                Style="{StaticResource FieldTypeBtn}" ToolTip="{DynamicResource TD_031}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="#" Foreground="#10B981" FontWeight="Bold" FontSize="11"/>
-                                <TextBlock Text=" رقم" FontSize="11"/>
+                                <TextBlock Text="#" Foreground="{DynamicResource Brush.Success}" Style="{StaticResource BtnGlyph}"/>
+                                <TextBlock Text="{DynamicResource TD_032}" Style="{StaticResource BtnLabel}"/>
                             </StackPanel>
                         </Button>
 
                         <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Date"
-                                Style="{StaticResource FieldTypeBtn}" ToolTip="تاريخ">
+                                Style="{StaticResource FieldTypeBtn}" ToolTip="{DynamicResource TD_033}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="ت" Foreground="#F59E0B" FontWeight="Bold" FontSize="11"/>
-                                <TextBlock Text=" تاريخ" FontSize="11"/>
+                                <TextBlock Text="{DynamicResource TD_034}" Foreground="{DynamicResource Brush.Warning}" Style="{StaticResource BtnGlyph}"/>
+                                <TextBlock Text="{DynamicResource TD_035}" Style="{StaticResource BtnLabel}"/>
                             </StackPanel>
                         </Button>
 
                         <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Image"
-                                Style="{StaticResource FieldTypeBtn}" ToolTip="متغير صورة">
+                                Style="{StaticResource FieldTypeBtn}" ToolTip="{DynamicResource TD_036}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="ص" Foreground="#8B5CF6" FontWeight="Bold" FontSize="11"/>
-                                <TextBlock Text=" صورة" FontSize="11"/>
+                                <TextBlock Text="{DynamicResource TD_037}" Foreground="#8B5CF6" Style="{StaticResource BtnGlyph}"/>
+                                <TextBlock Text="{DynamicResource TD_038}" Style="{StaticResource BtnLabel}"/>
                             </StackPanel>
                         </Button>
 
                         <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="QrCode"
-                                Style="{StaticResource FieldTypeBtn}" ToolTip="QR كود">
+                                Style="{StaticResource FieldTypeBtn}" ToolTip="{DynamicResource TD_039}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="QR" Foreground="#EF4444" FontWeight="Bold" FontSize="11"/>
+                                <TextBlock Text="QR" Foreground="{DynamicResource Brush.Error}" FontWeight="Bold" FontSize="11"/>
                             </StackPanel>
                         </Button>
 
                         <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Barcode"
-                                Style="{StaticResource FieldTypeBtn}" ToolTip="باركود">
+                                Style="{StaticResource FieldTypeBtn}" ToolTip="{DynamicResource TD_040}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="▌▌" Foreground="#EF4444" FontWeight="Bold" FontSize="11"/>
-                                <TextBlock Text=" باركود" FontSize="11"/>
+                                <TextBlock Text="▌▌" Foreground="{DynamicResource Brush.Error}" Style="{StaticResource BtnGlyph}"/>
+                                <TextBlock Text="{DynamicResource TD_041}" Style="{StaticResource BtnLabel}"/>
                             </StackPanel>
                         </Button>
 
                         <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Counter"
-                                Style="{StaticResource FieldTypeBtn}" ToolTip="ترقيم تلقائي">
+                                Style="{StaticResource FieldTypeBtn}" ToolTip="{DynamicResource TD_042}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="١٢" Foreground="#06B6D4" FontWeight="Bold" FontSize="11"/>
-                                <TextBlock Text=" مسلسل" FontSize="11"/>
+                                <TextBlock Text="{DynamicResource TD_043}" Foreground="#06B6D4" Style="{StaticResource BtnGlyph}"/>
+                                <TextBlock Text="{DynamicResource TD_044}" Style="{StaticResource BtnLabel}"/>
                             </StackPanel>
                         </Button>
+
+                        <!-- Separator -->
+                        <Border Width="1" Height="20" Background="{DynamicResource Brush.Surface.Elevated}"
+                                VerticalAlignment="Center" Margin="6,0"/>
+
+                        <!-- ── Zoom controls ──────────────────────────────────── -->
+                        <TextBlock Text="{DynamicResource TD_045}" Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="11"
+                                   VerticalAlignment="Center" Margin="4,0,6,0"/>
+                        <Button Command="{Binding ZoomOutCommand}"
+                                Style="{StaticResource ZoomBtn}" Margin="0,0,3,0"
+                                ToolTip="{DynamicResource TD_046}">
+                            <TextBlock Text="&#x2212;" Foreground="{DynamicResource Brush.Slate.300}" FontSize="14" FontWeight="Bold"/>
+                        </Button>
+                        <Border Background="{DynamicResource Brush.Background}" BorderBrush="{DynamicResource Brush.Border.Light}" BorderThickness="1"
+                                CornerRadius="4" Padding="8,0" Height="28" Margin="0,0,3,0"
+                                ToolTip="{Binding ZoomBoostLabel}">
+                            <TextBlock Text="{Binding ZoomBoostLabel}" Foreground="{DynamicResource Brush.Slate.200}"
+                                       FontSize="11" VerticalAlignment="Center"
+                                       MinWidth="36" TextAlignment="Center"/>
+                        </Border>
+                        <Button Command="{Binding ZoomInCommand}"
+                                Style="{StaticResource ZoomBtn}" Margin="0,0,3,0"
+                                ToolTip="{DynamicResource TD_047}">
+                            <TextBlock Text="+" Foreground="{DynamicResource Brush.Slate.300}" FontSize="14" FontWeight="Bold"/>
+                        </Button>
+                        <Button Click="BtnFit_Click"
+                                Height="28" Padding="8,0" Cursor="Hand"
+                                Template="{StaticResource GhostBtnTpl}"
+                                ToolTip="{DynamicResource TD_048}">
+                            <TextBlock Text="{DynamicResource TD_049}" Foreground="{DynamicResource Brush.Text.Secondary}" FontSize="11"/>
+                        </Button>
+
+                        <!-- Separator -->
+                        <Border Width="1" Height="20" Background="{DynamicResource Brush.Surface.Elevated}"
+                                VerticalAlignment="Center" Margin="6,0"/>
+
+                        <!-- Undo / Redo -->
+                        <Button Command="{Binding UndoCommand}"
+                                Style="{StaticResource ZoomBtn}" Margin="0,0,3,0"
+                                ToolTip="{DynamicResource TD_050}" IsEnabled="{Binding CanUndo}">
+                            <TextBlock Text="↩" Foreground="{DynamicResource Brush.Slate.300}" FontSize="14"/>
+                        </Button>
+                        <Button Command="{Binding RedoCommand}"
+                                Style="{StaticResource ZoomBtn}" Margin="0,0,3,0"
+                                ToolTip="{DynamicResource TD_051}" IsEnabled="{Binding CanRedo}">
+                            <TextBlock Text="↪" Foreground="{DynamicResource Brush.Slate.300}" FontSize="14"/>
+                        </Button>
+
+                        <!-- Separator -->
+                        <Border Width="1" Height="20" Background="{DynamicResource Brush.Surface.Elevated}"
+                                VerticalAlignment="Center" Margin="6,0"/>
+
+                        <!-- Grid snap -->
+                        <CheckBox IsChecked="{Binding IsSnapEnabled}"
+                                  Foreground="{DynamicResource Brush.Slate.300}" FontSize="11"
+                                  Content="{DynamicResource TD_052}" Margin="0,0,4,0"
+                                  VerticalAlignment="Center"
+                                  ToolTip="{DynamicResource TD_053}"/>
+                        <TextBox Text="{Binding GridSizeMm, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource DarkBox}"
+                                 Width="40" Height="28"
+                                 ToolTip="{DynamicResource TD_054}"
+                                 Visibility="{Binding IsSnapEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <TextBlock Text="{DynamicResource TD_022}" Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="10"
+                                   VerticalAlignment="Center" Margin="3,0,0,0"
+                                   Visibility="{Binding IsSnapEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                        <!-- ── Alignment toolbar (visible when multi-select) ──── -->
+                        <Border Width="1" Height="20" Background="{DynamicResource Brush.Surface.Elevated}"
+                                VerticalAlignment="Center" Margin="6,0"
+                                Visibility="{Binding HasMultiSelection, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                        <StackPanel Orientation="Horizontal"
+                                    Visibility="{Binding HasMultiSelection, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="{DynamicResource TD_055}" Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="11"
+                                       VerticalAlignment="Center" Margin="0,0,5,0"/>
+
+                            <Button Command="{Binding AlignSlotsLeftCommand}"
+                                    Style="{StaticResource ZoomBtn}" Margin="0,0,2,0"
+                                    ToolTip="{DynamicResource TD_056}">
+                                <TextBlock Text="⫷" Foreground="{DynamicResource Brush.Slate.300}" FontSize="13"/>
+                            </Button>
+                            <Button Command="{Binding AlignSlotsCenterHCommand}"
+                                    Style="{StaticResource ZoomBtn}" Margin="0,0,2,0"
+                                    ToolTip="{DynamicResource TD_057}">
+                                <TextBlock Text="⫼" Foreground="{DynamicResource Brush.Slate.300}" FontSize="13"/>
+                            </Button>
+                            <Button Command="{Binding AlignSlotsRightCommand}"
+                                    Style="{StaticResource ZoomBtn}" Margin="0,0,2,0"
+                                    ToolTip="{DynamicResource TD_058}">
+                                <TextBlock Text="⫸" Foreground="{DynamicResource Brush.Slate.300}" FontSize="13"/>
+                            </Button>
+                            <Button Command="{Binding AlignSlotsTopCommand}"
+                                    Style="{StaticResource ZoomBtn}" Margin="0,0,2,0"
+                                    ToolTip="{DynamicResource TD_059}">
+                                <TextBlock Text="⏶" Foreground="{DynamicResource Brush.Slate.300}" FontSize="13"/>
+                            </Button>
+                            <Button Command="{Binding AlignSlotsCenterVCommand}"
+                                    Style="{StaticResource ZoomBtn}" Margin="0,0,2,0"
+                                    ToolTip="{DynamicResource TD_060}">
+                                <TextBlock Text="⏸" Foreground="{DynamicResource Brush.Slate.300}" FontSize="13" RenderTransformOrigin="0.5,0.5">
+                                    <TextBlock.RenderTransform><RotateTransform Angle="90"/></TextBlock.RenderTransform>
+                                </TextBlock>
+                            </Button>
+                            <Button Command="{Binding AlignSlotsBottomCommand}"
+                                    Style="{StaticResource ZoomBtn}" Margin="0,0,2,0"
+                                    ToolTip="{DynamicResource TD_061}">
+                                <TextBlock Text="⏷" Foreground="{DynamicResource Brush.Slate.300}" FontSize="13"/>
+                            </Button>
+
+                            <Border Width="1" Height="16" Background="{DynamicResource Brush.Surface.Elevated}"
+                                    VerticalAlignment="Center" Margin="4,0"/>
+
+                            <Button Command="{Binding DistributeSlotsHCommand}"
+                                    Style="{StaticResource ZoomBtn}" Margin="0,0,2,0"
+                                    ToolTip="{DynamicResource TD_062}">
+                                <TextBlock Text="⫦" Foreground="#38BDF8" FontSize="13"/>
+                            </Button>
+                            <Button Command="{Binding DistributeSlotsVCommand}"
+                                    Style="{StaticResource ZoomBtn}" Margin="0,0,2,0"
+                                    ToolTip="{DynamicResource TD_063}">
+                                <TextBlock Text="⫩" Foreground="#38BDF8" FontSize="13"/>
+                            </Button>
+                        </StackPanel>
 
                     </WrapPanel>
                 </Border>
 
                 <!-- Canvas area -->
                 <ScrollViewer Grid.Row="1"
+                              x:Name="CanvasScrollViewer"
                               HorizontalScrollBarVisibility="Auto"
                               VerticalScrollBarVisibility="Auto"
-                              Background="#0F172A">
+                              Background="{DynamicResource Brush.Background}"
+                              PreviewMouseWheel="CanvasScrollViewer_PreviewMouseWheel">
                   <Grid>
 
                     <!-- Empty state -->
-                    <TextBlock Text="← اختر قالباً من المكتبة أو أنشئ قالباً جديداً"
+                    <TextBlock Text="{DynamicResource TD_064}"
+                               FlowDirection="LeftToRight"
                                Foreground="#334155" FontSize="15"
                                HorizontalAlignment="Center" VerticalAlignment="Center"
                                Margin="0,80,0,0">
@@ -767,9 +1395,15 @@
                         </TextBlock.Style>
                     </TextBlock>
 
-                    <!-- Page Viewbox (only when template loaded) -->
+                    <!-- Page Viewbox (only when template loaded).
+                         VerticalAlignment must be Stretch: with Top the Viewbox is
+                         measured against its content's own size instead of the space
+                         available, so Stretch="Uniform" had nothing to scale to and
+                         the artboard sat at natural size in the middle of a large
+                         empty canvas. It also made the neighbouring comment untrue —
+                         ZoomBoost 1.0 was 100%, not fit-to-window. -->
                     <Viewbox Stretch="Uniform" Margin="24"
-                             HorizontalAlignment="Center" VerticalAlignment="Top">
+                             HorizontalAlignment="Center" VerticalAlignment="Stretch">
                         <Viewbox.Style>
                             <Style TargetType="Viewbox">
                                 <Setter Property="Visibility" Value="Visible"/>
@@ -782,8 +1416,16 @@
                         </Viewbox.Style>
 
                         <!-- Page surface -->
-                        <Grid Width="{Binding CanvasWidthPt}"
-                              Height="{Binding CanvasHeightPt}">
+                        <Grid Width="{Binding CanvasWidthDip}"
+                              Height="{Binding CanvasHeightDip}">
+
+                            <!-- Zoom: applied via LayoutTransform so the Viewbox
+                                 fit-scaling and user zoom stack independently.
+                                 ZoomBoost=1.0 = fit-to-window; 1.25 = 25% larger, etc. -->
+                            <Grid.LayoutTransform>
+                                <ScaleTransform ScaleX="{Binding ZoomBoost}"
+                                                ScaleY="{Binding ZoomBoost}"/>
+                            </Grid.LayoutTransform>
 
                             <!-- Drop shadow -->
                             <Grid.Effect>
@@ -801,23 +1443,29 @@
                                    HorizontalAlignment="Stretch"
                                    VerticalAlignment="Stretch"/>
 
-                            <!-- Slots canvas (ListBox with Canvas panel) -->
-                            <ListBox ItemsSource="{Binding CanvasSlots}"
+                            <!-- Slots canvas (ListBox with Canvas panel)
+                                 x:Name="SlotsListBox" used by code-behind drag handler. -->
+                            <ListBox x:Name="SlotsListBox"
+                                     ItemsSource="{Binding CanvasSlots}"
                                      SelectedItem="{Binding SelectedCanvasSlot, Mode=TwoWay}"
                                      Background="Transparent"
                                      BorderThickness="0"
-                                     Width="{Binding CanvasWidthPt,
+                                     Width="{Binding CanvasWidthDip,
                                              RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                     Height="{Binding CanvasHeightPt,
+                                     Height="{Binding CanvasHeightDip,
                                               RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      HorizontalContentAlignment="Stretch"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                     ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                     ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                     PreviewMouseLeftButtonDown="SlotsListBox_PreviewMouseLeftButtonDown"
+                                     MouseMove="SlotsListBox_MouseMove"
+                                     MouseLeftButtonUp="SlotsListBox_MouseLeftButtonUp"
+                                     LostMouseCapture="SlotsListBox_LostMouseCapture">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <Canvas Width="{Binding DataContext.CanvasWidthPt,
+                                        <Canvas Width="{Binding DataContext.CanvasWidthDip,
                                                         RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                Height="{Binding DataContext.CanvasHeightPt,
+                                                Height="{Binding DataContext.CanvasHeightDip,
                                                          RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                                     </ItemsPanelTemplate>
                                 </ListBox.ItemsPanel>
@@ -835,7 +1483,12 @@
                                                             BorderBrush="{Binding BorderColor}"
                                                             BorderThickness="1.5"
                                                             Background="{Binding FillColor}"
-                                                            Cursor="Hand">
+                                                            Opacity="{Binding OpacityValue}"
+                                                            RenderTransformOrigin="0.5,0.5"
+                                                            Cursor="SizeAll">
+                                                        <Border.RenderTransform>
+                                                            <RotateTransform Angle="{Binding RotationAngle}"/>
+                                                        </Border.RenderTransform>
                                                         <Grid Margin="2,1">
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="Auto"/>
@@ -864,9 +1517,15 @@
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsSelected" Value="True">
                                                             <Setter TargetName="slotBorder" Property="BorderThickness" Value="2"/>
-                                                            <Setter TargetName="slotBorder" Property="BorderBrush"     Value="#F59E0B"/>
+                                                            <Setter TargetName="slotBorder" Property="BorderBrush"     Value="{DynamicResource Brush.Warning}"/>
                                                             <Setter TargetName="slotBorder" Property="Background"      Value="#33F59E0B"/>
                                                         </Trigger>
+                                                        <!-- Multi-select: sky-blue dashed border -->
+                                                        <DataTrigger Binding="{Binding IsMultiSelected}" Value="True">
+                                                            <Setter TargetName="slotBorder" Property="BorderThickness" Value="2"/>
+                                                            <Setter TargetName="slotBorder" Property="BorderBrush"     Value="#38BDF8"/>
+                                                            <Setter TargetName="slotBorder" Property="Background"      Value="#1938BDF8"/>
+                                                        </DataTrigger>
                                                         <Trigger Property="IsMouseOver" Value="True">
                                                             <Setter TargetName="slotBorder" Property="BorderThickness" Value="2"/>
                                                         </Trigger>
@@ -882,7 +1541,7 @@
                                     <ControlTemplate TargetType="ListBox">
                                         <Grid>
                                             <ItemsPresenter/>
-                                            <TextBlock Text="الصفحة فارغة — اضغط &quot;حقل جديد&quot; للبدء"
+                                            <TextBlock Text="{DynamicResource TD_065}"
                                                        Foreground="#CBD5E133" FontSize="10"
                                                        HorizontalAlignment="Center"
                                                        VerticalAlignment="Center">
@@ -903,14 +1562,29 @@
                                     </ControlTemplate>
                                 </ListBox.Template>
                             </ListBox>
+
+                            <!-- Resize handles overlay — code-behind places 8 Border handles here.
+                                 Lives on top of SlotsListBox in the same page Grid so it shares
+                                 the same coordinate space (page-pts) as the slots.
+                                 IMPORTANT: Background must NOT be set (leave null / default).
+                                 A "Transparent" SolidColorBrush makes the Canvas absorb all mouse
+                                 events and blocks the SlotsListBox drag handlers below.
+                                 With null background the Canvas passes through hits to SlotsListBox
+                                 while its white-background Border children (the handles) still
+                                 receive mouse events normally. -->
+                            <Canvas x:Name="ResizeHandleCanvas"
+                                    Width="{Binding CanvasWidthDip,
+                                            RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Height="{Binding CanvasHeightDip,
+                                             RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                         </Grid>
                     </Viewbox>
                   </Grid>
                 </ScrollViewer>
 
                 <!-- Page navigation (hidden when no template loaded) -->
-                <Border Grid.Row="2" Background="#1E293B"
-                        BorderBrush="#334155" BorderThickness="0,1,0,0"
+                <Border Grid.Row="2" Background="{DynamicResource Brush.Surface}"
+                        BorderBrush="{DynamicResource Brush.Border.Light}" BorderThickness="0,1,0,0"
                         Padding="16,8">
                     <Border.Style>
                         <Style TargetType="Border">
@@ -922,38 +1596,67 @@
                         </Style>
                     </Border.Style>
                     <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/> <!-- Canvas status -->
+                            <RowDefinition Height="Auto"/> <!-- Page nav      -->
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Command="{Binding PreviousPageCommand}"
+
+                        <!-- Canvas status (spans full width, row 0) -->
+                        <TextBlock Grid.Row="0" Grid.ColumnSpan="3"
+                                   Text="{Binding CanvasStatusText}"
+                                   Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="10"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,5"/>
+
+                        <!-- Page navigation (row 1) — prev | counter | next | + | × -->
+                        <Button Grid.Row="1" Grid.Column="0"
+                                Command="{Binding PreviousPageCommand}"
                                 Width="30" Height="30" Cursor="Hand"
                                 Template="{StaticResource GhostBtnTpl}" Padding="0">
                             <TextBlock Text="▶" Foreground="White" FontSize="11"/>
                         </Button>
-                        <TextBlock Grid.Column="1" HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   Foreground="#64748B" FontSize="12">
-                            <Run Text="صفحة "/>
+                        <TextBlock Grid.Row="1" Grid.Column="1"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="12">
+                            <Run Text="{DynamicResource TD_066}"/>
                             <Run Text="{Binding CurrentPageDisplayIndex, Mode=OneWay}"
-                                 Foreground="#CBD5E1" FontWeight="SemiBold"/>
-                            <Run Text=" من "/>
-                            <Run Text="{Binding TotalPages}"
-                                 Foreground="#CBD5E1" FontWeight="SemiBold"/>
+                                 Foreground="{DynamicResource Brush.Slate.300}" FontWeight="SemiBold"/>
+                            <Run Text="{DynamicResource TD_067}"/>
+                            <Run Text="{Binding TotalPages, Mode=OneWay}"
+                                 Foreground="{DynamicResource Brush.Slate.300}" FontWeight="SemiBold"/>
                         </TextBlock>
-                        <Button Grid.Column="2" Command="{Binding NextPageCommand}"
-                                Width="30" Height="30" Cursor="Hand"
-                                Template="{StaticResource GhostBtnTpl}" Padding="0">
-                            <TextBlock Text="◀" Foreground="White" FontSize="11"/>
-                        </Button>
+                        <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
+                            <Button Command="{Binding NextPageCommand}"
+                                    Width="30" Height="30" Cursor="Hand"
+                                    Template="{StaticResource GhostBtnTpl}" Padding="0">
+                                <TextBlock Text="◀" Foreground="White" FontSize="11"/>
+                            </Button>
+                            <Button Command="{Binding AddPageCommand}"
+                                    Width="28" Height="28" Cursor="Hand" Margin="4,0,0,0"
+                                    Template="{StaticResource GhostBtnTpl}" Padding="0"
+                                    ToolTip="{DynamicResource TD_068}">
+                                <TextBlock Text="+" Foreground="#22C55E" FontSize="15" FontWeight="Bold"/>
+                            </Button>
+                            <Button Command="{Binding DeletePageCommand}"
+                                    Width="28" Height="28" Cursor="Hand" Margin="2,0,0,0"
+                                    Template="{StaticResource GhostBtnTpl}" Padding="0"
+                                    ToolTip="{DynamicResource TD_069}"
+                                    IsEnabled="{Binding HasTemplate}">
+                                <TextBlock Text="×" Foreground="{DynamicResource Brush.Error}" FontSize="15" FontWeight="Bold"/>
+                            </Button>
+                        </StackPanel>
                     </Grid>
                 </Border>
             </Grid>
 
             <!-- ─────────────── RIGHT: Properties ─────────────── -->
-            <Border Grid.Column="2" Background="#1E293B"
-                    BorderBrush="#334155" BorderThickness="1,0,0,0">
+            <Border Grid.Column="2" Background="{DynamicResource Brush.Surface}"
+                    BorderBrush="{DynamicResource Brush.Border.Light}" BorderThickness="1,0,0,0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
@@ -962,7 +1665,7 @@
 
                     <!-- No template placeholder -->
                     <TextBlock Grid.Row="0"
-                               Text="اختر قالباً لتظهر خصائصه هنا"
+                               Text="{DynamicResource TD_070}"
                                Foreground="#334155" FontSize="13"
                                HorizontalAlignment="Center" VerticalAlignment="Center">
                         <TextBlock.Style>
@@ -995,45 +1698,42 @@
                         <StackPanel>
 
                             <!-- ┄┄ Section: Template metadata ┄┄ -->
-                            <Border Background="#0F172A" CornerRadius="8"
+                            <Border Background="{DynamicResource Brush.Background}" CornerRadius="8"
                                     Padding="12,10" Margin="0,0,0,12">
                                 <StackPanel>
-                                    <TextBlock Text="📋 بيانات القالب" Style="{StaticResource SectionTitle}"/>
+                                    <TextBlock Text="{DynamicResource TD_071}" Style="{StaticResource SectionTitle}"/>
 
-                                    <TextBlock Text="اسم القالب" Style="{StaticResource FieldLabel}"/>
+                                    <TextBlock Text="{DynamicResource TD_072}" Style="{StaticResource FieldLabel}"/>
                                     <TextBox Text="{Binding EditTemplateName, UpdateSourceTrigger=PropertyChanged}"
                                              Style="{StaticResource DarkBox}" Margin="0,0,0,8"/>
 
-                                    <TextBlock Text="التصنيف" Style="{StaticResource FieldLabel}"/>
+                                    <TextBlock Text="{DynamicResource TD_073}" Style="{StaticResource FieldLabel}"/>
                                     <TextBox Text="{Binding EditTemplateCategory, UpdateSourceTrigger=PropertyChanged}"
                                              Style="{StaticResource DarkBox}" Margin="0,0,0,8"/>
 
-                                    <TextBlock Text="الوصف" Style="{StaticResource FieldLabel}"/>
+                                    <TextBlock Text="{DynamicResource TD_074}" Style="{StaticResource FieldLabel}"/>
                                     <TextBox Text="{Binding EditTemplateDescription, UpdateSourceTrigger=PropertyChanged}"
                                              Style="{StaticResource DarkBox}"
                                              Height="56" TextWrapping="Wrap"
                                              AcceptsReturn="True" Margin="0,0,0,8"/>
 
-                                    <Button Command="{Binding ApplyTemplateMetaCommand}"
-                                            Height="30" Cursor="Hand"
-                                            Template="{StaticResource GhostBtnTpl}" Padding="0">
-                                        <TextBlock Text="✅ تحديث بيانات القالب"
-                                                   Foreground="#94A3B8" FontSize="11"
-                                                   HorizontalAlignment="Center"/>
-                                    </Button>
+                                    <TextBlock Text="{DynamicResource TD_075}"
+                                               Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="10"
+                                               FontStyle="Italic" HorizontalAlignment="Center"
+                                               Margin="0,2,0,0"/>
                                 </StackPanel>
                             </Border>
 
                             <!-- ┄┄ Section: Slot editor ┄┄ -->
-                            <Border Background="#0F172A" CornerRadius="8"
+                            <Border Background="{DynamicResource Brush.Background}" CornerRadius="8"
                                     Padding="12,10" Margin="0,0,0,12">
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                        <TextBlock Text="✏️ خصائص الحقل" Style="{StaticResource SectionTitle}"
+                                        <TextBlock Text="{DynamicResource TD_076}" Style="{StaticResource SectionTitle}"
                                                    Margin="0" VerticalAlignment="Center"/>
-                                        <Border Background="#334155" CornerRadius="4" Padding="6,2" Margin="8,0,0,0"
+                                        <Border Background="{DynamicResource Brush.Surface.Elevated}" CornerRadius="4" Padding="6,2" Margin="8,0,0,0"
                                                 VerticalAlignment="Center">
-                                            <TextBlock Text="اختر حقلاً من الصفحة" Foreground="#475569" FontSize="9">
+                                            <TextBlock Text="{DynamicResource TD_077}" Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="9">
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -1069,19 +1769,19 @@
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Grid.Column="0">
-                                                <TextBlock Text="الاسم" Style="{StaticResource FieldLabel}"/>
+                                                <TextBlock Text="{DynamicResource TD_078}" Style="{StaticResource FieldLabel}"/>
                                                 <TextBox Text="{Binding SlotName, UpdateSourceTrigger=PropertyChanged}"
                                                          Style="{StaticResource DarkBox}"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="2">
-                                                <TextBlock Text="اسم المتغير {{…}}" Style="{StaticResource FieldLabel}"/>
+                                                <TextBlock Text="{DynamicResource TD_079}" Style="{StaticResource FieldLabel}"/>
                                                 <TextBox Text="{Binding SlotVariableName, UpdateSourceTrigger=PropertyChanged}"
                                                          Style="{StaticResource DarkBox}"/>
                                             </StackPanel>
                                         </Grid>
 
                                         <!-- Data type -->
-                                        <TextBlock Text="نوع البيانات" Style="{StaticResource FieldLabel}"/>
+                                        <TextBlock Text="{DynamicResource TD_080}" Style="{StaticResource FieldLabel}"/>
                                         <ComboBox ItemsSource="{Binding AvailableDataTypes}"
                                                   SelectedItem="{Binding SlotDataType}"
                                                   Style="{StaticResource DarkCombo}"
@@ -1089,7 +1789,7 @@
                                             <ComboBox.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Converter={StaticResource DataTypeToArabic}}"
-                                                               FontSize="12" Foreground="#E2E8F0"/>
+                                                               FontSize="12" Foreground="{DynamicResource Brush.Slate.200}"/>
                                                 </DataTemplate>
                                             </ComboBox.ItemTemplate>
                                         </ComboBox>
@@ -1102,12 +1802,12 @@
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Grid.Column="0">
-                                                <TextBlock Text="X (مم)" Style="{StaticResource FieldLabel}"/>
+                                                <TextBlock Text="{DynamicResource TD_081}" Style="{StaticResource FieldLabel}"/>
                                                 <TextBox Text="{Binding SlotX, UpdateSourceTrigger=PropertyChanged}"
                                                          Style="{StaticResource DarkBox}"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="2">
-                                                <TextBlock Text="Y (مم)" Style="{StaticResource FieldLabel}"/>
+                                                <TextBlock Text="{DynamicResource TD_082}" Style="{StaticResource FieldLabel}"/>
                                                 <TextBox Text="{Binding SlotY, UpdateSourceTrigger=PropertyChanged}"
                                                          Style="{StaticResource DarkBox}"/>
                                             </StackPanel>
@@ -1121,101 +1821,277 @@
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Grid.Column="0">
-                                                <TextBlock Text="العرض (مم)" Style="{StaticResource FieldLabel}"/>
+                                                <TextBlock Text="{DynamicResource TD_020}" Style="{StaticResource FieldLabel}"/>
                                                 <TextBox Text="{Binding SlotW, UpdateSourceTrigger=PropertyChanged}"
                                                          Style="{StaticResource DarkBox}"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="2">
-                                                <TextBlock Text="الارتفاع (مم)" Style="{StaticResource FieldLabel}"/>
+                                                <TextBlock Text="{DynamicResource TD_021}" Style="{StaticResource FieldLabel}"/>
                                                 <TextBox Text="{Binding SlotH, UpdateSourceTrigger=PropertyChanged}"
                                                          Style="{StaticResource DarkBox}"/>
                                             </StackPanel>
                                         </Grid>
 
-                                        <!-- Font + Size -->
+                                        <!-- ── Text-specific properties (hidden for Image / QR / Barcode) ── -->
+                                        <StackPanel Visibility="{Binding IsTextLikeSlot,
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                                            <!-- Font + Size -->
+                                            <Grid Margin="0,0,0,8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="6"/>
+                                                    <ColumnDefinition Width="70"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="{DynamicResource TD_083}" Style="{StaticResource FieldLabel}"/>
+                                                    <ComboBox ItemsSource="{Binding AvailableFonts}"
+                                                              SelectedItem="{Binding SlotFontName}"
+                                                              Style="{StaticResource DarkCombo}"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2">
+                                                    <TextBlock Text="{DynamicResource TD_084}" Style="{StaticResource FieldLabel}"/>
+                                                    <TextBox Text="{Binding SlotFontSize, UpdateSourceTrigger=PropertyChanged}"
+                                                             Style="{StaticResource DarkBox}"/>
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <!-- Checkboxes row -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                <CheckBox IsChecked="{Binding SlotIsBold}"
+                                                          Foreground="{DynamicResource Brush.Slate.300}" FontSize="11"
+                                                          Content="{DynamicResource TD_085}" Margin="0,0,12,0"/>
+                                                <CheckBox IsChecked="{Binding SlotIsItalic}"
+                                                          Foreground="{DynamicResource Brush.Slate.300}" FontSize="11"
+                                                          Content="{DynamicResource TD_086}" Margin="0,0,12,0"/>
+                                                <CheckBox IsChecked="{Binding SlotIsRtl}"
+                                                          Foreground="{DynamicResource Brush.Slate.300}" FontSize="11"
+                                                          Content="{DynamicResource TD_087}"/>
+                                            </StackPanel>
+
+                                            <!-- Alignment + Color -->
+                                            <Grid Margin="0,0,0,8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="6"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="{DynamicResource TD_088}" Style="{StaticResource FieldLabel}"/>
+                                                    <ComboBox ItemsSource="{Binding AvailableAlignments}"
+                                                              SelectedItem="{Binding SlotTextAlign}"
+                                                              Style="{StaticResource DarkCombo}">
+                                                        <ComboBox.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding Converter={StaticResource AlignToArabic}}"
+                                                                           FontSize="12" Foreground="{DynamicResource Brush.Slate.200}"/>
+                                                            </DataTemplate>
+                                                        </ComboBox.ItemTemplate>
+                                                    </ComboBox>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2">
+                                                    <TextBlock Text="{DynamicResource TD_089}" Style="{StaticResource FieldLabel}"/>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="30"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBox Grid.Column="0"
+                                                                 Text="{Binding SlotTextColor, UpdateSourceTrigger=PropertyChanged}"
+                                                                 Style="{StaticResource DarkBox}"/>
+                                                        <Border Grid.Column="1" CornerRadius="4" Margin="4,0,0,0"
+                                                                Background="{Binding SlotTextColor}"
+                                                                BorderBrush="{DynamicResource Brush.Border.Light}" BorderThickness="1"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <!-- Text color presets -->
+                                            <TextBlock Text="{DynamicResource TD_090}" Style="{StaticResource FieldLabel}" Margin="0,4,0,2"/>
+                                            <ItemsControl ItemsSource="{Binding PresetColors}" Margin="0,0,0,8">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Button Width="18" Height="18" Margin="1" Cursor="Hand"
+                                                                BorderThickness="0"
+                                                                Command="{Binding DataContext.SetTextColorPresetCommand,
+                                                                          RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                CommandParameter="{Binding}">
+                                                            <Button.Template>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border x:Name="cb" Background="{Binding}"
+                                                                            CornerRadius="3"
+                                                                            BorderBrush="{DynamicResource Brush.Border.Light}" BorderThickness="1">
+                                                                        <Border.Style>
+                                                                            <Style TargetType="Border">
+                                                                                <Style.Triggers>
+                                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                                        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Warning}"/>
+                                                                                        <Setter Property="BorderThickness" Value="2"/>
+                                                                                    </Trigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </Border.Style>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Button.Template>
+                                                        </Button>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+
+                                            <!-- Format string -->
+                                            <TextBlock Text="{DynamicResource TD_091}"
+                                                       Style="{StaticResource FieldLabel}"/>
+                                            <TextBox Text="{Binding SlotFormatString, UpdateSourceTrigger=PropertyChanged}"
+                                                     Style="{StaticResource DarkBox}" Margin="0,0,0,8"/>
+
+                                            <!-- Vertical align -->
+                                            <TextBlock Text="{DynamicResource TD_092}" Style="{StaticResource FieldLabel}"/>
+                                            <ComboBox ItemsSource="{Binding AvailableVerticalAlignments}"
+                                                      SelectedItem="{Binding SlotVerticalAlign}"
+                                                      Style="{StaticResource DarkCombo}"
+                                                      Margin="0,0,0,8">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding Converter={StaticResource VAlignToArabic}}"
+                                                                   FontSize="12" Foreground="{DynamicResource Brush.Slate.200}"/>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
+
+                                        </StackPanel>
+                                        <!-- ── / Text-specific properties ── -->
+
+                                        <!-- Appearance: Rotation + Opacity + Background (all types) -->
                                         <Grid Margin="0,0,0,8">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="6"/>
-                                                <ColumnDefinition Width="70"/>
+                                                <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
+                                            <!-- Rotation -->
                                             <StackPanel Grid.Column="0">
-                                                <TextBlock Text="الخط" Style="{StaticResource FieldLabel}"/>
-                                                <ComboBox ItemsSource="{Binding AvailableFonts}"
-                                                          SelectedItem="{Binding SlotFontName}"
-                                                          Style="{StaticResource DarkCombo}"/>
+                                                <TextBlock Text="{DynamicResource TD_093}" Style="{StaticResource FieldLabel}"/>
+                                                <TextBox Text="{Binding SlotRotation, UpdateSourceTrigger=PropertyChanged}"
+                                                         Style="{StaticResource DarkBox}"/>
                                             </StackPanel>
+                                            <!-- Opacity -->
                                             <StackPanel Grid.Column="2">
-                                                <TextBlock Text="الحجم" Style="{StaticResource FieldLabel}"/>
-                                                <TextBox Text="{Binding SlotFontSize, UpdateSourceTrigger=PropertyChanged}"
+                                                <TextBlock Text="{DynamicResource TD_094}" Style="{StaticResource FieldLabel}"/>
+                                                <TextBox Text="{Binding SlotOpacity, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:F2}'}"
                                                          Style="{StaticResource DarkBox}"/>
                                             </StackPanel>
                                         </Grid>
 
-                                        <!-- Checkboxes row -->
-                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                            <CheckBox IsChecked="{Binding SlotIsBold}"
-                                                      Foreground="#CBD5E1" FontSize="11"
-                                                      Content="عريض" Margin="0,0,12,0"/>
-                                            <CheckBox IsChecked="{Binding SlotIsItalic}"
-                                                      Foreground="#CBD5E1" FontSize="11"
-                                                      Content="مائل" Margin="0,0,12,0"/>
-                                            <CheckBox IsChecked="{Binding SlotIsRtl}"
-                                                      Foreground="#CBD5E1" FontSize="11"
-                                                      Content="RTL عربي"/>
-                                        </StackPanel>
-
-                                        <!-- Alignment + Color -->
+                                        <!-- Background colour -->
+                                        <TextBlock Text="{DynamicResource TD_095}"
+                                                   Style="{StaticResource FieldLabel}"/>
                                         <Grid Margin="0,0,0,8">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="6"/>
-                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="30"/>
                                             </Grid.ColumnDefinitions>
-                                            <StackPanel Grid.Column="0">
-                                                <TextBlock Text="المحاذاة" Style="{StaticResource FieldLabel}"/>
-                                                <ComboBox ItemsSource="{Binding AvailableAlignments}"
-                                                          SelectedItem="{Binding SlotTextAlign}"
-                                                          Style="{StaticResource DarkCombo}">
-                                                    <ComboBox.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <TextBlock Text="{Binding Converter={StaticResource AlignToArabic}}"
-                                                                       FontSize="12" Foreground="#E2E8F0"/>
-                                                        </DataTemplate>
-                                                    </ComboBox.ItemTemplate>
-                                                </ComboBox>
-                                            </StackPanel>
-                                            <StackPanel Grid.Column="2">
-                                                <TextBlock Text="لون النص (#RRGGBB)" Style="{StaticResource FieldLabel}"/>
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="30"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBox Grid.Column="0"
-                                                             Text="{Binding SlotTextColor, UpdateSourceTrigger=PropertyChanged}"
-                                                             Style="{StaticResource DarkBox}"/>
-                                                    <Border Grid.Column="1" CornerRadius="4" Margin="4,0,0,0"
-                                                            Background="{Binding SlotTextColor}"
-                                                            BorderBrush="#334155" BorderThickness="1"/>
-                                                </Grid>
-                                            </StackPanel>
+                                            <TextBox Grid.Column="0"
+                                                     Text="{Binding SlotBgColor, UpdateSourceTrigger=PropertyChanged}"
+                                                     Style="{StaticResource DarkBox}"/>
+                                            <Border Grid.Column="1" CornerRadius="4" Margin="4,0,0,0"
+                                                    Background="{Binding SlotBgColor}"
+                                                    BorderBrush="{DynamicResource Brush.Border.Light}" BorderThickness="1"/>
                                         </Grid>
 
-                                        <!-- Default value -->
-                                        <TextBlock Text="القيمة الافتراضية" Style="{StaticResource FieldLabel}"/>
+                                        <!-- Background color presets -->
+                                        <TextBlock Text="{DynamicResource TD_096}" Style="{StaticResource FieldLabel}" Margin="0,0,0,2"/>
+                                        <ItemsControl ItemsSource="{Binding PresetColors}" Margin="0,0,0,8">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Button Width="18" Height="18" Margin="1" Cursor="Hand"
+                                                            BorderThickness="0"
+                                                            Command="{Binding DataContext.SetBgColorPresetCommand,
+                                                                      RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding}">
+                                                        <Button.Template>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border Background="{Binding}"
+                                                                        CornerRadius="3"
+                                                                        BorderBrush="{DynamicResource Brush.Border.Light}" BorderThickness="1">
+                                                                    <Border.Style>
+                                                                        <Style TargetType="Border">
+                                                                            <Style.Triggers>
+                                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                                    <Setter Property="BorderBrush" Value="{DynamicResource Brush.Warning}"/>
+                                                                                    <Setter Property="BorderThickness" Value="2"/>
+                                                                                </Trigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Border.Style>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Button.Template>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                        <!-- Image fit mode (shown only for Image type) -->
+                                        <StackPanel Visibility="{Binding IsImageSlot,
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                    Margin="0,0,0,8">
+                                            <TextBlock Text="{DynamicResource TD_097}" Style="{StaticResource FieldLabel}"/>
+                                            <ComboBox ItemsSource="{Binding AvailableImageFitModes}"
+                                                      SelectedItem="{Binding SlotImageFitMode}"
+                                                      Style="{StaticResource DarkCombo}">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding Converter={StaticResource ImageFitToArabic}}"
+                                                                   FontSize="12" Foreground="{DynamicResource Brush.Slate.200}"/>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
+                                        </StackPanel>
+
+                                        <!-- Required flag (all types) -->
+                                        <CheckBox IsChecked="{Binding SlotRequired}"
+                                                  Foreground="{DynamicResource Brush.Slate.300}" FontSize="11"
+                                                  Content="{DynamicResource TD_098}"
+                                                  Margin="0,0,0,8"/>
+
+                                        <!-- Default value (all types) -->
+                                        <TextBlock Text="{DynamicResource TD_099}" Style="{StaticResource FieldLabel}"/>
                                         <TextBox Text="{Binding SlotContent, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource DarkBox}"
                                                  Height="52" TextWrapping="Wrap"
                                                  AcceptsReturn="True"
                                                  VerticalScrollBarVisibility="Auto"
-                                                 Margin="0,0,0,8"/>
+                                                 Margin="0,0,0,10"/>
 
-                                        <!-- Format string -->
-                                        <TextBlock Text="صيغة التنسيق (مثال: dd/MM/yyyy أو 000000)"
-                                                   Style="{StaticResource FieldLabel}"/>
-                                        <TextBox Text="{Binding SlotFormatString, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource DarkBox}" Margin="0,0,0,10"/>
+                                        <!-- Slot reorder (z-order) -->
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="6"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Button Grid.Column="0"
+                                                    Command="{Binding MoveSlotUpCommand}"
+                                                    Height="28" Cursor="Hand"
+                                                    Template="{StaticResource GhostBtnTpl}" Padding="4,0"
+                                                    ToolTip="{DynamicResource TD_100}">
+                                                <TextBlock Text="{DynamicResource TD_101}" Foreground="{DynamicResource Brush.Text.Secondary}" FontSize="11"/>
+                                            </Button>
+                                            <Button Grid.Column="2"
+                                                    Command="{Binding MoveSlotDownCommand}"
+                                                    Height="28" Cursor="Hand"
+                                                    Template="{StaticResource GhostBtnTpl}" Padding="4,0"
+                                                    ToolTip="{DynamicResource TD_102}">
+                                                <TextBlock Text="{DynamicResource TD_103}" Foreground="{DynamicResource Brush.Text.Secondary}" FontSize="11"/>
+                                            </Button>
+                                        </Grid>
 
                                         <!-- Apply + Delete slot row -->
                                         <Grid>
@@ -1229,7 +2105,7 @@
                                                     Height="34" Cursor="Hand"
                                                     Template="{StaticResource GreenBtnTpl}"
                                                     Padding="0">
-                                                <TextBlock Text="✅ تطبيق التعديلات"
+                                                <TextBlock Text="{DynamicResource TD_104}"
                                                            Foreground="White" FontSize="12"
                                                            FontWeight="SemiBold"
                                                            HorizontalAlignment="Center"/>
@@ -1239,7 +2115,7 @@
                                                     Height="34" Cursor="Hand"
                                                     Template="{StaticResource RedBtnTpl}"
                                                     Padding="0">
-                                                <TextBlock Text="🗑️ حذف"
+                                                <TextBlock Text="{DynamicResource TD_105}"
                                                            Foreground="White" FontSize="12"
                                                            HorizontalAlignment="Center"/>
                                             </Button>
@@ -1249,7 +2125,7 @@
                             </Border>
 
                             <!-- ┄┄ Section: ربط البيانات (shown when slot selected AND data pasted) ┄┄ -->
-                            <Border Background="#0F172A" CornerRadius="8"
+                            <Border Background="{DynamicResource Brush.Background}" CornerRadius="8"
                                     Padding="12,10" Margin="0,0,0,12">
                                 <Border.Style>
                                     <Style TargetType="Border">
@@ -1268,18 +2144,18 @@
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                         <TextBlock Text="🔗" FontSize="13" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                        <TextBlock Text="ربط البيانات" Style="{StaticResource SectionTitle}"
+                                        <TextBlock Text="{DynamicResource TD_106}" Style="{StaticResource SectionTitle}"
                                                    Margin="0" VerticalAlignment="Center"/>
                                         <!-- Bound badge — visible only when a column is selected -->
                                         <Border Background="#14532D" CornerRadius="4" Padding="5,2" Margin="8,0,0,0"
                                                 VerticalAlignment="Center"
                                                 Visibility="{Binding SelectedSlotBoundColumn,
                                                              Converter={StaticResource NonEmptyToVis}}">
-                                            <TextBlock Text="✓ مربوط" Foreground="#22C55E" FontSize="10"/>
+                                            <TextBlock Text="{DynamicResource TD_107}" Foreground="#22C55E" FontSize="10"/>
                                         </Border>
                                     </StackPanel>
 
-                                    <TextBlock Text="اختر عمود البيانات لهذا الحقل:"
+                                    <TextBlock Text="{DynamicResource TD_108}"
                                                Style="{StaticResource FieldLabel}" Margin="0,0,0,5"/>
 
                                     <ComboBox ItemsSource="{Binding SmartVars.DataColumns}"
@@ -1289,14 +2165,14 @@
                                         <!-- empty/unbound option -->
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding}" FontSize="12" Foreground="#E2E8F0"/>
+                                                <TextBlock Text="{Binding}" FontSize="12" Foreground="{DynamicResource Brush.Slate.200}"/>
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
 
-                                    <TextBlock Foreground="#475569" FontSize="10"
+                                    <TextBlock Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="10"
                                                TextWrapping="Wrap"
-                                               Text="الحقل المحدد سيُملأ تلقائياً من هذا العمود عند الدمج."/>
+                                               Text="{DynamicResource TD_109}"/>
                                 </StackPanel>
                             </Border>
 
@@ -1308,16 +2184,35 @@
 
                     <!-- ── Footer: Save + Status ── -->
                     <Border Grid.Row="1" Padding="14,10"
-                            BorderBrush="#334155" BorderThickness="0,1,0,0"
-                            Background="#1E293B">
+                            BorderBrush="{DynamicResource Brush.Border.Light}" BorderThickness="0,1,0,0"
+                            Background="{DynamicResource Brush.Surface}">
                         <StackPanel>
+                            <!-- Unsaved-changes indicator -->
+                            <Border CornerRadius="6" Padding="8,4" Margin="0,0,0,6"
+                                    Background="#78350F" HorizontalAlignment="Center">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsDirty}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock Text="{DynamicResource TD_110}"
+                                           Foreground="#FCD34D" FontSize="10"/>
+                            </Border>
+
                             <Button Command="{Binding SaveCurrentTemplateCommand}"
                                     Height="40" Cursor="Hand"
+                                    IsEnabled="{Binding HasTemplate}"
                                     Template="{StaticResource BlueBtnTpl}" Padding="0"
-                                    Margin="0,0,0,6">
+                                    Margin="0,0,0,6"
+                                    ToolTip="Ctrl+S">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="💾" FontSize="14" VerticalAlignment="Center"/>
-                                    <TextBlock Text=" حفظ القالب"
+                                    <TextBlock Text="{DynamicResource TD_111}"
                                                Foreground="White" FontSize="13"
                                                FontWeight="SemiBold" VerticalAlignment="Center"/>
                                 </StackPanel>
@@ -1348,23 +2243,20 @@
         </Grid>
 
         <!-- ══════════════════════ SMART VARIABLES STEPS (1-5) ══════════════
-             Shown in Grid.Row="2" when ActiveStep > 0.
-             The SmartVariablesView's ActiveTabIndex tracks ActiveStep - 1
-             so each stepper click shows the matching tab.
+             Shown in Grid.Row="2" when ActiveStep > 0 (IsSmartStep = true).
+
+             FIX: The outer Grid binds Visibility directly to IsSmartStep on
+             TemplateDesignerViewModel (the DataContext of THIS UserControl).
+             SmartVariablesView gets SmartVars as its own DataContext.
+             No RelativeSource gymnastics needed — the Grid DataContext is
+             TemplateDesignerViewModel, so {Binding IsSmartStep} resolves
+             correctly without any AncestorLevel indirection.
         ══════════════════════════════════════════════════════════════════════ -->
-        <local:SmartVariablesView Grid.Row="2"
-                                  DataContext="{Binding SmartVars}">
-            <local:SmartVariablesView.Style>
-                <Style TargetType="local:SmartVariablesView">
-                    <Setter Property="Visibility" Value="Collapsed"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsSmartStep}" Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </local:SmartVariablesView.Style>
-        </local:SmartVariablesView>
+        <Grid Grid.Row="2"
+              Visibility="{Binding IsSmartStep,
+                           Converter={StaticResource BooleanToVisibilityConverter}}">
+            <local:SmartVariablesView DataContext="{Binding SmartVars}"/>
+        </Grid>
 
     </Grid>
 </UserControl>

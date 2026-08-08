@@ -37,7 +37,7 @@ namespace Apex.Services.Printing.UniversalRIP
                 try
                 {
                     using var pdfDocument = PdfDocument.Load(pdfPath);
-                    
+
                     if (pageIndex < 0 || pageIndex >= pdfDocument.PageCount)
                         throw new ArgumentOutOfRangeException(nameof(pageIndex));
 
@@ -64,7 +64,7 @@ namespace Apex.Services.Printing.UniversalRIP
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"[EnhancedContentAnalysis] Error analyzing page {pageIndex}: {ex.Message}");
-                    
+
                     // Conservative fallback
                     profile.HasImages = true;
                     profile.HasText = true;
@@ -72,7 +72,7 @@ namespace Apex.Services.Printing.UniversalRIP
                     profile.RequiresRasterization = true;
                     profile.MinImageResolution = 300;
                     profile.ComplexityScore = 50;
-                    
+
                     return profile;
                 }
             }, cancellationToken);
@@ -120,20 +120,20 @@ namespace Apex.Services.Printing.UniversalRIP
                 // Method 1: Render at multiple resolutions for analysis
                 using var lowResRender = pdfDocument.Render(pageIndex, 72, 72, PdfRenderFlags.None);
                 using var midResRender = pdfDocument.Render(pageIndex, 150, 150, PdfRenderFlags.None);
-                
+
                 // Analyze rendered content
                 AnalyzeRenderedContent(lowResRender, midResRender, profile);
-                
+
                 // Method 2: Heuristic analysis based on page characteristics
                 var pageSize = pdfDocument.PageSizes[pageIndex];
                 var pageArea = pageSize.Width * pageSize.Height;
-                
+
                 // Large pages often contain images
                 if (pageArea > 1000000)
                 {
                     profile.HasImages = true;
                 }
-                
+
                 // Default: Assume text is present (most PDFs contain text)
                 profile.HasText = true;
             }
@@ -155,16 +155,16 @@ namespace Apex.Services.Printing.UniversalRIP
             {
                 Bitmap? lowResBitmap = lowResRender as Bitmap;
                 Bitmap? midResBitmap = midResRender as Bitmap;
-                
+
                 bool disposeLowRes = false;
                 bool disposeMidRes = false;
-                
+
                 if (lowResBitmap == null)
                 {
                     lowResBitmap = new Bitmap(lowResRender);
                     disposeLowRes = true;
                 }
-                
+
                 if (midResBitmap == null && midResRender != null)
                 {
                     midResBitmap = new Bitmap(midResRender);
@@ -175,14 +175,14 @@ namespace Apex.Services.Printing.UniversalRIP
                 {
                     // Analyze content characteristics
                     AnalyzeContentCharacteristics(lowResBitmap, midResBitmap, profile);
-                    
+
                     // Detect vector graphics
                     profile.HasVectorGraphics = DetectVectorGraphics(lowResBitmap);
                     if (profile.HasVectorGraphics)
                     {
                         profile.VectorObjectCount = EstimateVectorObjects(lowResBitmap);
                     }
-                    
+
                     // Analyze image content and resolution
                     AnalyzeImageContent(lowResBitmap, midResBitmap, profile);
                 }
@@ -204,7 +204,7 @@ namespace Apex.Services.Printing.UniversalRIP
 
             int width = lowRes.Width;
             int height = lowRes.Height;
-            
+
             // Sample pixels to detect content type
             int sampleCount = Math.Min(2000, width * height / 50);
             int textLikePixels = 0;
@@ -259,16 +259,16 @@ namespace Apex.Services.Printing.UniversalRIP
             // Estimate image resolution based on bitmap size and page dimensions
             double widthInches = profile.Dimensions.WidthPoints / 72.0;
             double heightInches = profile.Dimensions.HeightPoints / 72.0;
-            
+
             if (widthInches > 0 && heightInches > 0)
             {
                 double estimatedDpiX = lowRes.Width / widthInches;
                 double estimatedDpiY = lowRes.Height / heightInches;
-                
+
                 profile.MinImageResolution = Math.Min(estimatedDpiX, estimatedDpiY);
                 profile.MaxImageResolution = Math.Max(estimatedDpiX, estimatedDpiY);
                 profile.AverageImageResolution = (estimatedDpiX + estimatedDpiY) / 2.0;
-                
+
                 // If mid-res render is available, use it for better estimation
                 if (midRes != null)
                 {
@@ -285,7 +285,7 @@ namespace Apex.Services.Printing.UniversalRIP
         private ColorProfileInfo DetectColorProfile(Bitmap? bitmap)
         {
             var profile = new ColorProfileInfo();
-            
+
             if (bitmap == null)
             {
                 profile.IsGrayscale = true;
@@ -429,14 +429,14 @@ namespace Apex.Services.Printing.UniversalRIP
                 TextBlockCount = (int)profiles.Average(p => p.TextBlockCount),
                 VectorObjectCount = (int)profiles.Average(p => p.VectorObjectCount),
                 ImageCount = (int)profiles.Average(p => p.ImageCount),
-                MinImageResolution = profiles.Where(p => p.HasImages).Any() 
-                    ? profiles.Where(p => p.HasImages).Min(p => p.MinImageResolution) 
+                MinImageResolution = profiles.Where(p => p.HasImages).Any()
+                    ? profiles.Where(p => p.HasImages).Min(p => p.MinImageResolution)
                     : 0,
-                MaxImageResolution = profiles.Where(p => p.HasImages).Any() 
-                    ? profiles.Where(p => p.HasImages).Max(p => p.MaxImageResolution) 
+                MaxImageResolution = profiles.Where(p => p.HasImages).Any()
+                    ? profiles.Where(p => p.HasImages).Max(p => p.MaxImageResolution)
                     : 0,
-                AverageImageResolution = profiles.Where(p => p.HasImages).Any() 
-                    ? profiles.Where(p => p.HasImages).Average(p => p.AverageImageResolution) 
+                AverageImageResolution = profiles.Where(p => p.HasImages).Any()
+                    ? profiles.Where(p => p.HasImages).Average(p => p.AverageImageResolution)
                     : 0,
                 ComplexityScore = (int)profiles.Average(p => p.ComplexityScore),
                 RequiresRasterization = profiles.Any(p => p.RequiresRasterization)

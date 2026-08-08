@@ -1,6 +1,8 @@
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using Apex.Licensing;
+using Apex.UI.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
@@ -13,14 +15,27 @@ namespace Apex.UI.ViewModels
     /// </summary>
     public partial class LicensingViewModel : ViewModelBase
     {
-        [ObservableProperty] private string _deviceDisplayId   = "";
+        [ObservableProperty] private string _deviceDisplayId = "";
         [ObservableProperty] private string _licenseStatusText = "";
-        [ObservableProperty] private string _licenseTypeText   = "";
-        [ObservableProperty] private string _expiryText        = "";
-        [ObservableProperty] private bool   _isLicenseValid    = false;
-        [ObservableProperty] private bool   _isTrialActive     = false;
-        [ObservableProperty] private int    _daysRemaining     = 0;
-        [ObservableProperty] private string _statusColor       = "#EF4444";
+        [ObservableProperty] private string _licenseTypeText = "";
+        [ObservableProperty] private string _expiryText = "";
+        [ObservableProperty] private bool _isLicenseValid = false;
+        [ObservableProperty] private bool _isTrialActive = false;
+        [ObservableProperty] private int _daysRemaining = 0;
+        [ObservableProperty] private string _statusColor = "#EF4444";
+
+        // ── Online serial activation (buy now, no need to wait for trial to end) ──
+        [ObservableProperty] private string _serialKey = "";
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsNotActivating))]
+        private bool _isActivating = false;
+        [ObservableProperty] private string _onlineStatus = "";
+        [ObservableProperty] private string _onlineStatusColor = "#94A3B8";
+
+        /// <summary>Inverse of <see cref="IsActivating"/> for enabling input controls.</summary>
+        public bool IsNotActivating => !IsActivating;
+
+        private readonly OnlineActivationService _onlineActivation = new();
 
         public LicensingViewModel()
         {
@@ -37,7 +52,7 @@ namespace Apex.UI.ViewModels
             try
             {
                 Clipboard.SetText(DeviceDisplayId);
-                MessageBox.Show("تم نسخ رقم الجهاز إلى الحافظة.", "تم النسخ",
+                MessageBox.Show(L("Lic_DeviceCopied"), L("Lic_Copied"),
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch { }
@@ -49,8 +64,60 @@ namespace Apex.UI.ViewModels
             try { WhatsAppActivationService.OpenWhatsApp(DeviceDisplayId); }
             catch (Exception ex)
             {
-                MessageBox.Show($"تعذّر فتح واتساب:\n{ex.Message}", "خطأ",
+                MessageBox.Show(Lf("Lic_WhatsAppError", ex.Message), L("Dlg_Error"),
                     MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        /// <summary>
+        /// Activate immediately with a purchased serial (APX-XXXXX-XXXXX-XXXXX) without
+        /// waiting for the trial to end. Sends the serial + this device id to the
+        /// license server, installs the returned .apex, and restarts.
+        /// </summary>
+        [RelayCommand]
+        private async Task ActivateWithSerialAsync()
+        {
+            if (IsActivating) return;
+
+            if (string.IsNullOrWhiteSpace(SerialKey))
+            {
+                OnlineStatus = L("Act_EnterSerial");
+                OnlineStatusColor = "#EF4444";
+                return;
+            }
+
+            IsActivating = true;
+            OnlineStatus = L("Act_ActivatingOnline");
+            OnlineStatusColor = "#94A3B8";
+            try
+            {
+                var outcome = await _onlineActivation.ActivateAsync(SerialKey.Trim());
+                if (outcome.Success)
+                {
+                    OnlineStatus = L("Act_ActivatedRestart");
+                    OnlineStatusColor = "#22C55E";
+                    MessageBox.Show(
+                        Lf("Lic_ActivatedMsg", outcome.Result?.Type,
+                            outcome.Result?.ExpiresUtc?.Year >= 9999
+                                ? L("Lic_Permanent")
+                                : outcome.Result?.ExpiresUtc?.ToString("yyyy-MM-dd")),
+                        L("Lic_ActivatedTitle"), MessageBoxButton.OK, MessageBoxImage.Information);
+                    RestartApplication();
+                }
+                else
+                {
+                    OnlineStatus = $"❌ {outcome.Message}";
+                    OnlineStatusColor = "#EF4444";
+                }
+            }
+            catch (Exception ex)
+            {
+                OnlineStatus = Lf("Act_UnexpectedError", ex.Message);
+                OnlineStatusColor = "#EF4444";
+            }
+            finally
+            {
+                IsActivating = false;
             }
         }
 
@@ -59,8 +126,8 @@ namespace Apex.UI.ViewModels
         {
             var dlg = new OpenFileDialog
             {
-                Title       = "اختر ملف الترخيص",
-                Filter      = "Apex License (*.apex)|*.apex|All Files (*.*)|*.*",
+                Title = L("Lic_ChooseFile"),
+                Filter = "Apex License (*.apex)|*.apex|All Files (*.*)|*.*",
                 Multiselect = false
             };
             if (dlg.ShowDialog() != true) return;
@@ -69,56 +136,61 @@ namespace Apex.UI.ViewModels
             if (success)
             {
                 MessageBox.Show(
-                    $"تم تفعيل البرنامج بنجاح!\n\nنوع الترخيص: {result.Type}\nينتهي في: {result.ExpiresUtc:yyyy-MM-dd}",
-                    "تم التفعيل ✅", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Lf("Lic_ActivatedMsg", result.Type, result.ExpiresUtc?.ToString("yyyy-MM-dd")),
+                    L("Lic_ActivatedTitle"), MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // Restart to pick up the new license
-                var exe = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
-                if (!string.IsNullOrEmpty(exe))
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(exe) { UseShellExecute = true });
-                Application.Current.Shutdown();
+                RestartApplication();
             }
             else
             {
-                MessageBox.Show($"فشل تثبيت الترخيص:\n\n{result.ErrorMessage}", "خطأ",
+                MessageBox.Show(Lf("Lic_InstallFailed", result.ErrorMessage), L("Dlg_Error"),
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        /// <summary>Relaunch the app so the newly installed license is picked up at startup.</summary>
+        private static void RestartApplication()
+        {
+            var exe = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+            if (!string.IsNullOrEmpty(exe))
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(exe) { UseShellExecute = true });
+            Application.Current.Shutdown();
         }
 
         [RelayCommand]
         private void RefreshStatus()
         {
-            var info   = LicenseManager.GetDeviceInfo();
+            var info = LicenseManager.GetDeviceInfo();
             DeviceDisplayId = info.DisplayId;
 
             var r = LicenseManager.Validate();
             IsLicenseValid = r.IsValid;
-            IsTrialActive  = r.IsValid && r.Type == LicenseType.Trial;
-            DaysRemaining  = r.DaysRemaining;
+            IsTrialActive = r.IsValid && r.Type == LicenseType.Trial;
+            DaysRemaining = r.DaysRemaining;
 
             LicenseTypeText = r.Type switch
             {
-                LicenseType.Trial => "فترة تجريبية",
-                LicenseType.Full  => "ترخيص كامل",
-                LicenseType.Pro   => "ترخيص احترافي",
-                _                 => "غير معروف"
+                LicenseType.Trial => L("Lic_TypeTrial"),
+                LicenseType.Full => L("Lic_TypeFull"),
+                LicenseType.Pro => L("Lic_TypePro"),
+                _ => L("Lic_Unknown")
             };
 
             LicenseStatusText = r.Status switch
             {
                 LicenseStatus.Valid when r.Type == LicenseType.Trial
-                                   => $"✅ نشط – باقي {r.DaysRemaining} يوم",
-                LicenseStatus.Valid => "✅ نشط",
-                LicenseStatus.Expired         => "⏰ منتهي الصلاحية",
-                LicenseStatus.Invalid         => "❌ غير صالح",
-                LicenseStatus.ClockTampered   => "🔴 تلاعب بالتاريخ",
-                LicenseStatus.HardwareMismatch => "💻 جهاز مختلف",
-                LicenseStatus.Corrupted       => "⚠ بيانات تالفة",
-                _                             => "❓ غير معروف"
+                                   => Lf("Lic_ActiveRemaining", r.DaysRemaining),
+                LicenseStatus.Valid => L("Lic_Active"),
+                LicenseStatus.Expired => L("Lic_Expired"),
+                LicenseStatus.Invalid => L("Lic_Invalid"),
+                LicenseStatus.ClockTampered => L("Lic_ClockTamper"),
+                LicenseStatus.HardwareMismatch => L("Lic_OtherDevice"),
+                LicenseStatus.Corrupted => L("Lic_Corrupt"),
+                _ => L("Lic_UnknownStatus")
             };
 
             ExpiryText = r.ExpiresUtc.HasValue
-                ? (r.ExpiresUtc.Value.Year >= 9999 ? "دائم" : r.ExpiresUtc.Value.ToString("yyyy-MM-dd"))
+                ? (r.ExpiresUtc.Value.Year >= 9999 ? L("Lic_Permanent") : r.ExpiresUtc.Value.ToString("yyyy-MM-dd"))
                 : "—";
 
             StatusColor = r.IsValid

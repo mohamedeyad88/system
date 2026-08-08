@@ -35,6 +35,24 @@ namespace Apex.UI.Converters
         }
     }
 
+    /// <summary>
+    /// Visible when the value IS null — the inverse of
+    /// <see cref="NullToVisibilityConverter"/>. Used for the "nothing to show yet"
+    /// placeholder that a real preview replaces.
+    /// </summary>
+    public class NullToVisibleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value == null ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return Binding.DoNothing;
+        }
+    }
+
     public class InverseCountToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -148,7 +166,7 @@ namespace Apex.UI.Converters
             // Defensive: handle null or binding errors
             if (value == null || value == DependencyProperty.UnsetValue)
                 return new SolidColorBrush(Color.FromRgb(0x2D, 0x32, 0x3C)); // CardBg fallback
-                
+
             if (value is bool b && b)
                 return new SolidColorBrush(Color.FromRgb(0x3B, 0x82, 0xF6)); // AccentBlue
             return new SolidColorBrush(Color.FromRgb(0x2D, 0x32, 0x3C)); // CardBg
@@ -168,7 +186,7 @@ namespace Apex.UI.Converters
             // Defensive: handle null or binding errors
             if (value == null || value == DependencyProperty.UnsetValue)
                 return new SolidColorBrush(Color.FromRgb(0x2D, 0x32, 0x3C)); // CardBg fallback
-                
+
             if (value is bool b && !b)
                 return new SolidColorBrush(Color.FromRgb(0x3B, 0x82, 0xF6)); // AccentBlue
             return new SolidColorBrush(Color.FromRgb(0x2D, 0x32, 0x3C)); // CardBg
@@ -188,14 +206,14 @@ namespace Apex.UI.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             double percent = 100;
-            
+
             if (value is int i)
                 percent = i;
             else if (value is double d)
                 percent = d;
             else if (value is float f)
                 percent = f;
-            
+
             // Clamp and convert to 0.0-1.0
             percent = Math.Max(0, Math.Min(100, percent));
             return percent / 100.0;
@@ -308,7 +326,7 @@ namespace Apex.UI.Converters
         {
             if (value == null || value == DependencyProperty.UnsetValue)
                 return new SolidColorBrush(Color.FromRgb(0xFE, 0xF3, 0xC7)); // Yellow fallback
-                
+
             if (value is bool b && b)
                 return new SolidColorBrush(Color.FromRgb(0xD1, 0xFA, 0xE5)); // Green
             return new SolidColorBrush(Color.FromRgb(0xFE, 0xF3, 0xC7)); // Yellow
@@ -329,7 +347,7 @@ namespace Apex.UI.Converters
         {
             if (value == null || value == DependencyProperty.UnsetValue)
                 return new SolidColorBrush(Color.FromRgb(0xF5, 0x9E, 0x0B)); // Yellow border fallback
-                
+
             if (value is bool b && b)
                 return new SolidColorBrush(Color.FromRgb(0x10, 0xB9, 0x81)); // Green border
             return new SolidColorBrush(Color.FromRgb(0xF5, 0x9E, 0x0B)); // Yellow border
@@ -350,7 +368,7 @@ namespace Apex.UI.Converters
         {
             if (value == null || value == DependencyProperty.UnsetValue)
                 return new SolidColorBrush(Color.FromRgb(0x92, 0x40, 0x0E)); // Dark yellow fallback
-                
+
             if (value is bool b && b)
                 return new SolidColorBrush(Color.FromRgb(0x06, 0x5F, 0x46)); // Dark green
             return new SolidColorBrush(Color.FromRgb(0x92, 0x40, 0x0E)); // Dark yellow
@@ -427,11 +445,11 @@ namespace Apex.UI.Converters
             {
                 if (string.IsNullOrWhiteSpace(stringValue))
                     return 0L;
-                
+
                 if (long.TryParse(stringValue, out long result))
                     return result;
             }
-            
+
             // Return 0 if conversion fails
             return 0L;
         }
@@ -523,14 +541,14 @@ namespace Apex.UI.Converters
             if (value is Apex.Services.Templates.SlotDataType dt)
                 return dt switch
                 {
-                    Apex.Services.Templates.SlotDataType.Text    => "نص",
-                    Apex.Services.Templates.SlotDataType.Number  => "رقم",
-                    Apex.Services.Templates.SlotDataType.Date    => "تاريخ",
-                    Apex.Services.Templates.SlotDataType.Image   => "صورة",
+                    Apex.Services.Templates.SlotDataType.Text => "نص",
+                    Apex.Services.Templates.SlotDataType.Number => "رقم",
+                    Apex.Services.Templates.SlotDataType.Date => "تاريخ",
+                    Apex.Services.Templates.SlotDataType.Image => "صورة",
                     Apex.Services.Templates.SlotDataType.Barcode => "باركود",
-                    Apex.Services.Templates.SlotDataType.QrCode  => "QR كود",
+                    Apex.Services.Templates.SlotDataType.QrCode => "QR كود",
                     Apex.Services.Templates.SlotDataType.Counter => "مسلسل تلقائي",
-                    _                                            => value.ToString() ?? "",
+                    _ => value.ToString() ?? "",
                 };
             return value?.ToString() ?? "";
         }
@@ -549,14 +567,145 @@ namespace Apex.UI.Converters
             if (value is Apex.Services.Templates.HorizontalAlign align)
                 return align switch
                 {
-                    Apex.Services.Templates.HorizontalAlign.Right  => "يمين",
+                    Apex.Services.Templates.HorizontalAlign.Right => "يمين",
                     Apex.Services.Templates.HorizontalAlign.Center => "وسط",
-                    Apex.Services.Templates.HorizontalAlign.Left   => "يسار",
-                    _                                              => value.ToString() ?? "",
+                    Apex.Services.Templates.HorizontalAlign.Left => "يسار",
+                    _ => value.ToString() ?? "",
                 };
             return value?.ToString() ?? "";
         }
 
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => Binding.DoNothing;
+    }
+
+    /// <summary>
+    /// Converts VerticalAlign enum → Arabic display string for ComboBox ItemTemplate.
+    /// </summary>
+    public class VerticalAlignToArabicConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Apex.Services.Templates.VerticalAlign align)
+                return align switch
+                {
+                    Apex.Services.Templates.VerticalAlign.Top    => "أعلى",
+                    Apex.Services.Templates.VerticalAlign.Middle => "وسط",
+                    Apex.Services.Templates.VerticalAlign.Bottom => "أسفل",
+                    _ => value.ToString() ?? "",
+                };
+            return value?.ToString() ?? "";
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => Binding.DoNothing;
+    }
+
+    /// <summary>
+    /// Converts ImageMatchMode enum → Arabic display string for ComboBox ItemTemplate.
+    /// </summary>
+    public class ImageMatchModeToArabicConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Apex.Services.SmartVariables.ImageMatchMode mode)
+                return mode switch
+                {
+                    Apex.Services.SmartVariables.ImageMatchMode.ByFileName => "بحسب اسم الملف",
+                    Apex.Services.SmartVariables.ImageMatchMode.ById => "بحسب الرقم التعريفي",
+                    Apex.Services.SmartVariables.ImageMatchMode.ByName => "بحسب الاسم",
+                    Apex.Services.SmartVariables.ImageMatchMode.ByPathColumn => "من عمود المسار",
+                    Apex.Services.SmartVariables.ImageMatchMode.StaticSingle => "صورة ثابتة واحدة",
+                    Apex.Services.SmartVariables.ImageMatchMode.Manual => "يدوي",
+                    _ => value.ToString() ?? "",
+                };
+            return value?.ToString() ?? "";
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => Binding.DoNothing;
+    }
+
+    /// <summary>
+    /// Converts ExportScope enum → Arabic display string for ComboBox ItemTemplate.
+    /// </summary>
+    public class ExportScopeToArabicConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Apex.Services.SmartVariables.Models.ExportScope scope)
+                return scope switch
+                {
+                    Apex.Services.SmartVariables.Models.ExportScope.AllValid => "كل السجلات الصحيحة",
+                    Apex.Services.SmartVariables.Models.ExportScope.CurrentRecord => "السجل الحالي فقط",
+                    Apex.Services.SmartVariables.Models.ExportScope.SelectedRecords => "السجلات المحددة",
+                    _ => value.ToString() ?? "",
+                };
+            return value?.ToString() ?? "";
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => Binding.DoNothing;
+    }
+
+    /// <summary>
+    /// Converts ExportFormat enum → Arabic display string for ComboBox ItemTemplate.
+    /// </summary>
+    public class ExportFormatToArabicConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Apex.Services.SmartVariables.Models.ExportFormat fmt)
+                return fmt switch
+                {
+                    Apex.Services.SmartVariables.Models.ExportFormat.SinglePdf => "PDF ملف واحد",
+                    Apex.Services.SmartVariables.Models.ExportFormat.SeparatePdfs => "PDF ملف لكل سجل",
+                    Apex.Services.SmartVariables.Models.ExportFormat.Png => "صور PNG",
+                    Apex.Services.SmartVariables.Models.ExportFormat.Jpg => "صور JPG",
+                    Apex.Services.SmartVariables.Models.ExportFormat.DirectPrint => "طباعة مباشرة",
+                    _ => value.ToString() ?? "",
+                };
+            return value?.ToString() ?? "";
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => Binding.DoNothing;
+    }
+
+    /// <summary>
+    /// Converts FileNamingMode enum → Arabic display string for ComboBox ItemTemplate.
+    /// </summary>
+    public class FileNamingModeToArabicConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Apex.Services.SmartVariables.Models.FileNamingMode mode)
+                return mode switch
+                {
+                    Apex.Services.SmartVariables.Models.FileNamingMode.BySerial => "رقم تسلسلي",
+                    Apex.Services.SmartVariables.Models.FileNamingMode.ByCode => "حسب الكود",
+                    Apex.Services.SmartVariables.Models.FileNamingMode.ByName => "حسب الاسم",
+                    Apex.Services.SmartVariables.Models.FileNamingMode.ByFormula => "صيغة مخصصة",
+                    _ => value.ToString() ?? "",
+                };
+            return value?.ToString() ?? "";
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => Binding.DoNothing;
+    }
+
+    /// <summary>
+    /// Converts ImageFitMode string → Arabic display string for ComboBox ItemTemplate.
+    /// </summary>
+    public class ImageFitToArabicConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value?.ToString() switch
+            {
+                "Contain" => "ملاءمة (Contain)",
+                "Cover"   => "تغطية (Cover)",
+                "Stretch" => "تمديد (Stretch)",
+                "Fill"    => "ملء (Fill)",
+                _ => value?.ToString() ?? ""
+            };
+        }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
             => Binding.DoNothing;
     }

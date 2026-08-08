@@ -15,26 +15,62 @@ namespace Apex.UI.ViewModels
         private ViewModelBase? _currentViewModel;
 
         // ── Active-state properties for sidebar navigation highlight ──
-        public bool IsDashboardActive       => CurrentViewModel is DashboardViewModel;
-        public bool IsPrintManagerActive    => CurrentViewModel is PrintManagerViewModel;
-        public bool IsDistributionActive    => CurrentViewModel is DistributionViewModel;
-        public bool IsNumberedBooksActive   => CurrentViewModel is NumberingWizardViewModel;
-        public bool IsPrintOperationsActive => CurrentViewModel is PrintOperationsViewModel;
-        public bool IsPerformanceActive     => CurrentViewModel is SystemPerformanceViewModel;
-        public bool IsQuotationActive       => CurrentViewModel is QuotationViewModel;
-        public bool IsSettingsActive        => CurrentViewModel is SettingsViewModel;
-        public bool IsLicensingActive       => CurrentViewModel is LicensingViewModel;
-        public bool IsAnalyticsActive      => CurrentViewModel is AnalyticsDashboardViewModel;
-        public bool IsUserManagementActive => CurrentViewModel is UserManagementViewModel;
-        public bool IsReportsActive        => CurrentViewModel is ReportsViewModel;
-        public bool IsLoadBalancerActive      => CurrentViewModel is LoadBalancerViewModel;
-        public bool IsColorCalibrationActive  => CurrentViewModel is ColorCalibrationViewModel;
-        public bool IsTemplateDesignerActive  => CurrentViewModel is TemplateDesignerViewModel;
+        public bool IsDashboardActive => CurrentViewModel is DashboardViewModel;
+        public bool IsPrintManagerActive => CurrentViewModel is PrintManagerViewModel;
+        public bool IsNumberedBooksActive => CurrentViewModel is NumberingWizardViewModel;
+        public bool IsPerformanceActive => CurrentViewModel is SystemPerformanceViewModel;
+        public bool IsSettingsActive => CurrentViewModel is SettingsViewModel;
+        public bool IsLicensingActive => CurrentViewModel is LicensingViewModel;
+        public bool IsColorCalibrationActive => CurrentViewModel is ColorCalibrationViewModel;
+        public bool IsTemplateDesignerActive => CurrentViewModel is TemplateDesignerViewModel;
+        public bool IsImpositionActive => CurrentViewModel is ImpositionViewModel;
+        public bool IsPageToolsActive => CurrentViewModel is PageToolsViewModel;
 
         public MainViewModel(IServiceScopeFactory scopeFactory)
         {
             _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
+            _ = CheckForUpdatesAsync();   // fire-and-forget; never blocks startup
         }
+
+        // ── App update notice (server-driven) ─────────────────────────────────
+        [ObservableProperty] private bool _updateAvailable;
+        [ObservableProperty] private string _updateVersion = "";
+        private string _updateUrl = "";
+
+        private async Task CheckForUpdatesAsync()
+        {
+            try
+            {
+                string current =
+                    System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.0.0";
+                var info = await new Services.UpdateCheckService().CheckAsync(current);
+                if (info is { Available: true } && !string.IsNullOrWhiteSpace(info.DownloadUrl))
+                {
+                    _updateUrl = info.DownloadUrl;
+                    UpdateVersion = info.LatestVersion;
+                    UpdateAvailable = true;
+                }
+            }
+            catch
+            {
+                // Best-effort: offline or server unreachable — stay silent.
+            }
+        }
+
+        [RelayCommand]
+        private void OpenUpdateLink()
+        {
+            if (string.IsNullOrWhiteSpace(_updateUrl)) return;
+            try
+            {
+                System.Diagnostics.Process.Start(
+                    new System.Diagnostics.ProcessStartInfo(_updateUrl) { UseShellExecute = true });
+            }
+            catch { /* browser launch failed — ignore */ }
+        }
+
+        [RelayCommand]
+        private void DismissUpdate() => UpdateAvailable = false;
 
         partial void OnCurrentViewModelChanged(ViewModelBase? value)
         {
@@ -43,19 +79,13 @@ namespace Apex.UI.ViewModels
 
             OnPropertyChanged(nameof(IsDashboardActive));
             OnPropertyChanged(nameof(IsPrintManagerActive));
-            OnPropertyChanged(nameof(IsDistributionActive));
             OnPropertyChanged(nameof(IsNumberedBooksActive));
-            OnPropertyChanged(nameof(IsPrintOperationsActive));
             OnPropertyChanged(nameof(IsPerformanceActive));
-            OnPropertyChanged(nameof(IsQuotationActive));
             OnPropertyChanged(nameof(IsSettingsActive));
             OnPropertyChanged(nameof(IsLicensingActive));
-            OnPropertyChanged(nameof(IsAnalyticsActive));
-            OnPropertyChanged(nameof(IsUserManagementActive));
-            OnPropertyChanged(nameof(IsReportsActive));
-            OnPropertyChanged(nameof(IsLoadBalancerActive));
             OnPropertyChanged(nameof(IsColorCalibrationActive));
             OnPropertyChanged(nameof(IsTemplateDesignerActive));
+            OnPropertyChanged(nameof(IsImpositionActive));
         }
 
         private async Task InitializeCurrentViewModelAsync(ViewModelBase viewModel)
@@ -122,9 +152,6 @@ namespace Apex.UI.ViewModels
         public void NavigateToDashboard() => NavigateTo<DashboardViewModel>();
 
         [RelayCommand]
-        public void NavigateToPrinters() => NavigateTo<PrintOperationsViewModel>();
-
-        [RelayCommand]
         public void NavigateToPrintManager() => NavigateTo<PrintManagerViewModel>();
 
         [RelayCommand]
@@ -132,12 +159,6 @@ namespace Apex.UI.ViewModels
 
         [RelayCommand]
         public void NavigateToPerformance() => NavigateTo<SystemPerformanceViewModel>();
-
-        [RelayCommand]
-        public void NavigateToDistribution() => NavigateTo<DistributionViewModel>();
-
-        [RelayCommand]
-        public void NavigateToQuotation() => NavigateTo<QuotationViewModel>();
 
         [RelayCommand]
         public void NavigateToSettings() => NavigateTo<SettingsViewModel>();
@@ -152,43 +173,34 @@ namespace Apex.UI.ViewModels
         }
 
         [RelayCommand]
-        public void NavigateToAnalytics() => NavigateTo<AnalyticsDashboardViewModel>();
-
-        [RelayCommand]
-        public void NavigateToUserManagement() => NavigateTo<UserManagementViewModel>();
-
-        [RelayCommand]
-        public void NavigateToReports() => NavigateTo<ReportsViewModel>();
-
-        [RelayCommand]
-        public void NavigateToLoadBalancer() => NavigateTo<LoadBalancerViewModel>();
-
-        [RelayCommand]
         public void NavigateToColorCalibration() => NavigateTo<ColorCalibrationViewModel>();
 
         [RelayCommand]
         public void NavigateToTemplateDesigner() => NavigateTo<TemplateDesignerViewModel>();
 
         [RelayCommand]
+        public void NavigateToImposition() => NavigateTo<ImpositionViewModel>();
+
+        [RelayCommand]
+        public void NavigateToPageTools() => NavigateTo<PageToolsViewModel>();
+
+        [RelayCommand]
         public void Navigate(string viewName)
         {
             switch (viewName)
             {
-                case "Dashboard":    NavigateToDashboard();   break;
-                case "Printers":     NavigateToPrinters();    break;
+                case "Dashboard": NavigateToDashboard(); break;
+                // The two print sections were merged into one; a stored or older
+                // "PrintOperations" name still has to land somewhere real.
+                case "PrintOperations":
                 case "PrintManager": NavigateToPrintManager(); break;
                 case "NumberedBooks": NavigateToNumberedBooks(); break;
-                case "BatchPrint":   NavigateTo<BatchPrintViewModel>(); break;
-                case "Distribution": NavigateTo<DistributionViewModel>(); break;
-                case "Performance":  NavigateToPerformance(); break;
-                case "Settings":     NavigateToSettings();    break;
-                case "Quotation":    NavigateToQuotation();   break;
-                case "Analytics":       NavigateToAnalytics();       break;
-                case "UserManagement":  NavigateToUserManagement();  break;
-                case "Reports":         NavigateToReports();         break;
-                case "LoadBalancer":       NavigateToLoadBalancer();       break;
-                case "ColorCalibration":  NavigateToColorCalibration();   break;
-                case "TemplateDesigner":  NavigateToTemplateDesigner();   break;
+                case "Performance": NavigateToPerformance(); break;
+                case "Settings": NavigateToSettings(); break;
+                case "ColorCalibration": NavigateToColorCalibration(); break;
+                case "TemplateDesigner": NavigateToTemplateDesigner(); break;
+                case "Imposition": NavigateToImposition(); break;
+                case "PageTools": NavigateToPageTools(); break;
             }
         }
 
@@ -196,9 +208,9 @@ namespace Apex.UI.ViewModels
         public void OpenLogViewer()
         {
             using var scope = _scopeFactory.CreateScope();
-            var logger    = scope.ServiceProvider.GetRequiredService<Apex.Core.Interfaces.ILoggerService>();
+            var logger = scope.ServiceProvider.GetRequiredService<Apex.Core.Interfaces.ILoggerService>();
             var logReader = scope.ServiceProvider.GetRequiredService<Apex.Core.Interfaces.ILogReaderService>();
-            var window    = new Views.LogViewerWindow(logger, logReader);
+            var window = new Views.LogViewerWindow(logger, logReader);
             window.Show();
         }
     }

@@ -28,7 +28,7 @@ namespace Apex.UI.Views
             }
 
             SelectedPrinterInfo = selectedPrinter;
-            
+
             NewPrinter = new Printer
             {
                 Name = selectedPrinter.Name,

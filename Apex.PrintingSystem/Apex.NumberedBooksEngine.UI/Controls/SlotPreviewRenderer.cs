@@ -172,7 +172,7 @@ namespace Apex.NumberedBooksEngine.UI.Controls
             for (int i = 0; i < slot.CopyStyles.Length && i < 4; i++)
             {
                 var style = slot.CopyStyles[i];
-                
+
                 var indicator = new Border
                 {
                     Width = 20,

@@ -9,5 +9,6 @@ namespace Apex.Core.Enums
         Failed,
         Error,
         Cancelled,
-        Paused}
+        Paused
+    }
 }

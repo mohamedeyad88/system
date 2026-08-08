@@ -180,7 +180,7 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
             var cycles = new List<CycleJob>
             {
                 CreateCycleJob(1, 1L, CycleStatus.CompletedPhysical, "parent-id"),
-                CreateCycleJob(2, 2L, CycleStatus.Failed, "error-message"),
+                CreateCycleJob(2, 2L, CycleStatus.Failed, null, "error-message"),
                 CreateCycleJob(3, 3L, CycleStatus.Pending, null)
             };
 

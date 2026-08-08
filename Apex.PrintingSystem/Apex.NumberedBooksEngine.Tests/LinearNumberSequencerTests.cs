@@ -21,7 +21,7 @@ namespace Apex.NumberedBooksEngine.Tests
 
             // Assert
             Assert.Equal(3, assignments.Count);
-            
+
             // Page 0: 1, 2, 3, 4
             Assert.Equal(0, assignments[0].SheetIndex);
             Assert.Equal(4, assignments[0].SlotNumbers.Count);
@@ -52,7 +52,7 @@ namespace Apex.NumberedBooksEngine.Tests
 
             // Assert
             Assert.Equal(3, assignments.Count);
-            
+
             // Last page should only have 2 slots filled
             Assert.Equal(2, assignments[2].SlotNumbers.Count);
             Assert.Equal(9, assignments[2].SlotNumbers[0].Number);
@@ -133,7 +133,7 @@ namespace Apex.NumberedBooksEngine.Tests
 
             // Assert
             Assert.Equal(3, assignments.Count);
-            
+
             // Sheet 0: positions 0,1,2,3 get numbers 1,4,7,10 (for cutting mode)
             // Sheet 1: positions get 2,5,8,11
             // Sheet 2: positions get 3,6,9,12

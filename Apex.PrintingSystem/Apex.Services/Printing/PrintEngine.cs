@@ -97,13 +97,13 @@ namespace Apex.Services.Printing
                         memoryStream.Position = 0;
                         imageCopy = System.Drawing.Image.FromStream(memoryStream);
                     }
-                    
+
                     // Use ManualResetEvent to ensure image isn't disposed until printing completes
                     using (var printCompleted = new System.Threading.ManualResetEvent(false))
                     using (PrintDocument pd = new PrintDocument())
                     {
                         pd.PrinterSettings.PrinterName = printerName;
-                        
+
                         pd.PrintPage += (s, e) =>
                         {
                             try
@@ -113,7 +113,7 @@ namespace Apex.Services.Printing
                                     Rectangle m = e.MarginBounds;
                                     if (imageCopy.Width > imageCopy.Height)
                                         m = new Rectangle(m.Top, m.Left, m.Height, m.Width); // Rotate logic placeholder
-                                    
+
                                     e.Graphics.DrawImage(imageCopy, e.MarginBounds);
                                 }
                             }
@@ -122,18 +122,18 @@ namespace Apex.Services.Printing
                                 // Error in PrintPage - will be caught by outer try-catch
                             }
                         };
-                        
+
                         pd.EndPrint += (s, e) =>
                         {
                             // Signal that printing is complete
                             printCompleted.Set();
                         };
-                        
+
                         pd.Print();
-                        
+
                         // Wait for printing to complete before disposing image
                         bool completed = printCompleted.WaitOne(TimeSpan.FromSeconds(30));
-                        
+
                         return completed;
                     }
                 }
@@ -170,24 +170,24 @@ namespace Apex.Services.Printing
                 {
                     // Try to read the file as text and print it
                     var text = File.ReadAllText(filePath);
-                    
+
                     using var pd = new PrintDocument();
                     pd.PrinterSettings.PrinterName = printerName;
                     pd.DocumentName = Path.GetFileName(filePath);
-                    
+
                     var lines = text.Split('\n');
                     int lineIndex = 0;
                     int linesPerPage = 50;
-                    
+
                     pd.PrintPage += (s, e) =>
                     {
                         if (e.Graphics == null) return;
-                        
+
                         using var font = new Font("Consolas", 10);
                         float y = e.MarginBounds.Top;
                         float lineHeight = font.GetHeight(e.Graphics);
                         int printedLines = 0;
-                        
+
                         while (lineIndex < lines.Length && printedLines < linesPerPage)
                         {
                             e.Graphics.DrawString(lines[lineIndex], font, Brushes.Black, e.MarginBounds.Left, y);
@@ -195,10 +195,10 @@ namespace Apex.Services.Printing
                             lineIndex++;
                             printedLines++;
                         }
-                        
+
                         e.HasMorePages = lineIndex < lines.Length;
                     };
-                    
+
                     pd.Print();
                     return true;
                 }

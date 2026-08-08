@@ -139,18 +139,24 @@ namespace Apex.NumberedBooksEngine.UI.Controls
             {
                 tick = new Line
                 {
-                    X1 = pos, Y1 = thickness,
-                    X2 = pos, Y2 = thickness - tickHeight,
-                    Stroke = brush, StrokeThickness = 1
+                    X1 = pos,
+                    Y1 = thickness,
+                    X2 = pos,
+                    Y2 = thickness - tickHeight,
+                    Stroke = brush,
+                    StrokeThickness = 1
                 };
             }
             else
             {
                 tick = new Line
                 {
-                    X1 = thickness, Y1 = pos,
-                    X2 = thickness - tickHeight, Y2 = pos,
-                    Stroke = brush, StrokeThickness = 1
+                    X1 = thickness,
+                    Y1 = pos,
+                    X2 = thickness - tickHeight,
+                    Y2 = pos,
+                    Stroke = brush,
+                    StrokeThickness = 1
                 };
             }
 
@@ -181,7 +187,7 @@ namespace Apex.NumberedBooksEngine.UI.Controls
                 // Vertical ruler: labels rotated correctly, positioned at left side
                 label.RenderTransform = new RotateTransform(-90);
                 label.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
-                
+
                 // Position: left side of ruler, centered vertically
                 Canvas.SetLeft(label, thickness / 2 - label.DesiredSize.Height / 2);
                 Canvas.SetTop(label, pos - label.DesiredSize.Width / 2);

@@ -50,10 +50,10 @@ namespace Apex.NumberedBooksEngine.Core
     )
     {
         public static MultiCopyOptions Disabled => new(false, Array.Empty<CopyStyleDefinition>(), false);
-        
+
         public static MultiCopyOptions Default => new(
-            true, 
-            CopyStyleDefinition.CreateDefaults(), 
+            true,
+            CopyStyleDefinition.CreateDefaults(),
             true
         );
     }

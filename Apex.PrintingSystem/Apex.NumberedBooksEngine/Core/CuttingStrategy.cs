@@ -45,7 +45,7 @@ namespace Apex.NumberedBooksEngine.Core
                 {
                     // Imposition formula: value = start + pageIndex + slotIndex * totalPages
                     long value = startNumber + pageIndex + (slotIndex * totalPages);
-                    
+
                     // Check if value is within the requested range
                     // Value must be >= startNumber and < endNumber
                     if (value >= startNumber && value < endNumber)

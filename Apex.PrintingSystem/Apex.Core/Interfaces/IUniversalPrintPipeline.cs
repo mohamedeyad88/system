@@ -7,10 +7,10 @@ namespace Apex.Core.Interfaces
     {
         // Main entry point for any file
         Task<PrintJob> ProcessAndQueueJobAsync(string filePath, string printerName, int copies = 1);
-        
+
         // Main entry point with custom settings
         Task<PrintJob> ProcessAndQueueJobAsync(string filePath, string printerName, PrintJobSettings settings);
-        
+
         // Validation check
         bool IsFileSupported(string filePath);
     }

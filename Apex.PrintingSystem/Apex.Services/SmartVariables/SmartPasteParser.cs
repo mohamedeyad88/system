@@ -8,18 +8,18 @@ namespace Apex.Services.SmartVariables
 {
     public class ParseOptions
     {
-        public bool HasHeader            { get; set; } = true;
-        public bool TrimWhitespace       { get; set; } = true;
-        public bool IgnoreEmptyRows      { get; set; } = true;
+        public bool HasHeader { get; set; } = true;
+        public bool TrimWhitespace { get; set; } = true;
+        public bool IgnoreEmptyRows { get; set; } = true;
         public bool AllValuesAsRawString { get; set; } = true;
         /// <summary>Force a specific separator; null = auto-detect.</summary>
-        public char? ForceSeparator      { get; set; } = null;
+        public char? ForceSeparator { get; set; } = null;
     }
 
     public interface ISmartPasteParser
     {
         SmartDataSource Parse(string rawText, ParseOptions? options = null);
-        char             DetectSeparator(string text);
+        char DetectSeparator(string text);
     }
 
     public class SmartPasteParser : ISmartPasteParser
@@ -44,8 +44,8 @@ namespace Apex.Services.SmartVariables
                 "‬" + // Pop Directional Formatting
                 "‭" + // Left-to-Right Override
                 "‮" + // Right-to-Left Override
-                // U+2028 Line Separator added below at runtime
-                // U+2029 Paragraph Separator added below at runtime
+                      // U+2028 Line Separator added below at runtime
+                      // U+2029 Paragraph Separator added below at runtime
                 "�";  // Replacement Character
 
             var set = new HashSet<char>();
@@ -70,12 +70,12 @@ namespace Apex.Services.SmartVariables
 
             var source = new SmartDataSource
             {
-                RawPastedText        = rawText,
-                HasHeader            = options.HasHeader,
-                TrimWhitespace       = options.TrimWhitespace,
-                IgnoreEmptyRows      = options.IgnoreEmptyRows,
+                RawPastedText = rawText,
+                HasHeader = options.HasHeader,
+                TrimWhitespace = options.TrimWhitespace,
+                IgnoreEmptyRows = options.IgnoreEmptyRows,
                 AllValuesAsRawString = options.AllValuesAsRawString,
-                ParsedAt             = DateTime.Now,
+                ParsedAt = DateTime.Now,
             };
 
             if (string.IsNullOrWhiteSpace(rawText))
@@ -108,14 +108,14 @@ namespace Apex.Services.SmartVariables
 
             if (options.HasHeader)
             {
-                columns       = ParseLine(nonEmptyLines[0], sep, options.TrimWhitespace);
-                columns       = NormalizeHeaders(columns);
+                columns = ParseLine(nonEmptyLines[0], sep, options.TrimWhitespace);
+                columns = NormalizeHeaders(columns);
                 dataStartLine = 1;
             }
             else
             {
                 var firstRow = ParseLine(nonEmptyLines[0], sep, options.TrimWhitespace);
-                columns       = firstRow.Select((_, i) => "عمود" + (i + 1)).ToList();
+                columns = firstRow.Select((_, i) => "عمود" + (i + 1)).ToList();
                 // "عمودN" — Arabic for "ColumnN"
                 dataStartLine = 0;
             }
@@ -172,10 +172,10 @@ namespace Apex.Services.SmartVariables
 
             string sample = text.Length > 2000 ? text[..2000] : text;
 
-            int tabs       = CountChar(sample, '\t');
-            int commas     = CountChar(sample, ',');
+            int tabs = CountChar(sample, '\t');
+            int commas = CountChar(sample, ',');
             int semicolons = CountChar(sample, ';');
-            int pipes      = CountChar(sample, '|');
+            int pipes = CountChar(sample, '|');
 
             // Tab wins decisively — Excel and Google Sheets always produce tabs
             if (tabs > 0)
@@ -200,9 +200,9 @@ namespace Apex.Services.SmartVariables
                 return fields;
             }
 
-            var  sb       = new StringBuilder();
+            var sb = new StringBuilder();
             bool inQuotes = false;
-            int  i        = 0;
+            int i = 0;
 
             while (i < line.Length)
             {
@@ -261,7 +261,7 @@ namespace Apex.Services.SmartVariables
         internal List<string> NormalizeHeaders(List<string> raw)
         {
             var result = new List<string>(raw.Count);
-            var seen   = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            var seen = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
             for (int i = 0; i < raw.Count; i++)
             {
@@ -273,7 +273,7 @@ namespace Apex.Services.SmartVariables
                 if (seen.TryGetValue(h, out int count))
                 {
                     seen[h] = count + 1;
-                    h       = h + "_" + (count + 1);
+                    h = h + "_" + (count + 1);
                 }
                 else
                 {

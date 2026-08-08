@@ -3,7 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:Apex.UI.ViewModels"
              xmlns:converters="clr-namespace:Apex.UI.Converters"
-             FlowDirection="RightToLeft"
+             xmlns:controls="clr-namespace:Apex.UI.Controls"
+             xmlns:svc="clr-namespace:Apex.UI.Services"
+             FlowDirection="{Binding Source={x:Static svc:LocalizationService.Instance},
+                                     Path=FlowDirection, Mode=OneWay}"
+             Loaded="SmartVariablesView_Loaded"
              Background="#0F172A">
 
     <UserControl.Resources>
@@ -12,6 +16,8 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <converters:InverseBoolConverter    x:Key="InverseBool"/>
         <converters:NullToVisibilityConverter x:Key="NullToCollapsed"/>
+        <converters:NullToBoolConverter x:Key="NotNullToBool"/>
+        <converters:NullToVisibleConverter x:Key="NullToVisible"/>
         <converters:NonEmptyStringToVisibilityConverter x:Key="EmptyToCollapsed"/>
 
         <!-- ── Shared styles ─────────────────────────────────────────────────── -->
@@ -644,17 +650,53 @@
                         </Border>
                     </Grid>
 
-                    <!-- RIGHT: Canvas preview placeholder -->
+                    <!-- RIGHT: live template preview.
+                         TemplatePreviewControl paints through TemplatePainter — the
+                         same code path the PNG/PDF export uses — so what is shown here
+                         is the output itself, not a XAML look-alike of it. -->
                     <Border Grid.Column="1" Background="#1E293B" CornerRadius="8" BorderBrush="#334155" BorderThickness="1">
-                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <TextBlock Text="👁" FontSize="48" HorizontalAlignment="Center" Opacity="0.3"/>
-                            <TextBlock Text="معاينة القالب مع بيانات السجل الحالي"
-                                       Foreground="#64748B" FontSize="13"
-                                       HorizontalAlignment="Center" Margin="0,8,0,0"/>
-                            <TextBlock Text="(يتطلب ربط المتغيرات أولاً)"
-                                       Foreground="#475569" FontSize="11"
-                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
-                        </StackPanel>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- The rendered record -->
+                            <Viewbox Grid.Row="0" Margin="16" Stretch="Uniform" StretchDirection="DownOnly"
+                                     Visibility="{Binding CurrentRenderedTemplate,
+                                                  Converter={StaticResource NullToCollapsed}}">
+                                <controls:TemplatePreviewControl
+                                    x:Name="TemplatePreviewRoot"
+                                    TemplateSource="{Binding CurrentRenderedTemplate}"/>
+                            </Viewbox>
+
+                            <!-- Shown until there is something to preview -->
+                            <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        Visibility="{Binding CurrentRenderedTemplate,
+                                                     Converter={StaticResource NullToVisible}}">
+                                <TextBlock Text="👁" FontSize="48" HorizontalAlignment="Center" Opacity="0.3"/>
+                                <TextBlock Text="معاينة القالب مع بيانات السجل الحالي"
+                                           Foreground="#64748B" FontSize="13"
+                                           HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                <TextBlock Text="(يتطلب ربط المتغيرات أولاً)"
+                                           Foreground="#475569" FontSize="11"
+                                           HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                            </StackPanel>
+
+                            <!-- Export the record on screen -->
+                            <StackPanel Grid.Row="1" Orientation="Horizontal"
+                                        HorizontalAlignment="Center" Margin="0,0,0,12">
+                                <Button x:Name="BtnExportPng"
+                                        Content="🖼 حفظ السجل الحالي PNG"
+                                        Style="{StaticResource ActionBtn}"
+                                        IsEnabled="{Binding CurrentRenderedTemplate,
+                                                    Converter={StaticResource NotNullToBool}}"/>
+                                <TextBlock Text="{Binding ExportPreviewStatus}"
+                                           Foreground="{Binding ExportPreviewStatusColor}"
+                                           FontSize="11" VerticalAlignment="Center"
+                                           Margin="12,0,0,0" TextWrapping="Wrap" MaxWidth="260"/>
+                            </StackPanel>
+                        </Grid>
                     </Border>
                 </Grid>
             </TabItem>

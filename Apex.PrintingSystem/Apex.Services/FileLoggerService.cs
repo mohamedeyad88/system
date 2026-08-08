@@ -88,7 +88,7 @@ namespace Apex.Services
                 try
                 {
                     var logPath = GetTodayLogPath();
-                    
+
                     // Check file size and rotate if needed
                     if (File.Exists(logPath) && new FileInfo(logPath).Length > MaxFileSizeBytes)
                     {
@@ -99,7 +99,7 @@ namespace Apex.Services
                     var json = JsonSerializer.Serialize(entry);
                     // Simple Obfuscation (Base64) - In production use AES
                     var encryptedJson = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
-                    
+
                     var line = $"[{entry.Timestamp:HH:mm:ss}] [{entry.Level}] [{entry.CorrelationId}] {entry.Message}";
                     if (entry.Exception != null) line += $" [Ex: {entry.Exception.GetType().Name}]";
 
@@ -230,7 +230,7 @@ namespace Apex.Services
         private bool TryParseLogLine(string line, out LogEntry entry)
         {
             entry = new LogEntry();
-            
+
             try
             {
                 // Simple parsing - [HH:mm:ss] [Level] [CorrelationId] Message

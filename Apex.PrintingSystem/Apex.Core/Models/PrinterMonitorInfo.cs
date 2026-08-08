@@ -10,37 +10,37 @@ namespace Apex.Core.Models
     {
         [ObservableProperty]
         private string _name = string.Empty;
-        
+
         [ObservableProperty]
         private string _status = "Unknown"; // Online, Offline, Busy
-        
+
         [ObservableProperty]
         private bool _isSelected;
-        
+
         [ObservableProperty]
         private int _queueLength;
-        
+
         [ObservableProperty]
         private bool _supportsColor;
-        
+
         [ObservableProperty]
         private bool _supportsDuplex;
-        
+
         [ObservableProperty]
         private List<string> _paperSizes = new();
-        
+
         [ObservableProperty]
         private DateTime? _lastPrintTime;
-        
+
         [ObservableProperty]
         private string? _errorMessage;
-        
+
         [ObservableProperty]
         private string? _driver;
-        
+
         [ObservableProperty]
         private string? _location;
-        
+
         public string StatusIcon => Status switch
         {
             "Online" => "🟢",
@@ -48,7 +48,7 @@ namespace Apex.Core.Models
             "Busy" => "🟡",
             _ => "⚪"
         };
-        
+
         public string CapabilitiesText
         {
             get

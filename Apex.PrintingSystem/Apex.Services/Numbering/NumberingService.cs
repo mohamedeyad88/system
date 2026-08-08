@@ -53,7 +53,9 @@ namespace Apex.Services.Numbering
             IProgress<ProgressInfo>? progress = null,
             CancellationToken ct = default,
             NumberingMode? numberingMode = null,
-            bool useSmartPrinting = true)  // true = Interleaved (Page→Copies), false = Batch (Copy→Pages)
+            bool useSmartPrinting = true,
+            bool useArabicDigits = false,
+            NumberFormatOptions? numberFormat = null)
         {
             var copyTypes = new List<CopyType> { CopyType.Original };
             for (int i = 1; i < copiesPerPage; i++)
@@ -62,10 +64,10 @@ namespace Apex.Services.Numbering
             }
 
             var copyTrayMappingDict = copyTrayMapping ?? new Dictionary<int, PaperSourceKind>();
-            
+
             // Determine NumberingMode from parameter or default to Auto
             var mode = numberingMode ?? NumberingMode.Auto;
-            
+
             var options = new NumberedPrintJobOptions(
                 PrinterName: printerName,
                 TemplatePath: templatePath,
@@ -81,7 +83,9 @@ namespace Apex.Services.Numbering
                 CopyTrayMapping: copyTrayMappingDict,
                 ScaleMode: scaleMode,
                 NumberingMode: mode,
-                UseSmartPrinting: useSmartPrinting  // Pass printing mode to orchestrator
+                UseSmartPrinting: useSmartPrinting,
+                UseArabicDigits: useArabicDigits,
+                NumberFormat: numberFormat
             );
 
             return await _orchestrator.RunStreamingPrintJobAsync(options, progress, ct);
@@ -122,7 +126,7 @@ namespace Apex.Services.Numbering
                     dpi,
                     ct,
                     jobId);
-                
+
                 result.JobId = jobId;
                 return result;
             }

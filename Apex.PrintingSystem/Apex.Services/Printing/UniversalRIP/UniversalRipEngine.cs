@@ -78,7 +78,7 @@ namespace Apex.Services.Printing.UniversalRIP
                 // ═══════════════════════════════════════════════════════════════════
                 Debug.WriteLine("[UniversalRIP] Stage 2: Detecting printer capabilities...");
                 var printerProfile = await _capabilityDetector.DetectAsync(printerName);
-                
+
                 result.PrinterProfile = printerProfile;
                 result.DetectedLanguage = printerProfile.PrimaryLanguage;
 
@@ -111,7 +111,7 @@ namespace Apex.Services.Printing.UniversalRIP
                 Debug.WriteLine($"[UniversalRIP] Error: {ex.Message}");
                 result.Success = false;
                 result.ErrorMessage = ex.Message;
-                
+
                 // Attempt recovery
                 return await _recoverySystem.AttemptRecoveryAsync(
                     pdfPath,
@@ -140,7 +140,7 @@ namespace Apex.Services.Printing.UniversalRIP
                     using var pdfDocument = PdfiumViewer.PdfDocument.Load(pdfPath);
                     int pageCount = pdfDocument.PageCount;
                     result.TotalPages = pageCount;
-                    
+
                     // ═══════════════════════════════════════════════════════════════════
                     // CRITICAL LOGGING: Track page count
                     // ═══════════════════════════════════════════════════════════════════
@@ -152,7 +152,7 @@ namespace Apex.Services.Printing.UniversalRIP
                     for (int pageIndex = 0; pageIndex < pageCount; pageIndex++)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
-                        
+
                         PrintLogger.Warning(
                             "[UniversalRIP] ========== PROCESSING PAGE {Page} of {Total} ==========",
                             pageIndex + 1, pageCount);
@@ -200,7 +200,7 @@ namespace Apex.Services.Printing.UniversalRIP
                                 Debug.WriteLine($"[UniversalRIP] Post-render Quality Gate failed for page {pageIndex}");
                                 renderResult.Dispose();
                                 renderResult = null;
-                                
+
                                 // Retry with fallback strategy
                                 pageDecision.Strategy = RenderStrategy.FallbackRaster;
                                 pageDecision.RequiredDpi = 300;
@@ -219,7 +219,7 @@ namespace Apex.Services.Printing.UniversalRIP
                                 SourcePdfPath = pdfPath,
                                 IsNativeVector = renderResult.RequiresNativeOutput
                             };
-                            
+
                             var outputBytes = await _outputStrategy.GenerateSafeOutputAsync(
                                 universalRenderResult,
                                 pageDecision,
@@ -251,19 +251,19 @@ namespace Apex.Services.Printing.UniversalRIP
                                 {
                                     retryCount++;
                                     PrintLogger.Warning(
-                                        "[UniversalRIP] Print attempt {Attempt}/{Max} failed for page {Page}. Error: {Error}", 
+                                        "[UniversalRIP] Print attempt {Attempt}/{Max} failed for page {Page}. Error: {Error}",
                                         retryCount, maxRetries, pageIndex + 1, sendEx.Message);
-                                    
+
                                     if (retryCount >= maxRetries)
                                     {
-                                        PrintLogger.Error(sendEx, 
-                                            "[UniversalRIP] Page {Page} FAILED after {MaxRetries} attempts. Printer: '{Printer}'", 
+                                        PrintLogger.Error(sendEx,
+                                            "[UniversalRIP] Page {Page} FAILED after {MaxRetries} attempts. Printer: '{Printer}'",
                                             pageIndex + 1, maxRetries, printerName);
                                         result.FailedPages.Add(pageIndex);
                                         result.Errors.Add($"Page {pageIndex + 1}: {sendEx.Message}");
                                         break; // Skip this page, continue with next
                                     }
-                                    
+
                                     // PRIORITY: Speed - Minimal retry delay (max 200ms)
                                     await Task.Delay(Math.Min(200 * retryCount, 200), cancellationToken);
                                 }
@@ -275,7 +275,7 @@ namespace Apex.Services.Printing.UniversalRIP
                                 for (int copy = 1; copy < copies; copy++)
                                 {
                                     cancellationToken.ThrowIfCancellationRequested();
-                                    
+
                                     // Re-render for each copy
                                     var copyResult = await _renderStrategy.RenderPageAsync(
                                         pdfPath,
@@ -290,7 +290,7 @@ namespace Apex.Services.Printing.UniversalRIP
                                         SourcePdfPath = pdfPath,
                                         IsNativeVector = copyResult.RequiresNativeOutput
                                     };
-                                    
+
                                     var copyOutput = await _outputStrategy.GenerateSafeOutputAsync(
                                         copyUniversalResult,
                                         pageDecision,
@@ -348,21 +348,21 @@ namespace Apex.Services.Printing.UniversalRIP
                 {
                     // Use Windows Raw Printing API - now properly throws exceptions with Win32 details
                     SendRawDataToPrinter(printerName, data, language.ToString());
-                    PrintLogger.Info("[UniversalRIP] Successfully sent {Bytes} bytes to printer '{Printer}' as {Language}", 
+                    PrintLogger.Info("[UniversalRIP] Successfully sent {Bytes} bytes to printer '{Printer}' as {Language}",
                         data.Length, printerName, language);
                 }
                 catch (Win32Exception win32Ex)
                 {
                     // Win32 API error - already logged by RawPrinterHelper
-                    PrintLogger.Error(win32Ex, 
-                        "[UniversalRIP] Win32 print API failed. Printer: '{Printer}', Language: {Language}, Error: {Error}", 
+                    PrintLogger.Error(win32Ex,
+                        "[UniversalRIP] Win32 print API failed. Printer: '{Printer}', Language: {Language}, Error: {Error}",
                         printerName, language, win32Ex.NativeErrorCode);
                     throw;
                 }
                 catch (Exception ex)
                 {
-                    PrintLogger.Error(ex, 
-                        "[UniversalRIP] Print submission failed. Printer: '{Printer}', Language: {Language}, Bytes: {Bytes}", 
+                    PrintLogger.Error(ex,
+                        "[UniversalRIP] Print submission failed. Printer: '{Printer}', Language: {Language}, Bytes: {Bytes}",
                         printerName, language, data.Length);
                     throw;
                 }
@@ -373,18 +373,18 @@ namespace Apex.Services.Printing.UniversalRIP
         {
             // FIXED: Use the correct RawPrinterHelper.SendBytesToPrinter method
             // This method handles ALL Win32 API calls correctly with proper error handling
-            
+
             // Allocate unmanaged memory for the data
             IntPtr pUnmanagedBytes = Marshal.AllocCoTaskMem(data.Length);
             try
             {
                 // Copy byte array to unmanaged memory
                 Marshal.Copy(data, 0, pUnmanagedBytes, data.Length);
-                
+
                 // Send to printer with correct parameters
                 return Apex.Services.Helpers.RawPrinterHelper.SendBytesToPrinter(
-                    printerName, 
-                    pUnmanagedBytes, 
+                    printerName,
+                    pUnmanagedBytes,
                     data.Length);
             }
             finally
@@ -410,7 +410,7 @@ namespace Apex.Services.Printing.UniversalRIP
         public List<int> FailedPages { get; set; } = new();
         public List<string> Errors { get; set; } = new();
         public string? ErrorMessage { get; set; }
-        
+
         public UniversalPrinterProfile? PrinterProfile { get; set; }
         public PrintLanguage DetectedLanguage { get; set; }
         public UniversalRenderDecision? Decision { get; set; }

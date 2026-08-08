@@ -65,33 +65,46 @@ namespace Apex.Services
 
             try
             {
-                // WMI can be slow, ensure we dispose resources
-                using var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Printer");
-                using var printers = searcher.Get();
+                // EnumerationOptions with a timeout prevents WMI from hanging and
+                // reduces the chance of native AccessViolationException on slow systems.
+                var wmiOptions = new EnumerationOptions
+                {
+                    Timeout = TimeSpan.FromSeconds(8),
+                    ReturnImmediately = false
+                };
 
-                // Get Job Counts
-                var jobCounts = new Dictionary<string, int>();
+                // Get Job Counts first (separate searcher — dispose before printer loop)
+                var jobCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
                 try
                 {
-                    using var jobSearcher = new ManagementObjectSearcher("SELECT Name FROM Win32_PrintJob");
+                    using var jobSearcher = new ManagementObjectSearcher(
+                        "root\\cimv2", "SELECT Name FROM Win32_PrintJob", wmiOptions);
                     using var jobs = jobSearcher.Get();
-                    foreach (ManagementObject job in jobs)
+                    foreach (ManagementBaseObject baseObj in jobs)
                     {
-                        // Name format is usually "PrinterName, JobId"
+                        using var job = (ManagementObject)baseObj;
                         string jobName = job["Name"]?.ToString() ?? "";
                         var parts = jobName.Split(',');
                         if (parts.Length > 0)
                         {
                             string printerName = parts[0].Trim();
-                            if (!jobCounts.ContainsKey(printerName)) jobCounts[printerName] = 0;
+                            jobCounts.TryAdd(printerName, 0);
                             jobCounts[printerName]++;
                         }
                     }
                 }
-                catch { /* Ignore job query errors */ }
+                catch (ManagementException) { /* Ignore job query errors */ }
+                catch (COMException) { /* WMI COM error — skip job counts */ }
 
-                foreach (ManagementObject printer in printers)
+                using var searcher = new ManagementObjectSearcher(
+                    "root\\cimv2", "SELECT * FROM Win32_Printer", wmiOptions);
+                using var printers = searcher.Get();
+
+                foreach (ManagementBaseObject baseObj in printers)
                 {
+                    // Each ManagementObject wraps a COM RCW — must be disposed individually.
+                    using var printer = (ManagementObject)baseObj;
+
                     string name = printer["Name"]?.ToString() ?? string.Empty;
                     string status = "Online";
                     bool isOffline = false;
@@ -112,15 +125,20 @@ namespace Apex.Services
                         else if (errorState > 2 && errorState != 65535) { status = "Error"; hasError = true; }
                     }
 
-                    int queueLength = jobCounts.ContainsKey(name) ? jobCounts[name] : 0;
+                    int queueLength = jobCounts.TryGetValue(name, out int cnt) ? cnt : 0;
 
-                    // Fire event
                     var args = new PrinterStatusEventArgs(name, status, isOffline, hasError, queueLength);
                     PrinterStatusChanged?.Invoke(this, args);
-                    
-                    // Update cache
                     _currentStatuses[name] = args;
                 }
+            }
+            catch (ManagementException ex)
+            {
+                _logger.Log(LogLevel.Warning, $"WMI ManagementException: {ex.ErrorCode}", "PrinterMonitoringService", "UpdatePrinterStatuses", ex);
+            }
+            catch (COMException ex)
+            {
+                _logger.Log(LogLevel.Warning, $"WMI COMException: 0x{ex.HResult:X8}", "PrinterMonitoringService", "UpdatePrinterStatuses", ex);
             }
             catch (Exception ex)
             {

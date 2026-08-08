@@ -11,13 +11,13 @@ namespace Apex.Services.Printing.Arabic
     /// </summary>
     public class ArabicFontInfo
     {
-        public string FamilyName              { get; set; } = "";
-        public string FilePath                { get; set; } = "";
-        public bool   IsAvailable             { get; set; }
-        public bool   SupportsArabic          { get; set; }
-        public bool   SupportsHarakat         { get; set; }  // Tashkeel / diacritics
-        public bool   SupportsPresentationForms { get; set; } // FE70–FEFF block
-        public int    Priority                { get; set; }   // Lower = higher priority
+        public string FamilyName { get; set; } = "";
+        public string FilePath { get; set; } = "";
+        public bool IsAvailable { get; set; }
+        public bool SupportsArabic { get; set; }
+        public bool SupportsHarakat { get; set; }  // Tashkeel / diacritics
+        public bool SupportsPresentationForms { get; set; } // FE70–FEFF block
+        public int Priority { get; set; }   // Lower = higher priority
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ namespace Apex.Services.Printing.Arabic
 
         // ── State ─────────────────────────────────────────────────────────────────
         private List<ArabicFontInfo> _chain = new List<ArabicFontInfo>();
-        private readonly object      _lock  = new object();
+        private readonly object _lock = new object();
 
         // ── Known font definitions ─────────────────────────────────────────────────
 
@@ -44,35 +44,35 @@ namespace Apex.Services.Printing.Arabic
         /// </summary>
         private static readonly Dictionary<string, KnownFontSpec> s_knownFonts
             = new Dictionary<string, KnownFontSpec>(StringComparer.OrdinalIgnoreCase)
-        {
-            // filename (no ext)          family name                P  Arabic Harakat PForm
-            ["tradbdo"]    = new("Traditional Arabic",               1, true, false, true),
-            ["trado"]      = new("Traditional Arabic",               1, true, false, true),
-            ["arabtype"]   = new("Arabic Typesetting",               2, true, false, true),
-            ["aldhabi"]    = new("Aldhabi",                          3, true, true,  true),
-            ["alfirat"]    = new("Al Furat",                         4, true, true,  true),
-            ["sakkal"]     = new("Sakkal Majalla",                   5, true, true,  true),
-            ["majalla"]    = new("Sakkal Majalla",                   5, true, true,  true),
-            ["majallabold"]= new("Sakkal Majalla Bold",              5, true, true,  true),
-            ["segoeui"]    = new("Segoe UI",                         6, true, false, true),
-            ["segoeuib"]   = new("Segoe UI Bold",                    6, true, false, true),
-            ["tahoma"]     = new("Tahoma",                           7, true, false, true),
-            ["tahomabd"]   = new("Tahoma Bold",                      7, true, false, true),
-            ["calibri"]    = new("Calibri",                          8, true, false, true),
-            ["calibrib"]   = new("Calibri Bold",                     8, true, false, true),
-            ["arial"]      = new("Arial",                            9, true, false, true),
-            ["arialbd"]    = new("Arial Bold",                       9, true, false, true),
-            ["arialuni"]   = new("Arial Unicode MS",                 9, true, true,  true),
-            ["times"]      = new("Times New Roman",                 10, true, false, false),
-            ["timesbd"]    = new("Times New Roman Bold",            10, true, false, false),
-        };
+            {
+                // filename (no ext)          family name                P  Arabic Harakat PForm
+                ["tradbdo"] = new("Traditional Arabic", 1, true, false, true),
+                ["trado"] = new("Traditional Arabic", 1, true, false, true),
+                ["arabtype"] = new("Arabic Typesetting", 2, true, false, true),
+                ["aldhabi"] = new("Aldhabi", 3, true, true, true),
+                ["alfirat"] = new("Al Furat", 4, true, true, true),
+                ["sakkal"] = new("Sakkal Majalla", 5, true, true, true),
+                ["majalla"] = new("Sakkal Majalla", 5, true, true, true),
+                ["majallabold"] = new("Sakkal Majalla Bold", 5, true, true, true),
+                ["segoeui"] = new("Segoe UI", 6, true, false, true),
+                ["segoeuib"] = new("Segoe UI Bold", 6, true, false, true),
+                ["tahoma"] = new("Tahoma", 7, true, false, true),
+                ["tahomabd"] = new("Tahoma Bold", 7, true, false, true),
+                ["calibri"] = new("Calibri", 8, true, false, true),
+                ["calibrib"] = new("Calibri Bold", 8, true, false, true),
+                ["arial"] = new("Arial", 9, true, false, true),
+                ["arialbd"] = new("Arial Bold", 9, true, false, true),
+                ["arialuni"] = new("Arial Unicode MS", 9, true, true, true),
+                ["times"] = new("Times New Roman", 10, true, false, false),
+                ["timesbd"] = new("Times New Roman Bold", 10, true, false, false),
+            };
 
         private record KnownFontSpec(
             string FamilyName,
-            int    Priority,
-            bool   Arabic,
-            bool   Harakat,
-            bool   PresentationForms);
+            int Priority,
+            bool Arabic,
+            bool Harakat,
+            bool PresentationForms);
 
         // ── Construction ─────────────────────────────────────────────────────────
 
@@ -138,10 +138,10 @@ namespace Apex.Services.Printing.Arabic
 
                 // Use GDI GetGlyphIndices to test presence
                 using var bmp = new System.Drawing.Bitmap(1, 1);
-                using var g   = System.Drawing.Graphics.FromImage(bmp);
-                IntPtr hdc  = g.GetHdc();
+                using var g = System.Drawing.Graphics.FromImage(bmp);
+                IntPtr hdc = g.GetHdc();
                 IntPtr hFont = font.ToHfont();
-                IntPtr prev  = SelectObject(hdc, hFont);
+                IntPtr prev = SelectObject(hdc, hFont);
                 try
                 {
                     ushort[] indices = new ushort[1];
@@ -262,7 +262,7 @@ namespace Apex.Services.Printing.Arabic
         private static List<ArabicFontInfo> DiscoverFonts()
         {
             var result = new List<ArabicFontInfo>();
-            var seen   = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             string fontsDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts");
@@ -275,7 +275,7 @@ namespace Apex.Services.Printing.Arabic
 
             foreach (string filePath in fontFiles)
             {
-                string fileName  = Path.GetFileNameWithoutExtension(filePath);
+                string fileName = Path.GetFileNameWithoutExtension(filePath);
                 string lowerName = fileName.ToLowerInvariant();
 
                 // Check against known list first
@@ -286,13 +286,13 @@ namespace Apex.Services.Printing.Arabic
                     {
                         result.Add(new ArabicFontInfo
                         {
-                            FamilyName              = spec.FamilyName,
-                            FilePath                = filePath,
-                            IsAvailable             = true,
-                            SupportsArabic          = spec.Arabic,
-                            SupportsHarakat         = spec.Harakat,
+                            FamilyName = spec.FamilyName,
+                            FilePath = filePath,
+                            IsAvailable = true,
+                            SupportsArabic = spec.Arabic,
+                            SupportsHarakat = spec.Harakat,
                             SupportsPresentationForms = spec.PresentationForms,
-                            Priority                = spec.Priority
+                            Priority = spec.Priority
                         });
                     }
                     continue;
@@ -306,13 +306,13 @@ namespace Apex.Services.Printing.Arabic
                     {
                         result.Add(new ArabicFontInfo
                         {
-                            FamilyName              = familyName,
-                            FilePath                = filePath,
-                            IsAvailable             = true,
-                            SupportsArabic          = true,
-                            SupportsHarakat         = false,
+                            FamilyName = familyName,
+                            FilePath = filePath,
+                            IsAvailable = true,
+                            SupportsArabic = true,
+                            SupportsHarakat = false,
                             SupportsPresentationForms = true,
-                            Priority                = 20 // low priority for unknown fonts
+                            Priority = 20 // low priority for unknown fonts
                         });
                     }
                 }
@@ -329,10 +329,10 @@ namespace Apex.Services.Printing.Arabic
         {
             // Remove trailing Bold/Italic/Bd/It suffixes
             string stripped = fileName
-                .Replace("Bd",   " Bold",   StringComparison.OrdinalIgnoreCase)
-                .Replace("It",   " Italic",  StringComparison.OrdinalIgnoreCase)
-                .Replace("-Bold",  " Bold",  StringComparison.OrdinalIgnoreCase)
-                .Replace("-Italic"," Italic",StringComparison.OrdinalIgnoreCase)
+                .Replace("Bd", " Bold", StringComparison.OrdinalIgnoreCase)
+                .Replace("It", " Italic", StringComparison.OrdinalIgnoreCase)
+                .Replace("-Bold", " Bold", StringComparison.OrdinalIgnoreCase)
+                .Replace("-Italic", " Italic", StringComparison.OrdinalIgnoreCase)
                 .Trim();
 
             // Insert spaces before uppercase letters (PascalCase → words)

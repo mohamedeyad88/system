@@ -36,7 +36,7 @@ namespace Apex.NumberedBooksEngine.Core
                 {
                     // Imposition formula
                     long value = startNumber + sheetIndex + (slotIndex * totalSheets);
-                    
+
                     // Only include if within the requested range
                     if (value < startNumber + totalNumbers)
                     {

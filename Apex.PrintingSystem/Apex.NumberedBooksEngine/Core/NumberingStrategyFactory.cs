@@ -27,7 +27,7 @@ namespace Apex.NumberedBooksEngine.Core
         private static INumberingStrategy AutoDetect(BookJobOptions options)
         {
             var detectedMode = LayoutAutoDetector.DetectMode(options.Slots);
-            
+
             return detectedMode switch
             {
                 NumberingMode.Linear or NumberingMode.Shershara => new ShersharaStrategy(),

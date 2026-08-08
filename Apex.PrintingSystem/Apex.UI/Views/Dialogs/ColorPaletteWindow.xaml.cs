@@ -30,7 +30,7 @@ namespace Apex.UI.Views.Dialogs
 
         private void InitializePresetColors()
         {
-            var colors = _presetColors.Select(hex => 
+            var colors = _presetColors.Select(hex =>
             {
                 try
                 {
@@ -68,7 +68,7 @@ namespace Apex.UI.Views.Dialogs
 
             var color = Color.FromRgb(r, g, b);
             SelectedColor = $"#{r:X2}{g:X2}{b:X2}";
-            
+
             ColorPreview.Background = new SolidColorBrush(color);
             HexInput.Text = SelectedColor;
         }

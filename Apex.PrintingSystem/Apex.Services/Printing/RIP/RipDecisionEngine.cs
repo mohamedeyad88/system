@@ -161,16 +161,16 @@ namespace Apex.Services.Printing.RIP
             // Fallback to capabilities
             if (capabilities.SupportsPostScript)
                 return PrintLanguage.PostScript;
-            
+
             if (capabilities.SupportsPcl)
                 return PrintLanguage.PCL;
-            
+
             if (metadata.Vendor == PrinterVendor.Epson)
                 return PrintLanguage.ESCPage; // ESC/Page for Epson
-            
+
             if (capabilities.SupportsPdf)
                 return PrintLanguage.PDF;
-            
+
             // Fallback to PostScript (most universal)
             return PrintLanguage.PostScript;
         }

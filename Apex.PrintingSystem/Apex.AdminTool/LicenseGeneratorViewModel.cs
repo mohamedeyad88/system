@@ -13,12 +13,12 @@ namespace Apex.AdminTool
     public partial class LicenseGeneratorViewModel : ObservableObject
     {
         // ── Inputs ──────────────────────────────────────────────────────────
-        [ObservableProperty] private string _deviceId      = "";
-        [ObservableProperty] private string _customerName  = "";
-        [ObservableProperty] private string _orderRef      = "";
-        [ObservableProperty] private int    _licenseTypeIndex = 0;   // 0=Full 1=Pro
-        [ObservableProperty] private DateTime _expiryDate  = DateTime.Today.AddYears(1);
-        [ObservableProperty] private bool   _isPerpetual   = false;
+        [ObservableProperty] private string _deviceId = "";
+        [ObservableProperty] private string _customerName = "";
+        [ObservableProperty] private string _orderRef = "";
+        [ObservableProperty] private int _licenseTypeIndex = 0;   // 0=Full 1=Pro
+        [ObservableProperty] private DateTime _expiryDate = DateTime.Today.AddYears(1);
+        [ObservableProperty] private bool _isPerpetual = false;
 
         // ── Key ─────────────────────────────────────────────────────────────
         [ObservableProperty] private string _privateKeyPem = "";
@@ -26,12 +26,12 @@ namespace Apex.AdminTool
         [ObservableProperty] private string _keyStatusColor = "#EF4444";
 
         // ── Output ───────────────────────────────────────────────────────────
-        [ObservableProperty] private string _resultText    = "";
-        [ObservableProperty] private string _resultColor   = "#94A3B8";
-        [ObservableProperty] private bool   _isBusy        = false;
+        [ObservableProperty] private string _resultText = "";
+        [ObservableProperty] private string _resultColor = "#94A3B8";
+        [ObservableProperty] private bool _isBusy = false;
 
         // ── Audit Log ────────────────────────────────────────────────────────
-        [ObservableProperty] private string _auditLog      = "";
+        [ObservableProperty] private string _auditLog = "";
 
         private static readonly string AuditPath = Path.Combine(
             AppDomain.CurrentDomain.BaseDirectory, "audit.log");
@@ -68,8 +68,8 @@ namespace Apex.AdminTool
                     using var test = ECDsa.Create();
                     test.ImportFromPem(pem);
 
-                    PrivateKeyPem  = pem;
-                    KeyStatusText  = $"✓  تم التحميل التلقائي: {Path.GetFileName(path)}";
+                    PrivateKeyPem = pem;
+                    KeyStatusText = $"✓  تم التحميل التلقائي: {Path.GetFileName(path)}";
                     KeyStatusColor = "#22C55E";
                     return;
                 }
@@ -79,15 +79,15 @@ namespace Apex.AdminTool
 
         // ── Quick-expiry helpers ─────────────────────────────────────────────
         [RelayCommand]
-        private void SetExpiry30()  => ExpiryDate = DateTime.Today.AddDays(30);
+        private void SetExpiry30() => ExpiryDate = DateTime.Today.AddDays(30);
         [RelayCommand]
-        private void SetExpiry90()  => ExpiryDate = DateTime.Today.AddDays(90);
+        private void SetExpiry90() => ExpiryDate = DateTime.Today.AddDays(90);
         [RelayCommand]
         private void SetExpiry180() => ExpiryDate = DateTime.Today.AddDays(180);
         [RelayCommand]
-        private void SetExpiry1Y()  => ExpiryDate = DateTime.Today.AddYears(1);
+        private void SetExpiry1Y() => ExpiryDate = DateTime.Today.AddYears(1);
         [RelayCommand]
-        private void SetExpiry2Y()  => ExpiryDate = DateTime.Today.AddYears(2);
+        private void SetExpiry2Y() => ExpiryDate = DateTime.Today.AddYears(2);
         [RelayCommand]
         private void SetPerpetual() => ExpiryDate = new DateTime(9999, 12, 31);
 
@@ -97,7 +97,7 @@ namespace Apex.AdminTool
         {
             var dlg = new OpenFileDialog
             {
-                Title  = "اختر ملف المفتاح الخاص",
+                Title = "اختر ملف المفتاح الخاص",
                 Filter = "PEM Files|*.pem|All Files|*.*"
             };
             if (dlg.ShowDialog() != true) return;
@@ -108,15 +108,15 @@ namespace Apex.AdminTool
                 using var test = ECDsa.Create();
                 test.ImportFromPem(pem);   // Validate
 
-                PrivateKeyPem    = pem;
-                KeyStatusText    = $"✓  {Path.GetFileName(dlg.FileName)}";
-                KeyStatusColor   = "#22C55E";
+                PrivateKeyPem = pem;
+                KeyStatusText = $"✓  {Path.GetFileName(dlg.FileName)}";
+                KeyStatusColor = "#22C55E";
             }
             catch (Exception ex)
             {
-                KeyStatusText  = $"✗  مفتاح غير صالح: {ex.Message}";
+                KeyStatusText = $"✗  مفتاح غير صالح: {ex.Message}";
                 KeyStatusColor = "#EF4444";
-                PrivateKeyPem  = "";
+                PrivateKeyPem = "";
             }
         }
 
@@ -129,22 +129,22 @@ namespace Apex.AdminTool
                 var pem = Clipboard.GetText()?.Trim() ?? "";
                 if (!pem.Contains("PRIVATE KEY"))
                 {
-                    KeyStatusText  = "✗  الحافظة لا تحتوي على مفتاح PEM";
+                    KeyStatusText = "✗  الحافظة لا تحتوي على مفتاح PEM";
                     KeyStatusColor = "#EF4444";
                     return;
                 }
                 using var test = ECDsa.Create();
                 test.ImportFromPem(pem);
 
-                PrivateKeyPem  = pem;
-                KeyStatusText  = "✓  تم لصق المفتاح بنجاح";
+                PrivateKeyPem = pem;
+                KeyStatusText = "✓  تم لصق المفتاح بنجاح";
                 KeyStatusColor = "#22C55E";
             }
             catch (Exception ex)
             {
-                KeyStatusText  = $"✗  {ex.Message}";
+                KeyStatusText = $"✗  {ex.Message}";
                 KeyStatusColor = "#EF4444";
-                PrivateKeyPem  = "";
+                PrivateKeyPem = "";
             }
         }
 
@@ -173,22 +173,22 @@ namespace Apex.AdminTool
             IsBusy = true;
             try
             {
-                var deviceId  = DeviceId.Replace("-", "").Trim().ToUpper();
-                var licType   = LicenseTypeIndex == 1 ? LicenseType.Pro : LicenseType.Full;
-                var expiry    = IsPerpetual ? new DateTime(9999, 12, 31) : ExpiryDate.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
+                var deviceId = DeviceId.Replace("-", "").Trim().ToUpper();
+                var licType = LicenseTypeIndex == 1 ? LicenseType.Pro : LicenseType.Full;
+                var expiry = IsPerpetual ? new DateTime(9999, 12, 31) : ExpiryDate.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
 
                 var payload = new LicensePayload
                 {
-                    LicenseId      = Guid.NewGuid().ToString("N").ToUpper(),
-                    DeviceId       = deviceId,
-                    CustomerName   = CustomerName.Trim(),
+                    LicenseId = Guid.NewGuid().ToString("N").ToUpper(),
+                    DeviceId = deviceId,
+                    CustomerName = CustomerName.Trim(),
                     OrderReference = OrderRef.Trim(),
-                    Type           = licType,
-                    IssuedUtc      = DateTime.UtcNow,
-                    ExpiresUtc     = expiry,
+                    Type = licType,
+                    IssuedUtc = DateTime.UtcNow,
+                    ExpiresUtc = expiry,
                     ProductVersion = "1.0",
                     MaxActivations = 1,
-                    Nonce          = Convert.ToHexString(RandomNumberGenerator.GetBytes(16))
+                    Nonce = Convert.ToHexString(RandomNumberGenerator.GetBytes(16))
                 };
 
                 using var ecdsa = ECDsa.Create();
@@ -196,13 +196,13 @@ namespace Apex.AdminTool
                 var signed = LicenseCrypto.SignLicense(payload, ecdsa);
 
                 // Save file
-                var safeName  = MakeSafeFileName(CustomerName.Trim());
-                var fileName  = $"{safeName}_{deviceId[..8]}.apex";
-                var saveDlg   = new SaveFileDialog
+                var safeName = MakeSafeFileName(CustomerName.Trim());
+                var fileName = $"{safeName}_{deviceId[..8]}.apex";
+                var saveDlg = new SaveFileDialog
                 {
-                    Title      = "حفظ ملف الترخيص",
-                    FileName   = fileName,
-                    Filter     = "Apex License|*.apex|All Files|*.*",
+                    Title = "حفظ ملف الترخيص",
+                    FileName = fileName,
+                    Filter = "Apex License|*.apex|All Files|*.*",
                     DefaultExt = ".apex"
                 };
                 if (saveDlg.ShowDialog() != true) { IsBusy = false; return; }
@@ -213,14 +213,14 @@ namespace Apex.AdminTool
                 // Write audit
                 WriteAudit(new AdminAuditRecord
                 {
-                    LicenseId    = payload.LicenseId,
-                    DeviceId     = deviceId,
+                    LicenseId = payload.LicenseId,
+                    DeviceId = deviceId,
                     CustomerName = payload.CustomerName,
-                    OrderRef     = payload.OrderReference,
-                    LicenseType  = licType,
-                    IssuedUtc    = payload.IssuedUtc,
-                    ExpiresUtc   = expiry,
-                    OutputFile   = saveDlg.FileName,
+                    OrderRef = payload.OrderReference,
+                    LicenseType = licType,
+                    IssuedUtc = payload.IssuedUtc,
+                    ExpiresUtc = expiry,
+                    OutputFile = saveDlg.FileName,
                     AdminMachine = Environment.MachineName
                 });
 
@@ -254,7 +254,7 @@ namespace Apex.AdminTool
             try
             {
                 if (!File.Exists(AuditPath)) { AuditLog = "لا يوجد سجل بعد."; return; }
-                var lines  = File.ReadAllLines(AuditPath);
+                var lines = File.ReadAllLines(AuditPath);
                 var output = "";
                 foreach (var line in lines)
                 {
@@ -278,9 +278,9 @@ namespace Apex.AdminTool
         {
             var dlg = new SaveFileDialog
             {
-                Title      = "اختر مجلد حفظ المفاتيح",
-                FileName   = "private",
-                Filter     = "PEM Files|*.pem",
+                Title = "اختر مجلد حفظ المفاتيح",
+                FileName = "private",
+                Filter = "PEM Files|*.pem",
                 DefaultExt = ".pem"
             };
             if (dlg.ShowDialog() != true) return;
@@ -288,19 +288,19 @@ namespace Apex.AdminTool
             try
             {
                 var (priv, pub) = LicenseCrypto.GenerateKeyPair();
-                var dir         = Path.GetDirectoryName(dlg.FileName)!;
-                var privPath    = Path.Combine(dir, "private.pem");
-                var pubPath     = Path.Combine(dir, "public.pem");
+                var dir = Path.GetDirectoryName(dlg.FileName)!;
+                var privPath = Path.Combine(dir, "private.pem");
+                var pubPath = Path.Combine(dir, "public.pem");
 
                 File.WriteAllText(privPath, priv, System.Text.Encoding.UTF8);
-                File.WriteAllText(pubPath,  pub,  System.Text.Encoding.UTF8);
+                File.WriteAllText(pubPath, pub, System.Text.Encoding.UTF8);
 
                 MessageBox.Show(
                     $"✓  تم توليد زوج المفاتيح:\n\nالخاص : {privPath}\nالعام  : {pubPath}\n\n⚠  احتفظ بـ private.pem في مكان آمن وابدأ به الأداة.\nانسخ public.pem إلى LicenseCrypto.EmbeddedPublicKeyPem في المشروع.",
                     "تم توليد المفاتيح", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                PrivateKeyPem  = priv;
-                KeyStatusText  = "✓  تم توليد مفتاح جديد";
+                PrivateKeyPem = priv;
+                KeyStatusText = "✓  تم توليد مفتاح جديد";
                 KeyStatusColor = "#22C55E";
             }
             catch (Exception ex)
@@ -312,7 +312,7 @@ namespace Apex.AdminTool
         // ── Helpers ──────────────────────────────────────────────────────────
         private void SetResult(string msg, string color)
         {
-            ResultText  = msg;
+            ResultText = msg;
             ResultColor = color;
         }
 

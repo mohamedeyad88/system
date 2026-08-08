@@ -20,7 +20,7 @@ namespace Apex.NumberedBooksEngine.Core
         private static readonly string _trayLogPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "ApexPrintingSystem", "tray_debug.log");
-        
+
         private static void LogTray(string message)
         {
             try
@@ -28,14 +28,14 @@ namespace Apex.NumberedBooksEngine.Core
                 var dir = Path.GetDirectoryName(_trayLogPath);
                 if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
-                    
+
                 var logLine = $"[{DateTime.Now:HH:mm:ss.fff}] {message}";
                 File.AppendAllText(_trayLogPath, logLine + Environment.NewLine);
                 System.Diagnostics.Debug.WriteLine(logLine);
             }
             catch { }
         }
-        
+
         /// <summary>
         /// Detects the DPI of an image based on its pixel dimensions
         /// by matching against common page sizes (A4, A5, Letter, etc.)
@@ -51,25 +51,25 @@ namespace Apex.NumberedBooksEngine.Core
                 (8.5f, 11f, "Letter"),      // US Letter
                 (8.5f, 14f, "Legal"),       // US Legal
             };
-            
+
             // Common DPI values to check
             var dpiValues = new[] { 72f, 96f, 150f, 200f, 300f, 600f };
-            
+
             float bestDpi = 72f; // Default to screen DPI
             float bestMatch = float.MaxValue;
-            
+
             foreach (var dpi in dpiValues)
             {
                 float widthInches = widthPx / dpi;
                 float heightInches = heightPx / dpi;
-                
+
                 foreach (var (pageW, pageH, name) in pageSizes)
                 {
                     // Check both portrait and landscape
                     float diffPortrait = Math.Abs(widthInches - pageW) + Math.Abs(heightInches - pageH);
                     float diffLandscape = Math.Abs(widthInches - pageH) + Math.Abs(heightInches - pageW);
                     float diff = Math.Min(diffPortrait, diffLandscape);
-                    
+
                     if (diff < bestMatch)
                     {
                         bestMatch = diff;
@@ -77,7 +77,7 @@ namespace Apex.NumberedBooksEngine.Core
                     }
                 }
             }
-            
+
             // If match is too poor (> 0.5 inch off), use a conservative default
             if (bestMatch > 0.5f)
             {
@@ -91,7 +91,7 @@ namespace Apex.NumberedBooksEngine.Core
             {
                 LogTray($"DetectDPI: Best match at {bestDpi} DPI (diff={bestMatch:F3})");
             }
-            
+
             return bestDpi;
         }
         private PrintDocument? _printDocument;
@@ -101,7 +101,7 @@ namespace Apex.NumberedBooksEngine.Core
         private PrintJobSettings _settings = new();
         private CancellationToken _ct;
         private ManualResetEventSlim _pauseEvent = new(true);
-        
+
         // ═══════════════════════════════════════════════════════════════════
         // CRITICAL FIX: Use a queue to hold all pages for printing
         // Each entry stores (Image, CopyIndex) to ensure correct tray selection
@@ -137,7 +137,7 @@ namespace Apex.NumberedBooksEngine.Core
             {
                 oldEntry.Image?.Dispose();
             }
-            
+
             // Reset all counters
             _pagesProcessed = 0;
             _totalPagesQueued = 0;
@@ -148,10 +148,10 @@ namespace Apex.NumberedBooksEngine.Core
             _printException = null;
             _currentPage = null;
             _pageCompletionSource = null;
-            
+
             // Reset pause event to allow printing
             _pauseEvent.Set();
-            
+
             // Dispose previous print document if any
             if (_printDocument != null)
             {
@@ -160,7 +160,7 @@ namespace Apex.NumberedBooksEngine.Core
                 _printDocument.Dispose();
                 _printDocument = null;
             }
-            
+
             System.Diagnostics.Debug.WriteLine($"[NUMBERING] ═══════════════════════════════════════════════════════════");
             System.Diagnostics.Debug.WriteLine($"[NUMBERING] JOB STATE RESET - All counters and queues cleared");
             System.Diagnostics.Debug.WriteLine($"[NUMBERING] ═══════════════════════════════════════════════════════════");
@@ -173,7 +173,7 @@ namespace Apex.NumberedBooksEngine.Core
             // This prevents deadlocks and state leakage from previous jobs
             // ═══════════════════════════════════════════════════════════════════
             ResetJobState();
-            
+
             _settings = settings;
             _ct = ct;
             _stopwatch.Restart();
@@ -185,13 +185,30 @@ namespace Apex.NumberedBooksEngine.Core
                 TotalPages = 0
             };
             OnStatusChanged();
-            
+
             System.Diagnostics.Debug.WriteLine($"[NUMBERING] Job Start - Printer: {settings.PrinterName}, DPI: {settings.Dpi}, Copies: {settings.Copies}");
 
             _printDocument = new PrintDocument();
             _printDocument.PrinterSettings.PrinterName = settings.PrinterName;
             _printDocument.PrinterSettings.Copies = (short)settings.Copies;
             _printDocument.PrinterSettings.Collate = settings.Collate;
+
+            // Print-to-file virtual printers (Microsoft Print to PDF / XPS) silently
+            // drop jobs that carry no output file name — the numbering run would
+            // report success with no file (same QA-measured failure as quick print).
+            // Supply an auto-derived output path on the user's desktop.
+            var printerLower = settings.PrinterName?.ToLowerInvariant() ?? "";
+            if (printerLower.Contains("microsoft print to pdf") || printerLower.Contains("xps"))
+            {
+                string ext = printerLower.Contains("xps") ? ".oxps" : ".pdf";
+                string outDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                string outFile = System.IO.Path.Combine(
+                    outDir, $"numbering-{DateTime.Now:yyyyMMdd-HHmmss}{ext}");
+                _printDocument.PrinterSettings.PrintToFile = true;
+                _printDocument.PrinterSettings.PrintFileName = outFile;
+                System.Diagnostics.Debug.WriteLine(
+                    $"[NUMBERING] Virtual printer → PrintToFile: {outFile}");
+            }
             // ═══════════════════════════════════════════════════════════════════
             // CRITICAL FIX: Ensure minimum 300 DPI to match file quality - no quality reduction
             // ═══════════════════════════════════════════════════════════════════
@@ -221,7 +238,7 @@ namespace Apex.NumberedBooksEngine.Core
 
             return Task.CompletedTask;
         }
-        
+
         /// <summary>
         /// Sets the current copy index for tray routing (0 = Original, 1 = Copy 1, etc.)
         /// </summary>
@@ -246,7 +263,7 @@ namespace Apex.NumberedBooksEngine.Core
             // ═══════════════════════════════════════════════════════════════════
             _pageQueue.Enqueue((page, _currentCopyIndex));
             Interlocked.Increment(ref _totalPagesQueued);
-            
+
             // #region agent log
             System.Diagnostics.Debug.WriteLine($"[WindowsPrintSpoolerService] Page queued with CopyIndex={_currentCopyIndex}. Total queued: {_totalPagesQueued}, Pages processed: {_pagesProcessed}");
             // #endregion
@@ -262,14 +279,14 @@ namespace Apex.NumberedBooksEngine.Core
                         // #region agent log
                         System.Diagnostics.Debug.WriteLine($"[WindowsPrintSpoolerService] Starting PrintDocument.Print() - will process all queued pages");
                         // #endregion
-                        
+
                         // ═══════════════════════════════════════════════════════════════════
                         // CRITICAL FIX: PrintDocument.Print() will call PrintPage event
                         // for each page as long as HasMorePages is true
                         // The PrintPage handler will dequeue pages from _pageQueue
                         // ═══════════════════════════════════════════════════════════════════
                         _printDocument.Print();
-                        
+
                         // #region agent log
                         System.Diagnostics.Debug.WriteLine($"[WindowsPrintSpoolerService] PrintDocument.Print() completed. Pages processed: {_pagesProcessed}, Total queued: {_totalPagesQueued}");
                         // #endregion
@@ -280,12 +297,12 @@ namespace Apex.NumberedBooksEngine.Core
                         Status.Error = ex.Message;
                         Status.Status = "Error";
                         OnStatusChanged();
-                        
+
                         // #region agent log
                         System.Diagnostics.Debug.WriteLine($"[WindowsPrintSpoolerService] ❌ PrintDocument.Print() failed: {ex.Message}");
                         System.Diagnostics.Debug.WriteLine($"[WindowsPrintSpoolerService] Stack trace: {ex.StackTrace}");
                         // #endregion
-                        
+
                         // Signal any waiting pages
                         _pageCompletionSource?.TrySetException(ex);
                     }
@@ -297,11 +314,11 @@ namespace Apex.NumberedBooksEngine.Core
             // The PrintDocument will process pages from queue asynchronously
             // We only need to ensure the page is queued, not wait for processing
             // ═══════════════════════════════════════════════════════════════════
-            
+
             // Brief wait to allow queue processing to start (non-blocking for producer)
             int waitAttempts = 0;
             const int maxWaitAttempts = 500; // Max 5 seconds check, but don't block
-            
+
             // Check for errors periodically, but don't block on page completion
             while (waitAttempts < maxWaitAttempts && !_jobEnded && _printException == null)
             {
@@ -310,18 +327,18 @@ namespace Apex.NumberedBooksEngine.Core
                 {
                     break;
                 }
-                
+
                 // Check if we've processed at least some pages (printing is working)
                 if (_pagesProcessed >= _totalPagesQueued - 10)
                 {
                     // We're keeping up, no need to wait
                     break;
                 }
-                
+
                 await Task.Delay(10, _ct);
                 waitAttempts++;
             }
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // FAIL-FAST: If print exception occurred, throw immediately
             // ═══════════════════════════════════════════════════════════════════
@@ -347,23 +364,23 @@ namespace Apex.NumberedBooksEngine.Core
             {
                 int waitAttempts = 0;
                 const int maxWaitAttempts = 3000;
-                
+
                 (SKImage Image, int CopyIndex) pageEntry = default;
                 while (!_pageQueue.TryDequeue(out pageEntry) && !_jobEnded && waitAttempts < maxWaitAttempts)
                 {
                     Thread.Sleep(10);
                     waitAttempts++;
                 }
-                
+
                 _currentPage = pageEntry.Image;
                 _currentPageCopyIndex = pageEntry.CopyIndex;
-                
+
                 if (_currentPage != null)
                 {
                     System.Diagnostics.Debug.WriteLine($"[NUMBERING] QueryPageSettings: Dequeued page with CopyIndex={_currentPageCopyIndex}");
                 }
             }
-            
+
             // Start from the job-scoped copy to avoid mutating printer defaults
             if (_jobPageSettings != null)
             {
@@ -381,7 +398,7 @@ namespace Apex.NumberedBooksEngine.Core
             // This ensures correct tray selection even with async queuing.
             // ═══════════════════════════════════════════════════════════════════
             LogTray($"QueryPageSettings: CopyIndex={_currentPageCopyIndex}, HasTrayMapping={_settings.CopyTrayMapping != null}, TrayMappingCount={_settings.CopyTrayMapping?.Count ?? 0}");
-            
+
             if (_settings.CopyTrayMapping != null && _settings.CopyTrayMapping.Count > 0)
             {
                 // Log all tray mappings
@@ -390,8 +407,8 @@ namespace Apex.NumberedBooksEngine.Core
                     LogTray($"  TrayMapping[{mapping.Key}] = {mapping.Value} ({(int)mapping.Value})");
                 }
             }
-            
-            if (_settings.CopyTrayMapping != null && 
+
+            if (_settings.CopyTrayMapping != null &&
                 _settings.CopyTrayMapping.TryGetValue(_currentPageCopyIndex, out var trayKind))
             {
                 try
@@ -401,15 +418,15 @@ namespace Apex.NumberedBooksEngine.Core
                     if (paperSources != null && paperSources.Count > 0)
                     {
                         LogTray($"QueryPageSettings: Looking for TrayKind={trayKind} ({(int)trayKind}) among {paperSources.Count} sources");
-                        
+
                         // Log all available sources first
                         for (int i = 0; i < paperSources.Count; i++)
                         {
                             LogTray($"  Printer Source[{i}]: Kind={paperSources[i].Kind} ({(int)paperSources[i].Kind}), RawKind={paperSources[i].RawKind}, Name='{paperSources[i].SourceName}'");
                         }
-                        
+
                         bool trayFound = false;
-                        
+
                         // ═══════════════════════════════════════════════════════════════════
                         // STRATEGY 1: Try to match by PaperSourceKind
                         // ═══════════════════════════════════════════════════════════════════
@@ -423,7 +440,7 @@ namespace Apex.NumberedBooksEngine.Core
                                 break;
                             }
                         }
-                        
+
                         // ═══════════════════════════════════════════════════════════════════
                         // STRATEGY 2: For printers using Custom kind, use logical mapping:
                         // Upper (Tray 1) → First non-auto tray (usually index 1 or 2)
@@ -433,18 +450,18 @@ namespace Apex.NumberedBooksEngine.Core
                         if (!trayFound)
                         {
                             LogTray($"⚠️ TrayKind {trayKind} ({(int)trayKind}) NOT FOUND by Kind! Trying logical mapping...");
-                            
+
                             // Build list of non-auto trays
                             var manualTrays = new List<int>();
                             var casseteTrays = new List<int>();
-                            
+
                             for (int i = 0; i < paperSources.Count; i++)
                             {
                                 var srcName = paperSources[i].SourceName.ToLower();
                                 var rawKind = paperSources[i].RawKind;
-                                
+
                                 // Detect manual feed trays (common patterns)
-                                if (srcName.Contains("manual") || srcName.Contains("hand") || 
+                                if (srcName.Contains("manual") || srcName.Contains("hand") ||
                                     srcName.Contains("يدو") || // Arabic "manual"
                                     rawKind == 4 || // Manual
                                     rawKind == 261 || rawKind == 262) // Common manual raw kinds
@@ -452,19 +469,19 @@ namespace Apex.NumberedBooksEngine.Core
                                     manualTrays.Add(i);
                                 }
                                 // Detect cassette/regular trays
-                                else if (srcName.Contains("tray") || srcName.Contains("cassette") || 
+                                else if (srcName.Contains("tray") || srcName.Contains("cassette") ||
                                          srcName.Contains("درج") || // Arabic "tray"
-                                         (paperSources[i].Kind == PaperSourceKind.Custom && 
+                                         (paperSources[i].Kind == PaperSourceKind.Custom &&
                                           paperSources[i].Kind != PaperSourceKind.AutomaticFeed))
                                 {
                                     casseteTrays.Add(i);
                                 }
                             }
-                            
+
                             LogTray($"  Found manual trays: [{string.Join(",", manualTrays)}], cassette trays: [{string.Join(",", casseteTrays)}]");
-                            
+
                             int selectedIndex = -1;
-                            
+
                             switch (trayKind)
                             {
                                 case PaperSourceKind.Upper: // Tray 1
@@ -489,7 +506,7 @@ namespace Apex.NumberedBooksEngine.Core
                                     }
                                     break;
                             }
-                            
+
                             if (selectedIndex >= 0 && selectedIndex < paperSources.Count)
                             {
                                 e.PageSettings.PaperSource = paperSources[selectedIndex];
@@ -497,7 +514,7 @@ namespace Apex.NumberedBooksEngine.Core
                                 LogTray($"✅ TRAY SELECTED BY MAPPING: [{selectedIndex}] '{paperSources[selectedIndex].SourceName}' for CopyIndex={_currentPageCopyIndex}");
                             }
                         }
-                        
+
                         if (!trayFound)
                         {
                             LogTray($"❌ TRAY NOT FOUND - using printer default");
@@ -526,7 +543,7 @@ namespace Apex.NumberedBooksEngine.Core
             // Page was already dequeued in QueryPageSettings (called before PrintPage)
             // _currentPage and _currentPageCopyIndex are already set
             // ═══════════════════════════════════════════════════════════════════
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // FAIL-FAST: If no page available (QueryPageSettings couldn't get one), end gracefully
             // ═══════════════════════════════════════════════════════════════════
@@ -536,7 +553,7 @@ namespace Apex.NumberedBooksEngine.Core
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] PrintPage - No page available. JobEnded: {_jobEnded}, Processed: {_pagesProcessed}/{_totalPagesQueued}");
                 return;
             }
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // CRITICAL FIX: Even if _jobEnded is true, continue processing if
             // there are still pages in the queue. Only stop when queue is empty.
@@ -572,34 +589,34 @@ namespace Apex.NumberedBooksEngine.Core
                 // 4. Draw at exact physical size - NO scaling
                 // 5. Works for A4, A3, A3+, Letter, Legal, Custom
                 // ═══════════════════════════════════════════════════════════════════
-                
+
                 if (e.Graphics == null)
                 {
                     LogTray("❌ Graphics is null - cannot print");
                     e.HasMorePages = false;
                     return;
                 }
-                
+
                 var imageSize = bitmap.Size;
-                
+
                 // ═══════════════════════════════════════════════════════════════════
                 // STEP 1: Detect the actual DPI of the image
                 // ═══════════════════════════════════════════════════════════════════
                 float detectedDpi = DetectImageDpi(imageSize.Width, imageSize.Height);
-                
+
                 // ═══════════════════════════════════════════════════════════════════
                 // STEP 2: Calculate physical size in INCHES
                 // This is the REAL physical size of the document
                 // ═══════════════════════════════════════════════════════════════════
                 float imageWidthInches = imageSize.Width / detectedDpi;
                 float imageHeightInches = imageSize.Height / detectedDpi;
-                
+
                 // ═══════════════════════════════════════════════════════════════════
                 // STEP 3: Set Graphics unit to INCHES
                 // All subsequent coordinates will be in inches
                 // ═══════════════════════════════════════════════════════════════════
                 e.Graphics.PageUnit = GraphicsUnit.Inch;
-                
+
                 // ═══════════════════════════════════════════════════════════════════
                 // STEP 4: Set high-quality rendering
                 // ═══════════════════════════════════════════════════════════════════
@@ -607,7 +624,7 @@ namespace Apex.NumberedBooksEngine.Core
                 e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                 e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
                 e.Graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-                
+
                 // ═══════════════════════════════════════════════════════════════════
                 // STEP 5: Get page size in inches (PageBounds after setting PageUnit)
                 // ═══════════════════════════════════════════════════════════════════
@@ -615,13 +632,13 @@ namespace Apex.NumberedBooksEngine.Core
                 // For A4: approximately 8.27 x 11.69 inches
                 float pageWidthInches = e.PageBounds.Width / 100f;  // PageBounds is in 1/100 inch before transform
                 float pageHeightInches = e.PageBounds.Height / 100f;
-                
+
                 // ═══════════════════════════════════════════════════════════════════
                 // STEP 6: Draw at origin (0,0) with exact physical size
                 // NO scaling, NO centering offsets that could cause issues
                 // The image fills the page at its true physical size
                 // ═══════════════════════════════════════════════════════════════════
-                
+
                 LogTray($"═══════════════════════════════════════════════════════════");
                 LogTray($"1:1 PHYSICAL PRINT:");
                 LogTray($"  Image: {imageSize.Width}x{imageSize.Height} pixels");
@@ -630,7 +647,7 @@ namespace Apex.NumberedBooksEngine.Core
                 LogTray($"  Page Size: {pageWidthInches:F2} x {pageHeightInches:F2} inches");
                 LogTray($"  Drawing at: (0, 0) with size ({imageWidthInches:F2}, {imageHeightInches:F2}) inches");
                 LogTray($"═══════════════════════════════════════════════════════════");
-                
+
                 // Draw the image at exact physical size in inches
                 // RectangleF uses float for precise inch measurements
                 e.Graphics.DrawImage(
@@ -647,7 +664,7 @@ namespace Apex.NumberedBooksEngine.Core
                 Status.ElapsedTime = _stopwatch.Elapsed;
                 Status.Status = "Printing";
                 OnStatusChanged();
-                
+
                 // ═══════════════════════════════════════════════════════════════════
                 // CRITICAL FIX: Check if there are more pages in the queue OR if more
                 // pages are expected (not all pages have been queued yet)
@@ -664,7 +681,7 @@ namespace Apex.NumberedBooksEngine.Core
                 // ═══════════════════════════════════════════════════════════════════
                 bool hasMoreInQueue = !_pageQueue.IsEmpty;
                 bool expectingMorePages = _pagesProcessed < _totalPagesQueued;
-                
+
                 // If job has ended, only continue if there are actually more pages to process
                 if (_jobEnded)
                 {
@@ -674,11 +691,11 @@ namespace Apex.NumberedBooksEngine.Core
                 {
                     e.HasMorePages = hasMoreInQueue || expectingMorePages; // Continue if expecting more
                 }
-                
+
                 // #region agent log
                 System.Diagnostics.Debug.WriteLine($"[WindowsPrintSpoolerService.PrintPage] Page {_pagesProcessed} printed. HasMorePages: {e.HasMorePages}, QueueCount: {_pageQueue.Count}, ExpectingMore: {expectingMorePages}, TotalQueued: {_totalPagesQueued}, JobEnded: {_jobEnded}");
                 // #endregion
-                
+
                 // ═══════════════════════════════════════════════════════════════════
                 // CRITICAL: Dispose page after printing to prevent memory leaks
                 // The page was created in GdiSpoolPrinter and passed here for printing
@@ -697,12 +714,12 @@ namespace Apex.NumberedBooksEngine.Core
                 Status.Error = ex.Message;
                 Status.Status = "Error";
                 OnStatusChanged();
-                
+
                 // #region agent log
                 System.Diagnostics.Debug.WriteLine($"[WindowsPrintSpoolerService.PrintPage] ❌ Error printing page: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"[WindowsPrintSpoolerService.PrintPage] Stack trace: {ex.StackTrace}");
                 // #endregion
-                
+
                 e.HasMorePages = false;
             }
         }
@@ -712,13 +729,13 @@ namespace Apex.NumberedBooksEngine.Core
             // #region agent log
             System.Diagnostics.Debug.WriteLine($"[WindowsPrintSpoolerService.EndJobAsync] Ending job. Pages processed: {_pagesProcessed}, Total queued: {_totalPagesQueued}, Queue remaining: {_pageQueue.Count}");
             // #endregion
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // CRITICAL FIX: Wait for all queued pages to be processed BEFORE
             // setting _jobEnded = true. This ensures PrintDocument_PrintPage 
             // continues processing until all pages are printed.
             // ═══════════════════════════════════════════════════════════════════
-            
+
             // Wait for print task to complete (all pages sent to Windows)
             if (_printTask != null)
             {
@@ -729,20 +746,20 @@ namespace Apex.NumberedBooksEngine.Core
                 {
                     await Task.Delay(100);
                     waited++;
-                    
+
                     if (waited % 50 == 0) // Log every 5 seconds
                     {
                         System.Diagnostics.Debug.WriteLine($"[WindowsPrintSpoolerService.EndJobAsync] Waiting for pages... Processed: {_pagesProcessed}/{_totalPagesQueued}");
                     }
                 }
-                
+
                 // NOW signal job end
                 _jobEnded = true;
-                
+
                 try
                 {
                     await _printTask;
-                    
+
                     // #region agent log
                     System.Diagnostics.Debug.WriteLine($"[WindowsPrintSpoolerService.EndJobAsync] Print task completed. Final pages processed: {_pagesProcessed}");
                     // #endregion
@@ -752,7 +769,7 @@ namespace Apex.NumberedBooksEngine.Core
                     // #region agent log
                     System.Diagnostics.Debug.WriteLine($"[WindowsPrintSpoolerService.EndJobAsync] ❌ Print task failed: {ex.Message}");
                     // #endregion
-                    
+
                     Status.Error = ex.Message;
                     Status.Status = "Error";
                     OnStatusChanged();
@@ -764,7 +781,7 @@ namespace Apex.NumberedBooksEngine.Core
                 // No print task was started
                 _jobEnded = true;
             }
-            
+
             // Verify all pages were processed
             if (_pagesProcessed < _totalPagesQueued)
             {
@@ -772,14 +789,14 @@ namespace Apex.NumberedBooksEngine.Core
                 Status.Error = errorMsg;
                 Status.Status = "Error";
                 OnStatusChanged();
-                
+
                 // #region agent log
                 System.Diagnostics.Debug.WriteLine($"[WindowsPrintSpoolerService.EndJobAsync] ❌ {errorMsg}");
                 // #endregion
-                
+
                 throw new InvalidOperationException(errorMsg);
             }
-            
+
             _stopwatch.Stop();
 
             // ═══════════════════════════════════════════════════════════════════
@@ -791,7 +808,7 @@ namespace Apex.NumberedBooksEngine.Core
 
             _printDocument?.Dispose();
             _printDocument = null;
-            
+
             // #region agent log
             System.Diagnostics.Debug.WriteLine($"[WindowsPrintSpoolerService.EndJobAsync] ✅ Job completed successfully. Total pages: {_pagesProcessed}");
             // #endregion

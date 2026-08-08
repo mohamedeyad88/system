@@ -119,7 +119,7 @@ namespace Apex.NumberedBooksEngine.Tests
             Assert.Equal(CopyType.Original, pages[0].CopyType);
             Assert.Equal(CopyType.Copy1, pages[1].CopyType);
             Assert.Equal(CopyType.Original, pages[2].CopyType);
-            
+
             // Cleanup
             foreach (var p in pages) p.Page.Dispose();
         }
@@ -137,7 +137,7 @@ namespace Apex.NumberedBooksEngine.Tests
             // Assert
             Assert.Equal(5, pages.Count);
             Assert.All(pages, p => Assert.Equal(CopyType.Original, p.CopyType));
-            
+
             foreach (var p in pages) p.Page.Dispose();
         }
 

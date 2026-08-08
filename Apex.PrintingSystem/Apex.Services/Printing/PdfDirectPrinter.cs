@@ -42,6 +42,17 @@ namespace Apex.Services.Printing
             if (!File.Exists(pdfPath))
                 throw new FileNotFoundException("PDF file not found.", pdfPath);
 
+            // Print-to-file virtual printers (Microsoft Print to PDF / XPS) need the
+            // PrintToFile + PrintFileName route implemented in TryPdfiumPrintAsync.
+            // The RIP engine and raw paths "succeed" against them while the spooler
+            // silently drops the job (QA-measured: success reported, no output file).
+            var plower = printerName.ToLowerInvariant();
+            if (plower.Contains("microsoft print to pdf") || plower.Contains("xps"))
+            {
+                Debug.WriteLine("[PdfDirectPrinter] Virtual print-to-file printer → Pdfium PrintToFile route");
+                return await TryPdfiumPrintAsync(printerName, pdfPath, copies, jobSettings);
+            }
+
             // Document mode: send the whole document to the driver/spooler without per-page rendering.
             // CRITICAL FIX: Avoid RAW printing which produces garbage on non-PDF-native printers.
             if (documentMode)
@@ -69,10 +80,10 @@ namespace Apex.Services.Printing
             {
                 var vendorDetection = VendorDetection.VendorDetectionEngine.Instance;
                 var metadata = vendorDetection.GetPrinterMetadata(printerName);
-                
+
                 var ripEngine = new RIP.RipPrintEngine();
                 var qualityLevel = RIP.Models.QualityLevel.Professional;
-                
+
                 if (await ripEngine.PrintPdfAsync(printerName, pdfPath, metadata, copies, qualityLevel))
                 {
                     Debug.WriteLine("[PdfDirectPrinter] RIP Engine print succeeded");
@@ -85,7 +96,7 @@ namespace Apex.Services.Printing
             }
 
             // Fallback to standard methods (all are SILENT methods!)
-            
+
             // 1. Try PdfiumViewer (renders at 300 DPI - fallback only)
             //    Note: This causes pixelation for text - use only as last resort
             if (await TryPdfiumPrintAsync(printerName, pdfPath, copies, jobSettings))
@@ -98,11 +109,11 @@ namespace Apex.Services.Printing
             // 3. Try PDFtoPrinter tool if available
             if (await TryPdfToPrinterAsync(printerName, pdfPath, copies))
                 return true;
-            
+
             // 4. DO NOT try raw PDF printing as fallback - it produces garbage on non-PDF-native printers
             // TryRawPdfPrintAsync returns true even when printer doesn't understand PDF, causing garbage output
             // Only PDF-native printers (enterprise/network printers with built-in PDF RIP) support this
-            
+
             // If all methods failed, return false rather than sending garbage
             Debug.WriteLine("All silent PDF print methods failed.");
             return false;
@@ -119,46 +130,79 @@ namespace Apex.Services.Printing
             {
                 try
                 {
+                    // Print-to-file virtual printers (Microsoft Print to PDF / XPS):
+                    // without an explicit output file name the spooler silently
+                    // drops the job (measured in QA: "success" reported, no file,
+                    // no queue entry). Instead of rejecting them, route through
+                    // PrintToFile with an auto-derived name next to the source.
                     var printerLower = printerName.ToLowerInvariant();
-                    if (printerLower.Contains("onenote") || printerLower.Contains("xps") || printerLower.Contains("pdf"))
+                    string? autoOutputFile = null;
+                    if (printerLower.Contains("microsoft print to pdf"))
                     {
-                        throw new InvalidOperationException("لا يمكن استخدام الطباعة النقطية (Raster) مع الطابعات الافتراضية مثل OneNote/XPS/PDF. يرجى اختيار طابعة فعلية أو مسار طباعة يدعم التوجيه المباشر.");
+                        autoOutputFile = Path.Combine(
+                            Path.GetDirectoryName(pdfPath) ?? Path.GetTempPath(),
+                            $"{Path.GetFileNameWithoutExtension(pdfPath)}-printed-{DateTime.Now:yyyyMMdd-HHmmss}.pdf");
+                    }
+                    else if (printerLower.Contains("xps"))
+                    {
+                        autoOutputFile = Path.Combine(
+                            Path.GetDirectoryName(pdfPath) ?? Path.GetTempPath(),
+                            $"{Path.GetFileNameWithoutExtension(pdfPath)}-printed-{DateTime.Now:yyyyMMdd-HHmmss}.oxps");
+                    }
+                    else if (printerLower.Contains("onenote"))
+                    {
+                        // OneNote's driver needs its own UI session; raster output
+                        // would vanish. Fail fast with a clear reason instead of
+                        // reporting false success.
+                        throw new InvalidOperationException(
+                            "طابعة OneNote الافتراضية غير مدعومة للطباعة الصامتة — اختر طابعة فعلية أو Microsoft Print to PDF.");
                     }
 
                     // Open PDF with PdfiumViewer for REAL rendering
                     using var pdfDocument = PdfDocument.Load(pdfPath);
                     int pageCount = pdfDocument.PageCount;
-                    
+
                     if (pageCount == 0)
                         return false;
 
                     int currentPage = 0;
                     int currentCopy = 0;
-                    
+
                     using var printDoc = new PrintDocument();
                     printDoc.PrinterSettings.PrinterName = printerName;
                     printDoc.PrinterSettings.Copies = 1; // We handle copies manually
                     printDoc.DocumentName = Path.GetFileName(pdfPath);
 
-                    // Clone page settings so any DPI/orientation edits are job-scoped only
-                    const int printDpi = 300;
-                    var jobPageSettings = (PageSettings)printDoc.DefaultPageSettings.Clone();
-                    jobPageSettings.PrinterResolution = new PrinterResolution
+                    // Silent output for print-to-file virtual printers.
+                    if (autoOutputFile != null)
                     {
-                        Kind = PrinterResolutionKind.Custom,
-                        X = printDpi,
-                        Y = printDpi
-                    };
+                        printDoc.PrinterSettings.PrintToFile = true;
+                        printDoc.PrinterSettings.PrintFileName = autoOutputFile;
+                        Debug.WriteLine($"PdfDirectPrinter: virtual printer → PrintToFile: {autoOutputFile}");
+                    }
+
+                    // Clone page settings so any DPI/orientation edits are job-scoped only
+                    var jobPageSettings = (PageSettings)printDoc.DefaultPageSettings.Clone();
+
+                    // Print at the DEVICE's own resolution, not a hardcoded 300.
+                    //
+                    // This used to force PrinterResolution to Custom 300×300 and then
+                    // rasterise every page to a 300 DPI bitmap. Both are downgrades: a
+                    // business inkjet or laser renders at 600–1200 DPI, and text in a
+                    // PDF is vector — handing the driver a 300 DPI picture of that text
+                    // throws the device's whole resolution advantage away. The result is
+                    // visibly softer than printing the same PDF from a PDF reader.
+                    int printDpi = ResolveDeviceDpi(printDoc.PrinterSettings, jobPageSettings);
 
                     // Apply settings if provided (scoped to the cloned page settings)
                     if (jobSettings != null)
                     {
                         if (jobSettings.Duplex && printDoc.PrinterSettings.CanDuplex)
                             printDoc.PrinterSettings.Duplex = Duplex.Vertical;
-                        
+
                         if (!jobSettings.Color)
                             jobPageSettings.Color = false;
-                        
+
                         if (jobSettings.Orientation?.Equals("Landscape", StringComparison.OrdinalIgnoreCase) == true)
                             jobPageSettings.Landscape = true;
                     }
@@ -172,7 +216,7 @@ namespace Apex.Services.Printing
                     printDoc.PrintPage += (sender, e) =>
                     {
                         if (e.Graphics == null) return;
-                        
+
                         try
                         {
                             // ═══════════════════════════════════════════════════════════════════
@@ -184,30 +228,51 @@ namespace Apex.Services.Printing
                             e.Graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
                             e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
-                            // Get page size from PDF
+                            // Get page size from PDF (points, 1/72 inch)
                             var pageSize = pdfDocument.PageSizes[currentPage];
-                            
-                            // Calculate scaling to fit printer page
-                            var marginBounds = e.MarginBounds;
-                            float scaleX = marginBounds.Width / (float)pageSize.Width;
-                            float scaleY = marginBounds.Height / (float)pageSize.Height;
-                            float scale = Math.Min(scaleX, scaleY);
-                            
-                            // Calculate destination size
-                            int destWidth = (int)(pageSize.Width * scale);
-                            int destHeight = (int)(pageSize.Height * scale);
-                            
-                            // Center on page
-                            int offsetX = marginBounds.X + (marginBounds.Width - destWidth) / 2;
-                            int offsetY = marginBounds.Y + (marginBounds.Height - destHeight) / 2;
-                            
-                            // Render the PDF page to image at print resolution (300 DPI)
-                            // NOTE: This is fallback only - RIP Engine should handle this intelligently
-                            // RIP Engine will preserve text/vectors and only rasterize images at high DPI
-                            using var pageImage = pdfDocument.Render(currentPage, printDpi, printDpi, PdfRenderFlags.ForPrinting);
-                            
+
+                            // Print at ACTUAL SIZE.
+                            //
+                            // The old code divided MarginBounds (hundredths of an inch)
+                            // by the page size (points) and used the result as a scale.
+                            // Those are different units, so an A4 page came out at about
+                            // 76% — and it also fitted to the one-inch default margins,
+                            // shrinking it further. On a numbered book or an imposed
+                            // sheet that is not just "smaller": every number and every
+                            // crop mark lands in the wrong place once the stack is cut.
+                            const double PointToHundredthsInch = 100.0 / 72.0;
+                            double naturalW = pageSize.Width * PointToHundredthsInch;
+                            double naturalH = pageSize.Height * PointToHundredthsInch;
+
+                            // Only shrink when the sheet genuinely cannot hold the page.
+                            var printable = e.PageSettings.PrintableArea;
+                            double availW = printable.Width > 0 ? printable.Width : e.PageBounds.Width;
+                            double availH = printable.Height > 0 ? printable.Height : e.PageBounds.Height;
+
+                            double scale = 1.0;
+                            if (naturalW > availW || naturalH > availH)
+                                scale = Math.Min(availW / naturalW, availH / naturalH);
+
+                            int destWidth = (int)Math.Round(naturalW * scale);
+                            int destHeight = (int)Math.Round(naturalH * scale);
+
+                            // Origin is the printable area's corner (OriginAtMargins is false).
+                            int offsetX = (int)Math.Round((availW - destWidth) / 2.0);
+                            int offsetY = (int)Math.Round((availH - destHeight) / 2.0);
+
+                            // Rasterise at exactly the size the page will occupy on the
+                            // device. Rendering at one resolution and letting GDI+ rescale
+                            // into another resamples the whole page a second time — a
+                            // second blur on top of the one rasterising already cost us.
+                            // destWidth/destHeight are hundredths of an inch.
+                            int pxWidth = Math.Max(1, (int)Math.Round(destWidth / 100.0 * printDpi));
+                            int pxHeight = Math.Max(1, (int)Math.Round(destHeight / 100.0 * printDpi));
+
+                            using var pageImage = pdfDocument.Render(
+                                currentPage, pxWidth, pxHeight, printDpi, printDpi, PdfRenderFlags.ForPrinting);
+
                             // Draw the rendered PDF page
-                            e.Graphics.DrawImage(pageImage, 
+                            e.Graphics.DrawImage(pageImage,
                                 new Rectangle(offsetX, offsetY, destWidth, destHeight),
                                 new Rectangle(0, 0, pageImage.Width, pageImage.Height),
                                 GraphicsUnit.Pixel);
@@ -217,13 +282,13 @@ namespace Apex.Services.Printing
                             Debug.WriteLine($"PDF render error on page {currentPage}: {renderEx.Message}");
                             // Draw error message instead
                             using var font = new Font("Arial", 12);
-                            e.Graphics.DrawString($"Error rendering page {currentPage + 1}: {renderEx.Message}", 
+                            e.Graphics.DrawString($"Error rendering page {currentPage + 1}: {renderEx.Message}",
                                 font, Brushes.Red, e.MarginBounds.X, e.MarginBounds.Y);
                         }
-                        
+
                         // Move to next page
                         currentPage++;
-                        
+
                         // Check if we need more pages
                         if (currentPage >= pageCount)
                         {
@@ -255,6 +320,52 @@ namespace Apex.Services.Printing
             });
         }
 
+        /// <summary>Below this the output looks visibly soft; no modern device is slower.</summary>
+        private const int MinimumUsableDpi = 300;
+
+        /// <summary>
+        /// Rasterising above this buys nothing the eye can see on paper while the bitmap
+        /// grows with the square of the resolution — an A3 page at 1200 DPI is roughly
+        /// 200 MB, enough to stall the spooler.
+        /// </summary>
+        private const int MaximumPracticalDpi = 600;
+
+        /// <summary>
+        /// The resolution this device actually prints at.
+        ///
+        /// The page was previously pinned to 300 DPI regardless of the printer. Asking
+        /// the driver what it supports is the difference between using a 600 or 1200 DPI
+        /// device properly and throwing half its resolution away on every job.
+        /// </summary>
+        private static int ResolveDeviceDpi(PrinterSettings settings, PageSettings pageSettings)
+        {
+            int best = 0;
+
+            try
+            {
+                foreach (PrinterResolution r in settings.PrinterResolutions)
+                {
+                    // Named kinds (Draft/Low/Medium/High) report X/Y as negative enums.
+                    if (r.X > 0 && r.Y > 0)
+                        best = Math.Max(best, Math.Min(r.X, r.Y));
+                }
+
+                // The driver's own current choice, when it reports one.
+                var current = pageSettings.PrinterResolution;
+                if (current != null && current.X > 0 && current.Y > 0)
+                    best = Math.Max(best, Math.Min(current.X, current.Y));
+            }
+            catch (Exception ex)
+            {
+                // A driver that will not answer is not a reason to fail the job.
+                Debug.WriteLine($"PdfDirectPrinter: could not read printer resolutions — {ex.Message}");
+            }
+
+            if (best <= 0) best = MinimumUsableDpi;
+
+            return Math.Clamp(best, MinimumUsableDpi, MaximumPracticalDpi);
+        }
+
         /// <summary>
         /// Use SumatraPDF for silent printing (recommended).
         /// </summary>
@@ -266,7 +377,7 @@ namespace Apex.Services.Printing
                 {
                     @"C:\Program Files\SumatraPDF\SumatraPDF.exe",
                     @"C:\Program Files (x86)\SumatraPDF\SumatraPDF.exe",
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), 
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                         "SumatraPDF", "SumatraPDF.exe"),
                     Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Tools", "SumatraPDF.exe")
                 });
@@ -278,7 +389,7 @@ namespace Apex.Services.Printing
                 {
                     // Build Sumatra command line for silent printing
                     var args = $"-print-to \"{printerName}\" -print-settings \"{copies}x\" -silent \"{pdfPath}\"";
-                    
+
                     var psi = new ProcessStartInfo
                     {
                         FileName = sumatraPath,
@@ -292,7 +403,7 @@ namespace Apex.Services.Printing
 
                     using var process = Process.Start(psi);
                     if (process == null) return false;
-                    
+
                     process.WaitForExit(120000); // 2 minute timeout
                     return process.ExitCode == 0;
                 }
@@ -333,7 +444,7 @@ namespace Apex.Services.Printing
 
                     using var process = Process.Start(psi);
                     if (process == null) return false;
-                    
+
                     process.WaitForExit(120000);
                     return process.ExitCode == 0;
                 }
@@ -359,7 +470,7 @@ namespace Apex.Services.Printing
             {
                 // Some printers support direct PDF - send raw bytes (one full document per copy)
                 var pdfBytes = await File.ReadAllBytesAsync(pdfPath);
-                
+
                 // Check if first bytes are PDF magic number
                 if (pdfBytes.Length < 4) return false;
                 if (pdfBytes[0] != '%' || pdfBytes[1] != 'P' || pdfBytes[2] != 'D' || pdfBytes[3] != 'F')

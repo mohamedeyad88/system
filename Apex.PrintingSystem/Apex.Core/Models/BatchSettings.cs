@@ -11,5 +11,8 @@ namespace Apex.Core.Models
         public int RetryCount { get; set; } = 0;
         public bool StopOnError { get; set; } = true;
         public bool OptimizedMode { get; set; } = false;
+        public string PaperSize { get; set; } = "A4";
+        public string Orientation { get; set; } = "Portrait";
+        public string Quality { get; set; } = "Normal";
     }
 }

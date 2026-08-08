@@ -8,8 +8,8 @@ namespace Apex.Licensing
     public enum LicenseType
     {
         Trial = 0,
-        Full  = 1,
-        Pro   = 2
+        Full = 1,
+        Pro = 2
     }
 
     /// <summary>
@@ -32,32 +32,32 @@ namespace Apex.Licensing
     public class LicensePayload
     {
         /// <summary>Schema version for forward compatibility.</summary>
-        public string      SchemaVersion  { get; set; } = "1";
+        public string SchemaVersion { get; set; } = "1";
 
         /// <summary>Unique license identifier (UUID v4).</summary>
-        public string      LicenseId      { get; set; } = "";
+        public string LicenseId { get; set; } = "";
 
-        public string      DeviceId       { get; set; } = "";
-        public LicenseType Type           { get; set; } = LicenseType.Full;
-        public DateTime    IssuedUtc      { get; set; }
+        public string DeviceId { get; set; } = "";
+        public LicenseType Type { get; set; } = LicenseType.Full;
+        public DateTime IssuedUtc { get; set; }
 
         /// <summary>For perpetual Full licenses, set to new DateTime(9999,12,31).</summary>
-        public DateTime    ExpiresUtc     { get; set; }
+        public DateTime ExpiresUtc { get; set; }
 
-        public string      ProductVersion { get; set; } = "1.0";
-        public string      CustomerName   { get; set; } = "";
+        public string ProductVersion { get; set; } = "1.0";
+        public string CustomerName { get; set; } = "";
 
         /// <summary>Optional order/invoice reference for admin audit trail.</summary>
-        public string      OrderReference { get; set; } = "";
+        public string OrderReference { get; set; } = "";
 
         /// <summary>Max activations – always 1 for per-machine licenses.</summary>
-        public int         MaxActivations { get; set; } = 1;
+        public int MaxActivations { get; set; } = 1;
 
         /// <summary>
         /// CSPRNG nonce (32 hex chars) prevents replay attacks.
         /// Every issued license has a unique nonce.
         /// </summary>
-        public string      Nonce          { get; set; } = "";
+        public string Nonce { get; set; } = "";
     }
 
     /// <summary>
@@ -65,8 +65,8 @@ namespace Apex.Licensing
     /// </summary>
     public class SignedLicense
     {
-        public string Payload       { get; set; } = "";   // Base64-encoded JSON of LicensePayload
-        public string Signature     { get; set; } = "";   // Base64-encoded ECDSA-SHA256 signature
+        public string Payload { get; set; } = "";   // Base64-encoded JSON of LicensePayload
+        public string Signature { get; set; } = "";   // Base64-encoded ECDSA-SHA256 signature
         public string SchemaVersion { get; set; } = "1";
     }
 
@@ -75,10 +75,19 @@ namespace Apex.Licensing
     /// </summary>
     public class TrialState
     {
-        public DateTime StartUtc    { get; set; }
+        public DateTime StartUtc { get; set; }
         public DateTime LastSeenUtc { get; set; }
-        public string   DeviceId    { get; set; } = "";
-        public string   Hmac        { get; set; } = "";   // HMAC-SHA256 of (StartUtc|LastSeenUtc|DeviceId)
+        public string DeviceId { get; set; } = "";
+
+        /// <summary>
+        /// Trial epoch. A stored state whose epoch differs from
+        /// <see cref="TrialManager.TrialEpoch"/> is ignored, which starts a fresh
+        /// trial. Bumping the constant once forces a one-time trial reset across all
+        /// machines when a new build is installed.
+        /// </summary>
+        public int Epoch { get; set; }
+
+        public string Hmac { get; set; } = "";   // HMAC-SHA256 of (Epoch|StartUtc|LastSeenUtc|DeviceId)
     }
 
     /// <summary>
@@ -86,12 +95,12 @@ namespace Apex.Licensing
     /// </summary>
     public class ValidationResult
     {
-        public bool          IsValid       { get; set; }
-        public LicenseStatus Status        { get; set; }
-        public LicenseType   Type          { get; set; }
-        public int           DaysRemaining { get; set; }
-        public string        ErrorMessage  { get; set; } = "";
-        public DateTime?     ExpiresUtc    { get; set; }
+        public bool IsValid { get; set; }
+        public LicenseStatus Status { get; set; }
+        public LicenseType Type { get; set; }
+        public int DaysRemaining { get; set; }
+        public string ErrorMessage { get; set; } = "";
+        public DateTime? ExpiresUtc { get; set; }
     }
 
     /// <summary>
@@ -100,10 +109,10 @@ namespace Apex.Licensing
     public class DeviceIdentityInfo
     {
         /// <summary>Raw 32-char hex fingerprint hash.</summary>
-        public string DeviceId    { get; set; } = "";
+        public string DeviceId { get; set; } = "";
 
         /// <summary>Formatted as XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX for display.</summary>
-        public string DisplayId   { get; set; } = "";
+        public string DisplayId { get; set; } = "";
     }
 
     /// <summary>
@@ -112,13 +121,13 @@ namespace Apex.Licensing
     /// </summary>
     public class ActivationRequest
     {
-        public string   ProductId        { get; set; } = "APEX-PRINTING-SUITE";
-        public string   ProductVersion   { get; set; } = "1.0";
-        public string   DeviceId         { get; set; } = "";
-        public string   DeviceDisplayId  { get; set; } = "";
-        public DateTime RequestedUtc     { get; set; }
+        public string ProductId { get; set; } = "APEX-PRINTING-SUITE";
+        public string ProductVersion { get; set; } = "1.0";
+        public string DeviceId { get; set; } = "";
+        public string DeviceDisplayId { get; set; } = "";
+        public DateTime RequestedUtc { get; set; }
         /// <summary>CSPRNG nonce – prevents replaying an old request.</summary>
-        public string   Nonce            { get; set; } = "";
+        public string Nonce { get; set; } = "";
     }
 
     /// <summary>
@@ -127,16 +136,16 @@ namespace Apex.Licensing
     /// </summary>
     public class AdminAuditRecord
     {
-        public string      LicenseId    { get; set; } = "";
-        public string      DeviceId     { get; set; } = "";
-        public string      CustomerName { get; set; } = "";
-        public string      OrderRef     { get; set; } = "";
-        public LicenseType LicenseType  { get; set; }
-        public DateTime    IssuedUtc    { get; set; }
-        public DateTime    ExpiresUtc   { get; set; }
-        public string      OutputFile   { get; set; } = "";
+        public string LicenseId { get; set; } = "";
+        public string DeviceId { get; set; } = "";
+        public string CustomerName { get; set; } = "";
+        public string OrderRef { get; set; } = "";
+        public LicenseType LicenseType { get; set; }
+        public DateTime IssuedUtc { get; set; }
+        public DateTime ExpiresUtc { get; set; }
+        public string OutputFile { get; set; } = "";
         /// <summary>Hostname of the machine that ran the Admin Tool.</summary>
-        public string      AdminMachine { get; set; } = "";
+        public string AdminMachine { get; set; } = "";
     }
 
     /// <summary>
@@ -144,11 +153,11 @@ namespace Apex.Licensing
     /// </summary>
     public class WhatsAppActivationMessage
     {
-        public string Phone       { get; set; } = "";
-        public string DeviceId    { get; set; } = "";
+        public string Phone { get; set; } = "";
+        public string DeviceId { get; set; } = "";
         public string ProductName { get; set; } = "";
         public string MessageText { get; set; } = "";
-        public string Url         { get; set; } = "";
+        public string Url { get; set; } = "";
     }
 }
 

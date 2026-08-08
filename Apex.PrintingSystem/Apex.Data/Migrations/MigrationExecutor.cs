@@ -41,7 +41,7 @@ namespace Apex.Data.Migrations
 
                     await _versionRepo.LogMigrationAsync(nextVersion, $"Auto-migration with {steps.Count} steps", true);
                     await transaction.CommitAsync();
-                    
+
                     Log($"[{DateTime.Now}] Migration v{nextVersion} completed successfully.");
                 }
                 catch (Exception ex)

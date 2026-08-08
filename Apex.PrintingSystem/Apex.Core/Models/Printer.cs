@@ -11,7 +11,7 @@ namespace Apex.Core.Models
         public string? CapabilitiesJson { get; set; }
         public string Status { get; set; } = "Online"; // 'Online' | 'Offline' | 'Error'
         public DateTime? LastSeenUtc { get; set; }
-        
+
         // Legacy/Compat
         public string IpAddress { get; set; } = string.Empty;
         public int Port { get; set; } = 9100;

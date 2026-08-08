@@ -24,12 +24,12 @@ namespace Apex.Core.Interfaces
 
         // Job creation with priority support
         PrintJob CreatePrintJob(string filePath, int copies, JobPriority priority = JobPriority.Normal);
-        
+
         // Progress monitoring
         Task UpdateJobProgressAsync(int jobId, int currentPage, int totalPages);
         Task<PrintJobProgress?> GetJobProgressAsync(int jobId);
         Task<System.Collections.Generic.IEnumerable<PrintJobProgress>> GetAllPrintingJobsProgressAsync();
-        
+
         Task UpdateJobStatus(int jobId, JobAssignmentStatus status);
         void AssignJobsToPrinters();
         void DistributeJobs();

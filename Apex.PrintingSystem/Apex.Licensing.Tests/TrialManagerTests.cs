@@ -22,24 +22,25 @@ namespace Apex.Licensing.Tests
         //  Constants mirror
         // ──────────────────────────────────────────────────────────────────
 
-        private const int TrialDays = TrialManager.TrialDays;   // 5
+        private const int TrialDays = TrialManager.TrialDays;   // 7 (commercial trial)
 
         // ──────────────────────────────────────────────────────────────────
         //  Helper – build a valid TrialState with correct HMAC
         // ──────────────────────────────────────────────────────────────────
 
         private static TrialState BuildValidState(
-            DateTime? startUtc    = null,
+            DateTime? startUtc = null,
             DateTime? lastSeenUtc = null,
-            string    deviceId    = "AABBCCDD11223344AABBCCDD11223344")
+            string deviceId = "AABBCCDD11223344AABBCCDD11223344")
         {
-            var start  = startUtc    ?? DateTime.UtcNow.AddDays(-1);
-            var last   = lastSeenUtc ?? DateTime.UtcNow;
-            var state  = new TrialState
+            var start = startUtc ?? DateTime.UtcNow.AddDays(-1);
+            var last = lastSeenUtc ?? DateTime.UtcNow;
+            var state = new TrialState
             {
-                StartUtc    = start,
+                StartUtc = start,
                 LastSeenUtc = last,
-                DeviceId    = deviceId
+                DeviceId = deviceId,
+                Epoch = TrialManager.TrialEpoch
             };
             state.Hmac = LicenseCrypto.ComputeTrialHmac(state);
             return state;
@@ -50,9 +51,9 @@ namespace Apex.Licensing.Tests
         // ──────────────────────────────────────────────────────────────────
 
         [Fact]
-        public void TrialDays_IsExactlyFive()
+        public void TrialDays_IsExactlySeven()
         {
-            Assert.Equal(5, TrialManager.TrialDays);
+            Assert.Equal(7, TrialManager.TrialDays);
         }
 
         // ──────────────────────────────────────────────────────────────────
@@ -62,10 +63,10 @@ namespace Apex.Licensing.Tests
         [Theory]
         [InlineData(0)]
         [InlineData(1)]
-        [InlineData(4)]
+        [InlineData(6)]
         public void DaysUsed_LessThanOrEqualToTrialDays_ShouldStillBeValid(int daysUsed)
         {
-            var now   = DateTime.UtcNow;
+            var now = DateTime.UtcNow;
             var start = now.AddDays(-daysUsed);
 
             double used = (now - start).TotalDays;
@@ -74,12 +75,12 @@ namespace Apex.Licensing.Tests
         }
 
         [Theory]
-        [InlineData(6)]
-        [InlineData(10)]
+        [InlineData(31)]
+        [InlineData(45)]
         [InlineData(100)]
         public void DaysUsed_GreaterThanTrialDays_ShouldBeExpired(int daysUsed)
         {
-            var now   = DateTime.UtcNow;
+            var now = DateTime.UtcNow;
             var start = now.AddDays(-daysUsed);
 
             double used = (now - start).TotalDays;
@@ -94,9 +95,9 @@ namespace Apex.Licensing.Tests
         [Fact]
         public void ClockRollback_NowExactlyEqualsLastSeen_NotTampered()
         {
-            var now      = DateTime.UtcNow;
+            var now = DateTime.UtcNow;
             var lastSeen = now;
-            var start    = now.AddDays(-1);
+            var start = now.AddDays(-1);
 
             // Formula from TrialManager: (now + tolerance) < lastSeen || now < start
             var tolerance = TimeSpan.FromDays(1);
@@ -107,9 +108,9 @@ namespace Apex.Licensing.Tests
         [Fact]
         public void ClockRollback_NowOneHourBeforeLastSeen_WithinTolerance_NotTampered()
         {
-            var now      = DateTime.UtcNow;
+            var now = DateTime.UtcNow;
             var lastSeen = now.AddHours(1);  // last seen is 1h in the future (clock skew)
-            var start    = now.AddDays(-2);
+            var start = now.AddDays(-2);
 
             var tolerance = TimeSpan.FromDays(1);
             bool rollback = (now + tolerance < lastSeen) || (now < start);
@@ -119,9 +120,9 @@ namespace Apex.Licensing.Tests
         [Fact]
         public void ClockRollback_NowTwoDaysBeforeLastSeen_ExceedsTolerance_Tampered()
         {
-            var now      = DateTime.UtcNow;
+            var now = DateTime.UtcNow;
             var lastSeen = now.AddDays(2);   // "last seen" is 2 days ahead of now → clock was rolled back
-            var start    = now.AddDays(-1);
+            var start = now.AddDays(-1);
 
             var tolerance = TimeSpan.FromDays(1);
             bool rollback = (now + tolerance < lastSeen) || (now < start);
@@ -131,7 +132,7 @@ namespace Apex.Licensing.Tests
         [Fact]
         public void ClockRollback_NowBeforeStart_Tampered()
         {
-            var now   = DateTime.UtcNow;
+            var now = DateTime.UtcNow;
             var start = now.AddDays(1);      // start is in the future → impossible without clock change
 
             var tolerance = TimeSpan.FromDays(1);
@@ -183,14 +184,14 @@ namespace Apex.Licensing.Tests
         // ──────────────────────────────────────────────────────────────────
 
         [Theory]
-        [InlineData(0, 5)]
-        [InlineData(1, 4)]
-        [InlineData(3, 2)]
-        [InlineData(4, 1)]
-        [InlineData(5, 0)]
+        [InlineData(0, 7)]
+        [InlineData(1, 6)]
+        [InlineData(3, 4)]
+        [InlineData(6, 1)]
+        [InlineData(7, 0)]
         public void DaysRemaining_CalculatedCorrectly(int daysUsed, int expectedRemaining)
         {
-            var now   = DateTime.UtcNow;
+            var now = DateTime.UtcNow;
             var start = now.AddDays(-daysUsed);
 
             int remaining = Math.Max(0, TrialDays - (int)(now - start).TotalDays);
@@ -217,9 +218,9 @@ namespace Apex.Licensing.Tests
             var result = TrialManager.CheckTrial();
 
             Assert.True(
-                result.Status == LicenseStatus.Valid         ||
-                result.Status == LicenseStatus.Expired       ||
-                result.Status == LicenseStatus.Corrupted     ||
+                result.Status == LicenseStatus.Valid ||
+                result.Status == LicenseStatus.Expired ||
+                result.Status == LicenseStatus.Corrupted ||
                 result.Status == LicenseStatus.ClockTampered ||
                 result.Status == LicenseStatus.HardwareMismatch,
                 $"Unexpected status: {result.Status}");
@@ -236,7 +237,7 @@ namespace Apex.Licensing.Tests
 
         [Fact]
         [Trait("Category", "Integration")]
-        public void CheckTrial_WhenValid_DaysRemainingBetweenZeroAndFive()
+        public void CheckTrial_WhenValid_DaysRemainingWithinTrialWindow()
         {
             var result = TrialManager.CheckTrial();
             if (result.IsValid)

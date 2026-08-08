@@ -30,7 +30,7 @@ namespace Apex.UI.ViewModels
             _loggerService = loggerService ?? throw new System.ArgumentNullException(nameof(loggerService));
             _logReader = logReader ?? throw new System.ArgumentNullException(nameof(logReader));
             LogPath = _loggerService.GetTodayLogPath();
-            
+
             _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
             _timer.Tick += async (s, e) =>
             {

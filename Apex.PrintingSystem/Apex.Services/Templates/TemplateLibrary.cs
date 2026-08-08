@@ -1,3 +1,4 @@
+using Apex.Core.Localization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -205,11 +206,11 @@ namespace Apex.Services.Templates
         {
             List<string> builtIn = new()
             {
-                "شهادات",
-                "بطاقات",
-                "فواتير",
-                "ملصقات",
-                "عام"
+                AppLocalizer.L("Tpl_CatCertificates"),
+                AppLocalizer.L("Tpl_CatCards"),
+                AppLocalizer.L("Tpl_CatInvoices"),
+                AppLocalizer.L("Tpl_CatLabels"),
+                AppLocalizer.L("Des_General")
             };
 
             lock (_lock)
@@ -266,10 +267,10 @@ namespace Apex.Services.Templates
         public void CreateSampleTemplates()
         {
             // 1. شهادة تقدير — Certificate
-            ApextTemplate certificate = ApextFileFormat.CreateNew("شهادة تقدير", "شهادات");
-            certificate.Description = "قالب شهادة تقدير قياسي";
+            ApextTemplate certificate = ApextFileFormat.CreateNew(AppLocalizer.L("Tpl_CertName"), AppLocalizer.L("Tpl_CatCertificates"));
+            certificate.Description = AppLocalizer.L("Tpl_CertDesc");
             certificate.Author = "Apex PrintingSystem";
-            certificate.Tags = new List<string> { "شهادة", "تقدير", "رسمي" };
+            certificate.Tags = new List<string> { AppLocalizer.L("Tpl_TagCert"), AppLocalizer.L("Tpl_TagAppreciation"), AppLocalizer.L("Tpl_TagOfficial") };
             TemplatePageDefinition certPage = certificate.Pages[0];
             certPage.WidthMm = 297;   // A4 Landscape
             certPage.HeightMm = 210;
@@ -278,7 +279,7 @@ namespace Apex.Services.Templates
             {
                 new()
                 {
-                    Name = "الاسم",
+                    Name = AppLocalizer.L("Tpl_FieldName"),
                     VariableName = "Name",
                     DataType = SlotDataType.Text,
                     X = 50, Y = 80, Width = 197, Height = 20,
@@ -286,11 +287,11 @@ namespace Apex.Services.Templates
                     Bold = true, IsRtl = true,
                     TextAlign = HorizontalAlign.Center,
                     VerticalAlign = VerticalAlign.Middle,
-                    Required = true
+                    Required = false
                 },
                 new()
                 {
-                    Name = "المسمى الوظيفي",
+                    Name = AppLocalizer.L("Tpl_FieldTitle"),
                     VariableName = "Title",
                     DataType = SlotDataType.Text,
                     X = 50, Y = 110, Width = 197, Height = 14,
@@ -301,7 +302,7 @@ namespace Apex.Services.Templates
                 },
                 new()
                 {
-                    Name = "التاريخ",
+                    Name = AppLocalizer.L("Tpl_FieldDate"),
                     VariableName = "Date",
                     DataType = SlotDataType.Date,
                     X = 200, Y = 175, Width = 70, Height = 10,
@@ -314,7 +315,7 @@ namespace Apex.Services.Templates
                 },
                 new()
                 {
-                    Name = "الرقم التسلسلي",
+                    Name = AppLocalizer.L("Tpl_FieldSerial"),
                     VariableName = "Number",
                     DataType = SlotDataType.Counter,
                     X = 20, Y = 175, Width = 60, Height = 10,
@@ -329,10 +330,10 @@ namespace Apex.Services.Templates
             Add(certificate);
 
             // 2. بطاقة عمل — Business Card
-            ApextTemplate businessCard = ApextFileFormat.CreateNew("بطاقة عمل", "بطاقات");
-            businessCard.Description = "قالب بطاقة عمل احترافي";
+            ApextTemplate businessCard = ApextFileFormat.CreateNew(AppLocalizer.L("Tpl_BizName"), AppLocalizer.L("Tpl_CatCards"));
+            businessCard.Description = AppLocalizer.L("Tpl_BizDesc");
             businessCard.Author = "Apex PrintingSystem";
-            businessCard.Tags = new List<string> { "بطاقة", "عمل", "اعمال" };
+            businessCard.Tags = new List<string> { AppLocalizer.L("Tpl_TagCard"), AppLocalizer.L("Tpl_TagWork"), AppLocalizer.L("Tpl_TagBusiness") };
             TemplatePageDefinition cardPage = businessCard.Pages[0];
             cardPage.WidthMm = 85.6;   // Standard business card
             cardPage.HeightMm = 54;
@@ -342,7 +343,7 @@ namespace Apex.Services.Templates
             {
                 new()
                 {
-                    Name = "الاسم",
+                    Name = AppLocalizer.L("Tpl_FieldName"),
                     VariableName = "Name",
                     DataType = SlotDataType.Text,
                     X = 5, Y = 8, Width = 75, Height = 12,
@@ -350,11 +351,11 @@ namespace Apex.Services.Templates
                     Bold = true, IsRtl = true,
                     TextAlign = HorizontalAlign.Right,
                     VerticalAlign = VerticalAlign.Middle,
-                    Required = true
+                    Required = false
                 },
                 new()
                 {
-                    Name = "المسمى الوظيفي",
+                    Name = AppLocalizer.L("Tpl_FieldTitle"),
                     VariableName = "Title",
                     DataType = SlotDataType.Text,
                     X = 5, Y = 22, Width = 75, Height = 9,
@@ -365,7 +366,7 @@ namespace Apex.Services.Templates
                 },
                 new()
                 {
-                    Name = "الهاتف",
+                    Name = AppLocalizer.L("Tpl_FieldPhone"),
                     VariableName = "Phone",
                     DataType = SlotDataType.Text,
                     X = 5, Y = 33, Width = 75, Height = 8,
@@ -376,7 +377,7 @@ namespace Apex.Services.Templates
                 },
                 new()
                 {
-                    Name = "البريد الإلكتروني",
+                    Name = AppLocalizer.L("Tpl_FieldEmail"),
                     VariableName = "Email",
                     DataType = SlotDataType.Text,
                     X = 5, Y = 43, Width = 75, Height = 8,
@@ -389,10 +390,10 @@ namespace Apex.Services.Templates
             Add(businessCard);
 
             // 3. ملصق عنوان — Address Label
-            ApextTemplate addressLabel = ApextFileFormat.CreateNew("ملصق عنوان", "ملصقات");
-            addressLabel.Description = "قالب ملصق العنوان البريدي";
+            ApextTemplate addressLabel = ApextFileFormat.CreateNew(AppLocalizer.L("Tpl_LabelName"), AppLocalizer.L("Tpl_CatLabels"));
+            addressLabel.Description = AppLocalizer.L("Tpl_LabelDesc");
             addressLabel.Author = "Apex PrintingSystem";
-            addressLabel.Tags = new List<string> { "ملصق", "عنوان", "بريد" };
+            addressLabel.Tags = new List<string> { AppLocalizer.L("Tpl_TagLabel"), AppLocalizer.L("Tpl_TagAddress"), AppLocalizer.L("Tpl_TagPost") };
             TemplatePageDefinition labelPage = addressLabel.Pages[0];
             labelPage.WidthMm = 101.6;  // 4-inch label
             labelPage.HeightMm = 63.5;  // 2.5-inch label
@@ -401,7 +402,7 @@ namespace Apex.Services.Templates
             {
                 new()
                 {
-                    Name = "الاسم",
+                    Name = AppLocalizer.L("Tpl_FieldName"),
                     VariableName = "Name",
                     DataType = SlotDataType.Text,
                     X = 5, Y = 5, Width = 91, Height = 12,
@@ -409,11 +410,11 @@ namespace Apex.Services.Templates
                     Bold = true, IsRtl = true,
                     TextAlign = HorizontalAlign.Right,
                     VerticalAlign = VerticalAlign.Middle,
-                    Required = true
+                    Required = false
                 },
                 new()
                 {
-                    Name = "العنوان",
+                    Name = AppLocalizer.L("Tpl_FieldAddress"),
                     VariableName = "Address",
                     DataType = SlotDataType.Text,
                     X = 5, Y = 19, Width = 91, Height = 14,
@@ -424,7 +425,7 @@ namespace Apex.Services.Templates
                 },
                 new()
                 {
-                    Name = "المدينة",
+                    Name = AppLocalizer.L("Tpl_FieldCity"),
                     VariableName = "City",
                     DataType = SlotDataType.Text,
                     X = 5, Y = 35, Width = 55, Height = 10,
@@ -435,7 +436,7 @@ namespace Apex.Services.Templates
                 },
                 new()
                 {
-                    Name = "الرمز البريدي",
+                    Name = AppLocalizer.L("Tpl_FieldZip"),
                     VariableName = "PostalCode",
                     DataType = SlotDataType.Text,
                     X = 62, Y = 35, Width = 34, Height = 10,

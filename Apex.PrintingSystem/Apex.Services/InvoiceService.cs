@@ -223,7 +223,7 @@ namespace Apex.Services
             // Basic calculation - can be enhanced based on business rules
             decimal baseAmount = printJob.TotalPages * 0.5m; // 0.5 EGP per page
             decimal quantity = printJob.TotalCopies;
-            
+
             return baseAmount * quantity;
         }
     }

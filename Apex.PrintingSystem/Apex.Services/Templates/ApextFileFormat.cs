@@ -38,6 +38,12 @@ namespace Apex.Services.Templates
         public int RotationDegrees { get; set; } = 0;
         public string? BarcodeType { get; set; }
         public string? ImageAssetId { get; set; }
+
+        // Image-specific display properties
+        /// <summary>How the image fills its slot: Contain | Cover | Stretch | Fill</summary>
+        public string ImageFitMode { get; set; } = "Contain";
+        /// <summary>Opacity 0.0–1.0 (1 = fully opaque)</summary>
+        public double Opacity { get; set; } = 1.0;
     }
 
     public class TemplatePageDefinition
@@ -323,9 +329,9 @@ namespace Apex.Services.Templates
         /// If the file doesn't exist yet, calls Save() first.
         /// </summary>
         public static void SaveWithSmartData(
-            ApextTemplate        template,
-            SmartVariablesState  smartState,
-            string               filePath,
+            ApextTemplate template,
+            SmartVariablesState smartState,
+            string filePath,
             Dictionary<string, byte[]>? assets = null)
         {
             // Always write a fresh ZIP (avoids ZipArchiveMode.Update corruption edge-cases)
@@ -389,12 +395,12 @@ namespace Apex.Services.Templates
             // manifest.json
             var manifest = new
             {
-                version          = "2.1",
-                hasSmartData     = true,
+                version = "2.1",
+                hasSmartData = true,
                 assetCount,
-                pageCount        = template.Pages.Count,
-                templateId       = template.Id,
-                savedAt          = DateTime.UtcNow.ToString("O")
+                pageCount = template.Pages.Count,
+                templateId = template.Id,
+                savedAt = DateTime.UtcNow.ToString("O")
             };
             WriteEntry(zipWrite, "manifest.json",
                 JsonSerializer.SerializeToUtf8Bytes(manifest, new JsonSerializerOptions { WriteIndented = true }));
@@ -410,7 +416,7 @@ namespace Apex.Services.Templates
             if (!File.Exists(filePath))
                 throw new FileNotFoundException($"Template file not found: {filePath}", filePath);
 
-            using var fs  = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             using var zip = new ZipArchive(fs, ZipArchiveMode.Read, leaveOpen: false);
 
             // template.json (required)
@@ -431,7 +437,7 @@ namespace Apex.Services.Templates
             var smartEntry = zip.GetEntry(SmartDataEntry);
             if (smartEntry != null)
             {
-                using var s  = smartEntry.Open();
+                using var s = smartEntry.Open();
                 using var ms = new MemoryStream();
                 s.CopyTo(ms);
                 smartState = JsonSerializer.Deserialize<SmartVariablesState>(ms.ToArray(), SerializerOptions)
@@ -444,7 +450,7 @@ namespace Apex.Services.Templates
             {
                 if (!entry.FullName.StartsWith("assets/", StringComparison.OrdinalIgnoreCase)) continue;
                 if (entry.Length == 0) continue;
-                using var s  = entry.Open();
+                using var s = entry.Open();
                 using var ms = new MemoryStream();
                 s.CopyTo(ms);
                 assets[entry.Name] = ms.ToArray();

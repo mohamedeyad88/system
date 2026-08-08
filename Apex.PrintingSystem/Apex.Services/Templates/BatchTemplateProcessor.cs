@@ -260,15 +260,32 @@ namespace Apex.Services.Templates
                 // Skip zero-size slots
                 if (slotW <= 0 || slotH <= 0) continue;
 
-                switch (slot.DataType)
+                // Opacity < 1 → render the slot onto a transparent layer, then
+                // composite it back with the requested alpha. Opacity == 1 draws directly.
+                double opacity = Math.Clamp(slot.Opacity, 0.0, 1.0);
+                if (opacity < 0.999)
                 {
-                    case SlotDataType.Image:
-                        DrawImageSlot(g, slot, slotRect, data, assets);
-                        break;
+                    using var layer = new Bitmap(bitmap.Width, bitmap.Height,
+                                                 System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                    using (var lg = Graphics.FromImage(layer))
+                    {
+                        lg.SmoothingMode     = g.SmoothingMode;
+                        lg.TextRenderingHint = g.TextRenderingHint;
+                        lg.InterpolationMode = g.InterpolationMode;
+                        DrawSlot(lg, slot, slotRect, data, assets, dpi);
+                    }
 
-                    default:
-                        DrawTextSlot(g, slot, slotRect, data, dpi);
-                        break;
+                    var matrix = new System.Drawing.Imaging.ColorMatrix { Matrix33 = (float)opacity };
+                    using var attrs = new System.Drawing.Imaging.ImageAttributes();
+                    attrs.SetColorMatrix(matrix);
+                    g.DrawImage(layer,
+                        new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                        0, 0, bitmap.Width, bitmap.Height,
+                        GraphicsUnit.Pixel, attrs);
+                }
+                else
+                {
+                    DrawSlot(g, slot, slotRect, data, assets, dpi);
                 }
             }
 
@@ -296,6 +313,33 @@ namespace Apex.Services.Templates
 
         // ── Private rendering helpers ─────────────────────────────────────────────
 
+        /// <summary>Dispatches a single slot to the correct draw routine by type.</summary>
+        private static void DrawSlot(
+            Graphics g,
+            TemplateSlotDefinition slot,
+            RectangleF slotRect,
+            TemplateDataRow data,
+            Dictionary<string, byte[]>? assets,
+            int dpi)
+        {
+            switch (slot.DataType)
+            {
+                case SlotDataType.Image:
+                    DrawImageSlot(g, slot, slotRect, data, assets);
+                    break;
+                case SlotDataType.QrCode:
+                    DrawCodeSlot(g, slot, slotRect, data, dpi, ZXing.BarcodeFormat.QR_CODE);
+                    break;
+                case SlotDataType.Barcode:
+                    DrawCodeSlot(g, slot, slotRect, data, dpi,
+                        CodeRenderer.ResolveBarcodeFormat(slot.BarcodeType));
+                    break;
+                default:
+                    DrawTextSlot(g, slot, slotRect, data, dpi);
+                    break;
+            }
+        }
+
         private static void DrawTextSlot(
             Graphics g,
             TemplateSlotDefinition slot,
@@ -309,7 +353,8 @@ namespace Apex.Services.Templates
             {
                 Color bg = ParseColor(slot.BackgroundColor, Color.Transparent);
                 if (bg != Color.Transparent)
-                    g.FillRectangle(new SolidBrush(bg), slotRect);
+                    using (var bgBrush = new SolidBrush(bg))
+                        g.FillRectangle(bgBrush, slotRect);
             }
 
             // Resolve text value
@@ -395,6 +440,52 @@ namespace Apex.Services.Templates
             }
         }
 
+        /// <summary>Renders a QR or 1-D barcode; falls back to text if the value can't be encoded.</summary>
+        private static void DrawCodeSlot(
+            Graphics g,
+            TemplateSlotDefinition slot,
+            RectangleF slotRect,
+            TemplateDataRow data,
+            int dpi,
+            ZXing.BarcodeFormat format)
+        {
+            // Slot background
+            if (!string.IsNullOrEmpty(slot.BackgroundColor) &&
+                !slot.BackgroundColor.Equals("Transparent", StringComparison.OrdinalIgnoreCase))
+            {
+                Color bg = ParseColor(slot.BackgroundColor, Color.Transparent);
+                if (bg != Color.Transparent)
+                    using (var bgBrush = new SolidBrush(bg))
+                        g.FillRectangle(bgBrush, slotRect);
+            }
+
+            string content = data.Get(slot.VariableName, slot.DefaultValue ?? "");
+            if (string.IsNullOrEmpty(content)) return;
+
+            // QR is square (use the smaller side); barcodes fill the slot.
+            int w = Math.Max(1, (int)Math.Round(slotRect.Width));
+            int h = Math.Max(1, (int)Math.Round(slotRect.Height));
+            int codeW = w, codeH = h;
+            if (format == ZXing.BarcodeFormat.QR_CODE)
+            {
+                int side = Math.Min(w, h);
+                codeW = codeH = side;
+            }
+
+            using Bitmap? code = CodeRenderer.TryRender(content, format, codeW, codeH);
+            if (code == null)
+            {
+                // Unencodable value (e.g. EAN-13 with letters) → show the text instead.
+                DrawTextSlot(g, slot, slotRect, data, dpi);
+                return;
+            }
+
+            // Center the code within the slot rectangle.
+            float ox = slotRect.X + (slotRect.Width - code.Width) / 2f;
+            float oy = slotRect.Y + (slotRect.Height - code.Height) / 2f;
+            g.DrawImage(code, new RectangleF(ox, oy, code.Width, code.Height));
+        }
+
         private static void DrawImageSlot(
             Graphics g,
             TemplateSlotDefinition slot,
@@ -408,7 +499,8 @@ namespace Apex.Services.Templates
             {
                 Color bg = ParseColor(slot.BackgroundColor, Color.Transparent);
                 if (bg != Color.Transparent)
-                    g.FillRectangle(new SolidBrush(bg), slotRect);
+                    using (var bgBrush = new SolidBrush(bg))
+                        g.FillRectangle(bgBrush, slotRect);
             }
 
             // Determine asset key: prefer data-driven value, fallback to static ImageAssetId

@@ -32,7 +32,7 @@ namespace Apex.Data.Migrations
                 {
                     var columnName = property.GetColumnName();
                     var columnType = property.GetColumnType();
-                    
+
                     // Map C# types to SQLite types if GetColumnType returns null or C# type
                     if (string.IsNullOrEmpty(columnType))
                     {
@@ -64,7 +64,7 @@ namespace Apex.Data.Migrations
                 return "REAL";
             if (type == typeof(byte[]))
                 return "BLOB";
-            
+
             // Nullable types
             if (System.Nullable.GetUnderlyingType(type) != null)
                 return MapToSqliteType(System.Nullable.GetUnderlyingType(type)!);

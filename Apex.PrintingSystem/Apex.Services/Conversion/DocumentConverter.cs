@@ -49,7 +49,7 @@ namespace Apex.Services.Conversion
         {
             _tempFolder = Path.Combine(Path.GetTempPath(), "ApexConversion");
             Directory.CreateDirectory(_tempFolder);
-            
+
             // Try to find LibreOffice
             _libreOfficePath = libreOfficePath ?? FindLibreOffice();
         }
@@ -68,7 +68,7 @@ namespace Apex.Services.Conversion
             }
 
             var extension = Path.GetExtension(sourcePath).ToLowerInvariant();
-            
+
             if (!IsFormatSupported(extension))
             {
                 return ConversionResult.Failed(sourcePath, $"Unsupported format: {extension}");
@@ -116,7 +116,7 @@ namespace Apex.Services.Conversion
 
                 stopwatch.Stop();
                 result.ConversionTime = stopwatch.Elapsed;
-                
+
                 if (result.Success && File.Exists(result.OutputPath))
                 {
                     result.FileSizeBytes = new FileInfo(result.OutputPath).Length;
@@ -178,7 +178,7 @@ namespace Apex.Services.Conversion
                 var page = document.AddPage();
 
                 using var image = XImage.FromFile(sourcePath);
-                
+
                 // Scale image to fit page
                 page.Width = XUnit.FromPoint(image.PixelWidth * 72 / image.HorizontalResolution);
                 page.Height = XUnit.FromPoint(image.PixelHeight * 72 / image.VerticalResolution);
@@ -208,8 +208,7 @@ namespace Apex.Services.Conversion
                 using var document = new PdfDocument();
                 var font = new XFont("Consolas", 10, XFontStyle.Regular);
                 var lines = File.ReadAllLines(sourcePath);
-                
-                const int linesPerPage = 50;
+
                 const double margin = 40;
                 const double lineHeight = 14;
 
@@ -270,7 +269,7 @@ namespace Apex.Services.Conversion
         {
             if (_libreOfficePath == null)
             {
-                return ConversionResult.Failed(sourcePath, 
+                return ConversionResult.Failed(sourcePath,
                     "LibreOffice not found. Please install LibreOffice for Office format support.");
             }
 

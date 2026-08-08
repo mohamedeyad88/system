@@ -22,7 +22,7 @@ namespace Apex.NumberedBooksEngine.Tests
             _output = output;
             _mockPrinter = new MockPrinterService();
             _composer = new Composer();
-            
+
             using var surface = SKSurface.Create(new SKImageInfo(1000, 1000));
             surface.Canvas.Clear(SKColors.White);
             _testTemplate = surface.Snapshot();
@@ -48,13 +48,13 @@ namespace Apex.NumberedBooksEngine.Tests
             {
                 await _mockPrinter.PrintPageAsync(page, "TestPrinter");
                 pagesProcessed++;
-                
+
                 progress.Report(new ProgressInfo(
                     pagesProcessed,
                     25, // 100 numbers / 4 slots
                     pagesProcessed / 25.0 * 100,
                     pagesProcessed * 4));
-                
+
                 page.Dispose();
             }
 
@@ -62,7 +62,7 @@ namespace Apex.NumberedBooksEngine.Tests
             Assert.Equal(25, pagesProcessed);
             Assert.Equal(25, _mockPrinter.PagesReceived);
             Assert.True(progress.LastProgress?.Percent >= 100);
-            
+
             _output.WriteLine($"Job completed: {pagesProcessed} pages printed");
         }
 
@@ -82,10 +82,10 @@ namespace Apex.NumberedBooksEngine.Tests
             {
                 await _mockPrinter.PrintPageAsync(page, "TestPrinter");
                 pagesProcessed++;
-                
+
                 if (copyType == CopyType.Original) originalCount++;
                 else if (copyType == CopyType.Copy1) copy1Count++;
-                
+
                 page.Dispose();
             }
 
@@ -94,7 +94,7 @@ namespace Apex.NumberedBooksEngine.Tests
             Assert.Equal(20, pagesProcessed);
             Assert.Equal(10, originalCount);
             Assert.Equal(10, copy1Count);
-            
+
             _output.WriteLine($"Multi-copy job: {originalCount} originals, {copy1Count} copies");
         }
 
@@ -115,11 +115,11 @@ namespace Apex.NumberedBooksEngine.Tests
                 foreach (var (page, _) in _composer.GenerateMultiCopyPages(_testTemplate, options, copyTypes))
                 {
                     cts.Token.ThrowIfCancellationRequested();
-                    
+
                     await _mockPrinter.PrintPageAsync(page, "TestPrinter");
                     pagesProcessed++;
                     page.Dispose();
-                    
+
                     // Cancel after 50 pages
                     if (pagesProcessed >= 50)
                     {
@@ -135,7 +135,7 @@ namespace Apex.NumberedBooksEngine.Tests
             // Assert
             Assert.True(wasCancelled);
             Assert.Equal(50, pagesProcessed);
-            
+
             _output.WriteLine($"Job cancelled after {pagesProcessed} pages");
         }
 
@@ -169,7 +169,7 @@ namespace Apex.NumberedBooksEngine.Tests
             Assert.NotNull(caughtException);
             Assert.Equal(5, pagesProcessed);
             Assert.Contains("simulated", caughtException.Message.ToLower());
-            
+
             _output.WriteLine($"Handled printer error after {pagesProcessed} pages");
         }
 
@@ -189,10 +189,10 @@ namespace Apex.NumberedBooksEngine.Tests
             {
                 await _mockPrinter.PrintPageAsync(page, "TestPrinter");
                 pagesProcessed++;
-                
+
                 double percent = (double)pagesProcessed / totalPages * 100;
                 progressReports.Add(percent);
-                
+
                 page.Dispose();
             }
 
@@ -200,13 +200,13 @@ namespace Apex.NumberedBooksEngine.Tests
             Assert.Equal(10, progressReports.Count);
             Assert.Equal(10, progressReports[0]); // First page = 10%
             Assert.Equal(100, progressReports[^1]); // Last page = 100%
-            
+
             // Verify progress increases monotonically
             for (int i = 1; i < progressReports.Count; i++)
             {
                 Assert.True(progressReports[i] > progressReports[i - 1]);
             }
-            
+
             _output.WriteLine($"Progress reports: {string.Join(", ", progressReports.Select(p => $"{p:F0}%"))}");
         }
 
@@ -216,7 +216,7 @@ namespace Apex.NumberedBooksEngine.Tests
             // Arrange
             var options = CreateTestOptions(slotsCount: 4, totalNumbers: 1000);
             var copyTypes = new[] { CopyType.Original };
-            
+
             GC.Collect();
             var memBefore = GC.GetTotalMemory(true);
 
@@ -236,7 +236,7 @@ namespace Apex.NumberedBooksEngine.Tests
             // Assert - streaming should keep memory bounded
             Assert.Equal(250, pagesProcessed);
             Assert.True(memGrowth < 50, $"Memory grew by {memGrowth:N2}MB, expected < 50MB for streaming");
-            
+
             _output.WriteLine($"Large job: {pagesProcessed} pages, memory growth: {memGrowth:N2}MB");
         }
 

@@ -10,10 +10,10 @@ namespace Apex.Services.SmartVariables
 {
     public class LibraryScanOptions
     {
-        public bool   Recursive          { get; set; } = true;
-        public bool   GenerateThumbnails { get; set; } = true;
-        public int    ThumbnailSizePx    { get; set; } = 80;
-        public long   MaxFileSizeBytes   { get; set; } = 50 * 1024 * 1024; // 50 MB
+        public bool Recursive { get; set; } = true;
+        public bool GenerateThumbnails { get; set; } = true;
+        public int ThumbnailSizePx { get; set; } = 80;
+        public long MaxFileSizeBytes { get; set; } = 50 * 1024 * 1024; // 50 MB
     }
 
     public interface IImageLibraryService
@@ -21,11 +21,11 @@ namespace Apex.Services.SmartVariables
         Task<List<ImageAsset>> ScanFolderAsync(
             string folderPath,
             LibraryScanOptions? options = null,
-            IProgress<int>? progress    = null,
-            CancellationToken ct        = default);
+            IProgress<int>? progress = null,
+            CancellationToken ct = default);
 
         ImageAsset ProbeFile(string fullPath, bool generateThumbnail, int thumbSizePx);
-        string?    GenerateThumbnailBase64(string fullPath, int sizePx);
+        string? GenerateThumbnailBase64(string fullPath, int sizePx);
     }
 
     public class ImageLibraryService : IImageLibraryService
@@ -37,10 +37,10 @@ namespace Apex.Services.SmartVariables
         // ── Public API ─────────────────────────────────────────────────────────
 
         public async Task<List<ImageAsset>> ScanFolderAsync(
-            string              folderPath,
-            LibraryScanOptions? options  = null,
-            IProgress<int>?     progress = null,
-            CancellationToken   ct       = default)
+            string folderPath,
+            LibraryScanOptions? options = null,
+            IProgress<int>? progress = null,
+            CancellationToken ct = default)
         {
             options ??= new LibraryScanOptions();
             var assets = new List<ImageAsset>();
@@ -80,8 +80,8 @@ namespace Apex.Services.SmartVariables
         {
             var asset = new ImageAsset
             {
-                FileName  = Path.GetFileName(fullPath),
-                FullPath  = fullPath,
+                FileName = Path.GetFileName(fullPath),
+                FullPath = fullPath,
                 Extension = Path.GetExtension(fullPath).TrimStart('.').ToUpperInvariant(),
             };
 
@@ -104,7 +104,7 @@ namespace Apex.Services.SmartVariables
                     return asset;
                 }
 
-                asset.Width  = bmp.Width;
+                asset.Width = bmp.Width;
                 asset.Height = bmp.Height;
                 asset.Status = AssetStatus.Available;
 
@@ -172,17 +172,17 @@ namespace Apex.Services.SmartVariables
 
                 // Maintain aspect ratio
                 double scale = Math.Min((double)sizePx / srcW, (double)sizePx / srcH);
-                int    dstW  = Math.Max(1, (int)(srcW * scale));
-                int    dstH  = Math.Max(1, (int)(srcH * scale));
+                int dstW = Math.Max(1, (int)(srcW * scale));
+                int dstH = Math.Max(1, (int)(srcH * scale));
 
                 using var thumb = new System.Drawing.Bitmap(dstW, dstH,
                     System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
                 using (var g = System.Drawing.Graphics.FromImage(thumb))
                 {
-                    g.InterpolationMode  = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                     g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-                    g.SmoothingMode      = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                     g.DrawImage(src, 0, 0, dstW, dstH);
                 }
 

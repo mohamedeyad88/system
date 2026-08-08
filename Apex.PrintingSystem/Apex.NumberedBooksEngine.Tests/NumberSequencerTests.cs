@@ -17,9 +17,9 @@ namespace Apex.NumberedBooksEngine.Tests
                 TemplatePath: null,
                 TemplateFormat: TemplateFormat.Image,
                 Layout: LayoutSpec.A4,
-                Slots: new List<SlotSpec> { 
-                    new SlotSpec("s1", 0, 0, 0, 0, "", 0, "#000000", TextAlign.Left, 0, null!), 
-                    new SlotSpec("s2", 0, 0, 0, 0, "", 0, "#000000", TextAlign.Left, 0, null!) 
+                Slots: new List<SlotSpec> {
+                    new SlotSpec("s1", 0, 0, 0, 0, "", 0, "#000000", TextAlign.Left, 0, null!),
+                    new SlotSpec("s2", 0, 0, 0, 0, "", 0, "#000000", TextAlign.Left, 0, null!)
                 },
                 StartNumber: 1,
                 TotalNumbers: 6,
@@ -49,16 +49,16 @@ namespace Apex.NumberedBooksEngine.Tests
             // Gap = 25
             // Sheet 0: 1, 26, 51, 76
             // Sheet 1: 2, 27, 52, 77
-            
+
             var sequencer = new NumberSequencer();
             var options = new BookJobOptions(
                 TemplateStream: null!,
                 TemplatePath: null,
                 TemplateFormat: TemplateFormat.Image,
                 Layout: LayoutSpec.A4,
-                Slots: new List<SlotSpec> 
-                { 
-                    new SlotSpec("s1", 0, 0, 0, 0, "", 0, "#000000", TextAlign.Left, 0, null!), 
+                Slots: new List<SlotSpec>
+                {
+                    new SlotSpec("s1", 0, 0, 0, 0, "", 0, "#000000", TextAlign.Left, 0, null!),
                     new SlotSpec("s2", 0, 0, 0, 0, "", 0, "#000000", TextAlign.Left, 0, null!),
                     new SlotSpec("s3", 0, 0, 0, 0, "", 0, "#000000", TextAlign.Left, 0, null!),
                     new SlotSpec("s4", 0, 0, 0, 0, "", 0, "#000000", TextAlign.Left, 0, null!)
@@ -100,9 +100,9 @@ namespace Apex.NumberedBooksEngine.Tests
                 TemplatePath: null,
                 TemplateFormat: TemplateFormat.Image,
                 Layout: LayoutSpec.A4,
-                Slots: new List<SlotSpec> 
-                { 
-                    new SlotSpec("s1", 0, 0, 0, 0, "", 0, "#000000", TextAlign.Left, 0, null!), 
+                Slots: new List<SlotSpec>
+                {
+                    new SlotSpec("s1", 0, 0, 0, 0, "", 0, "#000000", TextAlign.Left, 0, null!),
                     new SlotSpec("s2", 0, 0, 0, 0, "", 0, "#000000", TextAlign.Left, 0, null!),
                     new SlotSpec("s3", 0, 0, 0, 0, "", 0, "#000000", TextAlign.Left, 0, null!)
                 },

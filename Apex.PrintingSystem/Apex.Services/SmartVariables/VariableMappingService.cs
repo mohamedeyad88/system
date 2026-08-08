@@ -9,7 +9,7 @@ namespace Apex.Services.SmartVariables
     {
         List<VariableMapping> BuildMappings(
             IEnumerable<SmartTemplateField> fields,
-            IEnumerable<string>             columns);
+            IEnumerable<string> columns);
 
         MappingConfidence ScoreMatch(string fieldLabel, string fieldId, string columnName);
     }
@@ -110,10 +110,10 @@ namespace Apex.Services.SmartVariables
 
         public List<VariableMapping> BuildMappings(
             IEnumerable<SmartTemplateField> fields,
-            IEnumerable<string>             columns)
+            IEnumerable<string> columns)
         {
             var columnList = columns.ToList();
-            var mappings   = new List<VariableMapping>();
+            var mappings = new List<VariableMapping>();
 
             // Track columns already "taken" (High-confidence match wins)
             var usedColumns = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -127,33 +127,37 @@ namespace Apex.Services.SmartVariables
 
                 var mapping = new VariableMapping
                 {
-                    FieldId    = field.Id,
+                    FieldId = field.Id,
                     FieldLabel = field.Label,
-                    FieldType  = field.FieldType,
+                    FieldType = field.FieldType,
                     IsRequired = field.IsRequired,
                 };
 
-                // Try every column and pick the best score
-                string? bestCol  = null;
-                var     bestConf = MappingConfidence.None;
+                // Try every column and pick the best score.
+                //
+                // MappingConfidence is declared BEST-FIRST (High = 0 … None = 3), so a
+                // better match is a SMALLER value. The comparisons here used to read
+                // the other way round — starting from None (3) and skipping anything
+                // "less than" it, which is every real match. Auto-map therefore never
+                // bound a single field, not even on an exactly identical column name.
+                string? bestCol = null;
+                var bestConf = MappingConfidence.None;
 
                 foreach (string col in columnList)
                 {
                     var conf = ScoreMatch(field.Label, field.VariableKey, col);
-                    if (conf < bestConf) continue;
+                    if (conf == MappingConfidence.None) continue;
 
-                    if (conf == bestConf && bestCol != null)
+                    if (IsBetter(conf, bestConf) || bestCol == null)
                     {
-                        // Prefer exact label match over synonym match
-                        if (NormalizeKey(col) == NormalizeKey(field.Label))
-                        {
-                            bestCol  = col;
-                            bestConf = conf;
-                        }
+                        bestCol = col;
+                        bestConf = conf;
                     }
-                    else if (conf > bestConf)
+                    else if (conf == bestConf &&
+                             NormalizeKey(col) == NormalizeKey(field.Label))
                     {
-                        bestCol  = col;
+                        // Equal score: prefer the column whose name IS the field's name.
+                        bestCol = col;
                         bestConf = conf;
                     }
                 }
@@ -174,7 +178,8 @@ namespace Apex.Services.SmartVariables
 
             foreach (var group in byColumn)
             {
-                var sorted = group.OrderByDescending(c => c.conf).ToList();
+                // Best first — and "best" is the SMALLEST enum value.
+                var sorted = group.OrderBy(c => c.conf).ToList();
                 // Keep the best, clear the rest
                 for (int i = 1; i < sorted.Count; i++)
                 {
@@ -195,8 +200,8 @@ namespace Apex.Services.SmartVariables
         /// </summary>
         public MappingConfidence ScoreMatch(string fieldLabel, string fieldId, string columnName)
         {
-            string normField  = NormalizeKey(fieldLabel);
-            string normId     = NormalizeKey(fieldId);
+            string normField = NormalizeKey(fieldLabel);
+            string normId = NormalizeKey(fieldId);
             string normColumn = NormalizeKey(columnName);
 
             if (string.IsNullOrEmpty(normColumn))
@@ -209,7 +214,7 @@ namespace Apex.Services.SmartVariables
             // Synonym table lookup
             foreach (var (keys, synonyms) in SynonymTable)
             {
-                bool fieldInGroup  = keys.Any(k => NormalizeKey(k) == normField || NormalizeKey(k) == normId)
+                bool fieldInGroup = keys.Any(k => NormalizeKey(k) == normField || NormalizeKey(k) == normId)
                                   || synonyms.Any(s => NormalizeKey(s) == normField || NormalizeKey(s) == normId);
                 bool columnInGroup = keys.Any(k => NormalizeKey(k) == normColumn)
                                   || synonyms.Any(s => NormalizeKey(s) == normColumn);
@@ -231,6 +236,17 @@ namespace Apex.Services.SmartVariables
         // ── Helpers ────────────────────────────────────────────────────────────
 
         /// <summary>
+        /// True when <paramref name="candidate"/> is a better match than
+        /// <paramref name="current"/>.
+        ///
+        /// A named helper rather than a bare comparison, because the enum reads
+        /// best-to-worst while <c>&lt;</c> reads smallest-to-largest — the exact
+        /// confusion that stopped auto-map from ever binding anything.
+        /// </summary>
+        public static bool IsBetter(MappingConfidence candidate, MappingConfidence current) =>
+            candidate < current;
+
+        /// <summary>
         /// Normalizes a string for fuzzy comparison:
         /// lowercase, remove spaces/underscores/hyphens, normalize alef forms.
         /// </summary>
@@ -241,14 +257,14 @@ namespace Apex.Services.SmartVariables
 
             return value
                 .ToLowerInvariant()
-                .Replace(" ",  "")
-                .Replace("_",  "")
-                .Replace("-",  "")
+                .Replace(" ", "")
+                .Replace("_", "")
+                .Replace("-", "")
                 .Replace("أ", "ا")
                 .Replace("إ", "ا")
                 .Replace("آ", "ا")
-                .Replace("ة",  "ه")
-                .Replace("ى",  "ي");
+                .Replace("ة", "ه")
+                .Replace("ى", "ي");
         }
     }
 }

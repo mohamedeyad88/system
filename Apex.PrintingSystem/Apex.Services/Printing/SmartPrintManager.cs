@@ -35,42 +35,42 @@ namespace Apex.Services.Printing
     /// </summary>
     public class SmartPrintManager : ISmartPrintManager
     {
-        private static readonly Lazy<SmartPrintManager> _instance = 
+        private static readonly Lazy<SmartPrintManager> _instance =
             new(() => new SmartPrintManager());
-        
+
         /// <summary>
         /// Singleton instance - use this for all printing operations.
         /// </summary>
         public static SmartPrintManager Instance => _instance.Value;
-        
+
         private readonly VendorAwarePrintGateway _vendorGateway;
         private readonly object _lock = new();
         private int _activeJobs = 0;
         private int _totalJobsSubmitted = 0;
         private int _totalJobsCompleted = 0;
         private int _totalJobsFailed = 0;
-        
+
         // ═══════════════════════════════════════════════════════════════════
         // CRITICAL: Printer locks to prevent concurrent jobs on same printer
         // ═══════════════════════════════════════════════════════════════════
         private readonly ConcurrentDictionary<string, SemaphoreSlim> _printerLocks = new();
         private const int MAX_CONCURRENT_JOBS_PER_PRINTER = 1; // ONE job at a time per printer
-        
+
         /// <summary>
         /// Status message for UI display (non-technical).
         /// </summary>
         public event Action<string>? StatusChanged;
-        
+
         /// <summary>
         /// Progress update for current job (0-100).
         /// </summary>
         public event Action<int>? ProgressChanged;
-        
+
         /// <summary>
         /// Fires when a job completes (success or failure).
         /// </summary>
         public event Action<SmartPrintResult>? JobCompleted;
-        
+
         private SmartPrintManager()
         {
             _vendorGateway = VendorAwarePrintGateway.Instance;
@@ -80,9 +80,9 @@ namespace Apex.Services.Printing
             // Start WMI spooler watcher for real page progress
             PrintSpoolerWatcher.Instance.Start();
         }
-        
+
         #region Public API
-        
+
         /// <summary>
         /// Submit a print job to the Smart Printing Engine.
         /// This is the ONLY method that should be used for printing across the entire application.
@@ -97,16 +97,16 @@ namespace Apex.Services.Printing
             // Validation
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
-            
+
             if (string.IsNullOrEmpty(request.FilePath))
                 throw new ArgumentException("File path is required", nameof(request));
-            
+
             if (!File.Exists(request.FilePath))
                 throw new FileNotFoundException("File not found", request.FilePath);
-            
+
             if (request.PrinterNames == null || request.PrinterNames.Count == 0)
                 throw new ArgumentException("At least one printer must be specified", nameof(request));
-            
+
             var result = new SmartPrintResult
             {
                 RequestId = Guid.NewGuid(),
@@ -114,10 +114,10 @@ namespace Apex.Services.Printing
                 Copies = request.Copies,
                 StartTime = DateTime.UtcNow
             };
-            
+
             Interlocked.Increment(ref _totalJobsSubmitted);
             Interlocked.Increment(ref _activeJobs);
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // CRITICAL LOGGING: Track every print job to detect infinite loop
             // ═══════════════════════════════════════════════════════════════════
@@ -128,53 +128,53 @@ namespace Apex.Services.Printing
                 "Printers: {Printers}\n" +
                 "Copies: {Copies}\n" +
                 "Total Jobs Submitted: {TotalSubmitted}",
-                result.RequestId, request.FilePath, string.Join(", ", request.PrinterNames), 
+                result.RequestId, request.FilePath, string.Join(", ", request.PrinterNames),
                 request.Copies, _totalJobsSubmitted);
-            
+
             try
             {
                 UpdateStatus("جاري تجهيز الطباعة...");
                 Debug.WriteLine($"[SmartPrintManager] Job submitted: {request.FilePath} to {request.PrinterNames.Count} printers");
-                
+
                 // Process each printer
                 var printerResults = new List<PrinterJobResult>();
-                
+
                 if (request.PrinterNames.Count == 1)
                 {
                     // Single printer - direct execution
                     var printerResult = await PrintToSinglePrinterAsync(
-                        request.FilePath, 
-                        request.PrinterNames[0], 
+                        request.FilePath,
+                        request.PrinterNames[0],
                         request.Copies,
                         request.Settings,
                         cancellationToken);
-                    
+
                     printerResults.Add(printerResult);
                 }
                 else
                 {
                     // Multiple printers - parallel execution
                     UpdateStatus($"جاري الطباعة إلى {request.PrinterNames.Count} طابعات...");
-                    
+
                     var tasks = request.PrinterNames.Select(printerName =>
                         PrintToSinglePrinterAsync(
-                            request.FilePath, 
-                            printerName, 
+                            request.FilePath,
+                            printerName,
                             request.Copies,
                             request.Settings,
                             cancellationToken));
-                    
+
                     var results = await Task.WhenAll(tasks);
                     printerResults.AddRange(results);
                 }
-                
+
                 // Compile results
                 result.PrinterResults = printerResults;
                 result.SuccessCount = printerResults.Count(r => r.Success);
                 result.FailureCount = printerResults.Count(r => !r.Success);
                 result.Success = result.FailureCount == 0;
                 result.EndTime = DateTime.UtcNow;
-                
+
                 if (result.Success)
                 {
                     Interlocked.Increment(ref _totalJobsCompleted);
@@ -211,7 +211,7 @@ namespace Apex.Services.Printing
             {
                 Interlocked.Decrement(ref _activeJobs);
                 result.EndTime = DateTime.UtcNow;
-                
+
                 // ═══════════════════════════════════════════════════════════════════
                 // CRITICAL LOGGING: Track job completion
                 // ═══════════════════════════════════════════════════════════════════
@@ -224,13 +224,13 @@ namespace Apex.Services.Printing
                     "Total Failed: {TotalFailed}",
                     result.RequestId, result.Success, result.Duration.TotalMilliseconds,
                     _totalJobsCompleted, _totalJobsFailed);
-                
+
                 JobCompleted?.Invoke(result);
             }
-            
+
             return result;
         }
-        
+
         /// <summary>
         /// Simple overload for single printer, single file.
         /// </summary>
@@ -247,7 +247,7 @@ namespace Apex.Services.Printing
                 Copies = copies
             }, cancellationToken);
         }
-        
+
         /// <summary>
         /// Submit to multiple printers at once.
         /// </summary>
@@ -264,16 +264,16 @@ namespace Apex.Services.Printing
                 Copies = copies
             }, cancellationToken);
         }
-        
+
         #endregion
-        
+
         #region Statistics
-        
+
         public int ActiveJobs => _activeJobs;
         public int TotalJobsSubmitted => _totalJobsSubmitted;
         public int TotalJobsCompleted => _totalJobsCompleted;
         public int TotalJobsFailed => _totalJobsFailed;
-        
+
         public string GetStatusSummary()
         {
             // Accurate status summary with real-time data
@@ -281,18 +281,18 @@ namespace Apex.Services.Printing
             {
                 return $"🖨️ جاري الطباعة... {_activeJobs} مهمة نشطة";
             }
-            
-            var successRate = _totalJobsSubmitted > 0 
+
+            var successRate = _totalJobsSubmitted > 0
                 ? (_totalJobsCompleted * 100.0 / _totalJobsSubmitted).ToString("F1")
                 : "0";
-            
+
             return $"🖨️ جاهز • تم: {_totalJobsCompleted} | فشل: {_totalJobsFailed} | معدل النجاح: {successRate}%";
         }
-        
+
         #endregion
-        
+
         #region Private Methods
-        
+
         private async Task<PrinterJobResult> PrintToSinglePrinterAsync(
             string filePath,
             string printerName,
@@ -305,14 +305,14 @@ namespace Apex.Services.Printing
                 PrinterName = printerName,
                 StartTime = DateTime.UtcNow
             };
-            
+
             var stopwatch = Stopwatch.StartNew();
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // CRITICAL: Acquire printer lock to enforce ONE job per printer
             // ═══════════════════════════════════════════════════════════════════
             var printerLock = _printerLocks.GetOrAdd(printerName, _ => new SemaphoreSlim(MAX_CONCURRENT_JOBS_PER_PRINTER, MAX_CONCURRENT_JOBS_PER_PRINTER));
-            
+
             bool lockAcquired = false;
 
             // ── WMI spooler handlers defined OUTSIDE try so finally can unsubscribe ──
@@ -418,24 +418,24 @@ namespace Apex.Services.Printing
                         "[SmartPrintManager] Printer lock released for '{Printer}'",
                         printerName);
                 }
-                
+
                 stopwatch.Stop();
                 result.ElapsedMs = stopwatch.ElapsedMilliseconds;
                 result.EndTime = DateTime.UtcNow;
             }
-            
+
             return result;
         }
-        
+
         private void UpdateStatus(string status)
         {
             StatusChanged?.Invoke(status);
         }
-        
+
         private string GetFriendlyError(Exception ex)
         {
             var msg = ex.Message.ToLowerInvariant();
-            
+
             if (msg.Contains("offline"))
                 return "الطابعة غير متصلة";
             if (msg.Contains("paper"))
@@ -444,15 +444,15 @@ namespace Apex.Services.Printing
                 return "مشكلة في الاتصال";
             if (msg.Contains("access"))
                 return "لا توجد صلاحية";
-            
+
             return "حدث خطأ أثناء الطباعة";
         }
-        
+
         #endregion
     }
-    
+
     #region Models
-    
+
     /// <summary>
     /// Interface for SmartPrintManager for DI.
     /// </summary>
@@ -461,15 +461,15 @@ namespace Apex.Services.Printing
         Task<SmartPrintResult> SubmitAsync(SmartPrintRequest request, CancellationToken cancellationToken = default);
         Task<SmartPrintResult> SubmitAsync(string filePath, string printerName, int copies = 1, CancellationToken cancellationToken = default);
         Task<SmartPrintResult> SubmitToMultipleAsync(string filePath, IEnumerable<string> printerNames, int copies = 1, CancellationToken cancellationToken = default);
-        
+
         event Action<string>? StatusChanged;
         event Action<int>? ProgressChanged;
         event Action<SmartPrintResult>? JobCompleted;
-        
+
         int ActiveJobs { get; }
         string GetStatusSummary();
     }
-    
+
     /// <summary>
     /// Request to submit to Smart Print Manager.
     /// </summary>
@@ -480,7 +480,7 @@ namespace Apex.Services.Printing
         public int Copies { get; set; } = 1;
         public PrintJobSettings? Settings { get; set; }
     }
-    
+
     /// <summary>
     /// Result of a smart print operation.
     /// </summary>
@@ -497,10 +497,10 @@ namespace Apex.Services.Printing
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public List<PrinterJobResult> PrinterResults { get; set; } = new();
-        
+
         public TimeSpan Duration => EndTime - StartTime;
     }
-    
+
     /// <summary>
     /// Result for individual printer in a batch.
     /// </summary>
@@ -515,6 +515,6 @@ namespace Apex.Services.Printing
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
     }
-    
+
     #endregion
 }

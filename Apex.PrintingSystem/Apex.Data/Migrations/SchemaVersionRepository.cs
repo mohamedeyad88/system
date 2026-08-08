@@ -44,7 +44,7 @@ namespace Apex.Data.Migrations
         public async Task<int> GetLatestVersionAsync()
         {
             await EnsureTableExistsAsync();
-            
+
             // We use raw SQL to avoid EF model issues if the table isn't in the model snapshot yet
             var connection = _context.Database.GetDbConnection();
             var wasOpen = connection.State == System.Data.ConnectionState.Open;
@@ -78,7 +78,7 @@ namespace Apex.Data.Migrations
                     command.CommandText = @"
                         INSERT INTO ""__SchemaVersion"" (Version, AppliedUtc, Description, Success, ErrorMessage)
                         VALUES (@v, @t, @d, @s, @e)";
-                    
+
                     var pV = command.CreateParameter(); pV.ParameterName = "@v"; pV.Value = version; command.Parameters.Add(pV);
                     var pT = command.CreateParameter(); pT.ParameterName = "@t"; pT.Value = DateTime.UtcNow.ToString("o"); command.Parameters.Add(pT);
                     var pD = command.CreateParameter(); pD.ParameterName = "@d"; pD.Value = (object)description ?? DBNull.Value; command.Parameters.Add(pD);

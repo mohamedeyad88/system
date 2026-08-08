@@ -10,7 +10,7 @@ using System.Windows;
 using Apex.Services.Printing.Queue;
 using Apex.Services.Printing.Resilience;
 using PrintJobState = Apex.Services.Printing.Queue.PrintJobState;
-using QueuePrintJob  = Apex.Services.Printing.Queue.PrintJob;
+using QueuePrintJob = Apex.Services.Printing.Queue.PrintJob;
 
 namespace Apex.UI.ViewModels
 {
@@ -96,7 +96,7 @@ namespace Apex.UI.ViewModels
                         {
                             _jobsCompletedSession++;
                         }
-                        AddActivity($"{job.JobName}", "اكتملت الطباعة", "✅", "Success");
+                        AddActivity($"{job.JobName}", L("Dash_PrintDone"), "✅", "Success");
                         break;
 
                     case PrintJobState.Failed:
@@ -104,15 +104,15 @@ namespace Apex.UI.ViewModels
                         {
                             _jobsFailedSession++;
                         }
-                        AddActivity($"{job.JobName}", $"فشلت على {job.PrinterName}", "❌", "Error");
+                        AddActivity($"{job.JobName}", Lf("Dash_FailedOn", job.PrinterName), "❌", "Error");
                         break;
 
                     case PrintJobState.Sending:
-                        AddActivity($"{job.JobName}", $"جارٍ الإرسال إلى {job.PrinterName}", "📤", "Info");
+                        AddActivity($"{job.JobName}", Lf("Dash_SendingTo", job.PrinterName), "📤", "Info");
                         break;
 
                     case PrintJobState.Retrying:
-                        AddActivity($"{job.JobName}", $"إعادة المحاولة ({job.RetryCount + 1})", "🔄", "Warning");
+                        AddActivity($"{job.JobName}", Lf("Dash_Retry", job.RetryCount + 1), "🔄", "Warning");
                         break;
                 }
 
@@ -128,13 +128,13 @@ namespace Apex.UI.ViewModels
                 switch (e.NewState)
                 {
                     case Apex.Services.Printing.Resilience.CircuitState.Open:
-                        AddActivity(e.PrinterName, $"تعطّلت الطابعة بعد {e.ConsecutiveFailures} أخطاء متتالية", "⛔", "Error");
+                        AddActivity(e.PrinterName, Lf("Dash_PrinterDown", e.ConsecutiveFailures), "⛔", "Error");
                         break;
                     case Apex.Services.Printing.Resilience.CircuitState.Closed when e.OldState == Apex.Services.Printing.Resilience.CircuitState.HalfOpen:
-                        AddActivity(e.PrinterName, "استعادت الطابعة عملها بنجاح", "✅", "Success");
+                        AddActivity(e.PrinterName, L("Dash_PrinterRecovered"), "✅", "Success");
                         break;
                     case Apex.Services.Printing.Resilience.CircuitState.HalfOpen:
-                        AddActivity(e.PrinterName, "اختبار استعادة الطابعة...", "🔄", "Warning");
+                        AddActivity(e.PrinterName, L("Dash_TestingRecovery"), "🔄", "Warning");
                         break;
                 }
 
@@ -162,13 +162,13 @@ namespace Apex.UI.ViewModels
 
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
-                    TotalPrinters   = printerList.Count;
-                    OnlinePrinters  = printerList.Count(p => p.IsOnline);
+                    TotalPrinters = printerList.Count;
+                    OnlinePrinters = printerList.Count(p => p.IsOnline);
                     OfflinePrinters = printerList.Count(p => !p.IsOnline);
-                    BusyPrinters    = printerList.Count(p => p.QueueLength > 0);
+                    BusyPrinters = printerList.Count(p => p.QueueLength > 0);
 
                     IsSystemOnline = OnlinePrinters > 0;
-                    SystemStatus   = IsSystemOnline ? "النظام يعمل" : "لا توجد طابعات متاحة";
+                    SystemStatus = IsSystemOnline ? L("Dash_SystemRunning") : L("Dash_NoPrinters");
 
                     // Rebuild printer list with real health scores
                     Printers.Clear();
@@ -179,25 +179,25 @@ namespace Apex.UI.ViewModels
 
                         string statusText;
                         if (!printer.IsOnline)
-                            statusText = "غير متصل";
+                            statusText = L("Dash_Offline");
                         else if (circuitState == Apex.Services.Printing.Resilience.CircuitState.Open)
-                            statusText = "معطّل ⛔";
+                            statusText = L("Dash_Disabled");
                         else if (circuitState == Apex.Services.Printing.Resilience.CircuitState.HalfOpen)
-                            statusText = "استعادة 🔄";
+                            statusText = L("Dash_Recovering");
                         else if (printer.QueueLength > 0)
-                            statusText = $"طباعة ({printer.QueueLength})";
+                            statusText = Lf("Dash_Printing", printer.QueueLength);
                         else
-                            statusText = "جاهز";
+                            statusText = L("Num_Ready");
 
                         Printers.Add(new DashboardPrinterInfo
                         {
-                            Name          = printer.Name,
-                            IsOnline      = printer.IsOnline && circuitState != Apex.Services.Printing.Resilience.CircuitState.Open,
-                            QueueLength   = printer.QueueLength,
-                            Type          = printer.Type,
-                            StatusText    = statusText,
-                            HealthScore   = printer.IsOnline ? healthScore : 0,
-                            CircuitState  = circuitState.ToString()
+                            Name = printer.Name,
+                            IsOnline = printer.IsOnline && circuitState != Apex.Services.Printing.Resilience.CircuitState.Open,
+                            QueueLength = printer.QueueLength,
+                            Type = printer.Type,
+                            StatusText = statusText,
+                            HealthScore = printer.IsOnline ? healthScore : 0,
+                            CircuitState = circuitState.ToString()
                         });
                     }
 
@@ -212,7 +212,7 @@ namespace Apex.UI.ViewModels
             {
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
-                    SystemStatus   = $"خطأ: {ex.Message}";
+                    SystemStatus = Lf("Num_ErrorColon", ex.Message);
                     IsSystemOnline = false;
                 });
             }
@@ -227,19 +227,19 @@ namespace Apex.UI.ViewModels
             lock (_counterLock)
             {
                 completed = _jobsCompletedSession;
-                failed    = _jobsFailedSession;
+                failed = _jobsFailedSession;
             }
 
-            PendingJobs   = stats.QueuedJobs;
-            ActiveJobs    = stats.ActiveJobs;
+            PendingJobs = stats.QueuedJobs;
+            ActiveJobs = stats.ActiveJobs;
             CompletedJobs = completed;
-            FailedJobs    = failed;
-            TodayJobs     = completed + failed + stats.ActiveJobs + stats.QueuedJobs;
+            FailedJobs = failed;
+            TodayJobs = completed + failed + stats.ActiveJobs + stats.QueuedJobs;
 
             // Success rate
             long total = stats.TotalJobsCompleted + stats.TotalJobsFailed;
             double rate = total > 0 ? (double)stats.TotalJobsCompleted / total * 100 : 100;
-            SuccessRate     = Math.Round(rate, 1);
+            SuccessRate = Math.Round(rate, 1);
             SuccessRateText = $"{SuccessRate:F1}%";
 
             // Average (session hours → jobs/hour)
@@ -267,18 +267,13 @@ namespace Apex.UI.ViewModels
 
             RecentActivity.Insert(0, new ActivityItem
             {
-                Time        = DateTime.Now.ToString("HH:mm"),
-                Subject     = subject,
+                Time = DateTime.Now.ToString("HH:mm"),
+                Subject = subject,
                 Description = description,
-                Type        = type,
-                Icon        = icon
+                Type = type,
+                Icon = icon
             });
         }
-
-        [RelayCommand] private void NavigateToPrintManager() { }
-        [RelayCommand] private void NavigateToPrinterMonitoring() { }
-        [RelayCommand] private void NavigateToQuotation() { }
-        [RelayCommand] private void NavigateToNumberedBooks() { }
 
         // ── Cleanup ───────────────────────────────────────────────────
         public void Dispose()
@@ -293,11 +288,11 @@ namespace Apex.UI.ViewModels
 
     public class ActivityItem
     {
-        public string Time        { get; set; } = "";
-        public string Subject     { get; set; } = "";
+        public string Time { get; set; } = "";
+        public string Subject { get; set; } = "";
         public string Description { get; set; } = "";
-        public string Type        { get; set; } = "Info";
-        public string Icon        { get; set; } = "•";
+        public string Type { get; set; } = "Info";
+        public string Icon { get; set; } = "•";
 
         /// <summary>Combined text for display: "Subject — Description"</summary>
         public string DisplayText => string.IsNullOrEmpty(Subject)
@@ -307,11 +302,11 @@ namespace Apex.UI.ViewModels
 
     public class DashboardPrinterInfo : System.ComponentModel.INotifyPropertyChanged
     {
-        public string Name        { get; set; } = "";
-        public bool   IsOnline    { get; set; }
-        public int    QueueLength { get; set; }
-        public string Type        { get; set; } = "Local";
-        public string StatusText  { get; set; } = "";
+        public string Name { get; set; } = "";
+        public bool IsOnline { get; set; }
+        public int QueueLength { get; set; }
+        public string Type { get; set; } = "Local";
+        public string StatusText { get; set; } = "";
         public string CircuitState { get; set; } = "Closed";
 
         private int _healthScore = 100;
@@ -337,8 +332,8 @@ namespace Apex.UI.ViewModels
 
         /// <summary>Short health label.</summary>
         public string HealthText =>
-            HealthScore >= 80 ? "جيد" :
-            HealthScore >= 50 ? "متوسط" : "ضعيف";
+            HealthScore >= 80 ? ViewModelBase.L("Dash_Good") :
+            HealthScore >= 50 ? ViewModelBase.L("Dash_Medium") : ViewModelBase.L("Dash_Weak");
 
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
     }

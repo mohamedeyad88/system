@@ -9,13 +9,14 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </UserControl.Resources>
 
+    <Grid>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="40,32,40,32" MaxWidth="700">
 
             <!-- Header -->
-            <TextBlock Text="إدارة الترخيص" FontSize="28" FontWeight="Bold"
+            <TextBlock Text="{DynamicResource LIC_001}" FontSize="28" FontWeight="Bold"
                        Foreground="#F1F5F9" Margin="0,0,0,6"/>
-            <TextBlock Text="عرض حالة الترخيص وتفعيل النسخة الكاملة"
+            <TextBlock Text="{DynamicResource LIC_002}"
                        FontSize="14" Foreground="#64748B" Margin="0,0,0,32"/>
 
             <!-- Status Card -->
@@ -27,25 +28,25 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel>
-                        <TextBlock Text="حالة الترخيص" FontSize="12" Foreground="#64748B" Margin="0,0,0,6"/>
+                        <TextBlock Text="{DynamicResource LIC_003}" FontSize="12" Foreground="#64748B" Margin="0,0,0,6"/>
                         <TextBlock Text="{Binding LicenseStatusText}" FontSize="20" FontWeight="Bold"
                                    Foreground="{Binding StatusColor}" Margin="0,0,0,8"/>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="النوع: " FontSize="13" Foreground="#94A3B8"/>
+                            <TextBlock Text="{DynamicResource LIC_004}" FontSize="13" Foreground="#94A3B8"/>
                             <TextBlock Text="{Binding LicenseTypeText}" FontSize="13" Foreground="#E2E8F0" FontWeight="SemiBold"/>
                             <TextBlock Text="   |   " FontSize="13" Foreground="#475569"/>
-                            <TextBlock Text="ينتهي: " FontSize="13" Foreground="#94A3B8"/>
+                            <TextBlock Text="{DynamicResource LIC_005}" FontSize="13" Foreground="#94A3B8"/>
                             <TextBlock Text="{Binding ExpiryText}" FontSize="13" Foreground="#E2E8F0" FontWeight="SemiBold"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,6,0,0"
                                     Visibility="{Binding IsTrialActive, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <TextBlock Text="الأيام المتبقية: " FontSize="13" Foreground="#94A3B8"/>
+                            <TextBlock Text="{DynamicResource LIC_006}" FontSize="13" Foreground="#94A3B8"/>
                             <TextBlock Text="{Binding DaysRemaining}" FontSize="13"
                                        Foreground="#F59E0B" FontWeight="Bold"/>
                         </StackPanel>
                     </StackPanel>
                     <Button Grid.Column="1" Command="{Binding RefreshStatusCommand}"
-                            Content="🔄 تحديث" Padding="14,8"
+                            Content="{DynamicResource LIC_007}" Padding="14,8"
                             Background="#334155" Foreground="#94A3B8"
                             BorderThickness="1" BorderBrush="#475569"
                             FontSize="12" Cursor="Hand" VerticalAlignment="Top">
@@ -72,9 +73,9 @@
             <Border Background="#1E293B" CornerRadius="12" Padding="24" Margin="0,0,0,20"
                     BorderBrush="#334155" BorderThickness="1">
                 <StackPanel>
-                    <TextBlock Text="رقم تعريف الجهاز" FontSize="14" FontWeight="SemiBold"
+                    <TextBlock Text="{DynamicResource ACT_005}" FontSize="14" FontWeight="SemiBold"
                                Foreground="#F1F5F9" Margin="0,0,0,6"/>
-                    <TextBlock Text="أرسل هذا الرقم إلى الشركة للحصول على ملف الترخيص"
+                    <TextBlock Text="{DynamicResource LIC_008}"
                                FontSize="12" Foreground="#64748B" Margin="0,0,0,14"/>
 
                     <Border Background="#0F172A" BorderBrush="#475569" BorderThickness="1"
@@ -94,7 +95,7 @@
                                             Padding="16,10" BorderBrush="#475569" BorderThickness="1">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="📋 " FontSize="14"/>
-                                            <TextBlock Text="نسخ الرقم" FontSize="13" FontWeight="SemiBold"
+                                            <TextBlock Text="{DynamicResource LIC_009}" FontSize="13" FontWeight="SemiBold"
                                                        Foreground="White"/>
                                         </StackPanel>
                                     </Border>
@@ -120,7 +121,7 @@
                                         </Border.Background>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="📱 " FontSize="14"/>
-                                            <TextBlock Text="إرسال عبر واتساب" FontSize="13"
+                                            <TextBlock Text="{DynamicResource LIC_010}" FontSize="13"
                                                        FontWeight="SemiBold" Foreground="White"/>
                                         </StackPanel>
                                     </Border>
@@ -140,10 +141,38 @@
             <Border Background="#1E293B" CornerRadius="12" Padding="24"
                     BorderBrush="#334155" BorderThickness="1">
                 <StackPanel>
-                    <TextBlock Text="تفعيل الترخيص" FontSize="14" FontWeight="SemiBold"
+                    <TextBlock Text="{DynamicResource LIC_011}" FontSize="14" FontWeight="SemiBold"
                                Foreground="#F1F5F9" Margin="0,0,0,6"/>
-                    <TextBlock Text="لديك ملف ترخيص (.apex)؟ انقر لاستيراده وتفعيل البرنامج"
+                    <TextBlock Text="{DynamicResource LIC_012}"
                                FontSize="12" Foreground="#64748B" Margin="0,0,0,16"/>
+
+                    <!-- Instant online activation by serial (buy now, no need to wait for the trial to end) -->
+                    <TextBlock Text="تفعيل فوري برقم السيريال" FontSize="13" FontWeight="SemiBold"
+                               Foreground="#F1F5F9" Margin="0,0,0,4"/>
+                    <TextBlock Text="أدخل السيريال (APX-XXXXX-XXXXX-XXXXX) للتفعيل مباشرةً دون انتظار انتهاء الفترة التجريبية."
+                               FontSize="12" Foreground="#64748B" Margin="0,0,0,10" TextWrapping="Wrap"/>
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding SerialKey, UpdateSourceTrigger=PropertyChanged}"
+                                 IsEnabled="{Binding IsNotActivating}"
+                                 FontFamily="Consolas" FontSize="14" Padding="12,10"
+                                 VerticalContentAlignment="Center" MinWidth="220"
+                                 Background="#0F172A" Foreground="#E2E8F0" CaretBrush="#E2E8F0"
+                                 BorderBrush="#334155" BorderThickness="1"/>
+                        <Button Grid.Column="1" Command="{Binding ActivateWithSerialCommand}"
+                                IsEnabled="{Binding IsNotActivating}" Margin="10,0,0,0" Cursor="Hand"
+                                Padding="22,10" Background="#22C55E" BorderThickness="0"
+                                Foreground="White" FontWeight="SemiBold" Content="تفعيل"/>
+                    </Grid>
+                    <TextBlock Text="{Binding OnlineStatus}" Foreground="{Binding OnlineStatusColor}"
+                               FontSize="12" Margin="0,0,0,16" TextWrapping="Wrap"/>
+
+                    <Border Height="1" Background="#334155" Margin="0,0,0,16"/>
+                    <TextBlock Text="أو لديك ملف ترخيص (.apex):" FontSize="12"
+                               Foreground="#64748B" Margin="0,0,0,10"/>
 
                     <Button Command="{Binding ImportLicenseCommand}" HorizontalAlignment="Left"
                             Cursor="Hand">
@@ -158,7 +187,7 @@
                                     </Border.Background>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="📂 " FontSize="15"/>
-                                        <TextBlock Text="استيراد ملف الترخيص" FontSize="14"
+                                        <TextBlock Text="{DynamicResource LIC_013}" FontSize="14"
                                                    FontWeight="SemiBold" Foreground="White"/>
                                     </StackPanel>
                                 </Border>
@@ -175,4 +204,5 @@
 
         </StackPanel>
     </ScrollViewer>
+    </Grid>
 </UserControl>

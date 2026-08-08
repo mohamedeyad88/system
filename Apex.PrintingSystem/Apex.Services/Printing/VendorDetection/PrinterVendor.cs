@@ -7,22 +7,22 @@ namespace Apex.Services.Printing.VendorDetection
     {
         /// <summary>Generic/unknown vendor - uses balanced default settings.</summary>
         Generic = 0,
-        
+
         /// <summary>HP printers - optimized for speed with RAW printing.</summary>
         HP = 1,
-        
+
         /// <summary>Epson printers - optimized for reliability with careful pacing.</summary>
         Epson = 2,
-        
+
         /// <summary>Canon printers - balanced approach.</summary>
         Canon = 3,
-        
+
         /// <summary>Brother printers - similar to HP profile.</summary>
         Brother = 4,
-        
+
         /// <summary>Xerox printers - enterprise optimization.</summary>
         Xerox = 5,
-        
+
         /// <summary>Ricoh printers - enterprise optimization.</summary>
         Ricoh = 6
     }

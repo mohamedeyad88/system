@@ -20,23 +20,23 @@ namespace Apex.API.Endpoints
                         .Cast<string>()
                         .Select(name =>
                         {
-                            var meta    = VendorDetectionEngine.Instance.GetPrinterMetadata(name);
-                            int health  = CircuitBreakerManager.Instance.GetHealthScore(name);
+                            var meta = VendorDetectionEngine.Instance.GetPrinterMetadata(name);
+                            int health = CircuitBreakerManager.Instance.GetHealthScore(name);
                             var circuit = CircuitBreakerManager.Instance.GetState(name).ToString();
 
                             return new
                             {
                                 name,
-                                vendor       = meta?.Vendor.ToString() ?? "Unknown",
-                                isOnline     = meta?.IsOnline ?? false,
+                                vendor = meta?.Vendor.ToString() ?? "Unknown",
+                                isOnline = meta?.IsOnline ?? false,
                                 supportsColor = meta?.SupportsColor ?? false,
                                 supportsDuplex = meta?.SupportsDuplex ?? false,
                                 connectionType = meta?.ConnectionType.ToString() ?? "Unknown",
-                                healthScore  = health,
+                                healthScore = health,
                                 circuitState = circuit,
                                 primaryLanguage = meta?.Capabilities?.SupportsPostScript == true ? "PostScript"
-                                               : meta?.Capabilities?.SupportsPcl == true        ? "PCL"
-                                               : meta?.Capabilities?.SupportsEscP == true       ? "ESC/P"
+                                               : meta?.Capabilities?.SupportsPcl == true ? "PCL"
+                                               : meta?.Capabilities?.SupportsEscP == true ? "ESC/P"
                                                : "GDI"
                             };
                         })
@@ -55,35 +55,35 @@ namespace Apex.API.Endpoints
                 if (meta == null)
                     return Results.NotFound(new { error = $"Printer '{printerName}' not found" });
 
-                int    health  = CircuitBreakerManager.Instance.GetHealthScore(printerName);
-                var    circuit = CircuitBreakerManager.Instance.GetState(printerName);
-                var    cb      = CircuitBreakerManager.Instance.GetOrCreate(printerName);
+                int health = CircuitBreakerManager.Instance.GetHealthScore(printerName);
+                var circuit = CircuitBreakerManager.Instance.GetState(printerName);
+                var cb = CircuitBreakerManager.Instance.GetOrCreate(printerName);
 
                 return Results.Ok(new
                 {
-                    name          = meta.Name,
-                    vendor        = meta.Vendor.ToString(),
-                    model         = meta.Model,
-                    driverName    = meta.DriverName,
-                    isOnline      = meta.IsOnline,
+                    name = meta.Name,
+                    vendor = meta.Vendor.ToString(),
+                    model = meta.Model,
+                    driverName = meta.DriverName,
+                    isOnline = meta.IsOnline,
                     isNetworkPrinter = meta.IsNetworkPrinter,
-                    portName      = meta.PortName,
+                    portName = meta.PortName,
                     connectionType = meta.ConnectionType.ToString(),
-                    supportsColor  = meta.SupportsColor,
+                    supportsColor = meta.SupportsColor,
                     supportsDuplex = meta.SupportsDuplex,
-                    capabilities  = new
+                    capabilities = new
                     {
                         postScript = meta.Capabilities?.SupportsPostScript,
-                        pcl        = meta.Capabilities?.SupportsPcl,
-                        escP       = meta.Capabilities?.SupportsEscP,
-                        maxDpi     = meta.Capabilities?.MaxDpi
+                        pcl = meta.Capabilities?.SupportsPcl,
+                        escP = meta.Capabilities?.SupportsEscP,
+                        maxDpi = meta.Capabilities?.MaxDpi
                     },
                     health = new
                     {
-                        score        = health,
+                        score = health,
                         circuitState = circuit.ToString(),
-                        failures     = cb.ConsecutiveFailures,
-                        openedAt     = cb.OpenedAt
+                        failures = cb.ConsecutiveFailures,
+                        openedAt = cb.OpenedAt
                     }
                 });
             })

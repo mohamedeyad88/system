@@ -18,7 +18,7 @@ namespace Apex.Services.Numbering
     /// <summary>
     /// Verifies required trays are available before starting a cycle.
     /// </summary>
-    public class TrayVerificationService
+    public class TrayVerificationService : ITrayVerificationService
     {
         private readonly PrinterTrayDetectionService _trayDetector = new();
 

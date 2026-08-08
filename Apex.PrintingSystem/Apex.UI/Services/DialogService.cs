@@ -19,9 +19,9 @@ namespace Apex.UI.Services
                     Message = message,
                     ConfirmText = confirmText,
                     CancelText = cancelText,
-                    Owner = Application.Current.MainWindow 
+                    Owner = Application.Current.MainWindow
                 };
-                
+
                 // If destructive, we could change style here
                 if (isDestructive)
                 {
@@ -37,7 +37,7 @@ namespace Apex.UI.Services
 
         public Task ShowAlertAsync(string title, string message)
         {
-             return ShowConfirmationAsync(title, message, "OK", "", false);
+            return ShowConfirmationAsync(title, message, "OK", "", false);
         }
     }
 }

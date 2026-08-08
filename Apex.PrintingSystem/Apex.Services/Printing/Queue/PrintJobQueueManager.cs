@@ -27,20 +27,20 @@ namespace Apex.Services.Printing.Queue
     {
         private readonly CentralizedPrintQueue _queue;
         private readonly QueuedPrintExecutor _executor;
-        
-        private static readonly Lazy<PrintJobQueueManager> _instance = 
+
+        private static readonly Lazy<PrintJobQueueManager> _instance =
             new(() => new PrintJobQueueManager());
-        
+
         public static PrintJobQueueManager Instance => _instance.Value;
-        
+
         private PrintJobQueueManager()
         {
             _queue = CentralizedPrintQueue.Instance;
             _executor = QueuedPrintExecutor.Instance;
-            
+
             Debug.WriteLine("[QueueManager] ✓ Print Job Queue Manager initialized");
         }
-        
+
         /// <summary>
         /// Event fired when any job changes state.
         /// </summary>
@@ -49,7 +49,7 @@ namespace Apex.Services.Printing.Queue
             add => _queue.JobStateChanged += value;
             remove => _queue.JobStateChanged -= value;
         }
-        
+
         /// <summary>
         /// Event fired when any job's progress updates.
         /// </summary>
@@ -58,7 +58,7 @@ namespace Apex.Services.Printing.Queue
             add => _queue.JobProgressChanged += value;
             remove => _queue.JobProgressChanged -= value;
         }
-        
+
         /// <summary>
         /// Starts the queue processing system.
         /// MUST be called before submitting jobs.
@@ -68,7 +68,7 @@ namespace Apex.Services.Printing.Queue
             _executor.Start();
             Debug.WriteLine("[QueueManager] ▶️ Queue system started");
         }
-        
+
         /// <summary>
         /// Stops the queue processing system gracefully.
         /// </summary>
@@ -77,7 +77,7 @@ namespace Apex.Services.Printing.Queue
             await _executor.StopAsync();
             Debug.WriteLine("[QueueManager] ⏹️ Queue system stopped");
         }
-        
+
         /// <summary>
         /// Submits a print job to the queue.
         /// Returns immediately with job ID - printing happens asynchronously.
@@ -100,16 +100,16 @@ namespace Apex.Services.Printing.Queue
             // Validate inputs
             if (string.IsNullOrEmpty(printerName))
                 throw new ArgumentException("Printer name is required", nameof(printerName));
-            
+
             if (string.IsNullOrEmpty(filePath))
                 throw new ArgumentException("File path is required", nameof(filePath));
-            
+
             if (!File.Exists(filePath))
                 throw new FileNotFoundException($"File not found: {filePath}", filePath);
-            
+
             if (copies < 1)
                 throw new ArgumentException("Copies must be at least 1", nameof(copies));
-            
+
             // Create job
             var job = new PrintJob
             {
@@ -123,15 +123,15 @@ namespace Apex.Services.Printing.Queue
                 TreatSkippedAsComplete = treatSkippedAsComplete,
                 UseRawDocumentMode = documentMode
             };
-            
+
             // Enqueue (instant, non-blocking)
             var jobId = _queue.EnqueueJob(job);
-            
+
             Debug.WriteLine($"[QueueManager] ✓ Job submitted: {jobId} - {job.JobName} → {printerName} x{copies}");
-            
+
             return await Task.FromResult(jobId);
         }
-        
+
         /// <summary>
         /// Submits a print job with custom settings.
         /// </summary>
@@ -143,16 +143,16 @@ namespace Apex.Services.Printing.Queue
             // Validate inputs
             if (string.IsNullOrEmpty(printerName))
                 throw new ArgumentException("Printer name is required", nameof(printerName));
-            
+
             if (string.IsNullOrEmpty(filePath))
                 throw new ArgumentException("File path is required", nameof(filePath));
-            
+
             if (!File.Exists(filePath))
                 throw new FileNotFoundException($"File not found: {filePath}", filePath);
-            
+
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
-            
+
             // Create new job with updated settings (JobId is init-only, cannot be modified)
             var job = new PrintJob
             {
@@ -168,12 +168,12 @@ namespace Apex.Services.Printing.Queue
                 Metadata = settings.Metadata,
                 UseRawDocumentMode = settings.UseRawDocumentMode
             };
-            
+
             var jobId = _queue.EnqueueJob(job);
-            
+
             return await Task.FromResult(jobId);
         }
-        
+
         /// <summary>
         /// Gets a job by ID.
         /// </summary>
@@ -181,7 +181,7 @@ namespace Apex.Services.Printing.Queue
         {
             return _queue.GetAllJobs().FirstOrDefault(j => j.JobId == jobId);
         }
-        
+
         /// <summary>
         /// Gets all jobs for a printer.
         /// </summary>
@@ -189,7 +189,7 @@ namespace Apex.Services.Printing.Queue
         {
             return _queue.GetJobsForPrinter(printerName);
         }
-        
+
         /// <summary>
         /// Gets all jobs in the system.
         /// </summary>
@@ -197,7 +197,7 @@ namespace Apex.Services.Printing.Queue
         {
             return _queue.GetAllJobs();
         }
-        
+
         /// <summary>
         /// Gets queue depth for a printer.
         /// </summary>
@@ -205,7 +205,7 @@ namespace Apex.Services.Printing.Queue
         {
             return _queue.GetQueueDepth(printerName);
         }
-        
+
         /// <summary>
         /// Gets the active job for a printer.
         /// </summary>
@@ -213,7 +213,7 @@ namespace Apex.Services.Printing.Queue
         {
             return _queue.GetActiveJob(printerName);
         }
-        
+
         /// <summary>
         /// Cancels a queued job.
         /// </summary>
@@ -229,7 +229,7 @@ namespace Apex.Services.Printing.Queue
         {
             return _queue.SkipJob(jobId, reason);
         }
-        
+
         /// <summary>
         /// Retries a failed job.
         /// </summary>
@@ -237,7 +237,7 @@ namespace Apex.Services.Printing.Queue
         {
             return _queue.RetryJob(jobId);
         }
-        
+
         /// <summary>
         /// Gets queue statistics.
         /// </summary>
@@ -245,7 +245,7 @@ namespace Apex.Services.Printing.Queue
         {
             return _queue.GetStatistics();
         }
-        
+
         /// <summary>
         /// Clears old completed jobs from memory.
         /// </summary>
@@ -253,7 +253,7 @@ namespace Apex.Services.Printing.Queue
         {
             return _queue.ClearCompletedJobs(olderThan);
         }
-        
+
         /// <summary>
         /// Convenience method: Submit multiple jobs at once.
         /// This demonstrates the CORRECT pattern for "Print All":
@@ -267,7 +267,7 @@ namespace Apex.Services.Printing.Queue
             int copies = 1)
         {
             var jobIds = new List<string>();
-            
+
             foreach (var filePath in filePaths)
             {
                 try
@@ -280,9 +280,9 @@ namespace Apex.Services.Printing.Queue
                     Debug.WriteLine($"[QueueManager] Failed to submit {filePath}: {ex.Message}");
                 }
             }
-            
+
             Debug.WriteLine($"[QueueManager] ✓ Submitted {jobIds.Count} jobs to '{printerName}' - processing will be throttled automatically");
-            
+
             return jobIds;
         }
     }

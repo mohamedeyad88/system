@@ -101,7 +101,10 @@ namespace Apex.NumberedBooksEngine.UI.Controls
                 bool isMajor = (int)(x / gridSize) % 5 == 0;
                 var line = new Line
                 {
-                    X1 = x, Y1 = 0, X2 = x, Y2 = height,
+                    X1 = x,
+                    Y1 = 0,
+                    X2 = x,
+                    Y2 = height,
                     Stroke = isMajor ? majorBrush : gridBrush,
                     StrokeThickness = isMajor ? 0.5 : 0.25,
                     StrokeDashArray = new DoubleCollection { 2, 2 }
@@ -115,7 +118,10 @@ namespace Apex.NumberedBooksEngine.UI.Controls
                 bool isMajor = (int)(y / gridSize) % 5 == 0;
                 var line = new Line
                 {
-                    X1 = 0, Y1 = y, X2 = width, Y2 = y,
+                    X1 = 0,
+                    Y1 = y,
+                    X2 = width,
+                    Y2 = y,
                     Stroke = isMajor ? majorBrush : gridBrush,
                     StrokeThickness = isMajor ? 0.5 : 0.25,
                     StrokeDashArray = new DoubleCollection { 2, 2 }
@@ -140,7 +146,10 @@ namespace Apex.NumberedBooksEngine.UI.Controls
             // Vertical center
             GridCanvas.Children.Add(new Line
             {
-                X1 = width / 2, Y1 = 0, X2 = width / 2, Y2 = height,
+                X1 = width / 2,
+                Y1 = 0,
+                X2 = width / 2,
+                Y2 = height,
                 Stroke = centerBrush,
                 StrokeThickness = 1,
                 StrokeDashArray = new DoubleCollection { 4, 2 }
@@ -149,7 +158,10 @@ namespace Apex.NumberedBooksEngine.UI.Controls
             // Horizontal center
             GridCanvas.Children.Add(new Line
             {
-                X1 = 0, Y1 = height / 2, X2 = width, Y2 = height / 2,
+                X1 = 0,
+                Y1 = height / 2,
+                X2 = width,
+                Y2 = height / 2,
                 Stroke = centerBrush,
                 StrokeThickness = 1,
                 StrokeDashArray = new DoubleCollection { 4, 2 }

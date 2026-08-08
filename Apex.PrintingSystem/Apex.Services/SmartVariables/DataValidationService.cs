@@ -8,34 +8,34 @@ namespace Apex.Services.SmartVariables
 {
     public class ValidationOptions
     {
-        public int MaxTextLength           { get; set; } = 500;
-        public bool CheckImageFields       { get; set; } = true;
-        public bool CheckRequiredFields    { get; set; } = true;
-        public bool CheckImageDpi          { get; set; } = true;
-        public int  MinImageDpi            { get; set; } = 72;
-        public int  WarnImageDpi           { get; set; } = 150;  // warn below this, error below MinImageDpi
-        public bool WarnOnEmptyOptional    { get; set; } = false;
+        public int MaxTextLength { get; set; } = 500;
+        public bool CheckImageFields { get; set; } = true;
+        public bool CheckRequiredFields { get; set; } = true;
+        public bool CheckImageDpi { get; set; } = true;
+        public int MinImageDpi { get; set; } = 72;
+        public int WarnImageDpi { get; set; } = 150;  // warn below this, error below MinImageDpi
+        public bool WarnOnEmptyOptional { get; set; } = false;
     }
 
     public interface IDataValidationService
     {
         void ValidateAll(
-            SmartDataSource        source,
-            List<VariableMapping>  mappings,
-            ValidationOptions?     options = null);
+            SmartDataSource source,
+            List<VariableMapping> mappings,
+            ValidationOptions? options = null);
 
         void ValidateRow(
-            SmartDataRow           row,
-            List<VariableMapping>  mappings,
-            ValidationOptions      options);
+            SmartDataRow row,
+            List<VariableMapping> mappings,
+            ValidationOptions options);
     }
 
     public class DataValidationService : IDataValidationService
     {
         public void ValidateAll(
-            SmartDataSource       source,
+            SmartDataSource source,
             List<VariableMapping> mappings,
-            ValidationOptions?    options = null)
+            ValidationOptions? options = null)
         {
             options ??= new ValidationOptions();
 
@@ -51,16 +51,16 @@ namespace Apex.Services.SmartVariables
         }
 
         public void ValidateRow(
-            SmartDataRow          row,
+            SmartDataRow row,
             List<VariableMapping> mappings,
-            ValidationOptions     options)
+            ValidationOptions options)
         {
             foreach (var mapping in mappings)
             {
                 if (!mapping.IsMapped) continue;
 
                 string colName = mapping.ColumnName!;
-                string value   = row.Get(colName);
+                string value = row.Get(colName);
 
                 // ── Required field check ───────────────────────────────────────
                 if (options.CheckRequiredFields && mapping.IsRequired)
@@ -179,9 +179,9 @@ namespace Apex.Services.SmartVariables
             => NumericRegex.IsMatch(value.Trim());
 
         private static void CheckImageDpi(
-            SmartDataRow      row,
-            string            imagePath,
-            string            fieldLabel,
+            SmartDataRow row,
+            string imagePath,
+            string fieldLabel,
             ValidationOptions options)
         {
             try
@@ -189,7 +189,7 @@ namespace Apex.Services.SmartVariables
                 using var bmp = new System.Drawing.Bitmap(imagePath);
                 float dpiX = bmp.HorizontalResolution;
                 float dpiY = bmp.VerticalResolution;
-                float dpi  = Math.Min(dpiX, dpiY);
+                float dpi = Math.Min(dpiX, dpiY);
 
                 if (dpi < options.MinImageDpi)
                 {

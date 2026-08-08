@@ -14,17 +14,17 @@ namespace Apex.Core.Models
         public bool IsDoubleSided { get; set; }
         public int Quantity { get; set; } = 1;
         public decimal PricePerSheet { get; set; }
-        
+
         // Cover
         public bool HasCover { get; set; }
         public decimal CoverPricePerPiece { get; set; }
-        
+
         // Finishing Services
         public List<FinishingService> FinishingServices { get; set; } = new();
-        
+
         // Profit
         public decimal ProfitMarginPercent { get; set; } // e.g., 20 for 20%
-        
+
         // Calculated Values (auto-computed)
         public int SheetsRequired { get; private set; }
         public decimal PrintingCost { get; private set; }
@@ -33,7 +33,7 @@ namespace Apex.Core.Models
         public decimal SubTotal { get; private set; }
         public decimal ProfitAmount { get; private set; }
         public decimal FinalPrice { get; private set; }
-        
+
         /// <summary>
         /// Calculates all costs and updates totals.
         /// </summary>
@@ -41,26 +41,26 @@ namespace Apex.Core.Models
         {
             // Step 1: Calculate sheets required
             CalculateSheetsRequired();
-            
+
             // Step 2: Calculate printing cost
             PrintingCost = SheetsRequired * PricePerSheet * Quantity;
-            
+
             // Step 3: Calculate cover cost
             CoverCost = HasCover ? (CoverPricePerPiece * Quantity) : 0;
-            
+
             // Step 4: Calculate finishing cost
             FinishingCost = FinishingServices.Sum(s => s.PricePerPiece * Quantity);
-            
+
             // Step 5: Calculate subtotal
             SubTotal = PrintingCost + CoverCost + FinishingCost;
-            
+
             // Step 6: Calculate profit
             ProfitAmount = SubTotal * (ProfitMarginPercent / 100);
-            
+
             // Step 7: Calculate final price
             FinalPrice = SubTotal + ProfitAmount;
         }
-        
+
         private void CalculateSheetsRequired()
         {
             if (IsDoubleSided)
@@ -74,7 +74,7 @@ namespace Apex.Core.Models
                 SheetsRequired = TotalPages;
             }
         }
-        
+
         /// <summary>
         /// Gets a detailed cost breakdown.
         /// </summary>
@@ -97,7 +97,7 @@ TOTAL: {FinalPrice:F2} EGP
 ";
         }
     }
-    
+
     /// <summary>
     /// Represents a finishing service (سلفان، ريجا، تدبيس، etc.).
     /// </summary>
@@ -106,9 +106,9 @@ TOTAL: {FinalPrice:F2} EGP
         public string Name { get; set; } = string.Empty;
         public decimal PricePerPiece { get; set; }
         public string Description { get; set; } = string.Empty;
-        
+
         public FinishingService() { }
-        
+
         public FinishingService(string name, decimal price, string description = "")
         {
             Name = name;
@@ -116,7 +116,7 @@ TOTAL: {FinalPrice:F2} EGP
             Description = description;
         }
     }
-    
+
     /// <summary>
     /// Common finishing services catalog.
     /// </summary>

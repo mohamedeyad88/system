@@ -75,8 +75,8 @@ namespace Apex.Core.Enums
         /// </summary>
         public static bool IsTerminal(this CycleStatus status)
         {
-            return status == CycleStatus.CompletedPhysical 
-                || status == CycleStatus.Skipped 
+            return status == CycleStatus.CompletedPhysical
+                || status == CycleStatus.Skipped
                 || status == CycleStatus.Failed;
         }
 

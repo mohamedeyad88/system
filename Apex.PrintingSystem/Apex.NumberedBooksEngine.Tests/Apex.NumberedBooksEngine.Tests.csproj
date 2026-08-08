@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Apex.NumberedBooksEngine\Apex.NumberedBooksEngine.csproj" />
     <ProjectReference Include="..\Apex.Core\Apex.Core.csproj" />
+    <ProjectReference Include="..\Apex.Services\Apex.Services.csproj" />
   </ItemGroup>
 
 </Project>

@@ -48,15 +48,15 @@ namespace Apex.Services
             // - Silent vendor detection
             // - Intelligent error recovery
             // ═══════════════════════════════════════════════════════════════════
-            
+
             var gateway = Printing.VendorDetection.VendorAwarePrintGateway.Instance;
-            
+
             var result = await gateway.PrintAsync(
                 printerName,
                 filePath,
                 jobWithSettings.TotalCopies,
                 jobWithSettings);
-            
+
             return result.Success;
         }
 
@@ -69,11 +69,11 @@ namespace Apex.Services
                 fs.CopyTo(ms);
                 ms.Position = 0;
                 using var image = System.Drawing.Image.FromStream(ms);
-                
+
                 using var pd = new System.Drawing.Printing.PrintDocument();
                 pd.PrinterSettings.PrinterName = printerName;
                 pd.PrinterSettings.Copies = (short)settings.TotalCopies;
-                
+
                 // Apply custom settings to a cloned page settings instance (job scope only)
                 var jobPageSettings = (System.Drawing.Printing.PageSettings)pd.DefaultPageSettings.Clone();
 
@@ -81,7 +81,7 @@ namespace Apex.Services
                 {
                     pd.PrinterSettings.Duplex = System.Drawing.Printing.Duplex.Vertical;
                 }
-                
+
                 jobPageSettings.Color = settings.Color;
                 jobPageSettings.Landscape = settings.Orientation?.Equals("Landscape", StringComparison.OrdinalIgnoreCase) ?? false;
 
@@ -89,7 +89,7 @@ namespace Apex.Services
                 {
                     e.PageSettings = (System.Drawing.Printing.PageSettings)jobPageSettings.Clone();
                 };
-                
+
                 pd.PrintPage += (s, e) =>
                 {
                     if (e.Graphics != null)
@@ -97,7 +97,7 @@ namespace Apex.Services
                         e.Graphics.DrawImage(image, e.MarginBounds);
                     }
                 };
-                
+
                 pd.Print();
                 return true;
             }
@@ -124,7 +124,7 @@ namespace Apex.Services
 
             try
             {
-                return System.Text.Json.JsonSerializer.Deserialize<PrinterCapabilities>(printer.CapabilitiesJson) 
+                return System.Text.Json.JsonSerializer.Deserialize<PrinterCapabilities>(printer.CapabilitiesJson)
                        ?? new PrinterCapabilities();
             }
             catch

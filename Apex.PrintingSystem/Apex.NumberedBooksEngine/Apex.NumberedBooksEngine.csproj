@@ -10,6 +10,9 @@
     <PackageReference Include="PdfSharpCore" Version="1.3.67" />
     <PackageReference Include="Serilog" Version="4.3.0" />
     <PackageReference Include="SkiaSharp" Version="2.88.8" />
+    <!-- Encodes the printed sequence number as a scannable barcode/QR on the book. -->
+    <PackageReference Include="ZXing.Net" Version="0.16.9" />
+    <PackageReference Include="SkiaSharp.HarfBuzz" Version="2.88.8" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.8" />
     <PackageReference Include="System.Threading.Tasks.Dataflow" Version="10.0.0" />
     <PackageReference Include="PdfiumViewer" Version="2.13.0.0" />

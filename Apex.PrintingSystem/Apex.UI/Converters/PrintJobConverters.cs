@@ -24,7 +24,7 @@ namespace Apex.UI.Converters
             return Binding.DoNothing;
         }
     }
-    
+
     /// <summary>
     /// String to Visibility Converter (Visible if not null/empty).
     /// </summary>

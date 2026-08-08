@@ -10,7 +10,7 @@ namespace Apex.Services.Logging
     public static class PrintLogger
     {
         private static readonly ILogger _logger;
-        
+
         static PrintLogger()
         {
             _logger = new LoggerConfiguration()
@@ -22,30 +22,30 @@ namespace Apex.Services.Logging
                     rollingInterval: RollingInterval.Day,
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
-                
+
             _logger.Information("=== Apex Printing System Logger Initialized ===");
         }
-        
+
         public static void Info(string message, params object[] args)
         {
             _logger.Information(message, args);
         }
-        
+
         public static void Warning(string message, params object[] args)
         {
             _logger.Warning(message, args);
         }
-        
+
         public static void Error(Exception ex, string message, params object[] args)
         {
             _logger.Error(ex, message, args);
         }
-        
+
         public static void Debug(string message, params object[] args)
         {
             _logger.Debug(message, args);
         }
-        
+
         /// <summary>
         /// Log critical Win32 print API failure with full details.
         /// </summary>
@@ -56,7 +56,7 @@ namespace Apex.Services.Logging
                 "WIN32 PRINT API FAILED: {ApiName} returned error {ErrorCode} ({ErrorMessage}). Printer: '{Printer}'. Details: {Details}",
                 apiName, errorCode, errorMessage, printerName, details);
         }
-        
+
         private static string GetWin32ErrorMessage(int errorCode)
         {
             return errorCode switch

@@ -32,21 +32,21 @@ namespace Apex.Services.Printing.UniversalRIP
                 ContentProfile = contentProfile,
                 QualityLevel = qualityLevel
             };
-            
+
             // Step 1: Determine output language (MUST be supported by printer)
             decision.OutputLanguage = DetermineSafeOutputLanguage(printerProfile, contentProfile);
-            
+
             // Step 2: Apply RIP rules based on content type
             ApplyUniversalRipRules(contentProfile, printerProfile, decision);
-            
+
             // Step 3: Validate decision (Quality Gate)
             ValidateDecision(decision);
-            
+
             return decision;
         }
-        
+
         #region Language Determination (Safety-Critical)
-        
+
         /// <summary>
         /// Determines the SAFE output language that the printer definitely supports.
         /// NEVER returns an unsupported language.
@@ -57,11 +57,11 @@ namespace Apex.Services.Printing.UniversalRIP
             PageContentProfile contentProfile)
         {
             var printerNameLower = printerProfile.PrinterName.ToLowerInvariant();
-            bool isEpson = printerNameLower.Contains("epson") || printerNameLower.Contains("workforce") || 
+            bool isEpson = printerNameLower.Contains("epson") || printerNameLower.Contains("workforce") ||
                           printerNameLower.Contains("ecotank");
             bool isEnterprise = printerNameLower.Contains("enterprise") || printerNameLower.Contains("surecolor");
             bool isWFC5210 = printerNameLower.Contains("wf-c5210") || printerNameLower.Contains("wfc5210");
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // CRITICAL FIX: EPSON WF-C5210 doesn't support our ESC/P commands
             // Force GDI (Windows native printing) for WF-C5210
@@ -72,7 +72,7 @@ namespace Apex.Services.Printing.UniversalRIP
                     "[DecisionEngine] EPSON WF-C5210 detected - Forcing GDI (Windows printing)");
                 return PrintLanguage.GDI;
             }
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // EPSON PRINTERS: Prioritize ESC/P over PostScript (unless enterprise)
             // ═══════════════════════════════════════════════════════════════════
@@ -80,22 +80,22 @@ namespace Apex.Services.Printing.UniversalRIP
             {
                 // For consumer/prosumer Epson: ESC/P is NATIVE, PostScript is fake
                 // Priority: ESC/Page > ESC/P > PCL > PostScript > GDI
-                
+
                 if (printerProfile.SupportsESCPage)
                     return PrintLanguage.ESCPage;
-                
+
                 if (printerProfile.SupportsESCP)
                     return PrintLanguage.ESCPOS;
-                
+
                 if (printerProfile.SupportsPCL)
                     return PrintLanguage.PCL;
-                
+
                 if (printerProfile.SupportsPostScript)
                     return PrintLanguage.PostScript; // Last resort
-                
+
                 return PrintLanguage.GDI;
             }
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // NON-EPSON OR ENTERPRISE PRINTERS: Traditional priority
             // ═══════════════════════════════════════════════════════════════════
@@ -106,45 +106,45 @@ namespace Apex.Services.Printing.UniversalRIP
             // 4. ESC/Page (Epson high-end)
             // 5. ESC/P (Epson basic)
             // 6. GDI (fallback, raster-only)
-            
+
             // Rule 1: If printer supports PostScript → Use it (best quality)
             if (printerProfile.SupportsPostScript)
             {
                 return PrintLanguage.PostScript;
             }
-            
+
             // Rule 2: If printer supports PCL → Use it (good quality)
             if (printerProfile.SupportsPCL)
             {
                 return PrintLanguage.PCL;
             }
-            
+
             // Rule 3: If printer supports PDF → Use it (preserves quality)
             if (printerProfile.SupportsPDF)
             {
                 return PrintLanguage.PDF;
             }
-            
+
             // Rule 4: If printer supports ESC/Page → Use it (Epson high-end)
             if (printerProfile.SupportsESCPage)
             {
                 return PrintLanguage.ESCPage;
             }
-            
+
             // Rule 5: If printer supports ESC/P → Use it (Epson basic)
             if (printerProfile.SupportsESCP)
             {
                 return PrintLanguage.ESCPOS;
             }
-            
+
             // Rule 6: Fallback to GDI (always available, but raster-only)
             return PrintLanguage.GDI;
         }
-        
+
         #endregion
-        
+
         #region Universal RIP Rules
-        
+
         /// <summary>
         /// Applies universal RIP rules based on content and printer capabilities.
         /// </summary>
@@ -156,8 +156,8 @@ namespace Apex.Services.Printing.UniversalRIP
             // ═══════════════════════════════════════════════════════════════════
             // RULE 1: Text-Only Content → Native Vector (if printer supports it)
             // ═══════════════════════════════════════════════════════════════════
-            if (contentProfile.HasText && 
-                !contentProfile.HasImages && 
+            if (contentProfile.HasText &&
+                !contentProfile.HasImages &&
                 !contentProfile.HasVectorGraphics)
             {
                 if (printerProfile.CanHandleTextNative)
@@ -181,7 +181,7 @@ namespace Apex.Services.Printing.UniversalRIP
                     return;
                 }
             }
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // RULE 2: Vector Graphics Only → Preserve Paths (if printer supports it)
             // ═══════════════════════════════════════════════════════════════════
@@ -208,12 +208,12 @@ namespace Apex.Services.Printing.UniversalRIP
                     return;
                 }
             }
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // RULE 3: Images Only → High DPI Raster (always required for images)
             // ═══════════════════════════════════════════════════════════════════
-            if (contentProfile.HasImages && 
-                !contentProfile.HasText && 
+            if (contentProfile.HasImages &&
+                !contentProfile.HasText &&
                 !contentProfile.HasVectorGraphics)
             {
                 decision.Strategy = RenderStrategy.HighDpiRaster;
@@ -224,11 +224,11 @@ namespace Apex.Services.Printing.UniversalRIP
                 decision.DecisionReason = $"Images only: Rasterizing at {decision.RequiredDpi} DPI";
                 return;
             }
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // RULE 4: Mixed Content → Hybrid (Best Quality)
             // ═══════════════════════════════════════════════════════════════════
-            if (contentProfile.IsMixedContent || 
+            if (contentProfile.IsMixedContent ||
                 (contentProfile.HasText && contentProfile.HasImages) ||
                 (contentProfile.HasVectorGraphics && contentProfile.HasImages))
             {
@@ -255,7 +255,7 @@ namespace Apex.Services.Printing.UniversalRIP
                     return;
                 }
             }
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // RULE 5: Fallback (should rarely be reached)
             // ═══════════════════════════════════════════════════════════════════
@@ -266,7 +266,7 @@ namespace Apex.Services.Printing.UniversalRIP
             decision.RequiredDpi = Math.Max(printerProfile.NativeDpi, (int)decision.QualityLevel);
             decision.DecisionReason = "Fallback: Unexpected content type, using safe rasterization";
         }
-        
+
         private int CalculateOptimalDpi(
             PageContentProfile contentProfile,
             UniversalPrinterProfile printerProfile,
@@ -274,13 +274,13 @@ namespace Apex.Services.Printing.UniversalRIP
         {
             // Base DPI from quality level
             int baseDpi = (int)qualityLevel;
-            
+
             // Adjust based on printer's native DPI
             int printerDpi = Math.Max(printerProfile.NativeDpi, 300);
-            
+
             // Use the higher of: quality level, printer native DPI, or source image resolution
             int optimalDpi = Math.Max(baseDpi, printerDpi);
-            
+
             // If source images have high resolution, try to preserve it (up to printer max)
             if (contentProfile.HasImages && contentProfile.MinImageResolution > 0)
             {
@@ -295,18 +295,18 @@ namespace Apex.Services.Printing.UniversalRIP
                     optimalDpi = Math.Max(optimalDpi, 600);
                 }
             }
-            
+
             // Cap at printer's maximum DPI
             optimalDpi = Math.Min(optimalDpi, printerProfile.MaxDpi);
-            
+
             // Ensure minimum 300 DPI
             return Math.Max(optimalDpi, 300);
         }
-        
+
         #endregion
-        
+
         #region Quality Gate Validation
-        
+
         /// <summary>
         /// Validates the decision before any page is sent.
         /// This is the Quality Gate that prevents unsupported language delivery.
@@ -314,14 +314,14 @@ namespace Apex.Services.Printing.UniversalRIP
         private void ValidateDecision(UniversalRenderDecision decision)
         {
             var errors = new List<string>();
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // SAFETY CHECK 1: Output language must be supported by printer
             // ═══════════════════════════════════════════════════════════════════
             if (!decision.PrinterProfile.SupportsLanguage(decision.OutputLanguage))
             {
                 errors.Add($"CRITICAL: Output language {decision.OutputLanguage} is NOT supported by printer {decision.PrinterProfile.PrinterName}");
-                
+
                 // Auto-correct: Fall back to GDI (always available)
                 decision.OutputLanguage = PrintLanguage.GDI;
                 decision.Strategy = RenderStrategy.FallbackRaster;
@@ -329,7 +329,7 @@ namespace Apex.Services.Printing.UniversalRIP
                 decision.RequiredDpi = Math.Max(decision.PrinterProfile.NativeDpi, 300);
                 decision.DecisionReason = "SAFETY: Unsupported language detected, auto-corrected to GDI";
             }
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // SAFETY CHECK 2: Text preservation requires native language support
             // ═══════════════════════════════════════════════════════════════════
@@ -340,7 +340,7 @@ namespace Apex.Services.Printing.UniversalRIP
                 decision.RequiresRasterization = true;
                 decision.RequiredDpi = Math.Max(decision.RequiredDpi, 300);
             }
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // SAFETY CHECK 3: Vector preservation requires native language support
             // ═══════════════════════════════════════════════════════════════════
@@ -351,7 +351,7 @@ namespace Apex.Services.Printing.UniversalRIP
                 decision.RequiresRasterization = true;
                 decision.RequiredDpi = Math.Max(decision.RequiredDpi, 600);
             }
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // SAFETY CHECK 4: DPI must be within printer capabilities
             // ═══════════════════════════════════════════════════════════════════
@@ -360,7 +360,7 @@ namespace Apex.Services.Printing.UniversalRIP
                 errors.Add($"WARNING: Required DPI {decision.RequiredDpi} exceeds printer max {decision.PrinterProfile.MaxDpi}");
                 decision.RequiredDpi = decision.PrinterProfile.MaxDpi;
             }
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // SAFETY CHECK 5: Minimum DPI for quality
             // ═══════════════════════════════════════════════════════════════════
@@ -369,20 +369,20 @@ namespace Apex.Services.Printing.UniversalRIP
                 errors.Add("WARNING: Rasterization DPI below 300, quality may be degraded");
                 decision.RequiredDpi = 300;
             }
-            
+
             // Log validation errors (if any)
             if (errors.Count > 0)
             {
                 decision.ValidationWarnings = errors;
                 System.Diagnostics.Debug.WriteLine($"[UniversalDecision] Validation warnings: {string.Join("; ", errors)}");
             }
-            
+
             decision.IsValid = true; // Decision is valid (may have been auto-corrected)
         }
-        
+
         #endregion
     }
-    
+
     /// <summary>
     /// Universal Render Decision - Complete decision with safety validation.
     /// </summary>
@@ -390,7 +390,7 @@ namespace Apex.Services.Printing.UniversalRIP
     {
         public UniversalPrinterProfile PrinterProfile { get; set; } = null!;
         public PageContentProfile ContentProfile { get; set; } = null!;
-        
+
         public RenderStrategy Strategy { get; set; }
         public PrintLanguage OutputLanguage { get; set; }
         public int RequiredDpi { get; set; }
@@ -399,7 +399,7 @@ namespace Apex.Services.Printing.UniversalRIP
         public bool RequiresRasterization { get; set; }
         public QualityLevel QualityLevel { get; set; }
         public string DecisionReason { get; set; } = "";
-        
+
         public bool IsValid { get; set; }
         public List<string> ValidationWarnings { get; set; } = new();
     }

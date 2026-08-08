@@ -15,10 +15,10 @@
     <Company>Apex</Company>
     <Copyright>Copyright © Apex 2026</Copyright>
     <Description>نظام إدارة الطباعة المتكامل</Description>
-    <Version>2.0.2</Version>
-    <AssemblyVersion>2.0.2.0</AssemblyVersion>
-    <FileVersion>2.0.2.0</FileVersion>
-    <InformationalVersion>2.0.2-beta.1+84f3141</InformationalVersion>
+    <Version>2.5.2</Version>
+    <AssemblyVersion>2.5.2.0</AssemblyVersion>
+    <FileVersion>2.5.2.0</FileVersion>
+    <InformationalVersion>2.5.2-beta+designer-layout-direction-and-legibility</InformationalVersion>
     <!-- Nullable Reference Types Warnings (تحذيرات القيم الفارغة)
          تم تعطيل التحذيرات التالية مؤقتاً لحين مراجعة الكود:
          CS8603: Possible null reference return
@@ -59,7 +59,7 @@
     
     <!-- Output Settings -->
     <OutputPath>bin\Release\net8.0-windows\win-x64\publish\</OutputPath>
-    <PublishDir>D:\Apex\publish\v2.0.2\app\</PublishDir>
+    <PublishDir>D:\Apex\publish\v2.2.0-beta\app\</PublishDir>
   </PropertyGroup>
 
   <ItemGroup>

@@ -30,14 +30,14 @@ namespace Apex.Licensing.Tests
         {
             var payload = new LicensePayload
             {
-                LicenseId      = Guid.NewGuid().ToString("D").ToUpperInvariant(),
-                DeviceId       = deviceId,
-                Type           = type,
-                IssuedUtc      = DateTime.UtcNow.AddMinutes(-1),
-                ExpiresUtc     = expiresUtc,
-                CustomerName   = "Attacker",
+                LicenseId = Guid.NewGuid().ToString("D").ToUpperInvariant(),
+                DeviceId = deviceId,
+                Type = type,
+                IssuedUtc = DateTime.UtcNow.AddMinutes(-1),
+                ExpiresUtc = expiresUtc,
+                CustomerName = "Attacker",
                 ProductVersion = "1.0",
-                Nonce          = Convert.ToHexString(RandomNumberGenerator.GetBytes(16))
+                Nonce = Convert.ToHexString(RandomNumberGenerator.GetBytes(16))
             };
             return LicenseCrypto.SignLicense(payload, privateKey);
         }
@@ -80,7 +80,7 @@ namespace Apex.Licensing.Tests
         public void Attack_ExpiredLicense_IsDetectedViaExpiresUtc()
         {
             var (key, pub) = MakeKeyPair();
-            var deviceId   = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC01";
+            var deviceId = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC01";
 
             var signed = SignFor(deviceId, LicenseType.Full,
                 DateTime.UtcNow.AddDays(-1), // already expired
@@ -113,17 +113,17 @@ namespace Apex.Licensing.Tests
             // Attacker builds a Pro-type payload for a different device
             var attackPayload = new LicensePayload
             {
-                DeviceId   = "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEE03",
-                Type       = LicenseType.Pro,
+                DeviceId = "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEE03",
+                Type = LicenseType.Pro,
                 ExpiresUtc = new DateTime(9999, 12, 31, 0, 0, 0, DateTimeKind.Utc)
             };
-            var attackJson    = JsonSerializer.Serialize(attackPayload);
-            var attackBase64  = Convert.ToBase64String(Encoding.UTF8.GetBytes(attackJson));
+            var attackJson = JsonSerializer.Serialize(attackPayload);
+            var attackBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(attackJson));
 
             var swapped = new SignedLicense
             {
-                Payload       = attackBase64,
-                Signature     = legitimateSigned.Signature,   // stolen from legitimate license
+                Payload = attackBase64,
+                Signature = legitimateSigned.Signature,   // stolen from legitimate license
                 SchemaVersion = "1"
             };
 
@@ -139,7 +139,7 @@ namespace Apex.Licensing.Tests
         public void Attack_AttackerGeneratesOwnKeyPair_LicenseRejected()
         {
             var (legitimateKey, legitimatePub) = MakeKeyPair();
-            var (attackerKey,   _)             = MakeKeyPair(); // attacker's own pair
+            var (attackerKey, _) = MakeKeyPair(); // attacker's own pair
 
             // Attacker signs a license with THEIR private key
             var attackerSigned = SignFor(
@@ -168,7 +168,7 @@ namespace Apex.Licensing.Tests
                 var randomSig = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
                 var fakePayload = new LicensePayload
                 {
-                    DeviceId   = "AAAA",
+                    DeviceId = "AAAA",
                     ExpiresUtc = new DateTime(9999, 12, 31, 0, 0, 0, DateTimeKind.Utc)
                 };
                 var payloadBase64 = Convert.ToBase64String(
@@ -176,7 +176,7 @@ namespace Apex.Licensing.Tests
 
                 var faked = new SignedLicense
                 {
-                    Payload   = payloadBase64,
+                    Payload = payloadBase64,
                     Signature = randomSig
                 };
 
@@ -194,9 +194,9 @@ namespace Apex.Licensing.Tests
         {
             var state = new TrialState
             {
-                StartUtc    = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                StartUtc = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 LastSeenUtc = new DateTime(2025, 1, 3, 0, 0, 0, DateTimeKind.Utc),
-                DeviceId    = "REALDEVICEID"
+                DeviceId = "REALDEVICEID"
             };
 
             for (int i = 0; i < 50; i++)
@@ -218,15 +218,15 @@ namespace Apex.Licensing.Tests
 
             var p1 = new LicensePayload
             {
-                DeviceId   = "NONCE_TEST_DEVICE_01234567890",
+                DeviceId = "NONCE_TEST_DEVICE_01234567890",
                 ExpiresUtc = new DateTime(9999, 12, 31, 0, 0, 0, DateTimeKind.Utc),
-                Nonce      = Convert.ToHexString(RandomNumberGenerator.GetBytes(16))
+                Nonce = Convert.ToHexString(RandomNumberGenerator.GetBytes(16))
             };
             var p2 = new LicensePayload
             {
-                DeviceId   = p1.DeviceId,
+                DeviceId = p1.DeviceId,
                 ExpiresUtc = p1.ExpiresUtc,
-                Nonce      = Convert.ToHexString(RandomNumberGenerator.GetBytes(16))
+                Nonce = Convert.ToHexString(RandomNumberGenerator.GetBytes(16))
             };
 
             Assert.NotEqual(p1.Nonce, p2.Nonce);
@@ -263,7 +263,7 @@ namespace Apex.Licensing.Tests
             var (_, pub) = MakeKeyPair();
             var signed = new SignedLicense
             {
-                Payload   = "not-valid-base64!!!",
+                Payload = "not-valid-base64!!!",
                 Signature = "also-not-valid-base64@@@"
             };
 
@@ -283,13 +283,13 @@ namespace Apex.Licensing.Tests
         {
             var p = new LicensePayload();
 
-            Assert.Equal("1",                    p.SchemaVersion);
-            Assert.Equal("",                     p.LicenseId);
-            Assert.Equal("",                     p.DeviceId);
-            Assert.Equal(LicenseType.Full,       p.Type);
-            Assert.Equal(1,                      p.MaxActivations);
-            Assert.Equal("",                     p.Nonce);
-            Assert.Equal("APEX-PRINTING-SUITE",  new ActivationRequest().ProductId);
+            Assert.Equal("1", p.SchemaVersion);
+            Assert.Equal("", p.LicenseId);
+            Assert.Equal("", p.DeviceId);
+            Assert.Equal(LicenseType.Full, p.Type);
+            Assert.Equal(1, p.MaxActivations);
+            Assert.Equal("", p.Nonce);
+            Assert.Equal("APEX-PRINTING-SUITE", new ActivationRequest().ProductId);
         }
 
         [Fact]

@@ -19,17 +19,17 @@ namespace Apex.Services.Printing.Color
     /// <summary>Per-printer colour adjustment offsets persisted to JSON.</summary>
     public class PrinterCalibrationProfile
     {
-        public string   PrinterName      { get; set; } = "";
-        public DateTime CalibratedAt     { get; set; } = DateTime.Now;
-        public double   BrightnessOffset { get; set; } = 0.0;   // -1.0 to +1.0
-        public double   ContrastOffset   { get; set; } = 0.0;   // -1.0 to +1.0
-        public double   SaturationOffset { get; set; } = 0.0;   // -1.0 to +1.0
-        public double   CyanOffset       { get; set; } = 0.0;   // CMYK fine-tuning
-        public double   MagentaOffset    { get; set; } = 0.0;
-        public double   YellowOffset     { get; set; } = 0.0;
-        public double   BlackOffset      { get; set; } = 0.0;
-        public string?  IccProfilePath   { get; set; }
-        public string   Notes            { get; set; } = "";
+        public string PrinterName { get; set; } = "";
+        public DateTime CalibratedAt { get; set; } = DateTime.Now;
+        public double BrightnessOffset { get; set; } = 0.0;   // -1.0 to +1.0
+        public double ContrastOffset { get; set; } = 0.0;   // -1.0 to +1.0
+        public double SaturationOffset { get; set; } = 0.0;   // -1.0 to +1.0
+        public double CyanOffset { get; set; } = 0.0;   // CMYK fine-tuning
+        public double MagentaOffset { get; set; } = 0.0;
+        public double YellowOffset { get; set; } = 0.0;
+        public double BlackOffset { get; set; } = 0.0;
+        public string? IccProfilePath { get; set; }
+        public string Notes { get; set; } = "";
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -57,9 +57,9 @@ namespace Apex.Services.Printing.Color
 
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
-            WriteIndented           = true,
+            WriteIndented = true,
             PropertyNameCaseInsensitive = true,
-            DefaultIgnoreCondition  = JsonIgnoreCondition.Never
+            DefaultIgnoreCondition = JsonIgnoreCondition.Never
         };
 
         // ── Constructor ───────────────────────────────────────────────────────
@@ -71,7 +71,7 @@ namespace Apex.Services.Printing.Color
                 "Apex");
 
             _calibrationFilePath = Path.Combine(appDataDir, "ColorCalibrations.json");
-            _calibrations        = new ConcurrentDictionary<string, PrinterCalibrationProfile>(
+            _calibrations = new ConcurrentDictionary<string, PrinterCalibrationProfile>(
                 StringComparer.OrdinalIgnoreCase);
 
             LoadFromDisk();
@@ -90,7 +90,7 @@ namespace Apex.Services.Printing.Color
                 }
 
                 string json = File.ReadAllText(_calibrationFilePath);
-                var list    = JsonSerializer.Deserialize<List<PrinterCalibrationProfile>>(json, JsonOptions);
+                var list = JsonSerializer.Deserialize<List<PrinterCalibrationProfile>>(json, JsonOptions);
                 if (list is null) return;
 
                 foreach (var p in list)
@@ -180,22 +180,22 @@ namespace Apex.Services.Printing.Color
             // Short-circuit when all offsets are zero
             bool isIdentity =
                 cal.BrightnessOffset == 0.0 &&
-                cal.ContrastOffset   == 0.0 &&
+                cal.ContrastOffset == 0.0 &&
                 cal.SaturationOffset == 0.0 &&
-                cal.CyanOffset       == 0.0 &&
-                cal.MagentaOffset    == 0.0 &&
-                cal.YellowOffset     == 0.0 &&
-                cal.BlackOffset      == 0.0;
+                cal.CyanOffset == 0.0 &&
+                cal.MagentaOffset == 0.0 &&
+                cal.YellowOffset == 0.0 &&
+                cal.BlackOffset == 0.0;
 
             if (isIdentity) return new Bitmap(source);
 
-            int width  = source.Width;
+            int width = source.Width;
             int height = source.Height;
 
-            var result  = new Bitmap(width, height, PixelFormat.Format24bppRgb);
-            var rect    = new Rectangle(0, 0, width, height);
+            var result = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+            var rect = new Rectangle(0, 0, width, height);
 
-            var srcData = source.LockBits(rect, ImageLockMode.ReadOnly,  PixelFormat.Format24bppRgb);
+            var srcData = source.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
             var dstData = result.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
 
             try
@@ -204,12 +204,12 @@ namespace Apex.Services.Printing.Color
                 byte* dstPtr = (byte*)dstData.Scan0;
 
                 double brightness = cal.BrightnessOffset;    // [-1, +1]
-                double contrast   = cal.ContrastOffset;       // [-1, +1]
+                double contrast = cal.ContrastOffset;       // [-1, +1]
                 double saturation = cal.SaturationOffset;     // [-1, +1]
-                double cOff  = cal.CyanOffset;
-                double mOff  = cal.MagentaOffset;
-                double yOff  = cal.YellowOffset;
-                double kOff  = cal.BlackOffset;
+                double cOff = cal.CyanOffset;
+                double mOff = cal.MagentaOffset;
+                double yOff = cal.YellowOffset;
+                double kOff = cal.BlackOffset;
 
                 for (int row = 0; row < height; row++)
                 {
@@ -221,7 +221,7 @@ namespace Apex.Services.Printing.Color
                         int offset = col * 3;
 
                         // BGR → double [0,1]
-                        double b = srcRow[offset]     / 255.0;
+                        double b = srcRow[offset] / 255.0;
                         double g = srcRow[offset + 1] / 255.0;
                         double r = srcRow[offset + 2] / 255.0;
 
@@ -265,7 +265,7 @@ namespace Apex.Services.Printing.Color
                             b = (1.0 - yD) * (1.0 - kD);
                         }
 
-                        dstRow[offset]     = ToByte(b);
+                        dstRow[offset] = ToByte(b);
                         dstRow[offset + 1] = ToByte(g);
                         dstRow[offset + 2] = ToByte(r);
                     }

@@ -78,7 +78,7 @@ namespace Apex.NumberedBooksEngine.UI
                     _templateStream = new MemoryStream(fileBytes);
 
                     var brush = new ImageBrush(preview);
-                    brush.Stretch = Stretch.Fill; 
+                    brush.Stretch = Stretch.Fill;
                     PreviewCanvas.Background = brush;
 
                     // Clear existing slots
@@ -126,7 +126,7 @@ namespace Apex.NumberedBooksEngine.UI
                 // Determine format
                 var isPdf = _templatePath?.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase) == true;
                 var format = isPdf ? TemplateFormat.Pdf : TemplateFormat.Image;
-                
+
                 // Convert ViewModels back to Specs
                 var slotSpecs = Slots.Select(s => s.Model).ToList();
 
@@ -137,9 +137,9 @@ namespace Apex.NumberedBooksEngine.UI
                 // Generate 4 preview pages
                 var previewCount = (int)Math.Min(totalNumbers, 4);
                 var previewPages = _numberingService.GeneratePreviewPages(
-                    _templateStream!, 
-                    slotSpecs, 
-                    startNumber, 
+                    _templateStream!,
+                    slotSpecs,
+                    startNumber,
                     previewCount,
                     format);
 
@@ -156,7 +156,7 @@ namespace Apex.NumberedBooksEngine.UI
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
                 };
                 window.ShowDialog();
-                
+
                 // Dispose pages after window closes
                 foreach (var page in previewPages)
                     page.Dispose();
@@ -166,9 +166,9 @@ namespace Apex.NumberedBooksEngine.UI
                 var msg = ex.Message;
                 if (msg.Contains("PDF"))
                 {
-                     if (msg.Contains("password") || msg.Contains("encrypted"))
+                    if (msg.Contains("password") || msg.Contains("encrypted"))
                         MessageBox.Show("Encrypted PDFs are not supported yet.");
-                     else
+                    else
                         MessageBox.Show("PDF cannot be decoded. Ensure the file is not encrypted.");
                 }
                 else
@@ -461,7 +461,7 @@ namespace Apex.NumberedBooksEngine.UI
 
                     var slotVm = new SlotViewModel(slotSpec);
                     Slots.Add(slotVm);
-                    
+
                     // Create visual representation
                     CreateSlotVisual(slotVm);
                 }
@@ -516,7 +516,7 @@ namespace Apex.NumberedBooksEngine.UI
             {
                 var adorner = new SlotAdorner(visual);
                 adornerLayer.Add(adorner);
-                
+
                 // Update VM when adorner changes visual
                 visual.LayoutUpdated += (s, e) =>
                 {
@@ -542,7 +542,7 @@ namespace Apex.NumberedBooksEngine.UI
             // or we iterate children.
             // For now, let's assume we can just clear all adorners on the canvas children if possible,
             // or better, track the current adorner.
-            
+
             // Since we don't easily track the adorner instance here without extra state, 
             // we'll rely on the fact that we only add one.
             // A robust way is to iterate all children and Remove adorners.

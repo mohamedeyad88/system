@@ -15,7 +15,7 @@ namespace Apex.Core.Models
         public TimeSpan Duration => EndTime.HasValue ? EndTime.Value - StartTime : TimeSpan.Zero;
         public string? ErrorMessage { get; set; }
         public int PagesCompleted { get; set; }
-        
+
         public string StatusText => Success ? "✓ Completed" : "✗ Failed";
         public string DurationText => Duration.TotalSeconds > 0 ? $"{Duration.TotalSeconds:F1}s" : "—";
     }

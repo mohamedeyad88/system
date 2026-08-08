@@ -28,12 +28,12 @@ namespace Apex.Services.Printing
         private readonly IAdaptiveStreamDispatcher _streamDispatcher;
         private readonly IFaultToleranceManager _faultManager;
         private readonly ILoggerService _logger;
-        
+
         private readonly Channel<PrintJobContext> _jobQueue;
         private readonly ConcurrentDictionary<Guid, PrintJobContext> _activeJobs;
         private readonly CancellationTokenSource _shutdownCts;
         private readonly Task _processingTask;
-        
+
         public event EventHandler<PrintJobStatusChangedEventArgs>? StatusChanged;
         public event EventHandler<PrintProgressEventArgs>? ProgressUpdated;
 
@@ -47,24 +47,24 @@ namespace Apex.Services.Printing
             _streamDispatcher = streamDispatcher;
             _faultManager = faultManager;
             _logger = logger;
-            
+
             _activeJobs = new ConcurrentDictionary<Guid, PrintJobContext>();
             _shutdownCts = new CancellationTokenSource();
-            
+
             // Unbounded channel for job queue
             _jobQueue = Channel.CreateUnbounded<PrintJobContext>(new UnboundedChannelOptions
             {
                 SingleReader = true,
                 SingleWriter = false
             });
-            
+
             // Start background processing
             _processingTask = ProcessJobsAsync(_shutdownCts.Token);
-            
+
             // Subscribe to fault manager events
             _faultManager.PrinterIssueDetected += OnPrinterIssueDetected;
             _faultManager.PrinterRecovered += OnPrinterRecovered;
-            
+
             _logger.Log(LogLevel.Info, "Unified Print Gateway initialized", "PrintGateway", "Init");
         }
 
@@ -72,36 +72,36 @@ namespace Apex.Services.Printing
         public async Task<PrintTicket> SubmitAsync(PrintRequest request, CancellationToken cancellationToken = default)
         {
             ValidateRequest(request);
-            
+
             var ticket = new PrintTicket
             {
                 Id = Guid.NewGuid(),
                 SubmittedAt = DateTime.UtcNow,
                 State = PrintJobState.Queued
             };
-            
+
             // Get page count without loading entire file
             if (_pageStreamEngine.IsSupported(request.FilePath))
             {
                 ticket.EstimatedPages = await _pageStreamEngine.GetPageCountAsync(request.FilePath, cancellationToken);
             }
-            
+
             var context = new PrintJobContext
             {
                 Ticket = ticket,
                 Request = request,
                 CancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
             };
-            
+
             _activeJobs[ticket.Id] = context;
             await _jobQueue.Writer.WriteAsync(context, cancellationToken);
-            
-            _logger.Log(LogLevel.Info, 
-                $"Print job submitted: {ticket.Id} - {request.FilePath} to {request.PrinterName}", 
+
+            _logger.Log(LogLevel.Info,
+                $"Print job submitted: {ticket.Id} - {request.FilePath} to {request.PrinterName}",
                 "PrintGateway", "Submit");
-            
+
             OnStatusChanged(ticket.Id, PrintJobState.Queued, PrintJobState.Queued, "Job queued");
-            
+
             return ticket;
         }
 
@@ -111,7 +111,7 @@ namespace Apex.Services.Printing
             var requestList = requests.ToList();
             if (!requestList.Any())
                 throw new ArgumentException("At least one request is required", nameof(requests));
-            
+
             // Create a virtual batch ticket
             var ticket = new PrintTicket
             {
@@ -119,7 +119,7 @@ namespace Apex.Services.Printing
                 SubmittedAt = DateTime.UtcNow,
                 State = PrintJobState.Queued
             };
-            
+
             // Calculate total pages
             int totalPages = 0;
             foreach (var request in requestList)
@@ -130,7 +130,7 @@ namespace Apex.Services.Printing
                 }
             }
             ticket.EstimatedPages = totalPages;
-            
+
             var context = new PrintJobContext
             {
                 Ticket = ticket,
@@ -139,14 +139,14 @@ namespace Apex.Services.Printing
                 IsBatch = true,
                 CancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
             };
-            
+
             _activeJobs[ticket.Id] = context;
             await _jobQueue.Writer.WriteAsync(context, cancellationToken);
-            
-            _logger.Log(LogLevel.Info, 
-                $"Batch print job submitted: {ticket.Id} - {requestList.Count} files", 
+
+            _logger.Log(LogLevel.Info,
+                $"Batch print job submitted: {ticket.Id} - {requestList.Count} files",
                 "PrintGateway", "SubmitBatch");
-            
+
             return ticket;
         }
 
@@ -165,7 +165,7 @@ namespace Apex.Services.Printing
                     ErrorMessage = context.ErrorMessage
                 });
             }
-            
+
             return Task.FromResult(new GatewayJobStatus
             {
                 TicketId = ticketId,
@@ -181,7 +181,7 @@ namespace Apex.Services.Printing
                 context.CancellationTokenSource.Cancel();
                 context.Ticket.State = PrintJobState.Cancelled;
                 OnStatusChanged(ticketId, context.Ticket.State, PrintJobState.Cancelled, "Job cancelled by user");
-                
+
                 _logger.Log(LogLevel.Info, $"Print job cancelled: {ticketId}", "PrintGateway", "Cancel");
                 return Task.FromResult(true);
             }
@@ -196,10 +196,10 @@ namespace Apex.Services.Printing
                 context.IsPaused = true;
                 var oldState = context.Ticket.State;
                 context.Ticket.State = PrintJobState.Paused;
-                
+
                 // Create checkpoint
                 await _faultManager.CreateCheckpointAsync(ticketId, context.CurrentPage);
-                
+
                 OnStatusChanged(ticketId, oldState, PrintJobState.Paused, "Job paused");
                 return true;
             }
@@ -213,27 +213,27 @@ namespace Apex.Services.Printing
             {
                 context.IsPaused = false;
                 context.ResumeSignal.Set();
-                
+
                 var oldState = context.Ticket.State;
                 context.Ticket.State = PrintJobState.Streaming;
-                
+
                 OnStatusChanged(ticketId, oldState, PrintJobState.Streaming, "Job resumed");
-                
+
                 _logger.Log(LogLevel.Info, $"Print job resumed: {ticketId}", "PrintGateway", "Resume");
                 return true;
             }
-            
+
             // Try to resume from checkpoint
             var checkpoint = await _faultManager.GetCheckpointAsync(ticketId);
             if (checkpoint != null && checkpoint.State == CheckpointState.Resumable)
             {
                 // Re-submit job from checkpoint
                 // This would need the original request stored in checkpoint
-                _logger.Log(LogLevel.Info, $"Resuming from checkpoint: {ticketId} at page {checkpoint.LastSuccessfulPage}", 
+                _logger.Log(LogLevel.Info, $"Resuming from checkpoint: {ticketId} at page {checkpoint.LastSuccessfulPage}",
                     "PrintGateway", "Resume");
                 return true;
             }
-            
+
             return false;
         }
 
@@ -243,7 +243,7 @@ namespace Apex.Services.Printing
         private async Task ProcessJobsAsync(CancellationToken cancellationToken)
         {
             _logger.Log(LogLevel.Info, "Print job processor started", "PrintGateway", "Processor");
-            
+
             await foreach (var context in _jobQueue.Reader.ReadAllAsync(cancellationToken))
             {
                 try
@@ -256,7 +256,7 @@ namespace Apex.Services.Printing
                 }
                 catch (Exception ex)
                 {
-                    _logger.Log(LogLevel.Error, $"Error processing job {context.Ticket.Id}: {ex.Message}", 
+                    _logger.Log(LogLevel.Error, $"Error processing job {context.Ticket.Id}: {ex.Message}",
                         "PrintGateway", "Processor", ex);
                 }
             }
@@ -270,48 +270,48 @@ namespace Apex.Services.Printing
             var ticket = context.Ticket;
             var request = context.Request;
             var ct = context.CancellationTokenSource.Token;
-            
+
             try
             {
                 // Update state
                 ticket.State = PrintJobState.Preparing;
                 context.StartedAt = DateTime.UtcNow;
                 OnStatusChanged(ticket.Id, PrintJobState.Queued, PrintJobState.Preparing, "Preparing document");
-                
+
                 // Check printer health first
                 var health = await _faultManager.CheckPrinterHealthAsync(request.PrinterName);
                 if (!health.IsReady)
                 {
                     throw new PrinterNotReadyException(request.PrinterName, health.ErrorMessage ?? "Printer not ready");
                 }
-                
+
                 // Open page stream
                 await using var pageSource = await _pageStreamEngine.OpenAsync(request.FilePath, ct);
                 context.TotalPages = pageSource.TotalPages;
                 ticket.EstimatedPages = pageSource.TotalPages;
-                
+
                 // Update state to streaming
                 ticket.State = PrintJobState.Streaming;
                 OnStatusChanged(ticket.Id, PrintJobState.Preparing, PrintJobState.Streaming, "Streaming to printer");
-                
+
                 // Create progress reporter
                 var progress = new Progress<StreamingProgress>(p =>
                 {
                     context.CurrentPage = p.CurrentPage;
                     OnProgressUpdated(ticket.Id, p.CurrentPage, p.TotalPages, request.PrinterName, p.Elapsed);
                 });
-                
+
                 // Stream to printer
                 var settings = new StreamingSettings
                 {
                     PrintSettings = request,
                     AdaptiveChunkSizing = true
                 };
-                
+
                 // Check for resume point
                 var checkpoint = await _faultManager.GetCheckpointAsync(ticket.Id);
                 StreamingResult result;
-                
+
                 if (checkpoint != null && checkpoint.LastSuccessfulPage > 0)
                 {
                     result = await _streamDispatcher.ResumeStreamingAsync(
@@ -323,27 +323,27 @@ namespace Apex.Services.Printing
                     result = await _streamDispatcher.StreamToPrinterAsync(
                         pageSource, request.PrinterName, settings, progress, ct);
                 }
-                
+
                 // Handle result
                 if (result.Success)
                 {
                     ticket.State = PrintJobState.Completed;
                     await _faultManager.ClearCheckpointAsync(ticket.Id);
                     OnStatusChanged(ticket.Id, PrintJobState.Streaming, PrintJobState.Completed, "Print completed successfully");
-                    
-                    _logger.Log(LogLevel.Info, 
-                        $"Print job completed: {ticket.Id} - {result.PagesPrinted} pages in {result.Duration.TotalSeconds:F1}s", 
+
+                    _logger.Log(LogLevel.Info,
+                        $"Print job completed: {ticket.Id} - {result.PagesPrinted} pages in {result.Duration.TotalSeconds:F1}s",
                         "PrintGateway", "Complete");
                 }
                 else
                 {
                     context.ErrorMessage = result.ErrorMessage;
-                    
+
                     if (result.CanResume)
                     {
                         await _faultManager.CreateCheckpointAsync(ticket.Id, result.LastSuccessfulPage);
                         ticket.State = PrintJobState.Paused;
-                        OnStatusChanged(ticket.Id, PrintJobState.Streaming, PrintJobState.Paused, 
+                        OnStatusChanged(ticket.Id, PrintJobState.Streaming, PrintJobState.Paused,
                             $"Print paused at page {result.LastSuccessfulPage}. Can be resumed.");
                     }
                     else
@@ -362,7 +362,7 @@ namespace Apex.Services.Printing
             {
                 var classification = _faultManager.ClassifyError(ex, request.PrinterName);
                 context.ErrorMessage = classification.UserFriendlyMessage;
-                
+
                 if (classification.IsRecoverable)
                 {
                     await _faultManager.CreateCheckpointAsync(ticket.Id, context.CurrentPage);
@@ -374,15 +374,15 @@ namespace Apex.Services.Printing
                     ticket.State = PrintJobState.Failed;
                     OnStatusChanged(ticket.Id, ticket.State, PrintJobState.Failed, classification.UserFriendlyMessage);
                 }
-                
-                _logger.Log(LogLevel.Error, $"Print job failed: {ticket.Id} - {ex.Message}", 
+
+                _logger.Log(LogLevel.Error, $"Print job failed: {ticket.Id} - {ex.Message}",
                     "PrintGateway", "Process", ex);
             }
             finally
             {
                 // Keep in active jobs for a while for status queries
                 var ticketId = ticket.Id;
-                _ = Task.Delay(TimeSpan.FromMinutes(5)).ContinueWith(_ => 
+                _ = Task.Delay(TimeSpan.FromMinutes(5)).ContinueWith(_ =>
                 {
                     _activeJobs.TryRemove(ticketId, out var _);
                 });
@@ -429,7 +429,7 @@ namespace Apex.Services.Printing
             {
                 job.IsPaused = true;
                 job.Ticket.State = PrintJobState.Paused;
-                OnStatusChanged(job.Ticket.Id, PrintJobState.Streaming, PrintJobState.Paused, 
+                OnStatusChanged(job.Ticket.Id, PrintJobState.Streaming, PrintJobState.Paused,
                     $"Printer issue: {e.Message}");
             }
         }
@@ -437,7 +437,7 @@ namespace Apex.Services.Printing
         private void OnPrinterRecovered(object? sender, PrinterRecoveryEventArgs e)
         {
             // Resume paused jobs to this printer
-            foreach (var job in _activeJobs.Values.Where(j => 
+            foreach (var job in _activeJobs.Values.Where(j =>
                 j.Request.PrinterName == e.PrinterName && j.IsPaused))
             {
                 job.IsPaused = false;
@@ -451,7 +451,7 @@ namespace Apex.Services.Printing
             _jobQueue.Writer.Complete();
             _processingTask.Wait(TimeSpan.FromSeconds(5));
             _shutdownCts.Dispose();
-            
+
             _faultManager.PrinterIssueDetected -= OnPrinterIssueDetected;
             _faultManager.PrinterRecovered -= OnPrinterRecovered;
         }
@@ -481,8 +481,8 @@ namespace Apex.Services.Printing
     public class PrinterNotReadyException : Exception
     {
         public string PrinterName { get; }
-        
-        public PrinterNotReadyException(string printerName, string message) 
+
+        public PrinterNotReadyException(string printerName, string message)
             : base(message)
         {
             PrinterName = printerName;

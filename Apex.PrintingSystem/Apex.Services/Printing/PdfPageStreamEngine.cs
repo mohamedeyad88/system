@@ -36,7 +36,7 @@ namespace Apex.Services.Printing
                 throw new FileNotFoundException("File not found", filePath);
 
             var ext = Path.GetExtension(filePath).ToLowerInvariant();
-            
+
             if (ext == ".pdf")
             {
                 return await GetPdfPageCountAsync(filePath, cancellationToken);
@@ -54,7 +54,7 @@ namespace Apex.Services.Printing
                 throw new FileNotFoundException("File not found", filePath);
 
             var ext = Path.GetExtension(filePath).ToLowerInvariant();
-            
+
             if (ext == ".pdf")
             {
                 return await OpenPdfAsync(filePath, cancellationToken);
@@ -71,7 +71,7 @@ namespace Apex.Services.Printing
             {
                 try
                 {
-                    using var doc = PdfSharpCore.Pdf.IO.PdfReader.Open(filePath, 
+                    using var doc = PdfSharpCore.Pdf.IO.PdfReader.Open(filePath,
                         PdfSharpCore.Pdf.IO.PdfDocumentOpenMode.InformationOnly);
                     return doc.PageCount;
                 }
@@ -111,7 +111,7 @@ namespace Apex.Services.Printing
         public PdfPageSource(string filePath)
         {
             _filePath = filePath;
-            
+
             var fileInfo = new FileInfo(filePath);
             _metadata = new PageSourceMetadata
             {
@@ -125,7 +125,7 @@ namespace Apex.Services.Printing
             // Get page count without loading entire document
             try
             {
-                using var doc = PdfSharpCore.Pdf.IO.PdfReader.Open(filePath, 
+                using var doc = PdfSharpCore.Pdf.IO.PdfReader.Open(filePath,
                     PdfSharpCore.Pdf.IO.PdfDocumentOpenMode.InformationOnly);
                 _totalPages = doc.PageCount;
                 _metadata.Title = doc.Info.Title;
@@ -146,12 +146,12 @@ namespace Apex.Services.Printing
             {
                 // Extract single page to memory stream
                 var ms = new MemoryStream();
-                
+
                 try
                 {
-                    using var inputDoc = PdfSharpCore.Pdf.IO.PdfReader.Open(_filePath, 
+                    using var inputDoc = PdfSharpCore.Pdf.IO.PdfReader.Open(_filePath,
                         PdfSharpCore.Pdf.IO.PdfDocumentOpenMode.Import);
-                    
+
                     using var outputDoc = new PdfSharpCore.Pdf.PdfDocument();
                     var page = inputDoc.Pages[pageIndex];
                     outputDoc.AddPage(page);
@@ -194,7 +194,7 @@ namespace Apex.Services.Printing
             for (int i = startPage; i <= endPage; i++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                
+
                 var pageData = await GetPageAsync(i, cancellationToken);
                 yield return pageData;
             }
@@ -221,7 +221,7 @@ namespace Apex.Services.Printing
         public ImagePageSource(string filePath)
         {
             _filePath = filePath;
-            
+
             var fileInfo = new FileInfo(filePath);
             _metadata = new PageSourceMetadata
             {
@@ -241,7 +241,7 @@ namespace Apex.Services.Printing
             return await Task.Run(() =>
             {
                 var ms = new MemoryStream();
-                
+
                 using (var fs = new FileStream(_filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     fs.CopyTo(ms);
@@ -251,7 +251,7 @@ namespace Apex.Services.Printing
                 // Get image dimensions
                 double width = 612; // Default A4 width in points
                 double height = 792; // Default A4 height in points
-                
+
                 try
                 {
                     ms.Position = 0;

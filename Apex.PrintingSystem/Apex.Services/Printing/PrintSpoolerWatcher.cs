@@ -13,12 +13,12 @@ namespace Apex.Services.Printing
     public class SpoolerJobProgress
     {
         public string PrinterName { get; init; } = "";
-        public string JobName     { get; init; } = "";
-        public int    TotalPages  { get; init; }
-        public int    PagesPrinted { get; init; }
-        public int    PercentComplete => TotalPages > 0 ? (int)((double)PagesPrinted / TotalPages * 100) : 0;
-        public string Status      { get; init; } = "";
-        public uint   SpoolerJobId { get; init; }
+        public string JobName { get; init; } = "";
+        public int TotalPages { get; init; }
+        public int PagesPrinted { get; init; }
+        public int PercentComplete => TotalPages > 0 ? (int)((double)PagesPrinted / TotalPages * 100) : 0;
+        public string Status { get; init; } = "";
+        public uint SpoolerJobId { get; init; }
     }
 
     /// <summary>
@@ -135,12 +135,12 @@ namespace Apex.Services.Printing
                     {
                         return new SpoolerJobProgress
                         {
-                            PrinterName   = printerName,
-                            JobName       = job["Document"]?.ToString() ?? "",
-                            TotalPages    = Convert.ToInt32(job["TotalPages"] ?? 0),
-                            PagesPrinted  = Convert.ToInt32(job["PagesPrinted"] ?? 0),
-                            Status        = job["StatusMask"]?.ToString() ?? "",
-                            SpoolerJobId  = Convert.ToUInt32(job["JobId"] ?? 0u)
+                            PrinterName = printerName,
+                            JobName = job["Document"]?.ToString() ?? "",
+                            TotalPages = Convert.ToInt32(job["TotalPages"] ?? 0),
+                            PagesPrinted = Convert.ToInt32(job["PagesPrinted"] ?? 0),
+                            Status = job["StatusMask"]?.ToString() ?? "",
+                            SpoolerJobId = Convert.ToUInt32(job["JobId"] ?? 0u)
                         };
                     }
                 }
@@ -235,11 +235,11 @@ namespace Apex.Services.Printing
 
             return new SpoolerJobProgress
             {
-                PrinterName  = printerName,
-                JobName      = job["Document"]?.ToString() ?? "",
-                TotalPages   = Convert.ToInt32(job["TotalPages"] ?? 0),
+                PrinterName = printerName,
+                JobName = job["Document"]?.ToString() ?? "",
+                TotalPages = Convert.ToInt32(job["TotalPages"] ?? 0),
                 PagesPrinted = Convert.ToInt32(job["PagesPrinted"] ?? 0),
-                Status       = job["Status"]?.ToString() ?? "",
+                Status = job["Status"]?.ToString() ?? "",
                 SpoolerJobId = Convert.ToUInt32(job["JobId"] ?? 0u)
             };
         }

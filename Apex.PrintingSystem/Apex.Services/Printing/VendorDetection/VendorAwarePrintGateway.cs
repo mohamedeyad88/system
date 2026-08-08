@@ -21,30 +21,30 @@ namespace Apex.Services.Printing.VendorDetection
     /// </summary>
     public class VendorAwarePrintGateway
     {
-        private static readonly Lazy<VendorAwarePrintGateway> _instance = 
+        private static readonly Lazy<VendorAwarePrintGateway> _instance =
             new(() => new VendorAwarePrintGateway());
-        
+
         public static VendorAwarePrintGateway Instance => _instance.Value;
-        
+
         private readonly VendorDetectionEngine _detection;
         private readonly VendorAwareStreamingEngine _streamingEngine;
-        
+
         private VendorAwarePrintGateway()
         {
             _detection = VendorDetectionEngine.Instance;
             _streamingEngine = new VendorAwareStreamingEngine();
         }
-        
+
         /// <summary>
         /// Event for status updates (user-friendly, non-technical).
         /// </summary>
         public event Action<string>? StatusChanged;
-        
+
         /// <summary>
         /// Event for progress updates (0-100).
         /// </summary>
         public event Action<int>? ProgressChanged;
-        
+
         /// <summary>
         /// IMPORTANT: For high-volume printing (20+ jobs), use the Queue system instead:
         /// 
@@ -64,7 +64,7 @@ namespace Apex.Services.Printing.VendorDetection
         /// - Testing/diagnostics
         /// - Legacy compatibility
         /// </summary>
-        
+
         /// <summary>
         /// Print a file through the vendor-aware pipeline.
         /// This is the ONLY method that should be used for printing.
@@ -89,37 +89,52 @@ namespace Apex.Services.Printing.VendorDetection
                 FilePath = filePath,
                 Copies = copies
             };
-            
+
             var stopwatch = Stopwatch.StartNew();
-            
+
             try
             {
                 // Validation
                 if (string.IsNullOrEmpty(printerName))
                     throw new ArgumentException("Printer name is required", nameof(printerName));
-                
+
                 if (!File.Exists(filePath))
                     throw new FileNotFoundException("File not found", filePath);
-                
+
                 // Step 1: Detect vendor and get profile
                 UpdateStatus("جاري تحضير الطابعة...");
                 var metadata = _detection.GetPrinterMetadata(printerName);
                 var profile = VendorProfileFactory.GetProfile(metadata);
-                
+
                 result.Vendor = metadata.Vendor;
                 result.ProfileUsed = profile.ProfileName;
                 result.IsNetworkPrinter = metadata.IsNetworkPrinter;
-                
+
                 Debug.WriteLine($"[Gateway] Printer: {printerName}");
                 Debug.WriteLine($"[Gateway] Vendor: {metadata.Vendor} (confidence: {metadata.DetectionConfidence}%)");
                 Debug.WriteLine($"[Gateway] Profile: {profile.ProfileName}");
                 Debug.WriteLine($"[Gateway] Connection: {metadata.ConnectionType}");
-                
+
                 // Step 2: Determine print method based on file type
                 var extension = Path.GetExtension(filePath).ToLowerInvariant();
-                
+
+                // Print-to-file virtual printers (Microsoft Print to PDF / XPS):
+                // the streaming/RIP engines report success while the spooler silently
+                // drops jobs that carry no output file name (QA-measured false
+                // success). Route them through PdfDirectPrinter, whose Pdfium path
+                // sets PrintToFile + an auto-derived PrintFileName.
+                var plower = printerName.ToLowerInvariant();
+                bool isVirtualPtf = plower.Contains("microsoft print to pdf") || plower.Contains("xps");
+
                 bool success;
-                if (extension == ".pdf")
+                if (extension == ".pdf" && isVirtualPtf)
+                {
+                    Debug.WriteLine("[Gateway] Virtual print-to-file printer → PdfDirectPrinter (PrintToFile route)");
+                    UpdateStatus("طباعة إلى ملف...");
+                    success = await new PdfDirectPrinter().PrintPdfAsync(
+                        printerName, filePath, copies, settings);
+                }
+                else if (extension == ".pdf")
                 {
                     success = await PrintPdfWithVendorProfileAsync(
                         printerName, filePath, copies, profile, metadata, settings, cancellationToken, documentMode);
@@ -135,9 +150,9 @@ namespace Apex.Services.Printing.VendorDetection
                     success = await PrintGenericFileAsync(
                         printerName, filePath, copies, profile, metadata, cancellationToken);
                 }
-                
+
                 result.Success = success;
-                
+
                 if (success)
                 {
                     UpdateStatus("اكتملت الطباعة ✓");
@@ -165,10 +180,10 @@ namespace Apex.Services.Printing.VendorDetection
                 stopwatch.Stop();
                 result.ElapsedMs = stopwatch.ElapsedMilliseconds;
             }
-            
+
             return result;
         }
-        
+
         /// <summary>
         /// Print PDF with vendor-optimized settings using RIP Engine.
         /// </summary>
@@ -194,60 +209,60 @@ namespace Apex.Services.Printing.VendorDetection
                 Debug.WriteLine("[Gateway] Rejecting to enforce architectural separation");
                 return false;  // Force caller to use correct path
             }
-            
+
             Debug.WriteLine("[Gateway] ══════════════════════════════════════");
             Debug.WriteLine("[Gateway] QUICK PRINT PATH (VendorAwarePrintGateway)");
             Debug.WriteLine("[Gateway] Using: RIP Engine + Pdfium fallback");
             Debug.WriteLine("[Gateway] ══════════════════════════════════════");
 
             UpdateStatus("جاري تحليل المحتوى...");
-            
+
             // Use Universal RIP Engine for intelligent rendering (capability-based, not vendor-based)
             var universalEngine = new Apex.Services.Printing.UniversalRIP.UniversalRipEngine();
-            
+
             // Determine quality level based on printer capabilities
             var qualityLevel = Apex.Services.Printing.RIP.Models.QualityLevel.Professional;
             if (metadata.Capabilities?.MaxDpi >= 1200)
                 qualityLevel = Apex.Services.Printing.RIP.Models.QualityLevel.Industrial;
             else if (metadata.Capabilities?.MaxDpi < 600)
                 qualityLevel = Apex.Services.Printing.RIP.Models.QualityLevel.Standard;
-            
+
             // Apply vendor-specific settings
             int retries = 0;
             bool success = false;
-            
+
             while (!success && retries < profile.MaxRetryAttempts)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                
+
                 if (retries > 0)
                 {
                     Debug.WriteLine($"[Gateway] Retry {retries}/{profile.MaxRetryAttempts}");
                     // PRIORITY: Speed - Minimal retry delay (only 100ms)
                     await Task.Delay(Math.Min(profile.RetryDelayMs, 100), cancellationToken);
                 }
-                
+
                 try
                 {
                     // ═══════════════════════════════════════════════════════════════════
                     // CRITICAL FIX: EPSON WF-C5210 needs Windows native printing
                     // ═══════════════════════════════════════════════════════════════════
-                    bool isWFC5210 = printerName.ToLowerInvariant().Contains("wf-c5210") || 
+                    bool isWFC5210 = printerName.ToLowerInvariant().Contains("wf-c5210") ||
                                      printerName.ToLowerInvariant().Contains("wfc5210");
-                    
+
                     if (isWFC5210)
                     {
                         UpdateStatus("جاري الطباعة باستخدام Windows native printing...");
                         Apex.Services.Logging.PrintLogger.Warning(
                             "[Gateway] EPSON WF-C5210 detected - Using PdfDirectPrinter (Windows native)");
-                        
+
                         var pdfPrinter = new Apex.Services.Printing.PdfDirectPrinter();
                         success = await pdfPrinter.PrintPdfAsync(printerName, pdfPath, copies, settings);
                     }
                     else
                     {
                         UpdateStatus("جاري الطباعة باستخدام Universal RIP Engine...");
-                        
+
                         // Use Universal RIP Engine (capability-based, supports all printers)
                         var universalResult = await universalEngine.PrintPdfAsync(
                             pdfPath,
@@ -255,17 +270,17 @@ namespace Apex.Services.Printing.VendorDetection
                             copies,
                             qualityLevel,
                             cancellationToken);
-                        
+
                         success = universalResult.Success;
                     }
-                    
+
                     // PRIORITY: Speed - No unnecessary delays
                     // Removed page delay for faster printing
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"[Gateway] RIP print attempt {retries + 1} failed: {ex.Message}");
-                    
+
                     // PRIORITY: Fix printing failures - Always try fallback
                     if (retries >= profile.MaxRetryAttempts - 1 || !profile.AutoRetrySpoolerErrors)
                     {
@@ -283,17 +298,17 @@ namespace Apex.Services.Printing.VendorDetection
                         }
                     }
                 }
-                
+
                 retries++;
             }
-            
+
             // Progress update
             if (success)
                 UpdateProgress(100);
-            
+
             return success;
         }
-        
+
         /// <summary>
         /// Print image with vendor-optimized settings.
         /// </summary>
@@ -306,18 +321,18 @@ namespace Apex.Services.Printing.VendorDetection
             CancellationToken cancellationToken)
         {
             UpdateStatus("جاري طباعة الصورة...");
-            
+
             return await Task.Run(() =>
             {
                 try
                 {
                     using var image = System.Drawing.Image.FromFile(imagePath);
                     using var pd = new System.Drawing.Printing.PrintDocument();
-                    
+
                     pd.PrinterSettings.PrinterName = printerName;
                     pd.PrinterSettings.Copies = (short)copies;
                     pd.DocumentName = Path.GetFileName(imagePath);
-                    
+
                     pd.PrintPage += (s, e) =>
                     {
                         if (e.Graphics != null)
@@ -325,7 +340,7 @@ namespace Apex.Services.Printing.VendorDetection
                             e.Graphics.DrawImage(image, e.MarginBounds);
                         }
                     };
-                    
+
                     pd.Print();
                     UpdateProgress(100);
                     return true;
@@ -337,7 +352,7 @@ namespace Apex.Services.Printing.VendorDetection
                 }
             }, cancellationToken);
         }
-        
+
         /// <summary>
         /// Print generic file using text rendering.
         /// </summary>
@@ -350,43 +365,43 @@ namespace Apex.Services.Printing.VendorDetection
             CancellationToken cancellationToken)
         {
             UpdateStatus("جاري الطباعة...");
-            
+
             return await Task.Run(() =>
             {
                 try
                 {
                     var text = File.ReadAllText(filePath);
                     using var pd = new System.Drawing.Printing.PrintDocument();
-                    
+
                     pd.PrinterSettings.PrinterName = printerName;
                     pd.PrinterSettings.Copies = (short)copies;
                     pd.DocumentName = Path.GetFileName(filePath);
-                    
+
                     var lines = text.Split('\n');
                     int lineIndex = 0;
                     int linesPerPage = 50;
-                    
+
                     pd.PrintPage += (s, e) =>
                     {
                         if (e.Graphics == null) return;
-                        
+
                         using var font = new System.Drawing.Font("Consolas", 10);
                         float y = e.MarginBounds.Top;
                         float lineHeight = font.GetHeight(e.Graphics);
                         int printed = 0;
-                        
+
                         while (lineIndex < lines.Length && printed < linesPerPage)
                         {
-                            e.Graphics.DrawString(lines[lineIndex], font, 
+                            e.Graphics.DrawString(lines[lineIndex], font,
                                 System.Drawing.Brushes.Black, e.MarginBounds.Left, y);
                             y += lineHeight;
                             lineIndex++;
                             printed++;
                         }
-                        
+
                         e.HasMorePages = lineIndex < lines.Length;
                     };
-                    
+
                     pd.Print();
                     UpdateProgress(100);
                     return true;
@@ -398,7 +413,7 @@ namespace Apex.Services.Printing.VendorDetection
                 }
             }, cancellationToken);
         }
-        
+
         /// <summary>
         /// Check if file is an image.
         /// </summary>
@@ -406,14 +421,14 @@ namespace Apex.Services.Printing.VendorDetection
         {
             return extension is ".jpg" or ".jpeg" or ".png" or ".bmp" or ".gif" or ".tiff";
         }
-        
+
         /// <summary>
         /// Get user-friendly error message.
         /// </summary>
         private string GetFriendlyErrorMessage(Exception ex)
         {
             var msg = ex.Message.ToLowerInvariant();
-            
+
             if (msg.Contains("offline"))
                 return "الطابعة غير متصلة";
             if (msg.Contains("paper"))
@@ -424,20 +439,20 @@ namespace Apex.Services.Printing.VendorDetection
                 return "لا توجد صلاحية للطباعة";
             if (msg.Contains("spooler"))
                 return "مشكلة في خدمة الطباعة";
-            
+
             return "حدث خطأ أثناء الطباعة";
         }
-        
+
         private void UpdateStatus(string status)
         {
             StatusChanged?.Invoke(status);
         }
-        
+
         private void UpdateProgress(int progress)
         {
             ProgressChanged?.Invoke(progress);
         }
-        
+
         /// <summary>
         /// Get information about all detected printers.
         /// </summary>
@@ -445,7 +460,7 @@ namespace Apex.Services.Printing.VendorDetection
         {
             return await _detection.DetectAllPrintersAsync();
         }
-        
+
         /// <summary>
         /// Get vendor profile for a specific printer (for internal use).
         /// </summary>
@@ -455,7 +470,7 @@ namespace Apex.Services.Printing.VendorDetection
             return VendorProfileFactory.GetProfile(metadata);
         }
     }
-    
+
     /// <summary>
     /// Result of gateway print operation.
     /// </summary>

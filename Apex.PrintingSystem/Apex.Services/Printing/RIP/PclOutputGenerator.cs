@@ -109,13 +109,13 @@ namespace Apex.Services.Printing.RIP
             // ESC *b0M = Compression mode 0 (uncompressed)
             WritePcl(ms, "*b0M");
 
-            var rect  = new Rectangle(0, 0, bmp.Width, bmp.Height);
+            var rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
             var bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
 
             try
             {
                 int stride = bmpData.Stride;
-                int width  = bmp.Width;
+                int width = bmp.Width;
                 int height = bmp.Height;
 
                 unsafe
@@ -125,8 +125,8 @@ namespace Apex.Services.Printing.RIP
                     for (int y = 0; y < height; y++)
                     {
                         // Each raster row: ESC *b<count>W followed by row data
-                        byte* row    = ptr + y * stride;
-                        int   rowLen = width * 3; // 3 bytes per pixel (RGB)
+                        byte* row = ptr + y * stride;
+                        int rowLen = width * 3; // 3 bytes per pixel (RGB)
 
                         // Build row bytes (BGR → RGB conversion)
                         var rowBytes = new byte[rowLen];
@@ -162,7 +162,7 @@ namespace Apex.Services.Printing.RIP
             // Row width in bytes (ceil to byte boundary)
             int rowBytes = (bmp.Width + 7) / 8;
 
-            var rect    = new Rectangle(0, 0, bmp.Width, bmp.Height);
+            var rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
             var bmpMono = bmp.Clone(rect, PixelFormat.Format1bppIndexed);
 
             try
@@ -180,8 +180,8 @@ namespace Apex.Services.Printing.RIP
 
                         for (int y = 0; y < height; y++)
                         {
-                            byte* row      = ptr + y * stride;
-                            var   rowCopy  = new byte[rowBytes];
+                            byte* row = ptr + y * stride;
+                            var rowCopy = new byte[rowBytes];
                             // Note: in PCL, 0-bit = black ink, 1-bit = white (opposite of BMP 1bpp)
                             for (int b = 0; b < rowBytes; b++)
                                 rowCopy[b] = (byte)~row[b]; // Invert

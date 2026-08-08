@@ -50,7 +50,7 @@ public static class StartupDiagnostics
 
             LogEnvironmentInfo();
             LogAssemblyInfo();
-            
+
             FlushLog();
         }
         catch (Exception ex)
@@ -89,7 +89,7 @@ public static class StartupDiagnostics
             {
                 Log($"Entry Assembly: {entryAssembly.FullName}");
                 Log($"Location: {entryAssembly.Location}");
-                
+
                 if (ContainsNonAscii(entryAssembly.Location))
                 {
                     Log("⚠️ WARNING: Assembly path contains non-ASCII characters!");
@@ -115,14 +115,14 @@ public static class StartupDiagnostics
         Log($"Message: {ex.Message}");
         Log($"Stack Trace:");
         Log(ex.StackTrace ?? "(no stack trace)");
-        
+
         if (ex.InnerException != null)
         {
             Log("");
             Log("--- INNER EXCEPTION ---");
             LogException("Inner", ex.InnerException);
         }
-        
+
         FlushLog();
         CreateErrorMarker(ex);
     }
@@ -195,7 +195,7 @@ public static class StartupDiagnostics
             errorContent.AppendLine("");
             errorContent.AppendLine("Stack Trace:");
             errorContent.AppendLine(ex.StackTrace);
-            
+
             if (ex.InnerException != null)
             {
                 errorContent.AppendLine("");
@@ -205,10 +205,10 @@ public static class StartupDiagnostics
                 errorContent.AppendLine("Stack:");
                 errorContent.AppendLine(ex.InnerException.StackTrace);
             }
-            
+
             errorContent.AppendLine("");
             errorContent.AppendLine($"Detailed log: {LogPath}");
-            
+
             File.WriteAllText(ErrorLogPath, errorContent.ToString(), Encoding.UTF8);
         }
         catch

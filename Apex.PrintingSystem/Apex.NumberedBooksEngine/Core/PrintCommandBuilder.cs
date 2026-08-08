@@ -114,7 +114,7 @@ namespace Apex.NumberedBooksEngine.Core
                     SlotId: slot.Id,
                     NormalizedX: slot.X,
                     NormalizedY: slot.Y,
-                    Text: number.ToString().PadLeft(6, '0'),
+                    Text: NumberFormatter.Format(number, NumberFormat),
                     FontFamily: slot.FontFamily,
                     FontSize: (int)slot.FontSize,
                     ColorHex: slot.FontColorHex
@@ -128,9 +128,9 @@ namespace Apex.NumberedBooksEngine.Core
         /// Builds GDI command with copy-specific styling (label, color).
         /// </summary>
         public PagePrintCommand BuildGdiCommandWithCopyStyle(
-            string templateId, 
-            long[] pageNumbers, 
-            IReadOnlyList<SlotSpec> slots, 
+            string templateId,
+            long[] pageNumbers,
+            IReadOnlyList<SlotSpec> slots,
             int dpi,
             CopyType copyType)
         {
@@ -179,9 +179,12 @@ namespace Apex.NumberedBooksEngine.Core
             return slot.CopyStyles[0]; // Fallback to first style
         }
 
+        /// <summary>Padding / prefix / suffix applied to every printed number.</summary>
+        public NumberFormatOptions NumberFormat { get; set; } = NumberFormatOptions.Default;
+
         private string FormatNumberWithLabel(long number, CopyStyle? style)
         {
-            string numStr = number.ToString().PadLeft(6, '0');
+            string numStr = NumberFormatter.Format(number, NumberFormat);
 
             if (style != null && !string.IsNullOrEmpty(style.Label))
             {

@@ -14,7 +14,7 @@ namespace Apex.Services.Printing.VendorDetection
     public class VendorAwareStreamingEngine
     {
         private readonly VendorDetectionEngine _vendorDetection;
-        
+
         // Status messages (non-technical, user-friendly)
         private static readonly string[] StatusMessages = new[]
         {
@@ -23,22 +23,22 @@ namespace Apex.Services.Printing.VendorDetection
             "جاري الطباعة...",
             "اكتملت الطباعة بنجاح ✓"
         };
-        
+
         public VendorAwareStreamingEngine()
         {
             _vendorDetection = VendorDetectionEngine.Instance;
         }
-        
+
         /// <summary>
         /// Event for non-technical status updates.
         /// </summary>
         public event Action<string>? StatusChanged;
-        
+
         /// <summary>
         /// Event for progress updates (0-100).
         /// </summary>
         public event Action<int>? ProgressChanged;
-        
+
         /// <summary>
         /// Stream print data to printer with vendor-optimized settings.
         /// </summary>
@@ -53,29 +53,29 @@ namespace Apex.Services.Printing.VendorDetection
         {
             var result = new VendorPrintResult { PrinterName = printerName };
             var stopwatch = Stopwatch.StartNew();
-            
+
             try
             {
                 // Step 1: Silent vendor detection
                 UpdateStatus(StatusMessages[0]);
                 var metadata = _vendorDetection.GetPrinterMetadata(printerName);
                 var profile = VendorProfileFactory.GetProfile(metadata);
-                
+
                 result.Vendor = metadata.Vendor;
                 result.ProfileUsed = profile.ProfileName;
-                
+
                 Debug.WriteLine($"[VendorStream] Detected: {metadata.Vendor} for {printerName}");
                 Debug.WriteLine($"[VendorStream] Profile: {profile.ProfileName}");
-                
+
                 // Step 2: Stream data with vendor-specific settings
                 UpdateStatus(StatusMessages[1]);
                 var success = await StreamDataWithProfileAsync(
-                    printerName, 
-                    printData, 
-                    profile, 
+                    printerName,
+                    printData,
+                    profile,
                     metadata,
                     cancellationToken);
-                
+
                 if (success)
                 {
                     UpdateStatus(StatusMessages[3]);
@@ -104,10 +104,10 @@ namespace Apex.Services.Printing.VendorDetection
                 stopwatch.Stop();
                 result.ElapsedMs = stopwatch.ElapsedMilliseconds;
             }
-            
+
             return result;
         }
-        
+
         /// <summary>
         /// Stream data using vendor-specific profile settings.
         /// </summary>
@@ -120,11 +120,11 @@ namespace Apex.Services.Printing.VendorDetection
         {
             int retryCount = 0;
             bool success = false;
-            
+
             while (!success && retryCount < profile.MaxRetryAttempts)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                
+
                 try
                 {
                     if (retryCount > 0)
@@ -132,30 +132,30 @@ namespace Apex.Services.Printing.VendorDetection
                         Debug.WriteLine($"[VendorStream] Retry {retryCount}/{profile.MaxRetryAttempts}");
                         await Task.Delay(profile.RetryDelayMs, cancellationToken);
                     }
-                    
+
                     success = await ExecutePrintWithProfileAsync(
                         printerName, data, profile, metadata, cancellationToken);
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"[VendorStream] Attempt {retryCount + 1} failed: {ex.Message}");
-                    
+
                     if (profile.AutoRetrySpoolerErrors && IsSpoolerError(ex))
                     {
                         retryCount++;
                         continue;
                     }
-                    
+
                     // Non-retryable error
                     throw;
                 }
-                
+
                 retryCount++;
             }
-            
+
             return success;
         }
-        
+
         /// <summary>
         /// Execute printing with vendor-specific optimizations.
         /// </summary>
@@ -167,18 +167,18 @@ namespace Apex.Services.Printing.VendorDetection
             CancellationToken cancellationToken)
         {
             UpdateStatus(StatusMessages[2]);
-            
+
             // Calculate chunk parameters
             int chunkSize = profile.GetChunkSizeBytes();
             int totalChunks = (int)Math.Ceiling((double)data.Length / chunkSize);
             int timeout = profile.GetEffectiveTimeout(metadata.IsNetworkPrinter) * 1000;
-            
+
             Debug.WriteLine($"[VendorStream] Streaming {data.Length} bytes in {totalChunks} chunks of {chunkSize} bytes");
-            
+
             // Use appropriate printing method based on profile
             if (profile.PreferRawPrinting && metadata.SupportsDirectPdf)
             {
-                return await SendRawDataAsync(printerName, data, chunkSize, 
+                return await SendRawDataAsync(printerName, data, chunkSize,
                     profile.ChunkDelayMs, timeout, cancellationToken);
             }
             else
@@ -187,7 +187,7 @@ namespace Apex.Services.Printing.VendorDetection
                 return await RenderAndPrintAsync(printerName, data, profile, cancellationToken);
             }
         }
-        
+
         /// <summary>
         /// Send raw data directly to printer spooler (HP optimized).
         /// </summary>
@@ -205,13 +205,13 @@ namespace Apex.Services.Printing.VendorDetection
                 {
                     using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                     cts.CancelAfter(timeoutMs);
-                    
+
                     int totalSent = 0;
-                    
+
                     // Open printer for raw data
                     if (!Helpers.RawPrinterHelper.OpenPrinter(printerName, out var hPrinter))
                         return false;
-                    
+
                     try
                     {
                         // Start document
@@ -220,30 +220,30 @@ namespace Apex.Services.Printing.VendorDetection
                             Helpers.RawPrinterHelper.ClosePrinter(hPrinter);
                             return false;
                         }
-                        
+
                         // Send data in chunks
                         while (totalSent < data.Length)
                         {
                             cts.Token.ThrowIfCancellationRequested();
-                            
+
                             int remaining = data.Length - totalSent;
                             int currentChunk = Math.Min(chunkSize, remaining);
-                            
+
                             var chunk = new byte[currentChunk];
                             Array.Copy(data, totalSent, chunk, 0, currentChunk);
-                            
+
                             if (!Helpers.RawPrinterHelper.WritePrinter(hPrinter, chunk))
                             {
                                 Helpers.RawPrinterHelper.EndDocument(hPrinter);
                                 return false;
                             }
-                            
+
                             totalSent += currentChunk;
-                            
+
                             // Report progress
                             int progress = (int)((double)totalSent / data.Length * 100);
                             ProgressChanged?.Invoke(progress);
-                            
+
                             // PRIORITY: Speed - Minimal delay only if absolutely necessary
                             if (chunkDelayMs > 0 && totalSent < data.Length)
                             {
@@ -251,7 +251,7 @@ namespace Apex.Services.Printing.VendorDetection
                                 await Task.Delay(Math.Min(chunkDelayMs, 5), cancellationToken);
                             }
                         }
-                        
+
                         // End document
                         Helpers.RawPrinterHelper.EndDocument(hPrinter);
                         return true;
@@ -268,7 +268,7 @@ namespace Apex.Services.Printing.VendorDetection
                 }
             }, cancellationToken);
         }
-        
+
         /// <summary>
         /// Render and print using GDI+ (for non-RAW printers).
         /// </summary>
@@ -280,20 +280,20 @@ namespace Apex.Services.Printing.VendorDetection
         {
             // Use PdfDirectPrinter with profile settings
             var pdfPrinter = new PdfDirectPrinter();
-            
+
             // Create temp file for PDF data
             var tempFile = Path.Combine(Path.GetTempPath(), $"apex_print_{Guid.NewGuid():N}.pdf");
-            
+
             try
             {
                 await File.WriteAllBytesAsync(tempFile, data, cancellationToken);
-                
+
                 // Set timeout based on profile
                 using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                 cts.CancelAfter(profile.PrinterTimeoutSeconds * 1000);
-                
+
                 var success = await pdfPrinter.PrintPdfAsync(printerName, tempFile, 1, null);
-                
+
                 ProgressChanged?.Invoke(100);
                 return success;
             }
@@ -307,7 +307,7 @@ namespace Apex.Services.Printing.VendorDetection
                 });
             }
         }
-        
+
         /// <summary>
         /// Check if exception is a spooler-related error.
         /// </summary>
@@ -320,38 +320,38 @@ namespace Apex.Services.Printing.VendorDetection
                    message.Contains("printer") ||
                    ex is System.ComponentModel.Win32Exception;
         }
-        
+
         /// <summary>
         /// Convert technical error to user-friendly message.
         /// </summary>
         private string GetUserFriendlyError(Exception ex)
         {
             var message = ex.Message.ToLowerInvariant();
-            
+
             if (message.Contains("offline") || message.Contains("not ready"))
                 return "الطابعة غير جاهزة";
-            
+
             if (message.Contains("paper") || message.Contains("media"))
                 return "تحقق من الورق في الطابعة";
-            
+
             if (message.Contains("network") || message.Contains("connection"))
                 return "تحقق من اتصال الطابعة بالشبكة";
-            
+
             if (message.Contains("spooler") || message.Contains("spool"))
                 return "حدث خطأ في خدمة الطباعة";
-            
+
             if (message.Contains("access denied") || message.Contains("permission"))
                 return "لا توجد صلاحية للطباعة";
-            
+
             return "حدث خطأ أثناء الطباعة";
         }
-        
+
         private void UpdateStatus(string status)
         {
             StatusChanged?.Invoke(status);
         }
     }
-    
+
     /// <summary>
     /// Result of vendor-aware printing operation.
     /// </summary>
@@ -364,10 +364,10 @@ namespace Apex.Services.Printing.VendorDetection
         public string? ErrorMessage { get; set; }
         public bool WasCancelled { get; set; }
         public long ElapsedMs { get; set; }
-        
+
         public override string ToString()
         {
-            return Success 
+            return Success
                 ? $"✓ Printed to {PrinterName} ({Vendor}) in {ElapsedMs}ms"
                 : $"✗ Failed: {ErrorMessage}";
         }

@@ -5,14 +5,14 @@ using System.IO;
 namespace Apex.NumberedBooksEngine.Models
 {
     public enum TextAlign { Left, Center, Right }
-    
+
     /// <summary>
     /// Numbering mode determines how numbers are distributed across slots.
     /// </summary>
-    public enum NumberingMode 
-    { 
+    public enum NumberingMode
+    {
         /// <summary>Auto-detect based on slot layout analysis.</summary>
-        Auto, 
+        Auto,
         /// <summary>Linear top-to-bottom (Shershara pads).</summary>
         Linear,
         /// <summary>Linear mode alias for Shershara pads.</summary>
@@ -24,18 +24,18 @@ namespace Apex.NumberedBooksEngine.Models
         /// <summary>User-defined custom pattern.</summary>
         Custom
     }
-    
+
     /// <summary>
     /// Copy type for multi-copy numbering (Original + Images).
     /// </summary>
-    public enum CopyType 
-    { 
-        Original, 
-        Copy1, 
-        Copy2, 
-        Copy3 
+    public enum CopyType
+    {
+        Original,
+        Copy1,
+        Copy2,
+        Copy3
     }
-    
+
     public enum OutputMode { SinglePdf, PerBook, PrintQueue }
     public enum LayoutSpec { A4, A5, TwoA5InA4, A3Plus, Custom }
 
@@ -52,7 +52,14 @@ namespace Apex.NumberedBooksEngine.Models
         string FontColorHex,
         TextAlign Align,
         float Rotation,
-        CopyStyle[]? CopyStyles
+        CopyStyle[]? CopyStyles,
+        // What this slot prints. Defaults keep every existing caller unchanged:
+        // a slot is text unless it is explicitly made a code.
+        Core.SlotKind Kind = Core.SlotKind.Text,
+        string? BarcodeType = null,
+        // Which counter this slot draws from. Null or empty means the job's primary
+        // series, so every template built before multi-series support behaves as before.
+        string? SeriesId = null
     );
 
     public enum TemplateFormat { Image, Pdf }

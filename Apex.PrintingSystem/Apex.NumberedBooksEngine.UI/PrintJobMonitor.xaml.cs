@@ -28,8 +28,8 @@ namespace Apex.NumberedBooksEngine.UI
 
         private void UpdateStatus(PrintJobStatus status)
         {
-            double percent = status.TotalPages > 0 
-                ? (double)status.CurrentPage / status.TotalPages * 100 
+            double percent = status.TotalPages > 0
+                ? (double)status.CurrentPage / status.TotalPages * 100
                 : 0;
 
             ProgressBar.Value = percent;
@@ -59,9 +59,9 @@ namespace Apex.NumberedBooksEngine.UI
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show(
-                "Are you sure you want to cancel the print job?", 
-                "Confirm Cancel", 
-                MessageBoxButton.YesNo, 
+                "Are you sure you want to cancel the print job?",
+                "Confirm Cancel",
+                MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
 
             if (result == MessageBoxResult.Yes)

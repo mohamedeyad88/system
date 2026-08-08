@@ -1,4 +1,5 @@
 using Apex.Core.Interfaces;
+using Apex.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Threading.Tasks;
@@ -15,12 +16,6 @@ namespace Apex.UI.ViewModels
         [ObservableProperty] private string _companyAddress = string.Empty;
         [ObservableProperty] private string _companyPhone = string.Empty;
         [ObservableProperty] private string _logoPath = string.Empty;
-
-        // Financials
-        [ObservableProperty] private string _invoiceHeader = string.Empty;
-        [ObservableProperty] private string _invoiceFooter = string.Empty;
-        [ObservableProperty] private decimal _defaultPricePerPage;
-        [ObservableProperty] private decimal _defaultCoverPrice;
 
         // System
         [ObservableProperty] private string _backupPath = string.Empty;
@@ -39,38 +34,25 @@ namespace Apex.UI.ViewModels
         [RelayCommand]
         private async Task LoadSettings()
         {
-            CompanyName = await _settingsService.GetValueAsync("CompanyName", "Apex Printing");
-            CompanyAddress = await _settingsService.GetValueAsync("CompanyAddress", "");
-            CompanyPhone = await _settingsService.GetValueAsync("CompanyPhone", "");
-            LogoPath = await _settingsService.GetValueAsync("LogoPath", "");
+            // Single DB round-trip — eliminates concurrent DbContext access
+            var s = await _settingsService.GetAllSettingsAsync();
+            string Get(string key, string def) => s.TryGetValue(key, out var v) ? v : def;
 
-            InvoiceHeader = await _settingsService.GetValueAsync("InvoiceHeader", "");
-            InvoiceFooter = await _settingsService.GetValueAsync("InvoiceFooter", "Thank you for your business!");
-            
-            var priceStr = await _settingsService.GetValueAsync("PricePerPage", "0.50");
-            decimal.TryParse(priceStr, out var price);
-            DefaultPricePerPage = price;
-
-            var coverStr = await _settingsService.GetValueAsync("CoverPrice", "5.00");
-            decimal.TryParse(coverStr, out var cover);
-            DefaultCoverPrice = cover;
-
-            BackupPath = await _settingsService.GetValueAsync("BackupPath", "");
-            SelectedLanguage = await _settingsService.GetValueAsync("Language", "en");
+            CompanyName      = Get("CompanyName",    "Apex Printing");
+            CompanyAddress   = Get("CompanyAddress", "");
+            CompanyPhone     = Get("CompanyPhone",   "");
+            LogoPath         = Get("LogoPath",       "");
+            BackupPath       = Get("BackupPath",     "");
+            SelectedLanguage = Get("Language",       "en");
         }
 
         [RelayCommand]
         private async Task SaveSettings()
         {
-            await _settingsService.SetValueAsync("CompanyName", CompanyName);
+            await _settingsService.SetValueAsync("CompanyName",    CompanyName);
             await _settingsService.SetValueAsync("CompanyAddress", CompanyAddress);
-            await _settingsService.SetValueAsync("CompanyPhone", CompanyPhone);
-            await _settingsService.SetValueAsync("LogoPath", LogoPath);
-
-            await _settingsService.SetValueAsync("InvoiceHeader", InvoiceHeader);
-            await _settingsService.SetValueAsync("InvoiceFooter", InvoiceFooter);
-            await _settingsService.SetValueAsync("PricePerPage", DefaultPricePerPage.ToString());
-            await _settingsService.SetValueAsync("CoverPrice", DefaultCoverPrice.ToString());
+            await _settingsService.SetValueAsync("CompanyPhone",   CompanyPhone);
+            await _settingsService.SetValueAsync("LogoPath",       LogoPath);
 
             await _settingsService.SetValueAsync("BackupPath", BackupPath);
             await _settingsService.SetValueAsync("Language", SelectedLanguage);
@@ -79,7 +61,7 @@ namespace Apex.UI.ViewModels
             Services.LocalizationService.Instance.SwitchLanguage(SelectedLanguage);
 
             // Notify user
-            var message = Services.LocalizationService.Instance.GetString("SettingsSavedSuccessfully") + ". " + 
+            var message = Services.LocalizationService.Instance.GetString("SettingsSavedSuccessfully") + ". " +
                          Services.LocalizationService.Instance.GetString("SomeChangesMayRequireRestart");
             MessageBox.Show(message, Services.LocalizationService.Instance.GetString("Settings"), MessageBoxButton.OK, MessageBoxImage.Information);
         }
@@ -97,13 +79,30 @@ namespace Apex.UI.ViewModels
         [RelayCommand]
         private void BrowseBackupPath()
         {
-            // Folder picker is tricky in WPF without external libs, using OpenFileDialog with CheckFileExists=false or just TextBox
-            // For simplicity, we'll assume user types it or we use a hack with OpenFileDialog
-            var dialog = new Microsoft.Win32.SaveFileDialog { Title = "Select Backup Location", FileName = "Select Folder" };
-            if (dialog.ShowDialog() == true)
+            // WPF folder picker via OpenFileDialog hack (no external lib required)
+            var dlg = new Microsoft.Win32.OpenFileDialog
             {
-                BackupPath = System.IO.Path.GetDirectoryName(dialog.FileName) ?? string.Empty;
-            }
+                Title = "اختر مجلد النسخ الاحتياطي",
+                CheckFileExists = false,
+                CheckPathExists = true,
+                FileName = "اختر هذا المجلد",
+                ValidateNames = false,
+                InitialDirectory = string.IsNullOrEmpty(BackupPath)
+                    ? System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments)
+                    : BackupPath
+            };
+            if (dlg.ShowDialog() == true)
+                BackupPath = System.IO.Path.GetDirectoryName(dlg.FileName) ?? string.Empty;
+        }
+
+        [RelayCommand]
+        private void RunBackup()
+        {
+            var result = BackupService.Instance.RunBackup(BackupPath);
+            MessageBox.Show(result.Message,
+                result.Success ? "النسخ الاحتياطي" : "خطأ في النسخ الاحتياطي",
+                MessageBoxButton.OK,
+                result.Success ? MessageBoxImage.Information : MessageBoxImage.Error);
         }
     }
 }

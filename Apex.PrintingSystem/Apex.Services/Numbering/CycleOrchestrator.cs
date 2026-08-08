@@ -13,13 +13,13 @@ namespace Apex.Services.Numbering
     {
         private readonly JobDependencyManager _dependencyManager;
         private readonly SequencedJobQueue _queue;
-        private readonly TrayVerificationService _trayVerifier;
+        private readonly ITrayVerificationService _trayVerifier;
         private readonly int _batchSize;
 
         public CycleOrchestrator(
             JobDependencyManager dependencyManager,
             SequencedJobQueue queue,
-            TrayVerificationService trayVerifier,
+            ITrayVerificationService trayVerifier,
             int batchSize = 5)
         {
             _dependencyManager = dependencyManager;

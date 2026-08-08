@@ -103,9 +103,9 @@ namespace Apex.Services.Printing.RIP
                 // Render at required DPI
                 int dpi = decision.RequiredDpi;
                 using var rendered = pdfDocument.Render(
-                    pageIndex, 
-                    dpi, 
-                    dpi, 
+                    pageIndex,
+                    dpi,
+                    dpi,
                     PdfRenderFlags.ForPrinting);
 
                 return new RenderResult

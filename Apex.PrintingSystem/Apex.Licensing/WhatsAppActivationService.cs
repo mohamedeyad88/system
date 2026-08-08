@@ -13,7 +13,7 @@ namespace Apex.Licensing
         // Support WhatsApp number (international format, digits only)
         private const string SupportPhone = "201099088053";
 
-        private const string ProductName  = "أبكس لحلول الطباعة المتكاملة";
+        private const string ProductName = "أبكس لحلول الطباعة المتكاملة";
 
         /// <summary>
         /// Returns a WhatsApp URL that can be opened with <see cref="Process.Start"/>.
@@ -26,16 +26,24 @@ namespace Apex.Licensing
             return $"https://api.whatsapp.com/send?phone={SupportPhone}&text={encoded}";
         }
 
-        /// <summary>Opens the WhatsApp activation URL in the default browser.</summary>
+        /// <summary>Opens the WhatsApp activation URL via the OS default handler (browser).</summary>
         public static void OpenWhatsApp(string deviceDisplayId)
         {
             var url = BuildActivationUrl(deviceDisplayId);
-            // Use cmd /c start to reliably open URLs on Windows
-            Process.Start(new ProcessStartInfo("cmd", $"/c start \"\" \"{url}\"")
+
+            // IMPORTANT: never route the URL through `cmd /c start`. The URL contains
+            // percent-encoded Arabic (e.g. %D9%85…) and cmd expands %VAR% tokens, which
+            // corrupts the URL → Windows shows "no app associated with this file".
+            // ShellExecute opens the URL with the default browser and preserves it intact.
+            try
             {
-                CreateNoWindow = true,
-                UseShellExecute = false
-            });
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            catch
+            {
+                // Fallback: hand the URL to Explorer, which also uses the default handler.
+                Process.Start(new ProcessStartInfo("explorer.exe", url) { UseShellExecute = true });
+            }
         }
 
         // ──────────────────────────────────────────────────────────────────

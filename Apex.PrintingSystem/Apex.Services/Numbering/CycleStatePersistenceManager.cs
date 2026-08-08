@@ -57,7 +57,7 @@ namespace Apex.Services.Numbering
             _stateDirectory = stateDirectory ?? Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "ApexPrintingSystem", "CycleStates");
-            
+
             Directory.CreateDirectory(_stateDirectory);
         }
 
@@ -107,17 +107,17 @@ namespace Apex.Services.Numbering
 
             var filePath = GetStatePath(jobId);
             var tempFilePath = filePath + ".tmp";
-            var options = new JsonSerializerOptions 
-            { 
+            var options = new JsonSerializerOptions
+            {
                 WriteIndented = true,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
             };
-            
+
             // Atomic write: write to temp file first, then rename
             var json = JsonSerializer.Serialize(state, options);
             await File.WriteAllTextAsync(tempFilePath, json);
-            
+
             // Atomic rename (overwrites existing file if any)
             if (File.Exists(filePath))
                 File.Delete(filePath);
@@ -137,12 +137,12 @@ namespace Apex.Services.Numbering
             try
             {
                 var json = await File.ReadAllTextAsync(filePath);
-                var options = new JsonSerializerOptions 
-                { 
+                var options = new JsonSerializerOptions
+                {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
                 };
-                
+
                 return JsonSerializer.Deserialize<CyclePrintState>(json, options);
             }
             catch (Exception ex)
@@ -178,12 +178,12 @@ namespace Apex.Services.Numbering
                 try
                 {
                     var json = await File.ReadAllTextAsync(file);
-                    var options = new JsonSerializerOptions 
-                    { 
+                    var options = new JsonSerializerOptions
+                    {
                         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                         Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
                     };
-                    
+
                     var state = JsonSerializer.Deserialize<CyclePrintState>(json, options);
                     if (state != null)
                         states.Add(state);

@@ -46,10 +46,10 @@ namespace Apex.NumberedBooksEngine.Tests
             // Assert
             Assert.Single(originalCommand.Slots);
             Assert.Single(copy1Command.Slots);
-            
+
             Assert.Equal("#000000", originalCommand.Slots[0].ColorHex);
             Assert.Equal("#FF0000", copy1Command.Slots[0].ColorHex);
-            
+
             Assert.Equal("Original", originalCommand.Slots[0].Label);
             Assert.Equal("Copy", copy1Command.Slots[0].Label);
         }
@@ -117,10 +117,10 @@ namespace Apex.NumberedBooksEngine.Tests
         public void BuildGdiCommandWithCopyStyle_SkipsNegativeNumbers()
         {
             // Arrange
-            var slots = new List<SlotSpec> 
-            { 
-                CreateTestSlot("slot1"), 
-                CreateTestSlot("slot2") 
+            var slots = new List<SlotSpec>
+            {
+                CreateTestSlot("slot1"),
+                CreateTestSlot("slot2")
             };
             var pageNumbers = new long[] { 1, -1 }; // Second slot is empty
 

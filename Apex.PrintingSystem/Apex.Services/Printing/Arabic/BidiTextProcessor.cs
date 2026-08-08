@@ -27,11 +27,11 @@ namespace Apex.Services.Printing.Arabic
     /// </summary>
     public class BidiRun
     {
-        public string Text       { get; set; } = "";
-        public bool   IsRtl      { get; set; }
-        public int    Level      { get; set; }
-        public int    StartIndex { get; set; }
-        public int    Length     { get; set; }
+        public string Text { get; set; } = "";
+        public bool IsRtl { get; set; }
+        public int Level { get; set; }
+        public int StartIndex { get; set; }
+        public int Length { get; set; }
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ namespace Apex.Services.Printing.Arabic
             foreach (char c in text)
             {
                 BiDiCharType t = GetCharType(c);
-                if (t == BiDiCharType.L)  return false;
+                if (t == BiDiCharType.L) return false;
                 if (t == BiDiCharType.R || t == BiDiCharType.AL) return true;
             }
             return false; // no strong character → LTR default
@@ -76,7 +76,7 @@ namespace Apex.Services.Printing.Arabic
                 return new List<BidiRun>();
 
             bool paragraphRtl = IsRtlParagraph(text);
-            int  baseLevel    = paragraphRtl ? 1 : 0;
+            int baseLevel = paragraphRtl ? 1 : 0;
 
             // Assign embedding levels per character (simplified two-level model)
             int[] levels = AssignLevels(text, baseLevel);
@@ -93,11 +93,11 @@ namespace Apex.Services.Printing.Arabic
                 bool isRtl = (levels[start] & 1) == 1;
                 runs.Add(new BidiRun
                 {
-                    Text       = text.Substring(start, end - start),
-                    IsRtl      = isRtl,
-                    Level      = levels[start],
+                    Text = text.Substring(start, end - start),
+                    IsRtl = isRtl,
+                    Level = levels[start],
                     StartIndex = start,
-                    Length     = end - start
+                    Length = end - start
                 });
                 start = end;
             }
@@ -120,7 +120,7 @@ namespace Apex.Services.Printing.Arabic
                 return text;
 
             bool paragraphRtl = IsRtlParagraph(text);
-            var  runs         = GetBidiRuns(text);
+            var runs = GetBidiRuns(text);
 
             // Reverse RTL run content
             for (int i = 0; i < runs.Count; i++)
@@ -128,11 +128,11 @@ namespace Apex.Services.Printing.Arabic
                 if (runs[i].IsRtl)
                     runs[i] = new BidiRun
                     {
-                        Text       = ReverseString(runs[i].Text),
-                        IsRtl      = true,
-                        Level      = runs[i].Level,
+                        Text = ReverseString(runs[i].Text),
+                        IsRtl = true,
+                        Level = runs[i].Level,
                         StartIndex = runs[i].StartIndex,
-                        Length     = runs[i].Length
+                        Length = runs[i].Length
                     };
             }
 
@@ -159,7 +159,7 @@ namespace Apex.Services.Printing.Arabic
             if (c == '\u200B' || c == '\u200C' || c == '\u200D'
              || c == '\uFEFF' || c == '\u00AD')
                 return BiDiCharType.BN;
-            if (c < '\u0009')  return BiDiCharType.BN;
+            if (c < '\u0009') return BiDiCharType.BN;
             if (c == '\u000C' || c == '\u000E' || c == '\u000F') return BiDiCharType.BN;
             if (c >= '\u001C' && c <= '\u001F') return BiDiCharType.BN; // FS,GS,RS,US
 
@@ -315,7 +315,7 @@ namespace Apex.Services.Printing.Arabic
         /// </summary>
         private static int[] AssignLevels(string text, int baseLevel)
         {
-            int   len    = text.Length;
+            int len = text.Length;
             int[] levels = new int[len];
 
             // Determine per-character "strong" direction, ignoring neutrals temporarily
@@ -326,11 +326,11 @@ namespace Apex.Services.Printing.Arabic
                 levels[i] = t switch
                 {
                     BiDiCharType.AL or BiDiCharType.R => 1,
-                    BiDiCharType.L                    => 0,
-                    BiDiCharType.AN                   => 1,
-                    BiDiCharType.EN                   => 0, // EN treated as LTR at this stage
-                    BiDiCharType.NSM                  => -1, // will inherit
-                    _                                 => -1  // neutral — will inherit
+                    BiDiCharType.L => 0,
+                    BiDiCharType.AN => 1,
+                    BiDiCharType.EN => 0, // EN treated as LTR at this stage
+                    BiDiCharType.NSM => -1, // will inherit
+                    _ => -1  // neutral — will inherit
                 };
             }
 
@@ -375,8 +375,8 @@ namespace Apex.Services.Printing.Arabic
                     for (int k = i - 1; k >= 0; k--)
                     {
                         BiDiCharType tk = GetCharType(text[k]);
-                        if (tk == BiDiCharType.AL) { inRtlContext = true;  break; }
-                        if (tk == BiDiCharType.L)  { inRtlContext = false; break; }
+                        if (tk == BiDiCharType.AL) { inRtlContext = true; break; }
+                        if (tk == BiDiCharType.L) { inRtlContext = false; break; }
                     }
                     if (inRtlContext)
                         levels[i] = 1;
@@ -400,11 +400,11 @@ namespace Apex.Services.Printing.Arabic
                 {
                     merged[merged.Count - 1] = new BidiRun
                     {
-                        Text       = prev.Text + curr.Text,
-                        IsRtl      = prev.IsRtl,
-                        Level      = prev.Level,
+                        Text = prev.Text + curr.Text,
+                        IsRtl = prev.IsRtl,
+                        Level = prev.Level,
                         StartIndex = prev.StartIndex,
-                        Length     = prev.Length + curr.Length
+                        Length = prev.Length + curr.Length
                     };
                 }
                 else
@@ -430,13 +430,13 @@ namespace Apex.Services.Printing.Arabic
         private static List<string> SplitKeepingWhitespace(string text)
         {
             var tokens = new List<string>();
-            var sb     = new StringBuilder();
+            var sb = new StringBuilder();
             bool inSpace = false;
 
             foreach (char c in text)
             {
                 bool isNewline = c == '\n' || c == '\r';
-                bool isSpace   = c == ' ' || c == '\t' || c == '\u00A0';
+                bool isSpace = c == ' ' || c == '\t' || c == '\u00A0';
 
                 if (isNewline)
                 {

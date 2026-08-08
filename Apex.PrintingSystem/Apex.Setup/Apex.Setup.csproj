@@ -7,6 +7,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>AppIcon.ico</ApplicationIcon>
+    <!-- Match the application version so the installer file properties read correctly -->
+    <Product>Apex Print OS Setup</Product>
+    <AssemblyTitle>Apex Print OS Setup</AssemblyTitle>
+    <Company>Apex Printing Press</Company>
+    <Version>2.2.0</Version>
+    <AssemblyVersion>2.2.0.0</AssemblyVersion>
+    <FileVersion>2.2.0.0</FileVersion>
+    <InformationalVersion>2.2.0-beta</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>

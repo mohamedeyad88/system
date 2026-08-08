@@ -70,22 +70,22 @@ namespace Apex.Services.Helpers
             try
             {
                 // CRITICAL: Check each Win32 API call and throw detailed exception on failure
-                
+
                 if (!OpenPrinter(szPrinterName.Normalize(), out hPrinter, IntPtr.Zero))
                 {
                     int error = Marshal.GetLastWin32Error();
-                    PrintLogger.Win32Error(error, "OpenPrinter", szPrinterName, 
+                    PrintLogger.Win32Error(error, "OpenPrinter", szPrinterName,
                         "Failed to open printer handle. Printer may not exist, be offline, or insufficient permissions.");
-                    throw new Win32Exception(error, 
+                    throw new Win32Exception(error,
                         $"OpenPrinter failed for '{szPrinterName}': {GetWin32ErrorMessage(error)}");
                 }
 
                 if (!StartDocPrinter(hPrinter, 1, di))
                 {
                     int error = Marshal.GetLastWin32Error();
-                    PrintLogger.Win32Error(error, "StartDocPrinter", szPrinterName, 
+                    PrintLogger.Win32Error(error, "StartDocPrinter", szPrinterName,
                         "Failed to start print job. Spooler may be stopped or printer busy.");
-                    throw new Win32Exception(error, 
+                    throw new Win32Exception(error,
                         $"StartDocPrinter failed for '{szPrinterName}': {GetWin32ErrorMessage(error)}");
                 }
 
@@ -94,7 +94,7 @@ namespace Apex.Services.Helpers
                     int error = Marshal.GetLastWin32Error();
                     EndDocPrinter(hPrinter); // Clean up document
                     PrintLogger.Win32Error(error, "StartPagePrinter", szPrinterName);
-                    throw new Win32Exception(error, 
+                    throw new Win32Exception(error,
                         $"StartPagePrinter failed for '{szPrinterName}': {GetWin32ErrorMessage(error)}");
                 }
 
@@ -103,9 +103,9 @@ namespace Apex.Services.Helpers
                     int error = Marshal.GetLastWin32Error();
                     EndPagePrinter(hPrinter);
                     EndDocPrinter(hPrinter);
-                    PrintLogger.Win32Error(error, "WritePrinter", szPrinterName, 
+                    PrintLogger.Win32Error(error, "WritePrinter", szPrinterName,
                         $"Attempted to write {dwCount} bytes, wrote {dwWritten} bytes");
-                    throw new Win32Exception(error, 
+                    throw new Win32Exception(error,
                         $"WritePrinter failed for '{szPrinterName}': {GetWin32ErrorMessage(error)}. Bytes to write: {dwCount}, Written: {dwWritten}");
                 }
 
@@ -113,8 +113,8 @@ namespace Apex.Services.Helpers
                 {
                     EndPagePrinter(hPrinter);
                     EndDocPrinter(hPrinter);
-                    PrintLogger.Error(null, 
-                        "WritePrinter incomplete write. Printer: {Printer}, Expected: {Expected}, Written: {Written}", 
+                    PrintLogger.Error((Exception?)null,
+                        "WritePrinter incomplete write. Printer: {Printer}, Expected: {Expected}, Written: {Written}",
                         szPrinterName, dwCount, dwWritten);
                     throw new IOException(
                         $"WritePrinter incomplete write for '{szPrinterName}'. Expected: {dwCount}, Written: {dwWritten}");
@@ -122,10 +122,10 @@ namespace Apex.Services.Helpers
 
                 EndPagePrinter(hPrinter);
                 EndDocPrinter(hPrinter);
-                
-                PrintLogger.Info("Print job submitted successfully. Printer: '{Printer}', Bytes: {Bytes}", 
+
+                PrintLogger.Info("Print job submitted successfully. Printer: '{Printer}', Bytes: {Bytes}",
                     szPrinterName, dwWritten);
-                
+
                 return true;
             }
             finally
@@ -169,9 +169,9 @@ namespace Apex.Services.Helpers
             bytes = br.ReadBytes(nLength);
             pUnmanagedBytes = Marshal.AllocCoTaskMem(nLength);
             Marshal.Copy(bytes, 0, pUnmanagedBytes, nLength);
-            
+
             bSuccess = SendBytesToPrinter(szPrinterName, pUnmanagedBytes, nLength);
-            
+
             Marshal.FreeCoTaskMem(pUnmanagedBytes);
             fs.Close();
             return bSuccess;
@@ -188,9 +188,9 @@ namespace Apex.Services.Helpers
             Marshal.FreeCoTaskMem(pBytes);
             return success;
         }
-        
+
         #region Extended API for Vendor-Aware Streaming
-        
+
         /// <summary>
         /// Open printer and return handle (for chunked writing).
         /// </summary>
@@ -198,7 +198,7 @@ namespace Apex.Services.Helpers
         {
             return OpenPrinter(printerName.Normalize(), out hPrinter, IntPtr.Zero);
         }
-        
+
         /// <summary>
         /// Start a document for chunked writing.
         /// </summary>
@@ -209,13 +209,13 @@ namespace Apex.Services.Helpers
                 pDocName = documentName,
                 pDataType = dataType
             };
-            
+
             if (!StartDocPrinter(hPrinter, 1, di))
                 return false;
-            
+
             return StartPagePrinter(hPrinter);
         }
-        
+
         /// <summary>
         /// Write a chunk of data to printer.
         /// </summary>
@@ -232,7 +232,7 @@ namespace Apex.Services.Helpers
                 Marshal.FreeCoTaskMem(pBytes);
             }
         }
-        
+
         /// <summary>
         /// End document after chunked writing.
         /// </summary>
@@ -241,7 +241,7 @@ namespace Apex.Services.Helpers
             EndPagePrinter(hPrinter);
             return EndDocPrinter(hPrinter);
         }
-        
+
         #endregion
     }
 }

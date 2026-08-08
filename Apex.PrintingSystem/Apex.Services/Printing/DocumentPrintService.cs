@@ -96,7 +96,7 @@ namespace Apex.Services.Printing
             bool success = extension switch
             {
                 ".pdf" => await PrintPdfDocumentAsync(printerName, filePath, copies, cancellationToken),
-                ".jpg" or ".jpeg" or ".png" or ".bmp" or ".gif" or ".tiff" => 
+                ".jpg" or ".jpeg" or ".png" or ".bmp" or ".gif" or ".tiff" =>
                     await PrintImageDocumentAsync(printerName, filePath, copies, cancellationToken),
                 _ => throw new DocumentPrintException(
                     $"نوع الملف غير مدعوم: {extension}. الأنواع المدعومة: PDF, JPG, PNG, BMP, GIF, TIFF",
@@ -137,14 +137,25 @@ namespace Apex.Services.Printing
             Debug.WriteLine($"[DocumentPrintService] Copies: {copies}");
             Debug.WriteLine($"[DocumentPrintService] ══════════════════════════════════════");
 
-            // Try 1: SumatraPDF (BEST - supports copies natively via -print-settings)
+            // Try 1: PdfiumViewer document mode (PRIMARY — built-in, silent, reliable).
+            // It renders via the bundled Pdfium engine and goes straight through the
+            // Windows spooler with proper copies support. Previously this was the
+            // LAST fallback, so machines without SumatraPDF fell through to shell
+            // printing which launched Adobe's UI and reported false success.
+            if (await PrintPdfWithPdfiumDocumentModeAsync(printerName, filePath, copies, cancellationToken))
+            {
+                return true;
+            }
+            Debug.WriteLine($"[DocumentPrintService] ⚠️ Pdfium failed, trying external tools");
+
+            // Try 2: SumatraPDF (if installed - supports copies natively via -print-settings)
             var sumatraPath = FindSumatraPdf();
             if (!string.IsNullOrEmpty(sumatraPath))
             {
                 Debug.WriteLine($"[DocumentPrintService] Using SumatraPDF: {sumatraPath}");
                 Debug.WriteLine($"[DocumentPrintService] Copies via: -print-settings \"{copies}x\"");
-                
-                if (await RunExternalPrintToolAsync(sumatraPath, 
+
+                if (await RunExternalPrintToolAsync(sumatraPath,
                     $"-print-to \"{printerName}\" -print-settings \"{copies}x\" -silent \"{filePath}\"",
                     cancellationToken))
                 {
@@ -154,13 +165,13 @@ namespace Apex.Services.Printing
                 Debug.WriteLine($"[DocumentPrintService] ⚠️ SumatraPDF failed, trying next method");
             }
 
-            // Try 2: PDFtoPrinter (copies via -copies parameter if supported, otherwise loop)
+            // Try 3: PDFtoPrinter (copies via -copies parameter if supported, otherwise loop)
             var pdfToPrinterPath = FindPdfToPrinter();
             if (!string.IsNullOrEmpty(pdfToPrinterPath))
             {
                 Debug.WriteLine($"[DocumentPrintService] Using PDFtoPrinter: {pdfToPrinterPath}");
                 Debug.WriteLine($"[DocumentPrintService] Copies via: -copies {copies}");
-                
+
                 // PDFtoPrinter syntax: PDFtoPrinter.exe <file> [<printer>] [-copies <N>]
                 if (await RunExternalPrintToolAsync(pdfToPrinterPath,
                     $"\"{filePath}\" \"{printerName}\" -copies {copies}",
@@ -172,18 +183,12 @@ namespace Apex.Services.Printing
                 Debug.WriteLine($"[DocumentPrintService] ⚠️ PDFtoPrinter failed, trying next method");
             }
 
-            // Try 3: Windows Shell Print (uses system default PDF handler)
-            Debug.WriteLine($"[DocumentPrintService] Using Windows Shell Print (fallback)");
-            if (await ShellPrintAsync(printerName, filePath, copies, cancellationToken))
-            {
-                return true;
-            }
-            
-            // Try 4: PdfiumViewer as LAST RESORT (uses CreatePrintDocument - NOT page-by-page)
-            Debug.WriteLine($"[DocumentPrintService] Shell print failed, trying PdfiumViewer (document mode)...");
-            return await PrintPdfWithPdfiumDocumentModeAsync(printerName, filePath, copies, cancellationToken);
+            // Try 4: Windows Shell Print — LAST RESORT ONLY. Depends on the system's
+            // default PDF handler (may open its UI) and success cannot be verified.
+            Debug.WriteLine($"[DocumentPrintService] Using Windows Shell Print (last resort)");
+            return await ShellPrintAsync(printerName, filePath, copies, cancellationToken);
         }
-        
+
         /// <summary>
         /// Fallback PDF printing using PdfiumViewer's CreatePrintDocument.
         /// This sends the ENTIRE document to the printer - NOT page-by-page rendering.
@@ -200,28 +205,41 @@ namespace Apex.Services.Printing
             Debug.WriteLine($"[DocumentPrintService] File: {filePath}");
             Debug.WriteLine($"[DocumentPrintService] Copies: {copies}");
             Debug.WriteLine($"[DocumentPrintService] ══════════════════════════════════════");
-            
+
             return await Task.Run(() =>
             {
                 try
                 {
                     using var pdfDocument = PdfiumViewer.PdfDocument.Load(filePath);
-                    
+
                     // Use PdfiumViewer's built-in print document creation
                     // This creates a proper PrintDocument that sends all pages as one job
                     using var printDocument = pdfDocument.CreatePrintDocument();
-                    
+
                     printDocument.PrinterSettings.PrinterName = printerName;
                     printDocument.PrinterSettings.Copies = (short)copies;
                     printDocument.DocumentName = Path.GetFileName(filePath);
-                    
+
+                    // Print-to-file virtual printers silently drop jobs that have no
+                    // output file name (QA-measured false success). Supply one.
+                    var lower = printerName.ToLowerInvariant();
+                    if (lower.Contains("microsoft print to pdf") || lower.Contains("xps"))
+                    {
+                        string ext = lower.Contains("xps") ? ".oxps" : ".pdf";
+                        printDocument.PrinterSettings.PrintToFile = true;
+                        printDocument.PrinterSettings.PrintFileName = Path.Combine(
+                            Path.GetDirectoryName(filePath) ?? Path.GetTempPath(),
+                            $"{Path.GetFileNameWithoutExtension(filePath)}-printed-{DateTime.Now:yyyyMMdd-HHmmss}{ext}");
+                        Debug.WriteLine($"[DocumentPrintService] Virtual printer → PrintToFile: {printDocument.PrinterSettings.PrintFileName}");
+                    }
+
                     // Use default print mode (not custom page rendering)
                     printDocument.PrintController = new System.Drawing.Printing.StandardPrintController();
-                    
+
                     Debug.WriteLine($"[DocumentPrintService] PdfiumViewer: Sending {pdfDocument.PageCount} page(s) to printer");
-                    
+
                     printDocument.Print();
-                    
+
                     Debug.WriteLine($"[DocumentPrintService] ✅ PdfiumViewer print completed");
                     return true;
                 }
@@ -252,66 +270,66 @@ namespace Apex.Services.Printing
                 {
                     using var image = System.Drawing.Image.FromFile(filePath);
                     using var printDoc = new System.Drawing.Printing.PrintDocument();
-                    
+
                     printDoc.PrinterSettings.PrinterName = printerName;
                     printDoc.PrinterSettings.Copies = (short)copies;
                     printDoc.DocumentName = Path.GetFileName(filePath);
-                    
+
                     Debug.WriteLine($"[DocumentPrintService] Image size: {image.Width}x{image.Height} pixels");
                     Debug.WriteLine($"[DocumentPrintService] Image resolution: {image.HorizontalResolution}x{image.VerticalResolution} DPI");
-                    
+
                     // ═══════════════════════════════════════════════════════════════════
                     // FIT TO PAGE: Scale image to fit within printable area
                     // This is what Adobe Reader and Windows Photo Viewer do
                     // Prevents 2GB+ spool files from high-resolution images
                     // ═══════════════════════════════════════════════════════════════════
-                    
+
                     int pagesPrinted = 0;
-                    
+
                     printDoc.PrintPage += (sender, e) =>
                     {
                         pagesPrinted++;
                         Debug.WriteLine($"[DocumentPrintService] PrintPage event fired - Page #{pagesPrinted}");
-                        
+
                         if (e.Graphics != null && image != null)
                         {
                             // Get printable area bounds
                             var printArea = e.MarginBounds;
-                            
+
                             // Calculate scale to fit image within printable area
                             // while maintaining aspect ratio
                             float scaleX = (float)printArea.Width / image.Width;
                             float scaleY = (float)printArea.Height / image.Height;
                             float scale = Math.Min(scaleX, scaleY);
-                            
+
                             // If image is smaller than page, don't enlarge it
                             if (scale > 1.0f) scale = 1.0f;
-                            
+
                             // Calculate destination size
                             int destWidth = (int)(image.Width * scale);
                             int destHeight = (int)(image.Height * scale);
-                            
+
                             // Center image on page
                             int x = printArea.X + (printArea.Width - destWidth) / 2;
                             int y = printArea.Y + (printArea.Height - destHeight) / 2;
-                            
+
                             Debug.WriteLine($"[DocumentPrintService] Fit to page: Scale={scale:F2}, Dest={destWidth}x{destHeight}");
-                            
+
                             // Use high quality interpolation for scaling
                             e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                            
+
                             // Draw image scaled to fit page
                             e.Graphics.DrawImage(image, x, y, destWidth, destHeight);
                         }
-                        
+
                         // CRITICAL: Explicitly set no more pages to prevent infinite loop
                         e.HasMorePages = false;
                         Debug.WriteLine($"[DocumentPrintService] HasMorePages set to FALSE - printing complete");
                     };
-                    
+
                     Debug.WriteLine($"[DocumentPrintService] Sending to printer: {printerName} (Copies: {copies})");
-                    
+
                     printDoc.Print();
                     return true;
                 }
@@ -347,10 +365,10 @@ namespace Apex.Services.Printing
                 if (process == null) return false;
 
                 await process.WaitForExitAsync(cancellationToken);
-                
+
                 var exitCode = process.ExitCode;
                 Debug.WriteLine($"[DocumentPrintService] Tool exit code: {exitCode}");
-                
+
                 return exitCode == 0;
             }
             catch (Exception ex)
@@ -378,7 +396,7 @@ namespace Apex.Services.Printing
             Debug.WriteLine($"[DocumentPrintService] Copies requested: {copies}");
             Debug.WriteLine($"[DocumentPrintService] NOTE: Copies handled by default handler, sending ONE command");
             Debug.WriteLine($"[DocumentPrintService] ══════════════════════════════════════");
-            
+
             return await Task.Run(() =>
             {
                 try
@@ -399,16 +417,16 @@ namespace Apex.Services.Printing
                     Debug.WriteLine($"[DocumentPrintService] Starting shell print process...");
                     using var process = Process.Start(psi);
                     process?.WaitForExit(60000); // 60 second timeout
-                    
+
                     Debug.WriteLine($"[DocumentPrintService] Shell print process completed");
-                    
+
                     // For copies > 1, show warning since shell print doesn't support copies natively
                     if (copies > 1)
                     {
                         Debug.WriteLine($"[DocumentPrintService] ⚠️ WARNING: Copies > 1 but shell print only sends 1 copy");
                         Debug.WriteLine($"[DocumentPrintService] ⚠️ Install SumatraPDF for proper copies support");
                     }
-                    
+
                     return true;
                 }
                 catch (Exception ex)
@@ -425,7 +443,7 @@ namespace Apex.Services.Printing
             {
                 @"C:\Program Files\SumatraPDF\SumatraPDF.exe",
                 @"C:\Program Files (x86)\SumatraPDF\SumatraPDF.exe",
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), 
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "SumatraPDF", "SumatraPDF.exe")
             };
             return Array.Find(paths, File.Exists);

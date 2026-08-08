@@ -29,14 +29,14 @@ namespace Apex.Licensing.Tests
 
             var payload = new LicensePayload
             {
-                LicenseId      = Guid.NewGuid().ToString("D").ToUpperInvariant(),
-                DeviceId       = deviceId,
-                Type           = LicenseType.Full,
-                IssuedUtc      = DateTime.UtcNow.AddMinutes(-1),
-                ExpiresUtc     = new DateTime(9999, 12, 31, 0, 0, 0, DateTimeKind.Utc),
-                CustomerName   = "Test Customer",
+                LicenseId = Guid.NewGuid().ToString("D").ToUpperInvariant(),
+                DeviceId = deviceId,
+                Type = LicenseType.Full,
+                IssuedUtc = DateTime.UtcNow.AddMinutes(-1),
+                ExpiresUtc = new DateTime(9999, 12, 31, 0, 0, 0, DateTimeKind.Utc),
+                CustomerName = "Test Customer",
                 ProductVersion = "1.0",
-                Nonce          = Convert.ToHexString(RandomNumberGenerator.GetBytes(16))
+                Nonce = Convert.ToHexString(RandomNumberGenerator.GetBytes(16))
             };
 
             var signed = LicenseCrypto.SignLicense(payload, privateKey);
@@ -53,7 +53,7 @@ namespace Apex.Licensing.Tests
             var (priv, pub) = LicenseCrypto.GenerateKeyPair();
 
             Assert.Contains("-----BEGIN EC PRIVATE KEY-----", priv);
-            Assert.Contains("-----BEGIN PUBLIC KEY-----",     pub);
+            Assert.Contains("-----BEGIN PUBLIC KEY-----", pub);
         }
 
         [Fact]
@@ -63,7 +63,7 @@ namespace Apex.Licensing.Tests
             var (priv2, pub2) = LicenseCrypto.GenerateKeyPair();
 
             Assert.NotEqual(priv1, priv2);
-            Assert.NotEqual(pub1,  pub2);
+            Assert.NotEqual(pub1, pub2);
         }
 
         [Fact]
@@ -106,9 +106,9 @@ namespace Apex.Licensing.Tests
 
             var (_, payload) = LicenseCrypto.VerifyLicense(signed, publicPem);
 
-            Assert.Equal(original.DeviceId,       payload!.DeviceId);
-            Assert.Equal(original.Type,           payload.Type);
-            Assert.Equal(original.CustomerName,   payload.CustomerName);
+            Assert.Equal(original.DeviceId, payload!.DeviceId);
+            Assert.Equal(original.Type, payload.Type);
+            Assert.Equal(original.CustomerName, payload.CustomerName);
             Assert.Equal(original.ProductVersion, payload.ProductVersion);
         }
 
@@ -123,7 +123,7 @@ namespace Apex.Licensing.Tests
 
             var payload = new LicensePayload
             {
-                DeviceId   = "AAAA",
+                DeviceId = "AAAA",
                 ExpiresUtc = DateTime.UtcNow.AddDays(1)
             };
             var signed = LicenseCrypto.SignLicense(payload, otherPrivate);
@@ -140,8 +140,8 @@ namespace Apex.Licensing.Tests
         [Fact]
         public void VerifyLicense_WrongPublicKey_ReturnsFalse()
         {
-            var (_, signed, _)    = CreateSignedLicense();
-            var (_, otherPublic)  = LicenseCrypto.GenerateKeyPair(); // different key
+            var (_, signed, _) = CreateSignedLicense();
+            var (_, otherPublic) = LicenseCrypto.GenerateKeyPair(); // different key
 
             var (isValid, _) = LicenseCrypto.VerifyLicense(signed, otherPublic);
             Assert.False(isValid);
@@ -157,8 +157,8 @@ namespace Apex.Licensing.Tests
             jsonBytes[10] ^= 0xFF;
             var tampered = new SignedLicense
             {
-                Payload       = Convert.ToBase64String(jsonBytes),
-                Signature     = signed.Signature,
+                Payload = Convert.ToBase64String(jsonBytes),
+                Signature = signed.Signature,
                 SchemaVersion = signed.SchemaVersion
             };
 
@@ -175,8 +175,8 @@ namespace Apex.Licensing.Tests
             sigBytes[0] ^= 0xFF;
             var tampered = new SignedLicense
             {
-                Payload       = signed.Payload,
-                Signature     = Convert.ToBase64String(sigBytes),
+                Payload = signed.Payload,
+                Signature = Convert.ToBase64String(sigBytes),
                 SchemaVersion = signed.SchemaVersion
             };
 
@@ -228,8 +228,8 @@ namespace Apex.Licensing.Tests
             // Attacker creates a payload for a different device and signs it with their key
             var attackerPayload = new LicensePayload
             {
-                DeviceId   = "ATTACKER_DEVICE_0000001",
-                Type       = LicenseType.Pro,
+                DeviceId = "ATTACKER_DEVICE_0000001",
+                Type = LicenseType.Pro,
                 ExpiresUtc = new DateTime(9999, 12, 31, 0, 0, 0, DateTimeKind.Utc)
             };
             var attackerSigned = LicenseCrypto.SignLicense(attackerPayload, theirKey);
@@ -295,9 +295,9 @@ namespace Apex.Licensing.Tests
         {
             var state = new TrialState
             {
-                StartUtc    = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                StartUtc = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 LastSeenUtc = new DateTime(2025, 1, 3, 0, 0, 0, DateTimeKind.Utc),
-                DeviceId    = "DEADBEEF"
+                DeviceId = "DEADBEEF"
             };
 
             var h1 = LicenseCrypto.ComputeTrialHmac(state);
@@ -311,15 +311,15 @@ namespace Apex.Licensing.Tests
         {
             var state1 = new TrialState
             {
-                StartUtc    = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                StartUtc = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 LastSeenUtc = new DateTime(2025, 1, 2, 0, 0, 0, DateTimeKind.Utc),
-                DeviceId    = "DEADBEEF"
+                DeviceId = "DEADBEEF"
             };
             var state2 = new TrialState
             {
-                StartUtc    = new DateTime(2024, 6, 1, 0, 0, 0, DateTimeKind.Utc),
+                StartUtc = new DateTime(2024, 6, 1, 0, 0, 0, DateTimeKind.Utc),
                 LastSeenUtc = state1.LastSeenUtc,
-                DeviceId    = state1.DeviceId
+                DeviceId = state1.DeviceId
             };
 
             Assert.NotEqual(
@@ -332,15 +332,15 @@ namespace Apex.Licensing.Tests
         {
             var state1 = new TrialState
             {
-                StartUtc    = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                StartUtc = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 LastSeenUtc = new DateTime(2025, 1, 2, 0, 0, 0, DateTimeKind.Utc),
-                DeviceId    = "AABBCCDD"
+                DeviceId = "AABBCCDD"
             };
             var state2 = new TrialState
             {
-                StartUtc    = state1.StartUtc,
+                StartUtc = state1.StartUtc,
                 LastSeenUtc = state1.LastSeenUtc,
-                DeviceId    = "11223344"
+                DeviceId = "11223344"
             };
 
             Assert.NotEqual(
@@ -353,9 +353,9 @@ namespace Apex.Licensing.Tests
         {
             var state = new TrialState
             {
-                StartUtc    = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                StartUtc = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 LastSeenUtc = new DateTime(2025, 1, 3, 0, 0, 0, DateTimeKind.Utc),
-                DeviceId    = "AABBCCDDEE"
+                DeviceId = "AABBCCDDEE"
             };
             state.Hmac = LicenseCrypto.ComputeTrialHmac(state);
 
@@ -367,10 +367,10 @@ namespace Apex.Licensing.Tests
         {
             var state = new TrialState
             {
-                StartUtc    = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                StartUtc = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 LastSeenUtc = new DateTime(2025, 1, 3, 0, 0, 0, DateTimeKind.Utc),
-                DeviceId    = "AABBCCDDEE",
-                Hmac        = Convert.ToBase64String(new byte[32]) // all-zeros
+                DeviceId = "AABBCCDDEE",
+                Hmac = Convert.ToBase64String(new byte[32]) // all-zeros
             };
 
             Assert.False(LicenseCrypto.VerifyTrialHmac(state));
@@ -381,9 +381,9 @@ namespace Apex.Licensing.Tests
         {
             var state = new TrialState
             {
-                StartUtc    = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                StartUtc = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 LastSeenUtc = new DateTime(2025, 1, 3, 0, 0, 0, DateTimeKind.Utc),
-                DeviceId    = "AABBCCDDEE"
+                DeviceId = "AABBCCDDEE"
             };
             state.Hmac = LicenseCrypto.ComputeTrialHmac(state);
 
@@ -398,9 +398,9 @@ namespace Apex.Licensing.Tests
         {
             var state = new TrialState
             {
-                StartUtc    = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                StartUtc = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 LastSeenUtc = new DateTime(2025, 1, 2, 0, 0, 0, DateTimeKind.Utc),
-                DeviceId    = "ORIGINALID"
+                DeviceId = "ORIGINALID"
             };
             state.Hmac = LicenseCrypto.ComputeTrialHmac(state);
 

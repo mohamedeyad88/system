@@ -40,11 +40,11 @@ namespace Apex.UI.Models
         // A4 dimensions in points (at 72 DPI)
         public const double A4WidthPoints = 595.276;
         public const double A4HeightPoints = 841.890;
-        
+
         // A3 dimensions in points
         public const double A3WidthPoints = 841.890;
         public const double A3HeightPoints = 1190.551;
-        
+
         // Letter dimensions in points
         public const double LetterWidthPoints = 612;
         public const double LetterHeightPoints = 792;
@@ -55,7 +55,7 @@ namespace Apex.UI.Models
         public static (double Width, double Height) GetDimensions(PaperSize size, PaperOrientation orientation)
         {
             double width, height;
-            
+
             switch (size)
             {
                 case PaperSize.A4:
@@ -76,8 +76,8 @@ namespace Apex.UI.Models
                     break;
             }
 
-            return orientation == PaperOrientation.Landscape 
-                ? (height, width) 
+            return orientation == PaperOrientation.Landscape
+                ? (height, width)
                 : (width, height);
         }
 

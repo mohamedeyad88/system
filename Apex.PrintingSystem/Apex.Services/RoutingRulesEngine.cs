@@ -49,7 +49,7 @@ namespace Apex.Services
                         var allowed = kvp.Value.EnumerateArray().Select(e => e.GetString()?.ToLowerInvariant());
                         if (!allowed.Contains(ext)) return false;
                     }
-                    
+
                     if (kvp.Key == "filenameContains" && kvp.Value.ValueKind == JsonValueKind.Array)
                     {
                         var name = (job.OriginalFileName ?? job.FilePath).ToLowerInvariant();

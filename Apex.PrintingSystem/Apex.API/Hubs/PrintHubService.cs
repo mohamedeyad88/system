@@ -58,14 +58,14 @@ namespace Apex.API.Hubs
         {
             var jobData = new
             {
-                jobId       = job.JobId,
-                jobName     = job.JobName,
+                jobId = job.JobId,
+                jobName = job.JobName,
                 printerName = job.PrinterName,
-                state       = job.State.ToString(),
-                progress    = job.Progress,
-                message     = job.StatusMessage,
-                retryCount  = job.RetryCount,
-                updatedAt   = DateTime.Now.ToString("HH:mm:ss")
+                state = job.State.ToString(),
+                progress = job.Progress,
+                message = job.StatusMessage,
+                retryCount = job.RetryCount,
+                updatedAt = DateTime.Now.ToString("HH:mm:ss")
             };
 
             // Push to the printer-specific group and to every connected client
@@ -78,11 +78,11 @@ namespace Apex.API.Hubs
         {
             var healthData = new
             {
-                printerName  = e.PrinterName,
+                printerName = e.PrinterName,
                 circuitState = e.NewState.ToString(),
-                healthScore  = _circuitBreakers.GetHealthScore(e.PrinterName),
-                failures     = e.ConsecutiveFailures,
-                updatedAt    = DateTime.Now.ToString("HH:mm:ss")
+                healthScore = _circuitBreakers.GetHealthScore(e.PrinterName),
+                failures = e.ConsecutiveFailures,
+                updatedAt = DateTime.Now.ToString("HH:mm:ss")
             };
 
             _ = _hub.Clients.All.SendAsync("OnPrinterHealth", healthData);
@@ -101,12 +101,12 @@ namespace Apex.API.Hubs
 
                 var statsData = new
                 {
-                    pendingJobs   = stats.QueuedJobs,
-                    activeJobs    = stats.ActiveJobs,
+                    pendingJobs = stats.QueuedJobs,
+                    activeJobs = stats.ActiveJobs,
                     completedJobs = stats.TotalJobsCompleted,
-                    failedJobs    = stats.TotalJobsFailed,
+                    failedJobs = stats.TotalJobsFailed,
                     successRate,
-                    timestamp     = DateTime.Now.ToString("HH:mm:ss")
+                    timestamp = DateTime.Now.ToString("HH:mm:ss")
                 };
 
                 await _hub.Clients.All.SendAsync("OnStatsUpdate", statsData);

@@ -24,32 +24,32 @@ namespace Apex.Services.SmartVariables
 
     public class ImageMatchingOptions
     {
-        public ImageMatchMode Mode            { get; set; } = ImageMatchMode.ByFileName;
+        public ImageMatchMode Mode { get; set; } = ImageMatchMode.ByFileName;
         /// <summary>The data column to use as the matching key (for ByFileName / ById / ByName / ByPathColumn).</summary>
-        public string         KeyColumn       { get; set; } = "";
+        public string KeyColumn { get; set; } = "";
         /// <summary>Base folder where images live.</summary>
-        public string         ImageFolder     { get; set; } = "";
+        public string ImageFolder { get; set; } = "";
         /// <summary>Static image path (used when Mode = StaticSingle).</summary>
-        public string         StaticImagePath { get; set; } = "";
+        public string StaticImagePath { get; set; } = "";
         /// <summary>Allowed extensions to consider (empty = all supported).</summary>
-        public List<string>   Extensions      { get; set; } = new() { ".jpg", ".jpeg", ".png" };
+        public List<string> Extensions { get; set; } = new() { ".jpg", ".jpeg", ".png" };
         /// <summary>Case-insensitive file name matching.</summary>
-        public bool           CaseInsensitive { get; set; } = true;
+        public bool CaseInsensitive { get; set; } = true;
     }
 
     public interface IImageMatchingService
     {
         void ResolveImages(
-            SmartDataSource        source,
-            List<ImageAsset>       library,
-            ImageMatchingOptions   options);
+            SmartDataSource source,
+            List<ImageAsset> library,
+            ImageMatchingOptions options);
     }
 
     public class ImageMatchingService : IImageMatchingService
     {
         public void ResolveImages(
-            SmartDataSource      source,
-            List<ImageAsset>     library,
+            SmartDataSource source,
+            List<ImageAsset> library,
             ImageMatchingOptions options)
         {
             if (source == null || source.Rows.Count == 0) return;
@@ -76,13 +76,13 @@ namespace Apex.Services.SmartVariables
         // ── Per-row resolution ─────────────────────────────────────────────────
 
         private static void ResolveRow(
-            SmartDataRow                             row,
-            List<ImageAsset>                         library,
-            Dictionary<string, List<ImageAsset>>     lookup,
-            ImageMatchingOptions                     options)
+            SmartDataRow row,
+            List<ImageAsset> library,
+            Dictionary<string, List<ImageAsset>> lookup,
+            ImageMatchingOptions options)
         {
             row.ResolvedImagePath = null;
-            row.ImageStatus       = ImageStatus.NotRequired;
+            row.ImageStatus = ImageStatus.NotRequired;
 
             switch (options.Mode)
             {
@@ -115,7 +115,7 @@ namespace Apex.Services.SmartVariables
             if (File.Exists(options.StaticImagePath))
             {
                 row.ResolvedImagePath = options.StaticImagePath;
-                row.ImageStatus       = ImageStatus.Found;
+                row.ImageStatus = ImageStatus.Found;
             }
             else
             {
@@ -130,7 +130,7 @@ namespace Apex.Services.SmartVariables
             if (!string.IsNullOrEmpty(row.ManualImagePath) && File.Exists(row.ManualImagePath))
             {
                 row.ResolvedImagePath = row.ManualImagePath;
-                row.ImageStatus       = ImageStatus.Found;
+                row.ImageStatus = ImageStatus.Found;
             }
             else if (!string.IsNullOrEmpty(row.ManualImagePath))
             {
@@ -161,7 +161,7 @@ namespace Apex.Services.SmartVariables
             if (File.Exists(fullPath))
             {
                 row.ResolvedImagePath = fullPath;
-                row.ImageStatus       = ImageStatus.Found;
+                row.ImageStatus = ImageStatus.Found;
             }
             else
             {
@@ -172,9 +172,9 @@ namespace Apex.Services.SmartVariables
         }
 
         private static void ResolveByKey(
-            SmartDataRow                         row,
+            SmartDataRow row,
             Dictionary<string, List<ImageAsset>> lookup,
-            ImageMatchingOptions                 options)
+            ImageMatchingOptions options)
         {
             if (!row.Values.TryGetValue(options.KeyColumn, out string? keyValue)
                 || string.IsNullOrWhiteSpace(keyValue))
@@ -211,20 +211,20 @@ namespace Apex.Services.SmartVariables
             {
                 // Multiple matches: warn but use the first one
                 row.ResolvedImagePath = available[0].FullPath;
-                row.ImageStatus       = ImageStatus.MultipleMatches;
+                row.ImageStatus = ImageStatus.MultipleMatches;
                 row.Warnings.Add($"تطابق متعدد للقيمة '{keyValue}' ({available.Count} صور). تم استخدام '{available[0].FileName}'.");
                 if (row.Status < RowStatus.Warning) row.Status = RowStatus.Warning;
                 return;
             }
 
             row.ResolvedImagePath = available[0].FullPath;
-            row.ImageStatus       = ImageStatus.Found;
+            row.ImageStatus = ImageStatus.Found;
         }
 
         // ── Lookup builder ─────────────────────────────────────────────────────
 
         private static Dictionary<string, List<ImageAsset>> BuildLookup(
-            List<ImageAsset>     library,
+            List<ImageAsset> library,
             ImageMatchingOptions options)
         {
             var dict = new Dictionary<string, List<ImageAsset>>(StringComparer.OrdinalIgnoreCase);
@@ -235,11 +235,11 @@ namespace Apex.Services.SmartVariables
                     continue;
 
                 string fileNameNoExt = Path.GetFileNameWithoutExtension(asset.FileName);
-                string key           = NormalizeKey(fileNameNoExt, options.CaseInsensitive);
+                string key = NormalizeKey(fileNameNoExt, options.CaseInsensitive);
 
                 if (!dict.TryGetValue(key, out var list))
                 {
-                    list     = new List<ImageAsset>();
+                    list = new List<ImageAsset>();
                     dict[key] = list;
                 }
                 list.Add(asset);

@@ -8,17 +8,17 @@ namespace Apex.Services.SmartVariables.Models
     {
         public List<ValidationIssue> Issues { get; set; } = new();
 
-        [JsonIgnore] public IEnumerable<ValidationIssue> Errors   => Issues.Where(i => i.Level == IssueLevel.Error);
+        [JsonIgnore] public IEnumerable<ValidationIssue> Errors => Issues.Where(i => i.Level == IssueLevel.Error);
         [JsonIgnore] public IEnumerable<ValidationIssue> Warnings => Issues.Where(i => i.Level == IssueLevel.Warning);
-        [JsonIgnore] public IEnumerable<ValidationIssue> Infos    => Issues.Where(i => i.Level == IssueLevel.Info);
+        [JsonIgnore] public IEnumerable<ValidationIssue> Infos => Issues.Where(i => i.Level == IssueLevel.Info);
 
-        [JsonIgnore] public bool HasErrors    => Errors.Any();
-        [JsonIgnore] public bool HasWarnings  => Warnings.Any();
-        [JsonIgnore] public bool CanExport    => !HasErrors;
+        [JsonIgnore] public bool HasErrors => Errors.Any();
+        [JsonIgnore] public bool HasWarnings => Warnings.Any();
+        [JsonIgnore] public bool CanExport => !HasErrors;
 
-        [JsonIgnore] public int ErrorCount    => Errors.Count();
-        [JsonIgnore] public int WarningCount  => Warnings.Count();
-        [JsonIgnore] public int InfoCount     => Infos.Count();
+        [JsonIgnore] public int ErrorCount => Errors.Count();
+        [JsonIgnore] public int WarningCount => Warnings.Count();
+        [JsonIgnore] public int InfoCount => Infos.Count();
 
         [JsonIgnore]
         public string SummaryText => HasErrors

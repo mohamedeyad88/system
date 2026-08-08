@@ -29,6 +29,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apex.Licensing.Tests", "Ape
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Apex.API", "Apex.API\Apex.API.csproj", "{D4E5F6A7-B8C9-0123-DEFA-234567890ABC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apex.Services.Tests", "Apex.Services.Tests\Apex.Services.Tests.csproj", "{DD21EE4A-A897-443D-950E-147E02967540}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apex.UI.Tests", "Apex.UI.Tests\Apex.UI.Tests.csproj", "{4C9B0513-C0F3-4EA3-9341-38927A790356}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,5 +94,13 @@ Global
 		{D4E5F6A7-B8C9-0123-DEFA-234567890ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4E5F6A7-B8C9-0123-DEFA-234567890ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4E5F6A7-B8C9-0123-DEFA-234567890ABC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD21EE4A-A897-443D-950E-147E02967540}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD21EE4A-A897-443D-950E-147E02967540}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD21EE4A-A897-443D-950E-147E02967540}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD21EE4A-A897-443D-950E-147E02967540}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C9B0513-C0F3-4EA3-9341-38927A790356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C9B0513-C0F3-4EA3-9341-38927A790356}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C9B0513-C0F3-4EA3-9341-38927A790356}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C9B0513-C0F3-4EA3-9341-38927A790356}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

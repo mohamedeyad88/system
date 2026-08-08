@@ -12,26 +12,26 @@ namespace Apex.API.Endpoints
             // ── Today's session stats ──────────────────────────────────────
             group.MapGet("/today", () =>
             {
-                var stats  = PrintJobQueueManager.Instance.GetStatistics();
+                var stats = PrintJobQueueManager.Instance.GetStatistics();
                 var health = CircuitBreakerManager.Instance.GetHealthSnapshot();
 
                 return Results.Ok(new
                 {
                     session = new
                     {
-                        totalJobsQueued    = stats.TotalJobsQueued,
+                        totalJobsQueued = stats.TotalJobsQueued,
                         totalJobsCompleted = stats.TotalJobsCompleted,
-                        totalJobsFailed    = stats.TotalJobsFailed,
-                        successRate        = $"{stats.SuccessRate:F1}%",
-                        activeJobs         = stats.ActiveJobs,
-                        queuedJobs         = stats.QueuedJobs,
+                        totalJobsFailed = stats.TotalJobsFailed,
+                        successRate = $"{stats.SuccessRate:F1}%",
+                        activeJobs = stats.ActiveJobs,
+                        queuedJobs = stats.QueuedJobs,
                         printersWithQueues = stats.PrintersWithQueues
                     },
                     printerHealth = health.Select(kvp => new
                     {
-                        printer     = kvp.Key,
+                        printer = kvp.Key,
                         healthScore = kvp.Value,
-                        status      = CircuitBreakerManager.Instance.GetState(kvp.Key).ToString()
+                        status = CircuitBreakerManager.Instance.GetState(kvp.Key).ToString()
                     }).ToList()
                 });
             })
@@ -40,15 +40,15 @@ namespace Apex.API.Endpoints
             // ── System health ──────────────────────────────────────────────
             group.MapGet("/health", () =>
             {
-                var stats   = PrintJobQueueManager.Instance.GetStatistics();
+                var stats = PrintJobQueueManager.Instance.GetStatistics();
                 bool healthy = stats.SuccessRate >= 80;
 
                 return Results.Ok(new
                 {
-                    status      = healthy ? "healthy" : "degraded",
+                    status = healthy ? "healthy" : "degraded",
                     successRate = stats.SuccessRate,
-                    activeJobs  = stats.ActiveJobs,
-                    timestamp   = DateTime.UtcNow
+                    activeJobs = stats.ActiveJobs,
+                    timestamp = DateTime.UtcNow
                 });
             })
             .WithSummary("System health check");

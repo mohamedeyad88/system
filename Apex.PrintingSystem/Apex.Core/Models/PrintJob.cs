@@ -22,11 +22,11 @@ namespace Apex.Core.Models
         public DateTime? StartedAtUtc { get; set; }
         public DateTime? FinishedAtUtc { get; set; }
         public string? ErrorMessage { get; set; }
-        
+
         public int TotalCopies { get; set; } = 1;
 
         // === Print Settings ===
-        
+
         /// <summary>
         /// Enable duplex (double-sided) printing.
         /// </summary>
@@ -56,7 +56,7 @@ namespace Apex.Core.Models
         /// Print quality (Draft, Normal, High, Best).
         /// </summary>
         public string Quality { get; set; } = "Normal";
-        
+
         /// <summary>
         /// Job priority for queue ordering. Higher priority jobs print first.
         /// </summary>
@@ -93,22 +93,22 @@ namespace Apex.Core.Models
         public bool IsReadyToProcess => Status == PrintJobStatus.Pending && !IsScheduled;
 
         // Legacy/Compat properties (mapped or ignored)
-        public string PrinterName 
-        { 
-            get => TargetPrinterName ?? string.Empty; 
-            set => TargetPrinterName = value; 
-        }
-        
-        public string FileName 
-        { 
-            get => OriginalFileName ?? System.IO.Path.GetFileName(FilePath); 
-            set => OriginalFileName = value; 
+        public string PrinterName
+        {
+            get => TargetPrinterName ?? string.Empty;
+            set => TargetPrinterName = value;
         }
 
-        public DateTime CreatedAt 
-        { 
-            get => CreatedAtUtc.ToLocalTime(); 
-            set => CreatedAtUtc = value.ToUniversalTime(); 
+        public string FileName
+        {
+            get => OriginalFileName ?? System.IO.Path.GetFileName(FilePath);
+            set => OriginalFileName = value;
+        }
+
+        public DateTime CreatedAt
+        {
+            get => CreatedAtUtc.ToLocalTime();
+            set => CreatedAtUtc = value.ToUniversalTime();
         }
     }
 }

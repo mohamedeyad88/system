@@ -10,10 +10,33 @@ namespace Apex.NumberedBooksEngine.Core
         private readonly TemplateLoader _templateLoader;
         private readonly PatchGenerator _patchGenerator;
 
+        // When true, FormatNumberWithLabel converts digits to Arabic-Indic numerals.
+        public bool UseArabicDigits { get; set; } = false;
+
+        /// <summary>Padding / prefix / suffix applied to every printed number.</summary>
+        public NumberFormatOptions NumberFormat { get; set; } = NumberFormatOptions.Default;
+
+        // A4 portrait width in inches; used to infer template DPI from pixel width.
+        private const float A4WidthInches = 8.27f;
+        // WPF design/screen DPI.
+        private const float DesignDpi = 96f;
+
         public Composer()
         {
             _templateLoader = new TemplateLoader();
             _patchGenerator = new PatchGenerator();
+        }
+
+        /// <summary>
+        /// Infers the DPI scale factor from the template pixel width.
+        /// For a 300 DPI A4 template (2481 px) → ~3.125.
+        /// For a 96 DPI preview (794 px) → 1.0.
+        /// Clamped to [1.0, 5.0] to handle non-standard page sizes gracefully.
+        /// </summary>
+        private static float ComputeDpiScale(SKImage template)
+        {
+            float scale = template.Width / (A4WidthInches * DesignDpi);
+            return Math.Clamp(scale, 1f, 5f);
         }
 
         /// <summary>
@@ -31,6 +54,7 @@ namespace Apex.NumberedBooksEngine.Core
         {
             using var surface = SKSurface.Create(new SKImageInfo(template.Width, template.Height));
             var canvas = surface.Canvas;
+            float dpiScale = ComputeDpiScale(template);
 
             // Draw template
             canvas.DrawImage(template, 0, 0);
@@ -44,14 +68,10 @@ namespace Apex.NumberedBooksEngine.Core
                 if (i >= options.Slots.Count) break;
                 var slot = options.Slots[i];
 
-                // Determine copy style from slot or use defaults
                 CopyStyle? style = GetCopyStyleForType(slot, copyType);
-
-                // Generate display text with optional label
                 string displayText = FormatNumberWithLabel(number, style);
 
-                // Generate patch
-                using var patch = _patchGenerator.GeneratePatch(displayText, slot, style);
+                using var patch = _patchGenerator.GeneratePatch(displayText, slot, style, dpiScale);
 
                 // Calculate position
                 float x = slot.X * template.Width;
@@ -153,13 +173,14 @@ namespace Apex.NumberedBooksEngine.Core
         /// This ensures preview matches printed output exactly.
         /// </summary>
         public SKImage ComposePageFromAssignment(
-            SKImage template, 
-            PageAssignment assignment, 
+            SKImage template,
+            PageAssignment assignment,
             IReadOnlyList<SlotSpec> slots,
             CopyType copyType = CopyType.Original)
         {
             using var surface = SKSurface.Create(new SKImageInfo(template.Width, template.Height));
             var canvas = surface.Canvas;
+            float dpiScale = ComputeDpiScale(template);
 
             // Draw template
             canvas.DrawImage(template, 0, 0);
@@ -173,7 +194,8 @@ namespace Apex.NumberedBooksEngine.Core
                 CopyStyle? style = GetCopyStyleForType(slot, copyType);
                 string displayText = FormatNumberWithLabel(slotAssignment.Number, style);
 
-                using var patch = _patchGenerator.GeneratePatch(displayText, slot, style);
+                using var patch = RenderSlotImage(slotAssignment.Number, displayText, slot, style,
+                                                  dpiScale, template.Width, template.Height);
 
                 float x = slot.X * template.Width;
                 float y = slot.Y * template.Height;
@@ -268,17 +290,47 @@ namespace Apex.NumberedBooksEngine.Core
             return slot.CopyStyles[0]; // Fallback to first style
         }
 
-        private string FormatNumberWithLabel(long number, CopyStyle? style)
+        /// <summary>
+        /// Produces the image for one slot: a scannable code when the slot is a code
+        /// slot, otherwise the number as text.
+        ///
+        /// The code encodes the number WITHOUT the copy label — a scanner must read
+        /// the sequence value itself, not "000123 / أصل". If encoding fails (e.g.
+        /// EAN-13 with an alphabetic prefix) the slot falls back to printing the
+        /// number as text, so the sheet is never left blank.
+        /// </summary>
+        private SKImage RenderSlotImage(
+            long number, string displayText, SlotSpec slot, CopyStyle? style,
+            float dpiScale, int templateWidth, int templateHeight)
         {
-            string numStr = number.ToString("D4"); // 4-digit format
-
-            if (style != null && !string.IsNullOrEmpty(style.Label))
+            if (slot.Kind != SlotKind.Text)
             {
-                return $"{numStr} / {style.Label}";
+                int wPx = (int)(slot.Width * templateWidth);
+                int hPx = (int)(slot.Height * templateHeight);
+
+                string codeContent = NumberFormatter.Format(number, NumberFormat with
+                {
+                    // Scanners expect Western digits regardless of what is printed.
+                    UseArabicDigits = false
+                });
+
+                var format = NumberCodeRenderer.ResolveFormat(slot.Kind, slot.BarcodeType);
+                var code = NumberCodeRenderer.TryRender(codeContent, format, wPx, hPx);
+                if (code != null) return code;
             }
 
-            return numStr;
+            return _patchGenerator.GeneratePatch(displayText, slot, style, dpiScale);
         }
+
+        private string FormatNumberWithLabel(long number, CopyStyle? style)
+            => NumberFormatter.FormatWithLabel(number, style?.Label, NumberFormat with
+            {
+                UseArabicDigits = UseArabicDigits
+            });
+
+        /// <summary>Converts Western digit characters to Arabic-Indic numerals (٠١٢٣...).</summary>
+        // Arabic-Indic conversion now lives in NumberFormatter so both the composer
+        // and the print-command builder use identical digits.
     }
 
     /// <summary>

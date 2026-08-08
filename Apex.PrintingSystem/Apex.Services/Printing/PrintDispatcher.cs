@@ -18,7 +18,7 @@ namespace Apex.Services.Printing
         public event EventHandler<DistributionJob> OnJobStatusChanged;
 
         public PrintDispatcher(
-            IPrintEngine printEngine, 
+            IPrintEngine printEngine,
             IPrinterValidationService validationService,
             IPrintJobLogger logger)
         {
@@ -30,7 +30,7 @@ namespace Apex.Services.Printing
         public async Task<List<DistributionJob>> DispatchAsync(string filePath, List<string> printers, DistributionSettings settings)
         {
             var jobs = printers.Select(p => new DistributionJob { PrinterName = p, StartTime = DateTime.Now }).ToList();
-            
+
             // Initial status update
             foreach (var job in jobs) NotifyStatus(job);
 
@@ -118,7 +118,7 @@ namespace Apex.Services.Printing
             job.TimeTaken = stopwatch.Elapsed;
             job.EndTime = DateTime.Now;
             job.Status = success ? "Completed" : "Failed";
-            
+
             _logger.LogJob(job.PrinterName, filePath, success, success ? "Success" : job.ErrorMessage);
             NotifyStatus(job);
         }

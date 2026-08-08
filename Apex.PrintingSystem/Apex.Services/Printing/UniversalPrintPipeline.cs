@@ -46,7 +46,6 @@ namespace Apex.Services.Printing
             _logger.Log(LogLevel.Info, $"Pipeline: Processing file '{Path.GetFileName(filePath)}'", "UniversalPipeline", "Process");
 
             string finalPath = filePath;
-            bool isTempFile = false;
 
             try
             {
@@ -56,16 +55,13 @@ namespace Apex.Services.Printing
                 {
                     _logger.Log(LogLevel.Info, $"Pipeline: Converting {ext} to PDF...", "UniversalPipeline", "Process");
                     var conversionResult = await _converter.ConvertToPdfAsync(filePath);
-                    
+
                     if (!conversionResult.Success)
-                    {
                         throw new InvalidOperationException($"Conversion failed: {conversionResult.ErrorMessage}");
-                    }
 
                     finalPath = conversionResult.OutputPath;
-                    isTempFile = true; 
                 }
-                
+
                 // 1.1 Validation / Basic Pre-processing
                 if (!ValidatePdf(finalPath))
                 {
@@ -76,7 +72,7 @@ namespace Apex.Services.Printing
                 var job = _distributionService.CreatePrintJob(finalPath, settings.Copies);
                 job.TargetPrinterName = printerName;
                 job.OriginalFilePath = filePath;
-                
+
                 // Apply print settings
                 job.Duplex = settings.Duplex;
                 job.Color = settings.Color;
@@ -84,12 +80,12 @@ namespace Apex.Services.Printing
                 job.PaperSize = settings.PaperSize;
                 job.Orientation = settings.Orientation;
                 job.Quality = settings.Quality;
-                
+
                 // 3. Queueing
                 await _distributionService.DistributeJobAsync(job);
 
                 _logger.Log(LogLevel.Info, $"Pipeline: Job {job.Id} queued successfully.", "UniversalPipeline", "Process");
-                
+
                 return job;
             }
             catch (Exception ex)

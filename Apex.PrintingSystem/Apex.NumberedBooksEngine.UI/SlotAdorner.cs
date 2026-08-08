@@ -132,7 +132,7 @@ namespace Apex.NumberedBooksEngine.UI
 
             if (width > 10) element.Width = width;
             if (height > 10) element.Height = height;
-            
+
             Canvas.SetLeft(element, left);
             Canvas.SetTop(element, top);
         }
@@ -140,7 +140,7 @@ namespace Apex.NumberedBooksEngine.UI
         protected override Size ArrangeOverride(Size finalSize)
         {
             _moveThumb.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
-            
+
             _topLeft.Arrange(new Rect(-5, -5, 10, 10));
             _topRight.Arrange(new Rect(finalSize.Width - 5, -5, 10, 10));
             _bottomLeft.Arrange(new Rect(-5, finalSize.Height - 5, 10, 10));

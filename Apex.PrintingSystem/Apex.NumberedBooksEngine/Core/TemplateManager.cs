@@ -12,10 +12,10 @@ namespace Apex.NumberedBooksEngine.Core
     /// Result of template upload to a printer.
     /// </summary>
     public record TemplateUploadResult(
-        string TemplateId, 
-        bool StoredInPrinter, 
-        int Dpi, 
-        int WidthPx, 
+        string TemplateId,
+        bool StoredInPrinter,
+        int Dpi,
+        int WidthPx,
         int HeightPx,
         string Checksum);
 
@@ -56,7 +56,7 @@ namespace Apex.NumberedBooksEngine.Core
         public (SKImage Image, string Checksum) RasterizeTemplate(string templatePath, int dpi = 300)
         {
             System.Diagnostics.Debug.WriteLine($"[NUMBERING] TemplateManager.RasterizeTemplate - Path: {templatePath}, DPI: {dpi}");
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // VALIDATION: Ensure template file exists and is accessible
             // ═══════════════════════════════════════════════════════════════════
@@ -64,12 +64,12 @@ namespace Apex.NumberedBooksEngine.Core
             {
                 throw new ArgumentException("مسار القالب فارغ. يرجى اختيار ملف قالب صالح.", nameof(templatePath));
             }
-            
+
             if (!File.Exists(templatePath))
             {
                 throw new FileNotFoundException($"ملف القالب غير موجود: {templatePath}", templatePath);
             }
-            
+
             try
             {
                 var checksum = ComputeFileChecksum(templatePath);
@@ -82,11 +82,11 @@ namespace Apex.NumberedBooksEngine.Core
                 }
 
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] Loading template from file...");
-                
+
                 // Open file with sharing to support OneDrive/cloud files
                 using var stream = new FileStream(templatePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 var result = RasterizeTemplate(stream, GetTemplateFormat(templatePath), dpi, checksum);
-                
+
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] ✅ Template loaded: {result.Image.Width}x{result.Image.Height}");
                 return result;
             }
@@ -151,8 +151,8 @@ namespace Apex.NumberedBooksEngine.Core
         /// Returns the template ID assigned by the printer or a generated ID.
         /// </summary>
         public async Task<TemplateUploadResult> UploadTemplateToPrinterAsync(
-            string printerName, 
-            SKImage templateImage, 
+            string printerName,
+            SKImage templateImage,
             string checksum,
             TemplateUploadOptions options,
             IPrintOutputService printService)
@@ -169,10 +169,10 @@ namespace Apex.NumberedBooksEngine.Core
 
             // Attempt upload (implementation depends on printer capabilities)
             var storedInPrinter = false;
-            
+
             // For now, we'll mark as "not stored in printer" and rely on spooler fallback
             // Real implementation would use PCL/PS commands via printService
-            
+
             var result = new TemplateUploadResult(
                 TemplateId: templateId,
                 StoredInPrinter: storedInPrinter,
@@ -213,7 +213,7 @@ namespace Apex.NumberedBooksEngine.Core
         private SKImage RasterizePdf(Stream stream, int dpi)
         {
             System.Diagnostics.Debug.WriteLine($"[NUMBERING] RasterizePdf - DPI: {dpi}");
-            
+
             try
             {
                 // Reset stream position
@@ -221,38 +221,38 @@ namespace Apex.NumberedBooksEngine.Core
                 {
                     stream.Position = 0;
                 }
-                
+
                 // Use PDFium to rasterize PDF at specified DPI
                 using var doc = PdfiumViewer.PdfDocument.Load(stream);
-                
+
                 if (doc.PageCount == 0)
                 {
                     throw new InvalidOperationException("ملف PDF فارغ أو تالف.");
                 }
-                
+
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] PDF loaded: {doc.PageCount} pages");
-                
+
                 using var rendered = doc.Render(0, dpi, dpi, PdfiumViewer.PdfRenderFlags.Annotations);
-                
+
                 if (rendered == null)
                 {
                     throw new InvalidOperationException("فشل في تحويل صفحة PDF إلى صورة.");
                 }
-                
+
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] PDF rendered: {rendered.Width}x{rendered.Height}");
-                
+
                 using var bitmap = new System.Drawing.Bitmap(rendered);
                 using var ms = new MemoryStream();
                 bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                 ms.Position = 0;
 
                 var image = SKImage.FromEncodedData(ms);
-                
+
                 if (image == null)
                 {
                     throw new InvalidOperationException("فشل في إنشاء صورة من PDF المحول.");
                 }
-                
+
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] ✅ PDF rasterized successfully: {image.Width}x{image.Height}");
                 return image;
             }
@@ -266,7 +266,7 @@ namespace Apex.NumberedBooksEngine.Core
         private SKImage RasterizeImage(Stream stream)
         {
             System.Diagnostics.Debug.WriteLine($"[NUMBERING] RasterizeImage - Loading image from stream");
-            
+
             try
             {
                 // Reset stream position
@@ -274,14 +274,14 @@ namespace Apex.NumberedBooksEngine.Core
                 {
                     stream.Position = 0;
                 }
-                
+
                 var image = SKImage.FromEncodedData(stream);
-                
+
                 if (image == null)
                 {
                     throw new InvalidOperationException("فشل في تحميل الصورة. تأكد من صحة تنسيق الملف (PNG, JPG, BMP).");
                 }
-                
+
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] ✅ Image loaded: {image.Width}x{image.Height}");
                 return image;
             }

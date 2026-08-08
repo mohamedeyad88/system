@@ -11,24 +11,24 @@ namespace Apex.Services.SmartVariables.Models
         public string RawPastedText { get; set; } = "";
 
         // ── Parse metadata ────────────────────────────────────────────────────
-        public char     DetectedSeparator     { get; set; } = '\t';
-        public bool     HasHeader             { get; set; } = true;
-        public bool     TrimWhitespace        { get; set; } = true;
-        public bool     IgnoreEmptyRows       { get; set; } = true;
-        public bool     AllValuesAsRawString  { get; set; } = true;
-        public DateTime ParsedAt              { get; set; }
+        public char DetectedSeparator { get; set; } = '\t';
+        public bool HasHeader { get; set; } = true;
+        public bool TrimWhitespace { get; set; } = true;
+        public bool IgnoreEmptyRows { get; set; } = true;
+        public bool AllValuesAsRawString { get; set; } = true;
+        public DateTime ParsedAt { get; set; }
 
         // ── Parsed data ───────────────────────────────────────────────────────
-        public List<string>       Columns { get; set; } = new();
-        public List<SmartDataRow> Rows    { get; set; } = new();
+        public List<string> Columns { get; set; } = new();
+        public List<SmartDataRow> Rows { get; set; } = new();
 
         // ── Stats (computed) ─────────────────────────────────────────────────
-        [JsonIgnore] public bool HasData     => Rows.Count > 0 && Columns.Count > 0;
-        [JsonIgnore] public int  TotalRows   => Rows.Count;
-        [JsonIgnore] public int  TotalColumns=> Columns.Count;
-        [JsonIgnore] public int  ValidRows   => Rows.Count(r => r.Status == RowStatus.Valid);
-        [JsonIgnore] public int  WarningRows => Rows.Count(r => r.Status == RowStatus.Warning);
-        [JsonIgnore] public int  ErrorRows   => Rows.Count(r => r.Status == RowStatus.Error);
+        [JsonIgnore] public bool HasData => Rows.Count > 0 && Columns.Count > 0;
+        [JsonIgnore] public int TotalRows => Rows.Count;
+        [JsonIgnore] public int TotalColumns => Columns.Count;
+        [JsonIgnore] public int ValidRows => Rows.Count(r => r.Status == RowStatus.Valid);
+        [JsonIgnore] public int WarningRows => Rows.Count(r => r.Status == RowStatus.Warning);
+        [JsonIgnore] public int ErrorRows => Rows.Count(r => r.Status == RowStatus.Error);
 
         [JsonIgnore]
         public string SummaryText =>
@@ -40,9 +40,9 @@ namespace Apex.Services.SmartVariables.Models
         public string SeparatorName => DetectedSeparator switch
         {
             '\t' => "Tab (Excel/Sheets)",
-            ','  => "فاصلة",
-            ';'  => "فاصلة منقوطة",
-            _    => "غير معروف"
+            ',' => "فاصلة",
+            ';' => "فاصلة منقوطة",
+            _ => "غير معروف"
         };
     }
 }

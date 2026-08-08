@@ -429,6 +429,12 @@
                         BorderThickness="0,0,0,1"
                         Padding="16,12"
                         MinHeight="80">
+                    <!-- Bound the variable tab-content height so the action buttons (Row 2)
+                         below this border are never pushed off-screen on shorter windows.
+                         Content scrolls within this cap instead of overflowing. -->
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  MaxHeight="420">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -485,8 +491,19 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="{DynamicResource Numbering_From}" FontSize="10" Foreground="#64748B" Margin="0,0,0,4"/>
-                                        <TextBox Text="{Binding StartNumber, Converter={StaticResource LongToStringConverter}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                                        <DockPanel Margin="0,0,0,4" LastChildFill="False">
+                                            <TextBlock Text="{DynamicResource Numbering_From}" FontSize="10" Foreground="#64748B"
+                                                       DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                                            <!-- Jumps past every number already issued in this series -->
+                                            <Button Content="{DynamicResource Num_NextAvailable}"
+                                                    Command="{Binding UseNextAvailableNumberCommand}"
+                                                    DockPanel.Dock="Right" Cursor="Hand"
+                                                    FontSize="10" Padding="6,2" Margin="8,0,0,0"
+                                                    Background="#1E293B" Foreground="#60A5FA"
+                                                    BorderBrush="#334155" BorderThickness="1"
+                                                    ToolTip="{Binding SuggestedNextNumber}"/>
+                                        </DockPanel>
+                                        <TextBox Text="{Binding StartNumber, Converter={StaticResource LongToStringConverter}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                                                  Width="110"
                                                  Height="32"
                                                  FontSize="13"
@@ -600,19 +617,116 @@
                             <StackPanel>
                                 <TextBlock Text="{DynamicResource Numbering_NumberingType}" FontSize="11" Foreground="#64748B" Margin="0,0,0,8"/>
                                 <StackPanel Orientation="Vertical">
-                                    <RadioButton Content="{DynamicResource Numbering_LinearMode}" 
+                                    <RadioButton Content="{DynamicResource Numbering_LinearMode}"
                                                  IsChecked="{Binding IsLinearMode}"
                                                  GroupName="NumberingMode"
                                                  Margin="0,0,0,6"
                                                  VerticalAlignment="Center"/>
-                                    <RadioButton Content="{DynamicResource Numbering_ImposedMode}" 
+                                    <RadioButton Content="{DynamicResource Numbering_ImposedMode}"
                                                  IsChecked="{Binding IsImposedMode}"
                                                  GroupName="NumberingMode"
                                                  VerticalAlignment="Center"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
+
+                        <!-- Digit Style Group (أرقام عربية / غربية) -->
+                        <Border BorderBrush="#334155" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,0">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Numbering_DigitStyle}" FontSize="11" Foreground="#64748B" Margin="0,0,0,8"/>
+                                <StackPanel Orientation="Vertical">
+                                    <RadioButton Content="{DynamicResource Numbering_DigitWestern}"
+                                                 IsChecked="{Binding UseWesternDigits}"
+                                                 GroupName="DigitStyle"
+                                                 Margin="0,0,0,6"
+                                                 VerticalAlignment="Center"/>
+                                    <RadioButton Content="{DynamicResource Numbering_DigitArabic}"
+                                                 IsChecked="{Binding UseArabicDigits}"
+                                                 GroupName="DigitStyle"
+                                                 VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
                         
+                        <!-- Number format: digits + series prefix/suffix (INV-000123/2026) -->
+                        <Border BorderBrush="#334155" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,0">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Numbering_NumberFormat}" FontSize="11" Foreground="#64748B" Margin="0,0,0,8"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel Margin="0,0,8,0">
+                                        <TextBlock Text="{DynamicResource Numbering_Prefix}" FontSize="10" Foreground="#94A3B8"/>
+                                        <TextBox Text="{Binding NumberPrefix, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="70" Padding="6,4" Background="#0F172A" Foreground="#E2E8F0"
+                                                 BorderBrush="#334155" BorderThickness="1" CaretBrush="#E2E8F0"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,8,0">
+                                        <TextBlock Text="{DynamicResource Numbering_Digits}" FontSize="10" Foreground="#94A3B8"/>
+                                        <TextBox Text="{Binding NumberPadDigits, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="48" Padding="6,4" Background="#0F172A" Foreground="#E2E8F0"
+                                                 BorderBrush="#334155" BorderThickness="1" CaretBrush="#E2E8F0"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource Numbering_Suffix}" FontSize="10" Foreground="#94A3B8"/>
+                                        <TextBox Text="{Binding NumberSuffix, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="70" Padding="6,4" Background="#0F172A" Foreground="#E2E8F0"
+                                                 BorderBrush="#334155" BorderThickness="1" CaretBrush="#E2E8F0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <!-- Live example of what will actually print -->
+                                <TextBlock Margin="0,8,0,0" FontFamily="Consolas" FontSize="13" FontWeight="Bold"
+                                           Foreground="#22C55E" Text="{Binding NumberFormatPreview}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Issued-numbers register: what was printed, and any gaps -->
+                        <Border BorderBrush="#334155" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,0">
+                            <StackPanel MinWidth="220">
+                                <DockPanel Margin="0,0,0,8" LastChildFill="False">
+                                    <TextBlock Text="{DynamicResource Num_RegistryTitle}" FontSize="11"
+                                               Foreground="#64748B" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                                    <Button Content="{DynamicResource Num_RegistryRefresh}"
+                                            Command="{Binding RefreshRegistryCommand}"
+                                            DockPanel.Dock="Right" Cursor="Hand"
+                                            FontSize="10" Padding="6,2" Margin="8,0,0,0"
+                                            Background="#1E293B" Foreground="#60A5FA"
+                                            BorderBrush="#334155" BorderThickness="1"/>
+                                </DockPanel>
+
+                                <TextBlock Text="{Binding RegistrySummary}" FontSize="11"
+                                           Foreground="#94A3B8" TextWrapping="Wrap" Margin="0,0,0,6"/>
+
+                                <ItemsControl ItemsSource="{Binding IssuedRanges}" MaxHeight="90">
+                                    <ItemsControl.Template>
+                                        <ControlTemplate TargetType="ItemsControl">
+                                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                                <ItemsPresenter/>
+                                            </ScrollViewer>
+                                        </ControlTemplate>
+                                    </ItemsControl.Template>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="10"
+                                                       Foreground="#CBD5E1" Margin="0,0,0,2"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- Gaps are what an auditor asks about first -->
+                                <StackPanel Margin="0,6,0,0"
+                                            Visibility="{Binding HasRegistryEntries, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <TextBlock Text="{DynamicResource Num_RegistryGaps}" FontSize="10" Foreground="#F59E0B"/>
+                                    <ItemsControl ItemsSource="{Binding NumberGaps}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="10"
+                                                           Foreground="#F59E0B"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
                         <!-- ════ MEDIUM ① — معاينة متعددة الصفحات ════ -->
                         <Border BorderBrush="#334155" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,0">
                             <StackPanel>
@@ -1454,35 +1568,22 @@
                                               BorderThickness="1"
                                               Cursor="Hand"
                                               Margin="0,0,8,0">
+                                        <!-- Inherit the global dark ComboBox template + dark item style.
+                                             Only add hover/focus accent on top. (Previously this used
+                                             the default template + white items → light popup.) -->
                                         <ComboBox.Style>
-                                            <Style TargetType="ComboBox">
+                                            <Style TargetType="ComboBox"
+                                                   BasedOn="{StaticResource {x:Type ComboBox}}">
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter Property="BorderBrush" Value="#3B82F6"/>
-                                                        <Setter Property="BorderThickness" Value="2"/>
                                                     </Trigger>
                                                     <Trigger Property="IsFocused" Value="True">
                                                         <Setter Property="BorderBrush" Value="#3B82F6"/>
-                                                        <Setter Property="BorderThickness" Value="2"/>
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </ComboBox.Style>
-                                        <ComboBox.ItemContainerStyle>
-                                            <Style TargetType="ComboBoxItem">
-                                                <Setter Property="Padding" Value="10,6"/>
-                                                <Setter Property="Background" Value="White"/>
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#F3F4F6"/>
-                                                    </Trigger>
-                                                    <Trigger Property="IsSelected" Value="True">
-                                                        <Setter Property="Background" Value="#DBEAFE"/>
-                                                        <Setter Property="Foreground" Value="#1E40AF"/>
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ComboBox.ItemContainerStyle>
                                     </ComboBox>
                                     <Button Content="⚙️" 
                                             Width="36" 
@@ -1530,7 +1631,8 @@
                                 <StackPanel>
                                     <!-- Shared dark style for tray ComboBoxes -->
                                     <StackPanel.Resources>
-                                        <Style x:Key="DarkTrayCombo" TargetType="ComboBox">
+                                        <Style x:Key="DarkTrayCombo" TargetType="ComboBox"
+                                               BasedOn="{StaticResource {x:Type ComboBox}}">
                                             <Setter Property="Width"           Value="120"/>
                                             <Setter Property="Height"          Value="32"/>
                                             <Setter Property="FontSize"        Value="12"/>
@@ -1670,14 +1772,17 @@
                                                 <Setter Property="Template">
                                                     <Setter.Value>
                                                         <ControlTemplate TargetType="ProgressBar">
-                                                            <Border Background="#334155" 
-                                                                    CornerRadius="4" 
+                                                            <!-- PART_Track/PART_Indicator: WPF sizes the fill to Value/Maximum
+                                                                 against the track's actual width. (The old converter capped
+                                                                 the fill at a fixed 100px regardless of the bar's real width.) -->
+                                                            <Border x:Name="PART_Track"
+                                                                    Background="#334155"
+                                                                    CornerRadius="4"
                                                                     BorderThickness="0">
-                                                                <Border x:Name="PART_Track" 
-                                                                        Background="#3B82F6" 
+                                                                <Border x:Name="PART_Indicator"
+                                                                        Background="#3B82F6"
                                                                         CornerRadius="4"
-                                                                        HorizontalAlignment="Left"
-                                                                        Width="{TemplateBinding Value, Converter={StaticResource PercentToWidthConverter}, ConverterParameter=100}"/>
+                                                                        HorizontalAlignment="Left"/>
                                                             </Border>
                                                         </ControlTemplate>
                                                     </Setter.Value>
@@ -1802,8 +1907,9 @@
                         <!-- Print Button (moved to Grid.Row="2" in parent Grid) -->
                     </Grid>
                     </Grid>
+                    </ScrollViewer>
                 </Border>
-                
+
                 <!-- Action Buttons (moved outside Border to ensure visibility) -->
                 <StackPanel Grid.Row="2" Margin="16,16,16,16" Orientation="Horizontal" HorizontalAlignment="Right" Background="#1E293B">
                     <!-- Back Button (visible when not in Prepare mode) -->
@@ -2109,8 +2215,8 @@
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ProgressBar">
                                                     <Grid>
-                                                        <!-- Track -->
-                                                        <Border Background="#1E293B" CornerRadius="5"/>
+                                                        <!-- Track (named PART_Track so WPF sizes PART_Indicator) -->
+                                                        <Border x:Name="PART_Track" Background="#1E293B" CornerRadius="5"/>
                                                         <!-- Fill -->
                                                         <Border x:Name="PART_Indicator"
                                                                 HorizontalAlignment="Left"
@@ -2554,10 +2660,26 @@
                                     </ComboBox.ItemContainerStyle>
                                 </ComboBox>
                                 
+                                <!-- Slot kind: print the number, or encode it as a scannable code -->
+                                <TextBlock Text="{DynamicResource Num_SlotKind}"
+                                           Foreground="#64748B" FontSize="12" FontWeight="SemiBold"
+                                           Margin="0,0,0,8"/>
+                                <ComboBox ItemsSource="{Binding Source={x:Static models:NumberSlot.AvailableKinds}}"
+                                          SelectedItem="{Binding SelectedSlot.SlotKind, Mode=TwoWay}"
+                                          Margin="0,0,0,10" Padding="8,4"/>
+                                <StackPanel Margin="0,0,0,16"
+                                            Visibility="{Binding SelectedSlot.IsBarcode, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
+                                    <TextBlock Text="{DynamicResource Num_BarcodeType}"
+                                               Foreground="#64748B" FontSize="11" Margin="0,0,0,4"/>
+                                    <ComboBox ItemsSource="{Binding Source={x:Static models:NumberSlot.AvailableBarcodeTypes}}"
+                                              SelectedItem="{Binding SelectedSlot.BarcodeType, Mode=TwoWay}"
+                                              Padding="8,4"/>
+                                </StackPanel>
+
                                 <!-- Font Size -->
-                                <TextBlock Text="{DynamicResource Numbering_FontSizeLabel}" 
-                                           Foreground="#64748B" 
-                                           FontSize="12" 
+                                <TextBlock Text="{DynamicResource Numbering_FontSizeLabel}"
+                                           Foreground="#64748B"
+                                           FontSize="12"
                                            FontWeight="SemiBold"
                                            Margin="0,0,0,8"/>
                                 <Grid Margin="0,0,0,16">
@@ -2834,7 +2956,7 @@
 
                     <!-- Close button -->
                     <Button Grid.Row="2" Command="{Binding CloseMultiPreviewCommand}"
-                            Content="✕ إغلاق"
+                            Content="{DynamicResource NW_001}"
                             HorizontalAlignment="Center" Margin="0,16,0,0"
                             Padding="24,10" Background="#1E293B" Foreground="#94A3B8"
                             BorderThickness="1" BorderBrush="#475569" FontSize="14" Cursor="Hand">
@@ -3096,7 +3218,7 @@
                 <!-- Footer: Clear button -->
                 <Border Grid.Row="2" BorderBrush="#1E3A5F" BorderThickness="0,1,0,0" Padding="16,10">
                     <Button Command="{Binding ClearPrintHistoryCommand}"
-                            Content="🗑 مسح السجل"
+                            Content="{DynamicResource NW_002}"
                             HorizontalAlignment="Center"
                             Padding="16,7" Background="#1E293B" Foreground="#94A3B8"
                             BorderThickness="1" BorderBrush="#334155" FontSize="12" Cursor="Hand">

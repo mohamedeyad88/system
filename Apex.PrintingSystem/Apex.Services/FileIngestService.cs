@@ -79,7 +79,8 @@ namespace Apex.Services
             {
                 try
                 {
-                    using var archive = ArchiveFactory.Open(archivePath);
+                    using var fileStream = File.OpenRead(archivePath);
+                    using var archive = ArchiveFactory.OpenArchive(fileStream);
                     foreach (var entry in archive.Entries.Where(e => !e.IsDirectory))
                     {
                         entry.WriteToDirectory(extractDir, new ExtractionOptions
@@ -97,11 +98,11 @@ namespace Apex.Services
             });
 
             // Process extracted files
-            await ProcessDirectoryAsync(extractDir, results, new IngestOptions 
-            { 
-                ScanSubfolders = true, 
+            await ProcessDirectoryAsync(extractDir, results, new IngestOptions
+            {
+                ScanSubfolders = true,
                 ExtractArchives = options.ExtractArchives, // Recursive extraction? Maybe limit depth.
-                TempFolder = options.TempFolder 
+                TempFolder = options.TempFolder
             });
         }
 

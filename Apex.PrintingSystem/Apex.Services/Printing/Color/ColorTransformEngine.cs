@@ -25,9 +25,9 @@ namespace Apex.Services.Printing.Color
 
         // ── XYZ → sRGB (D50 inverse) matrix ─────────────────────────────────
         // Row-major inverse of the above 3×3
-        private const double INV_XX =  3.1338561, INV_XY = -1.6168667, INV_XZ = -0.4906146;
-        private const double INV_YX = -0.9787684, INV_YY =  1.9161415, INV_YZ =  0.0334540;
-        private const double INV_ZX =  0.0719453, INV_ZY = -0.2289914, INV_ZZ =  1.4052427;
+        private const double INV_XX = 3.1338561, INV_XY = -1.6168667, INV_XZ = -0.4906146;
+        private const double INV_YX = -0.9787684, INV_YY = 1.9161415, INV_YZ = 0.0334540;
+        private const double INV_ZX = 0.0719453, INV_ZY = -0.2289914, INV_ZZ = 1.4052427;
 
         // ═════════════════════════════════════════════════════════════════════
         // 1. RGB → CIELab
@@ -71,10 +71,18 @@ namespace Apex.Services.Printing.Color
         // ═════════════════════════════════════════════════════════════════════
 
         /// <summary>
-        /// Converts a CIELab colour to CMYK (0–255 each) using GCR
-        /// and a 320% total-area-coverage limit.
+        /// Converts a CIELab colour to CMYK (0–255 each) using the default
+        /// separation settings.
         /// </summary>
         public static (byte C, byte M, byte Y, byte K) LabToCmyk(double L, double a, double b)
+            => LabToCmyk(L, a, b, CmykSeparationSettings.Default);
+
+        /// <summary>
+        /// Converts a CIELab colour to CMYK (0–255 each) using GCR and the
+        /// total-area-coverage limit of <paramref name="settings"/>.
+        /// </summary>
+        public static (byte C, byte M, byte Y, byte K) LabToCmyk(
+            double L, double a, double b, CmykSeparationSettings settings)
         {
             // Lab → XYZ (D50)
             double fy = (L + 16.0) / 116.0;
@@ -100,7 +108,7 @@ namespace Apex.Services.Printing.Color
             double G = GammaEncode(gLin);
             double Bv = GammaEncode(bLin);
 
-            return RgbDoublesToCmyk(R, G, Bv);
+            return RgbDoublesToCmyk(R, G, Bv, settings);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -120,33 +128,62 @@ namespace Apex.Services.Printing.Color
 
         /// <summary>
         /// Converts sRGB (0–255) to CMYK (0–255) using Lab as an intermediate,
-        /// ensuring perceptually correct GCR separation.
+        /// with the default separation settings.
         /// </summary>
         public static (byte C, byte M, byte Y, byte K) RgbToCmyk(byte r, byte g, byte b)
+            => RgbToCmyk(r, g, b, CmykSeparationSettings.Default);
+
+        /// <summary>
+        /// Converts sRGB (0–255) to CMYK (0–255) for a specific press/stock.
+        /// </summary>
+        public static (byte C, byte M, byte Y, byte K) RgbToCmyk(
+            byte r, byte g, byte b, CmykSeparationSettings settings)
         {
             var (L, a, lab_b) = RgbToLab(r, g, b);
-            return LabToCmyk(L, a, lab_b);
+            return LabToCmyk(L, a, lab_b, settings);
         }
 
         // ── Shared GCR logic ─────────────────────────────────────────────────
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static (byte C, byte M, byte Y, byte K) RgbDoublesToCmyk(double R, double G, double B)
+        /// <summary>
+        /// Grey-component replacement followed by an ENFORCED total-ink limit.
+        ///
+        /// The previous version multiplied black by 0.85 and called that a 320% cap.
+        /// It is the opposite: shrinking K pushes ink back into C, M and Y, and pure
+        /// black separated to C100 M100 Y100 K85 — 385% total. No press or paper holds
+        /// that; the sheet never dries and the run is scrap. Nothing here may exceed
+        /// <see cref="CmykSeparationSettings.TotalAreaCoverage"/>.
+        /// </summary>
+        private static (byte C, byte M, byte Y, byte K) RgbDoublesToCmyk(
+            double R, double G, double B, CmykSeparationSettings settings)
         {
+            settings ??= CmykSeparationSettings.Default;
+
             double cRaw = 1.0 - R;
             double mRaw = 1.0 - G;
             double yRaw = 1.0 - B;
 
-            // UCR/GCR: extract minimum channel as black
-            double k = Math.Min(cRaw, Math.Min(mRaw, yRaw));
+            // The neutral component present in all three inks — the part black can replace.
+            double neutral = Math.Min(cRaw, Math.Min(mRaw, yRaw));
 
-            // Limit TAC to 320% (= K*0.85 + C+M+Y ≤ 3.2)
-            k *= 0.85;
+            double start = Clamp01(settings.BlackStart);
+            double kMax = Clamp01(settings.BlackMax);
+            double gcr = Clamp01(settings.GcrAmount);
+
+            // Black ramps in from BlackStart so light greys stay built from CMY and
+            // do not break into visible black dots.
+            double k = neutral <= start || start >= 1.0
+                ? 0.0
+                : (neutral - start) / (1.0 - start) * kMax * gcr;
+
+            k = Math.Min(k, kMax);
 
             double c, m, y;
             if (k >= 1.0)
             {
-                c = 0.0; m = 0.0; y = 0.0; k = 1.0;
+                // Fully replaced: solid black is K alone, not four inks.
+                c = m = y = 0.0;
+                k = 1.0;
             }
             else
             {
@@ -156,13 +193,35 @@ namespace Apex.Services.Printing.Color
                 y = (yRaw - k) / denom;
             }
 
-            return (
-                ToByte(c),
-                ToByte(m),
-                ToByte(y),
-                ToByte(k)
-            );
+            c = Clamp01(c); m = Clamp01(m); y = Clamp01(y); k = Clamp01(k);
+
+            // Enforce the ink limit. Black carries the density and is cheapest, so the
+            // chromatic inks give way first; only if K alone still exceeds the limit
+            // does K itself get capped.
+            double tac = Math.Max(0.0, settings.TotalAreaCoverage);
+            double total = c + m + y + k;
+            if (total > tac)
+            {
+                double cmy = c + m + y;
+                double allowedCmy = tac - k;
+
+                if (allowedCmy <= 0.0)
+                {
+                    c = m = y = 0.0;
+                    k = Math.Min(k, tac);
+                }
+                else if (cmy > 0.0)
+                {
+                    double scale = allowedCmy / cmy;
+                    c *= scale; m *= scale; y *= scale;
+                }
+            }
+
+            return (ToByte(c), ToByte(m), ToByte(y), ToByte(k));
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double Clamp01(double v) => v < 0.0 ? 0.0 : v > 1.0 ? 1.0 : v;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static byte ToByte(double v) =>
@@ -182,21 +241,21 @@ namespace Apex.Services.Printing.Color
         {
             if (source is null) throw new ArgumentNullException(nameof(source));
 
-            int width  = source.Width;
+            int width = source.Width;
             int height = source.Height;
 
             var result = new Bitmap(width, height, PixelFormat.Format24bppRgb);
 
             // Lock source (read)
-            var srcRect  = new Rectangle(0, 0, width, height);
-            var srcData  = source.LockBits(srcRect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
-            var dstData  = result.LockBits(srcRect, ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+            var srcRect = new Rectangle(0, 0, width, height);
+            var srcData = source.LockBits(srcRect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+            var dstData = result.LockBits(srcRect, ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
 
             try
             {
-                int stride     = srcData.Stride;
-                byte* srcPtr   = (byte*)srcData.Scan0;
-                byte* dstPtr   = (byte*)dstData.Scan0;
+                int stride = srcData.Stride;
+                byte* srcPtr = (byte*)srcData.Scan0;
+                byte* dstPtr = (byte*)dstData.Scan0;
                 int pixelBytes = 3; // 24bpp
 
                 for (int y = 0; y < height; y++)
@@ -216,11 +275,11 @@ namespace Apex.Services.Printing.Color
 
                         // Convert CMYK back to RGB for on-screen display
                         double kFrac = K / 255.0;
-                        double rOut  = 255.0 * (1.0 - C / 255.0) * (1.0 - kFrac);
-                        double gOut  = 255.0 * (1.0 - M / 255.0) * (1.0 - kFrac);
-                        double bOut  = 255.0 * (1.0 - Y / 255.0) * (1.0 - kFrac);
+                        double rOut = 255.0 * (1.0 - C / 255.0) * (1.0 - kFrac);
+                        double gOut = 255.0 * (1.0 - M / 255.0) * (1.0 - kFrac);
+                        double bOut = 255.0 * (1.0 - Y / 255.0) * (1.0 - kFrac);
 
-                        dstRow[offset]     = (byte)Math.Round(Math.Max(0, Math.Min(255, bOut)));
+                        dstRow[offset] = (byte)Math.Round(Math.Max(0, Math.Min(255, bOut)));
                         dstRow[offset + 1] = (byte)Math.Round(Math.Max(0, Math.Min(255, gOut)));
                         dstRow[offset + 2] = (byte)Math.Round(Math.Max(0, Math.Min(255, rOut)));
                     }
@@ -282,16 +341,16 @@ namespace Apex.Services.Printing.Color
             else
             {
                 double diff = h2p - h1p;
-                if (diff > Math.PI)       dhp = diff - Deg360;
+                if (diff > Math.PI) dhp = diff - Deg360;
                 else if (diff < -Math.PI) dhp = diff + Deg360;
-                else                      dhp = diff;
+                else dhp = diff;
             }
 
             double dHp = 2.0 * Math.Sqrt(C1p * C2p) * Math.Sin(dhp / 2.0);
 
             // Step 4 – CIEDE2000 weighting functions
-            double Lp_avg  = (L1 + L2) / 2.0;
-            double Cp_avg  = (C1p + C2p) / 2.0;
+            double Lp_avg = (L1 + L2) / 2.0;
+            double Cp_avg = (C1p + C2p) / 2.0;
 
             double hp_avg;
             if (C1p * C2p == 0.0)
@@ -302,9 +361,9 @@ namespace Apex.Services.Printing.Color
             {
                 double sumH = h1p + h2p;
                 double diffH = Math.Abs(h1p - h2p);
-                if (diffH <= Math.PI)      hp_avg = sumH / 2.0;
-                else if (sumH < Deg360)    hp_avg = (sumH + Deg360) / 2.0;
-                else                       hp_avg = (sumH - Deg360) / 2.0;
+                if (diffH <= Math.PI) hp_avg = sumH / 2.0;
+                else if (sumH < Deg360) hp_avg = (sumH + Deg360) / 2.0;
+                else hp_avg = (sumH - Deg360) / 2.0;
             }
 
             double T = 1.0
@@ -313,7 +372,7 @@ namespace Apex.Services.Printing.Color
                 + 0.32 * Math.Cos(3.0 * hp_avg + DegToRad(6.0))
                 - 0.20 * Math.Cos(4.0 * hp_avg - DegToRad(63.0));
 
-            double Lp50  = Lp_avg - 50.0;
+            double Lp50 = Lp_avg - 50.0;
             double Lp50sq = Lp50 * Lp50;
             double SL = 1.0 + 0.015 * Lp50sq / Math.Sqrt(20.0 + Lp50sq);
             double SC = 1.0 + 0.045 * Cp_avg;
@@ -325,9 +384,9 @@ namespace Apex.Services.Printing.Color
             double dTheta = DegToRad(30.0) * Math.Exp(-Math.Pow((RadToDeg(hp_avg) - 275.0) / 25.0, 2.0));
             double RT = -Math.Sin(2.0 * dTheta) * RC;
 
-            double term1 = dLp   / (kL * SL);
-            double term2 = dCp   / (kC * SC);
-            double term3 = dHp   / (kH * SH);
+            double term1 = dLp / (kL * SL);
+            double term2 = dCp / (kC * SC);
+            double term3 = dHp / (kH * SH);
 
             double dE = Math.Sqrt(
                 term1 * term1

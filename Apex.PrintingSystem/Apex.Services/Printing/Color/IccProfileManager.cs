@@ -15,8 +15,8 @@ namespace Apex.Services.Printing.Color
         string DeviceClass,    // "prtr", "mntr", "scnr", "Unknown"
         string ColorSpace,     // "RGB", "CMYK", "GRAY", "Unknown"
         string Pcs,            // "XYZ", "Lab", "Unknown"
-        int    Version,
-        long   FileSizeBytes
+        int Version,
+        long FileSizeBytes
     );
 
     public sealed class IccProfileManager
@@ -123,7 +123,7 @@ namespace Apex.Services.Printing.Color
                 "prtr" => "prtr",
                 "mntr" => "mntr",
                 "scnr" => "scnr",
-                _      => "Unknown"
+                _ => "Unknown"
             };
 
             // Offset 16–19: color space
@@ -131,9 +131,9 @@ namespace Apex.Services.Printing.Color
             string colorSpace = colorSpaceRaw.TrimEnd('\0', ' ') switch
             {
                 "RGB " or "RGB" => "RGB",
-                "CMYK"          => "CMYK",
-                "GRAY"          => "GRAY",
-                _               => "Unknown"
+                "CMYK" => "CMYK",
+                "GRAY" => "GRAY",
+                _ => "Unknown"
             };
 
             // Offset 20–23: PCS
@@ -142,7 +142,7 @@ namespace Apex.Services.Printing.Color
             {
                 "XYZ " or "XYZ" => "XYZ",
                 "Lab " or "Lab" => "Lab",
-                _               => "Unknown"
+                _ => "Unknown"
             };
 
             // Offset 48–79: profile description (try ASCII)
@@ -151,12 +151,12 @@ namespace Apex.Services.Printing.Color
                 profileName = Path.GetFileNameWithoutExtension(filePath);
 
             return new IccProfile(
-                FilePath:      filePath,
-                ProfileName:   profileName,
-                DeviceClass:   deviceClass,
-                ColorSpace:    colorSpace,
-                Pcs:           pcs,
-                Version:       version,
+                FilePath: filePath,
+                ProfileName: profileName,
+                DeviceClass: deviceClass,
+                ColorSpace: colorSpace,
+                Pcs: pcs,
+                Version: version,
                 FileSizeBytes: fileInfo.Length
             );
         }

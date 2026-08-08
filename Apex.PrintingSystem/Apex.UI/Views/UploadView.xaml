@@ -4,11 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:Apex.UI.ViewModels"
+             xmlns:converters="clr-namespace:Apex.UI.Converters"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="1200"
              Background="Transparent">
 
     <UserControl.Resources>
+
+        <!-- Shows the search placeholder only while the box is empty. The shared
+             dictionary registers the NON-empty variant, which is the opposite. -->
+        <converters:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibilityConverter"/>
 
         <!-- ── Shared flat button template ──────────────────────────── -->
         <ControlTemplate x:Key="FlatBtn" TargetType="Button">
@@ -184,6 +189,29 @@
             </Style.Triggers>
         </Style>
 
+        <!-- Flat toggle used by the printer picker: the ToggleButton default chrome
+             would fight the dark theme, and we only need a bordered surface. -->
+        <ControlTemplate x:Key="PickerToggle" TargetType="ToggleButton">
+            <Border Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="6">
+                <ContentPresenter/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#3B82F6"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <!-- Field caption in the settings rail -->
+        <Style x:Key="RailLabel" TargetType="TextBlock">
+            <Setter Property="FontSize"   Value="10"/>
+            <Setter Property="Foreground" Value="#64748B"/>
+            <Setter Property="Margin"     Value="0,14,0,5"/>
+        </Style>
+
         <Style TargetType="DataGridCell">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding"         Value="0"/>
@@ -198,11 +226,21 @@
 
     </UserControl.Resources>
 
-    <!-- ═══════════════════ ROOT GRID ══════════════════════════════════ -->
+    <!-- ═══════════════════ ROOT GRID ══════════════════════════════════
+         Print settings live in a fixed side rail rather than a wide strip
+         across the top: as a horizontal bar they competed with the queue for
+         width, wrapped awkwardly, and read as if they belonged to the toolbar
+         buttons next to them. In a rail they stay put, stay grouped, and the
+         queue gets the full height it needs.
+         ═══════════════════════════════════════════════════════════════════ -->
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>     <!-- Queue + its own toolbar -->
+            <ColumnDefinition Width="Auto"/>  <!-- Settings rail           -->
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>   <!-- ① Printer bar      -->
-            <RowDefinition Height="Auto"/>   <!-- ② Settings bar     -->
+            <RowDefinition Height="Auto"/>   <!-- ② Queue toolbar    -->
             <RowDefinition Height="Auto"/>   <!-- ③ Presets bar      -->
             <RowDefinition Height="Auto"/>   <!-- ④ Progress bar     -->
             <RowDefinition Height="*"/>      <!-- ⑤ File list        -->
@@ -211,7 +249,7 @@
         <!-- ══════════════════════════════════════════════════════════════
              ①  TOP: Printer selector + Start Printing
              ══════════════════════════════════════════════════════════════ -->
-        <Border Grid.Row="0"
+        <Border Grid.Row="0" Grid.ColumnSpan="2"
                 Background="#1E293B"
                 BorderBrush="#334155" BorderThickness="0,0,0,1"
                 Padding="20,12">
@@ -235,11 +273,19 @@
                                    FontSize="15" FontWeight="Bold" Foreground="#F1F5F9"/>
                         <TextBlock Text="{DynamicResource Upload_Description}"
                                    FontSize="10" Foreground="#64748B"/>
+                        <!-- What this run will actually do, before it starts -->
+                        <TextBlock Text="{Binding RoutingSummary}"
+                                   FontSize="10" FontWeight="Medium" Foreground="#60A5FA"
+                                   Margin="0,2,0,0"/>
                     </StackPanel>
                 </StackPanel>
 
-                <!-- Printer selector -->
-                <Grid Grid.Column="1" VerticalAlignment="Center">
+                <!-- Printer selector, with the multi-printer panel stacked UNDER it.
+                     (Both must live in a StackPanel: placing the panel directly in
+                     the selector Grid put it in column 0, overlapping the title.) -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <Grid Visibility="{Binding IsSinglePrinterMode,
+                                   Converter={StaticResource BoolToVisibility}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
@@ -268,6 +314,121 @@
                     </Button>
                 </Grid>
 
+                <!-- Multi-printer: send the whole file queue to several printers at
+                     once — either spread across them, or the same files on each. -->
+                <CheckBox IsChecked="{Binding IsMultiPrinterMode}"
+                          Content="{DynamicResource PM_MultiPrinter}"
+                          Foreground="#CBD5E1" FontSize="12" Margin="0,10,0,0"/>
+
+                <!-- Printer picker. The header must not grow with the printer count:
+                     a shop with 50 devices would push the queue toolbar off screen,
+                     and picking 3 of 50 from a cramped checkbox box is unworkable.
+                     The bar shows only the outcome; selection happens in a popup of
+                     fixed height with a search field. -->
+                <Grid Margin="0,8,0,0"
+                      Visibility="{Binding IsMultiPrinterMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="180"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ToggleButton x:Name="PrinterPickerButton" Grid.Column="0"
+                                  IsChecked="{Binding IsPrinterPickerOpen, Mode=TwoWay}"
+                                  Height="32" Cursor="Hand"
+                                  Background="#0F172A" BorderBrush="#334155" BorderThickness="1"
+                                  Template="{StaticResource PickerToggle}">
+                        <Grid>
+                            <TextBlock Text="{Binding SelectedPrintersSummary}"
+                                       Foreground="#E2E8F0" FontSize="12"
+                                       VerticalAlignment="Center" Margin="12,0,26,0"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <TextBlock Text="▾" Foreground="#64748B" FontSize="11"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center"
+                                       Margin="0,0,10,0"/>
+                        </Grid>
+                    </ToggleButton>
+
+                    <Popup IsOpen="{Binding IsPrinterPickerOpen, Mode=TwoWay}"
+                           PlacementTarget="{Binding ElementName=PrinterPickerButton}"
+                           Placement="Bottom" StaysOpen="False"
+                           AllowsTransparency="True" PopupAnimation="Fade">
+                        <Border Background="#1E293B" BorderBrush="#334155" BorderThickness="1"
+                                CornerRadius="8" Padding="10"
+                                Width="{Binding ActualWidth, ElementName=PrinterPickerButton}">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#000" Opacity="0.45"
+                                                  BlurRadius="18" ShadowDepth="5"/>
+                            </Border.Effect>
+                            <StackPanel>
+                                <!-- Search: the only way 50 printers stay navigable -->
+                                <Border Background="#0F172A" BorderBrush="#334155"
+                                        BorderThickness="1" CornerRadius="6" Height="30">
+                                    <Grid>
+                                        <TextBox Background="Transparent" BorderThickness="0"
+                                                 Foreground="#E2E8F0" FontSize="12" Padding="8,0"
+                                                 VerticalContentAlignment="Center"
+                                                 Text="{Binding PrinterFilter, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <TextBlock Text="{DynamicResource PM_SearchPrinter}"
+                                                   Foreground="#475569" FontSize="12"
+                                                   IsHitTestVisible="False"
+                                                   Margin="9,0,0,0" VerticalAlignment="Center"
+                                                   Visibility="{Binding PrinterFilter,
+                                                                Converter={StaticResource EmptyStringToVisibilityConverter}}"/>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Fixed height: the popup never grows with the list -->
+                                <ScrollViewer MaxHeight="220" Margin="0,8,0,0"
+                                              VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl ItemsSource="{Binding FilteredPrinterChoices}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <CheckBox IsChecked="{Binding IsSelected}"
+                                                          Content="{Binding Name}"
+                                                          Foreground="#E2E8F0" FontSize="12"
+                                                          Margin="0,0,0,6"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+
+                                <TextBlock Text="{DynamicResource PM_NoPrinterMatch}"
+                                           Foreground="#475569" FontSize="11"
+                                           Margin="2,6,0,0"
+                                           Visibility="{Binding HasNoPrinterMatches,
+                                                        Converter={StaticResource BoolToVisibility}}"/>
+
+                                <Border Height="1" Background="#334155" Margin="0,8"/>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Command="{Binding SelectAllPrintersCommand}"
+                                            Background="#1D4ED8" Tag="5"
+                                            Padding="10,4" Cursor="Hand" Margin="0,0,6,0"
+                                            Template="{StaticResource FlatBtn}">
+                                        <TextBlock Text="{DynamicResource PM_SelectAllShown}"
+                                                   FontSize="11" Foreground="White"/>
+                                    </Button>
+                                    <Button Command="{Binding ClearPrinterSelectionCommand}"
+                                            Background="#334155" Tag="5"
+                                            Padding="10,4" Cursor="Hand"
+                                            Template="{StaticResource FlatBtn}">
+                                        <TextBlock Text="{DynamicResource PM_ClearSelection}"
+                                                   FontSize="11" Foreground="#CBD5E1"/>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+
+                    <ComboBox Grid.Column="2"
+                              ItemsSource="{Binding AvailableDistributionModes}"
+                              SelectedIndex="{Binding DistributionModeIndex}"
+                              ToolTip="{DynamicResource PM_DistributionMode}"
+                              Height="32" FontSize="12"/>
+                </Grid>
+                </StackPanel>
+
                 <!-- Start / Stop -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal"
                             Margin="20,0,0,0">
@@ -281,15 +442,14 @@
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="■" FontSize="12" Foreground="#FCA5A5"
                                        Margin="0,0,6,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="إيقاف" FontSize="13" FontWeight="Bold"
+                            <TextBlock Text="{DynamicResource UPL_001}" FontSize="13" FontWeight="Bold"
                                        Foreground="#FCA5A5"/>
                         </StackPanel>
                     </Button>
 
                     <!-- Start -->
                     <Button Command="{Binding CreateJobsCommand}"
-                            IsEnabled="{Binding IsPrinting,
-                                        Converter={StaticResource InverseBoolConverter}}"
+                            IsEnabled="{Binding CanStartPrinting}"
                             Background="#2563EB" Tag="10"
                             Padding="20,0" Height="36" Cursor="Hand"
                             Template="{StaticResource FlatBtn}">
@@ -301,7 +461,7 @@
                                            FontSize="13" FontWeight="Bold" Foreground="White"/>
                                 <TextBlock FontSize="9" Foreground="#93C5FD">
                                     <Run Text="{Binding IngestedFiles.Count, Mode=OneWay}"/>
-                                    <Run Text=" ملف"/>
+                                    <Run Text="{DynamicResource UPL_002}"/>
                                 </TextBlock>
                             </StackPanel>
                         </StackPanel>
@@ -311,9 +471,9 @@
         </Border>
 
         <!-- ══════════════════════════════════════════════════════════════
-             ②  SETTINGS BAR
+             ②  QUEUE TOOLBAR — things you do TO the list, not print settings
              ══════════════════════════════════════════════════════════════ -->
-        <Border Grid.Row="1"
+        <Border Grid.Row="1" Grid.Column="0"
                 Background="#161F2E"
                 BorderBrush="#1E293B" BorderThickness="0,0,0,1"
                 Padding="20,9">
@@ -322,19 +482,7 @@
                     <ColumnDefinition Width="Auto"/>   <!-- + Files      -->
                     <ColumnDefinition Width="8"/>
                     <ColumnDefinition Width="Auto"/>   <!-- Folder       -->
-                    <ColumnDefinition Width="16"/>
-                    <ColumnDefinition Width="Auto"/>   <!-- Copies       -->
-                    <ColumnDefinition Width="12"/>
-                    <ColumnDefinition Width="120"/>    <!-- Orientation  -->
-                    <ColumnDefinition Width="8"/>
-                    <ColumnDefinition Width="100"/>    <!-- Paper size   -->
-                    <ColumnDefinition Width="8"/>
-                    <ColumnDefinition Width="110"/>    <!-- Quality      -->
                     <ColumnDefinition Width="*"/>      <!-- Spacer       -->
-                    <ColumnDefinition Width="Auto"/>   <!-- Color        -->
-                    <ColumnDefinition Width="16"/>
-                    <ColumnDefinition Width="Auto"/>   <!-- Duplex       -->
-                    <ColumnDefinition Width="16"/>
                     <ColumnDefinition Width="Auto"/>   <!-- Preset btn   -->
                     <ColumnDefinition Width="8"/>
                     <ColumnDefinition Width="Auto"/>   <!-- Refresh/Del  -->
@@ -368,92 +516,27 @@
                     </StackPanel>
                 </Button>
 
-                <!-- Copies: − value + -->
-                <Border Grid.Column="4" Background="#0F172A" CornerRadius="7" Height="30">
-                    <Grid Width="90">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="30"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="30"/>
-                        </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Command="{Binding DecreaseCopiesCommand}"
-                                Background="Transparent" Tag="7" Cursor="Hand"
-                                Foreground="#94A3B8" FontSize="16" FontWeight="Bold"
-                                Content="−" Template="{StaticResource FlatBtn}"/>
-                        <TextBlock Grid.Column="1"
-                                   Text="{Binding DefaultCopies}"
-                                   FontSize="13" FontWeight="Bold" Foreground="#F1F5F9"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <Button Grid.Column="2" Command="{Binding IncreaseCopiesCommand}"
-                                Background="Transparent" Tag="7" Cursor="Hand"
-                                Foreground="#60A5FA" FontSize="16" FontWeight="Bold"
-                                Content="+" Template="{StaticResource FlatBtn}"/>
-                    </Grid>
-                </Border>
-
-                <!-- Orientation -->
-                <ComboBox Grid.Column="6"
-                          ItemsSource="{Binding Orientations}"
-                          SelectedItem="{Binding Orientation}"
-                          Height="30" FontSize="12"/>
-
-                <!-- Paper Size -->
-                <ComboBox Grid.Column="8"
-                          ItemsSource="{Binding PaperSizes}"
-                          SelectedItem="{Binding PaperSize}"
-                          Height="30" FontSize="12"/>
-
-                <!-- Quality -->
-                <ComboBox Grid.Column="10"
-                          ItemsSource="{Binding PrintQualities}"
-                          SelectedItem="{Binding PrintQuality}"
-                          Height="30" FontSize="12"/>
-
-                <!-- Color -->
-                <StackPanel Grid.Column="12" Orientation="Horizontal" VerticalAlignment="Center">
-                    <CheckBox IsChecked="{Binding IsColorEnabled}"
-                              VerticalAlignment="Center" Margin="0,0,5,0">
-                        <CheckBox.LayoutTransform>
-                            <ScaleTransform ScaleX="1.1" ScaleY="1.1"/>
-                        </CheckBox.LayoutTransform>
-                    </CheckBox>
-                    <TextBlock Text="{DynamicResource Upload_ColorPrinting}"
-                               FontSize="12" Foreground="#CBD5E1" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <!-- Duplex -->
-                <StackPanel Grid.Column="14" Orientation="Horizontal" VerticalAlignment="Center">
-                    <CheckBox IsChecked="{Binding IsDuplexEnabled}"
-                              VerticalAlignment="Center" Margin="0,0,5,0">
-                        <CheckBox.LayoutTransform>
-                            <ScaleTransform ScaleX="1.1" ScaleY="1.1"/>
-                        </CheckBox.LayoutTransform>
-                    </CheckBox>
-                    <TextBlock Text="{DynamicResource Upload_Duplex}"
-                               FontSize="12" Foreground="#CBD5E1" VerticalAlignment="Center"/>
-                </StackPanel>
-
                 <!-- Preset toggle -->
-                <Button Grid.Column="16"
+                <Button Grid.Column="4"
                         Command="{Binding TogglePresetPanelCommand}"
                         Background="#1E3A5F" Tag="7"
                         Padding="10,6" Cursor="Hand"
-                        ToolTip="قوالب الطباعة"
+                        ToolTip="{DynamicResource UPL_003}"
                         Template="{StaticResource FlatBtn}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="📋" FontSize="12" Margin="0,0,4,0"
                                    VerticalAlignment="Center"/>
-                        <TextBlock Text="قوالب" FontSize="12" FontWeight="Medium"
+                        <TextBlock Text="{DynamicResource UPL_004}" FontSize="12" FontWeight="Medium"
                                    Foreground="#93C5FD" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
                 <!-- Refresh / Clear -->
-                <StackPanel Grid.Column="18" Orientation="Horizontal" VerticalAlignment="Center">
+                <StackPanel Grid.Column="6" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Command="{Binding RefreshCommand}"
                             Background="#334155" Tag="6"
                             Width="30" Height="30" Cursor="Hand"
-                            ToolTip="تحديث الطابعات" Margin="0,0,6,0"
+                            ToolTip="{DynamicResource CC_002}" Margin="0,0,6,0"
                             Template="{StaticResource FlatBtn}">
                         <TextBlock Text="🔄" FontSize="12"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -461,7 +544,7 @@
                     <Button Command="{Binding ClearListCommand}"
                             Background="#334155" Tag="6"
                             Width="30" Height="30" Cursor="Hand"
-                            ToolTip="مسح القائمة"
+                            ToolTip="{DynamicResource UPL_005}"
                             Template="{StaticResource FlatBtn}">
                         <TextBlock Text="🗑️" FontSize="12"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -473,7 +556,7 @@
         <!-- ══════════════════════════════════════════════════════════════
              ③  PRESETS BAR (collapsed by default)
              ══════════════════════════════════════════════════════════════ -->
-        <Border Grid.Row="2"
+        <Border Grid.Row="2" Grid.Column="0"
                 Background="#0D1829"
                 BorderBrush="#1E3A5F" BorderThickness="0,0,0,1"
                 Padding="20,10"
@@ -490,7 +573,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" Text="💾 حفظ قالب:"
+                <TextBlock Grid.Column="0" Text="{DynamicResource UPL_006}"
                            FontSize="12" Foreground="#64748B"
                            VerticalAlignment="Center" Margin="0,0,10,0"/>
 
@@ -510,7 +593,7 @@
                         Background="#1D4ED8" Tag="6"
                         Padding="12,5" Cursor="Hand" Height="30"
                         Template="{StaticResource FlatBtn}">
-                    <TextBlock Text="حفظ" FontSize="12" FontWeight="SemiBold"
+                    <TextBlock Text="{DynamicResource UPL_007}" FontSize="12" FontWeight="SemiBold"
                                Foreground="White"/>
                 </Button>
 
@@ -555,7 +638,7 @@
                 </ItemsControl>
 
                 <TextBlock Grid.Column="6"
-                           Text="لا توجد قوالب محفوظة"
+                           Text="{DynamicResource UPL_008}"
                            FontSize="11" Foreground="#334155"
                            VerticalAlignment="Center"
                            Margin="8,0,0,0">
@@ -576,7 +659,7 @@
         <!-- ══════════════════════════════════════════════════════════════
              ④  PROGRESS BAR (visible when printing)
              ══════════════════════════════════════════════════════════════ -->
-        <Border Grid.Row="3"
+        <Border Grid.Row="3" Grid.Column="0"
                 Background="#0A1628"
                 BorderBrush="#1E3A5F" BorderThickness="0,0,0,1"
                 Padding="20,8"
@@ -626,7 +709,7 @@
         <!-- ══════════════════════════════════════════════════════════════
              ⑤  FILE LIST  — full height
              ══════════════════════════════════════════════════════════════ -->
-        <Border Grid.Row="4" Background="#0F172A"
+        <Border Grid.Row="4" Grid.Column="0" Background="#0F172A"
                 AllowDrop="True" Drop="Border_Drop">
             <Grid>
                 <Grid.RowDefinitions>
@@ -643,7 +726,7 @@
                             <Run Text=" · " Foreground="#334155"/>
                             <Run Text="{Binding IngestedFiles.Count, Mode=OneWay}"
                                  Foreground="#60A5FA" FontWeight="Bold"/>
-                            <Run Text=" ملف" Foreground="#475569"/>
+                            <Run Text="{DynamicResource UPL_002}" Foreground="#475569"/>
                         </TextBlock>
                         <TextBlock HorizontalAlignment="Right"
                                    FontSize="11" Foreground="#475569"
@@ -684,9 +767,18 @@
                         </DataGridTextColumn>
 
                         <!-- File Name -->
-                        <DataGridTextColumn Header="اسم الملف"
-                                            Binding="{Binding OriginalName}"
+                        <!-- Headers go through HeaderTemplate, not Header={DynamicResource}:
+                             a DataGridColumn is not in the visual tree, so a DynamicResource
+                             set directly on Header resolves once at load and stays in the
+                             startup language. The TextBlock below lives inside the column
+                             header control, so it re-resolves when the language changes. -->
+                        <DataGridTextColumn Binding="{Binding OriginalName}"
                                             Width="*" IsReadOnly="True">
+                            <DataGridTextColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{DynamicResource UPL_009}"/>
+                                </DataTemplate>
+                            </DataGridTextColumn.HeaderTemplate>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Foreground"        Value="#E2E8F0"/>
@@ -698,10 +790,41 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
+                        <!-- Target printer — where this file will actually come out.
+                             Colour is stable per printer so the routing reads at a
+                             glance instead of being discovered at the device. -->
+                        <DataGridTemplateColumn Width="120" IsReadOnly="True">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{DynamicResource PM_ColPrinter}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="4" Padding="7,2" Margin="6,0"
+                                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                                            Background="#1E293B"
+                                            BorderBrush="{Binding TargetPrinterColor}"
+                                            BorderThickness="0,0,3,0"
+                                            Visibility="{Binding HasTargetPrinter,
+                                                         Converter={StaticResource BoolToVisibility}}">
+                                        <TextBlock Text="{Binding TargetPrinter}"
+                                                   Foreground="{Binding TargetPrinterColor}"
+                                                   FontSize="11" FontWeight="Medium"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
                         <!-- Type -->
-                        <DataGridTextColumn Header="النوع"
-                                            Binding="{Binding FileType}"
+                        <DataGridTextColumn Binding="{Binding FileType}"
                                             Width="54" IsReadOnly="True">
+                            <DataGridTextColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{DynamicResource UPL_010}"/>
+                                </DataTemplate>
+                            </DataGridTextColumn.HeaderTemplate>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Foreground"        Value="#475569"/>
@@ -713,9 +836,13 @@
                         </DataGridTextColumn>
 
                         <!-- Size -->
-                        <DataGridTextColumn Header="الحجم"
-                                            Binding="{Binding SizeDisplay}"
+                        <DataGridTextColumn Binding="{Binding SizeDisplay}"
                                             Width="68" IsReadOnly="True">
+                            <DataGridTextColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{DynamicResource UPL_011}"/>
+                                </DataTemplate>
+                            </DataGridTextColumn.HeaderTemplate>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Foreground"        Value="#475569"/>
@@ -726,9 +853,13 @@
                         </DataGridTextColumn>
 
                         <!-- Copies (editable per-file) -->
-                        <DataGridTextColumn Header="نسخ"
-                                            Binding="{Binding Copies, UpdateSourceTrigger=LostFocus}"
+                        <DataGridTextColumn Binding="{Binding Copies, UpdateSourceTrigger=LostFocus}"
                                             Width="52" IsReadOnly="False">
+                            <DataGridTextColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{DynamicResource UPL_012}"/>
+                                </DataTemplate>
+                            </DataGridTextColumn.HeaderTemplate>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Foreground"          Value="#3B82F6"/>
@@ -745,9 +876,13 @@
                         </DataGridTextColumn>
 
                         <!-- Page Range (editable per-file) -->
-                        <DataGridTextColumn Header="الصفحات"
-                                            Binding="{Binding PageRange, UpdateSourceTrigger=LostFocus}"
+                        <DataGridTextColumn Binding="{Binding PageRange, UpdateSourceTrigger=LostFocus}"
                                             Width="80" IsReadOnly="False">
+                            <DataGridTextColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{DynamicResource UPL_013}"/>
+                                </DataTemplate>
+                            </DataGridTextColumn.HeaderTemplate>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Foreground"          Value="#64748B"/>
@@ -777,7 +912,7 @@
                                                 CommandParameter="{Binding}"
                                                 Background="Transparent" Tag="4"
                                                 Width="26" Height="26" Cursor="Hand"
-                                                ToolTip="تحريك لأعلى" Margin="0,0,2,0"
+                                                ToolTip="{DynamicResource UPL_014}" Margin="0,0,2,0"
                                                 Template="{StaticResource FlatBtn}">
                                             <TextBlock Text="↑" FontSize="13" Foreground="#64748B"/>
                                         </Button>
@@ -788,7 +923,7 @@
                                                 CommandParameter="{Binding}"
                                                 Background="Transparent" Tag="4"
                                                 Width="26" Height="26" Cursor="Hand"
-                                                ToolTip="تحريك لأسفل" Margin="0,0,2,0"
+                                                ToolTip="{DynamicResource UPL_015}" Margin="0,0,2,0"
                                                 Template="{StaticResource FlatBtn}">
                                             <TextBlock Text="↓" FontSize="13" Foreground="#64748B"/>
                                         </Button>
@@ -799,7 +934,7 @@
                                                 CommandParameter="{Binding}"
                                                 Background="Transparent" Tag="4"
                                                 Width="26" Height="26" Cursor="Hand"
-                                                ToolTip="معاينة الملف" Margin="0,0,2,0"
+                                                ToolTip="{DynamicResource UPL_016}" Margin="0,0,2,0"
                                                 Template="{StaticResource FlatBtn}">
                                             <TextBlock Text="👁" FontSize="12"/>
                                         </Button>
@@ -810,7 +945,7 @@
                                                 CommandParameter="{Binding}"
                                                 Background="Transparent" Tag="4"
                                                 Width="26" Height="26" Cursor="Hand"
-                                                ToolTip="إزالة الملف"
+                                                ToolTip="{DynamicResource UPL_017}"
                                                 Template="{StaticResource FlatBtn}">
                                             <TextBlock Text="✕" FontSize="11" Foreground="#EF4444"/>
                                         </Button>
@@ -824,24 +959,24 @@
                     <!-- Right-click context menu -->
                     <DataGrid.ContextMenu>
                         <ContextMenu Background="#1E293B" BorderBrush="#334155">
-                            <MenuItem Header="👁  معاينة الملف"
+                            <MenuItem Header="{DynamicResource UPL_018}"
                                       Command="{Binding PreviewFileCommand}"
                                       CommandParameter="{Binding PlacementTarget.SelectedItem,
                                                          RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                       Foreground="#E2E8F0" Background="Transparent"/>
                             <Separator Background="#334155"/>
-                            <MenuItem Header="↑  تحريك لأعلى"
+                            <MenuItem Header="{DynamicResource UPL_019}"
                                       Command="{Binding MoveUpCommand}"
                                       CommandParameter="{Binding PlacementTarget.SelectedItem,
                                                          RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                       Foreground="#E2E8F0" Background="Transparent"/>
-                            <MenuItem Header="↓  تحريك لأسفل"
+                            <MenuItem Header="{DynamicResource UPL_020}"
                                       Command="{Binding MoveDownCommand}"
                                       CommandParameter="{Binding PlacementTarget.SelectedItem,
                                                          RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                       Foreground="#E2E8F0" Background="Transparent"/>
                             <Separator Background="#334155"/>
-                            <MenuItem Header="✕  إزالة الملف"
+                            <MenuItem Header="{DynamicResource UPL_021}"
                                       Command="{Binding RemoveItemCommand}"
                                       CommandParameter="{Binding PlacementTarget.SelectedItem,
                                                          RelativeSource={RelativeSource AncestorType=ContextMenu}}"
@@ -881,6 +1016,114 @@
                 </Border>
 
             </Grid>
+        </Border>
+
+        <!-- ══════════════════════════════════════════════════════════════
+             ⑥  SETTINGS RAIL — how the job prints, always in view
+             ══════════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="1" Grid.RowSpan="4" Grid.Column="1"
+                Width="230"
+                Background="#161F2E"
+                BorderBrush="#1E293B" BorderThickness="1,0,0,0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="16,14,16,20">
+
+                    <TextBlock Text="{DynamicResource PM_PrintSettings}"
+                               FontSize="12" FontWeight="Bold" Foreground="#94A3B8"
+                               Margin="0,0,0,14"/>
+
+                    <!-- Copies -->
+                    <TextBlock Text="{DynamicResource PM_LblCopies}" Style="{StaticResource RailLabel}"/>
+                    <Border Background="#0F172A" CornerRadius="7" Height="32">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="34"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="34"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Command="{Binding DecreaseCopiesCommand}"
+                                    Background="Transparent" Tag="7" Cursor="Hand"
+                                    Foreground="#94A3B8" FontSize="16" FontWeight="Bold"
+                                    Content="−" Template="{StaticResource FlatBtn}"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding DefaultCopies}"
+                                       FontSize="13" FontWeight="Bold" Foreground="#F1F5F9"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Button Grid.Column="2" Command="{Binding IncreaseCopiesCommand}"
+                                    Background="Transparent" Tag="7" Cursor="Hand"
+                                    Foreground="#60A5FA" FontSize="16" FontWeight="Bold"
+                                    Content="+" Template="{StaticResource FlatBtn}"/>
+                        </Grid>
+                    </Border>
+                    <!-- The queue can override this per row, so say so rather than
+                         letting the two numbers look like a contradiction. -->
+                    <TextBlock Text="{DynamicResource PM_CopiesHint}"
+                               FontSize="9" Foreground="#475569"
+                               TextWrapping="Wrap" Margin="0,4,0,0"/>
+
+                    <!-- Orientation. SelectedValuePath keeps the invariant value in the
+                         ViewModel while the list shows the translated label. -->
+                    <TextBlock Text="{DynamicResource PM_LblOrientation}" Style="{StaticResource RailLabel}"/>
+                    <ComboBox ItemsSource="{Binding Orientations}"
+                              SelectedValuePath="Value"
+                              SelectedValue="{Binding Orientation}"
+                              Height="32" FontSize="12">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Label}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <!-- Paper size -->
+                    <TextBlock Text="{DynamicResource PM_LblPaperSize}" Style="{StaticResource RailLabel}"/>
+                    <ComboBox ItemsSource="{Binding PaperSizes}"
+                              SelectedItem="{Binding PaperSize}"
+                              Height="32" FontSize="12"/>
+
+                    <!-- Quality -->
+                    <TextBlock Text="{DynamicResource PM_LblQuality}" Style="{StaticResource RailLabel}"/>
+                    <ComboBox ItemsSource="{Binding PrintQualities}"
+                              SelectedValuePath="Value"
+                              SelectedValue="{Binding PrintQuality}"
+                              Height="32" FontSize="12">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Label}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <Border Height="1" Background="#1E293B" Margin="0,18,0,14"/>
+
+                    <!-- Colour -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <CheckBox IsChecked="{Binding IsColorEnabled}"
+                                  VerticalAlignment="Center" Margin="0,0,8,0">
+                            <CheckBox.LayoutTransform>
+                                <ScaleTransform ScaleX="1.1" ScaleY="1.1"/>
+                            </CheckBox.LayoutTransform>
+                        </CheckBox>
+                        <TextBlock Text="{DynamicResource Upload_ColorPrinting}"
+                                   FontSize="12" Foreground="#CBD5E1"
+                                   VerticalAlignment="Center" TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <!-- Duplex -->
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding IsDuplexEnabled}"
+                                  VerticalAlignment="Center" Margin="0,0,8,0">
+                            <CheckBox.LayoutTransform>
+                                <ScaleTransform ScaleX="1.1" ScaleY="1.1"/>
+                            </CheckBox.LayoutTransform>
+                        </CheckBox>
+                        <TextBlock Text="{DynamicResource Upload_Duplex}"
+                                   FontSize="12" Foreground="#CBD5E1"
+                                   VerticalAlignment="Center" TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                </StackPanel>
+            </ScrollViewer>
         </Border>
     </Grid>
 </UserControl>

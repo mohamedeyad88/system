@@ -26,11 +26,14 @@ namespace Apex.NumberedBooksEngine.Core
         bool UsePrinterStoredTemplate,
         bool LowResourceMode,
         int CheckpointEvery,
-        IReadOnlyList<CopyType>? CopyTypes = null,  // Specific copy styles to print
-        Dictionary<int, System.Drawing.Printing.PaperSourceKind>? CopyTrayMapping = null,  // Tray mapping for each copy index
-        PrintScaleMode? ScaleMode = null,  // Print scaling mode (ActualSize or FitToPage)
-        NumberingMode? NumberingMode = null,  // Numbering mode (Linear/Imposed/Auto)
-        bool UseSmartPrinting = true  // true = Interleaved (Page→Copies), false = Batch (Copy→Pages)
+        IReadOnlyList<CopyType>? CopyTypes = null,
+        Dictionary<int, System.Drawing.Printing.PaperSourceKind>? CopyTrayMapping = null,
+        PrintScaleMode? ScaleMode = null,
+        NumberingMode? NumberingMode = null,
+        bool UseSmartPrinting = true,
+        bool UseArabicDigits = false,  // true → Arabic-Indic numerals (٠١٢...)
+        // Digit count / series prefix / suffix, e.g. INV-000123/2026.
+        NumberFormatOptions? NumberFormat = null
     );
 
     [SupportedOSPlatform("windows")]
@@ -55,8 +58,8 @@ namespace Apex.NumberedBooksEngine.Core
         /// Runs a streaming print job using "template once" optimization.
         /// </summary>
         public async Task<JobResult> RunStreamingPrintJobAsync(
-            NumberedPrintJobOptions options, 
-            IProgress<ProgressInfo> progress, 
+            NumberedPrintJobOptions options,
+            IProgress<ProgressInfo> progress,
             CancellationToken ct)
         {
             var jobId = Guid.NewGuid().ToString("N").Substring(0, 12);
@@ -70,7 +73,15 @@ namespace Apex.NumberedBooksEngine.Core
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] Template: {options.TemplatePath}");
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] Numbers: {options.StartNumber} to {options.StartNumber + options.TotalNumbers - 1}");
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] ═══════════════════════════════════════════════════════════");
-                
+
+                // Apply job-level formatting options to composer
+                _composer.UseArabicDigits = options.UseArabicDigits;
+                _composer.NumberFormat =
+                    (options.NumberFormat ?? NumberFormatOptions.Default) with
+                    {
+                        UseArabicDigits = options.UseArabicDigits
+                    };
+
                 // 1. Check for resume checkpoint
                 var resumeNumber = await _checkpointManager.GetResumeStartNumberAsync(jobId);
                 var startNumber = resumeNumber ?? options.StartNumber;
@@ -81,7 +92,7 @@ namespace Apex.NumberedBooksEngine.Core
                 // 3. Rasterize template ONCE
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] Loading template...");
                 var (templateImage, checksum) = _templateManager.RasterizeTemplate(options.TemplatePath, options.Dpi);
-                
+
                 if (templateImage == null)
                 {
                     throw new InvalidOperationException("فشل في تحميل القالب. تأكد من صحة مسار الملف ونوعه.");
@@ -90,15 +101,15 @@ namespace Apex.NumberedBooksEngine.Core
 
                 // 4. Create appropriate printer implementation
                 using var printer = new GdiSpoolPrinter(); // Fallback mode (universal)
-                
+
                 // ═══════════════════════════════════════════════════════════════════
                 // CRITICAL: Reset printer state for new job to prevent state leakage
                 // ═══════════════════════════════════════════════════════════════════
                 printer.ResetForNewJob();
-                
+
                 // Set cached template with validation
                 printer.SetCachedTemplate(templateImage);
-                
+
                 if (!printer.IsTemplateReady)
                 {
                     throw new InvalidOperationException("فشل في تحضير القالب للطباعة. حدث خطأ في معالجة الصورة.");
@@ -107,7 +118,7 @@ namespace Apex.NumberedBooksEngine.Core
                 // 5. Build numbering strategy
                 // Use NumberingMode from options or default to Auto
                 var numberingMode = options.NumberingMode ?? NumberingMode.Auto;
-                
+
                 var bookOptions = new BookJobOptions(
                     TemplateStream: null,
                     TemplatePath: options.TemplatePath,
@@ -131,7 +142,7 @@ namespace Apex.NumberedBooksEngine.Core
                 // CRITICAL FIX: Use CopiesPerPage for accurate total pages calculation
                 // This ensures correct progress tracking regardless of CopyTypes state
                 // ═══════════════════════════════════════════════════════════════════
-                long totalPages = (options.TotalNumbers / Math.Max(options.Slots.Count, 1)) 
+                long totalPages = (options.TotalNumbers / Math.Max(options.Slots.Count, 1))
                     * options.CopiesPerPage;
                 long pagesGenerated = 0;
 
@@ -193,11 +204,11 @@ namespace Apex.NumberedBooksEngine.Core
                     System.Diagnostics.Debug.WriteLine($"[NUMBERING] SMART PRINTING MODE (Interleaved: Page→Copies)");
                     System.Diagnostics.Debug.WriteLine($"[NUMBERING] Expected pages: {totalPages}");
                     System.Diagnostics.Debug.WriteLine($"[NUMBERING] ═══════════════════════════════════════════════════════════");
-                    
+
                     long pageIndex = 0;
                     foreach (var pageNumbers in strategy.GeneratePageNumbers(bookOptions))
                     {
-                        if (ct.IsCancellationRequested) 
+                        if (ct.IsCancellationRequested)
                         {
                             System.Diagnostics.Debug.WriteLine($"[NUMBERING] Cancellation requested at page {pageIndex}");
                             break;
@@ -212,7 +223,7 @@ namespace Apex.NumberedBooksEngine.Core
 
                             System.Diagnostics.Debug.WriteLine($"[NUMBERING]   Copy {copyIndex} ({copyType})");
 
-                            if (options.CopyTrayMapping != null && 
+                            if (options.CopyTrayMapping != null &&
                                 options.CopyTrayMapping.TryGetValue(copyIndex, out var trayKind))
                             {
                                 System.Diagnostics.Debug.WriteLine($"[NUMBERING]   → Tray: {trayKind}");
@@ -223,9 +234,9 @@ namespace Apex.NumberedBooksEngine.Core
 
                             // Build overlay command with copy-specific styling
                             var command = _commandBuilder.BuildGdiCommandWithCopyStyle(
-                                checksum, 
-                                pageNumbers, 
-                                options.Slots, 
+                                checksum,
+                                pageNumbers,
+                                options.Slots,
                                 options.Dpi,
                                 copyType);
 
@@ -247,13 +258,13 @@ namespace Apex.NumberedBooksEngine.Core
                         {
                             var progressPercent = (int)((double)pagesGenerated / totalPages * 100);
                             progress?.Report(new ProgressInfo(
-                                pagesGenerated, 
-                                totalPages, 
-                                progressPercent, 
+                                pagesGenerated,
+                                totalPages,
+                                progressPercent,
                                 lastNumber));
                         }
                     }
-                    
+
                     System.Diagnostics.Debug.WriteLine($"[NUMBERING] Smart printing loop completed: {pagesGenerated} pages generated");
                 }
                 else
@@ -267,11 +278,11 @@ namespace Apex.NumberedBooksEngine.Core
                     System.Diagnostics.Debug.WriteLine($"[NUMBERING] TRADITIONAL PRINTING MODE (Batch: Copy→Pages)");
                     System.Diagnostics.Debug.WriteLine($"[NUMBERING] Expected pages: {totalPages}");
                     System.Diagnostics.Debug.WriteLine($"[NUMBERING] ═══════════════════════════════════════════════════════════");
-                    
+
                     int copyIndex = 0;
                     foreach (var copyType in copyTypes)
                     {
-                        if (ct.IsCancellationRequested) 
+                        if (ct.IsCancellationRequested)
                         {
                             System.Diagnostics.Debug.WriteLine($"[NUMBERING] Cancellation requested at copy {copyIndex}");
                             break;
@@ -282,7 +293,7 @@ namespace Apex.NumberedBooksEngine.Core
                         // Set current copy index for tray routing (applies to all pages in this batch)
                         printer.SetCurrentCopyIndex(copyIndex);
 
-                        if (options.CopyTrayMapping != null && 
+                        if (options.CopyTrayMapping != null &&
                             options.CopyTrayMapping.TryGetValue(copyIndex, out var trayKind))
                         {
                             System.Diagnostics.Debug.WriteLine($"[NUMBERING]   → Tray: {trayKind}");
@@ -301,9 +312,9 @@ namespace Apex.NumberedBooksEngine.Core
 
                             // Build overlay command with copy-specific styling
                             var command = _commandBuilder.BuildGdiCommandWithCopyStyle(
-                                checksum, 
-                                pageNumbers, 
-                                options.Slots, 
+                                checksum,
+                                pageNumbers,
+                                options.Slots,
                                 options.Dpi,
                                 copyType);
 
@@ -323,9 +334,9 @@ namespace Apex.NumberedBooksEngine.Core
                             {
                                 var progressPercent = (int)((double)pagesGenerated / totalPages * 100);
                                 progress?.Report(new ProgressInfo(
-                                    pagesGenerated, 
-                                    totalPages, 
-                                    progressPercent, 
+                                    pagesGenerated,
+                                    totalPages,
+                                    progressPercent,
                                     lastNumber));
                             }
                         }
@@ -333,7 +344,7 @@ namespace Apex.NumberedBooksEngine.Core
                         System.Diagnostics.Debug.WriteLine($"[NUMBERING] Copy {copyIndex} completed: {pageIndex} pages");
                         copyIndex++;
                     }
-                    
+
                     System.Diagnostics.Debug.WriteLine($"[NUMBERING] Traditional printing loop completed: {pagesGenerated} pages generated");
                 }
 
@@ -346,25 +357,25 @@ namespace Apex.NumberedBooksEngine.Core
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] ENDING PRINT JOB");
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] Pages generated: {pagesGenerated}");
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] ═══════════════════════════════════════════════════════════");
-                
+
                 try
                 {
                     await printer.EndJobAsync();
-                    
+
                     System.Diagnostics.Debug.WriteLine($"[NUMBERING] ✅ JOB COMPLETED SUCCESSFULLY");
                     System.Diagnostics.Debug.WriteLine($"[NUMBERING]   Job ID: {jobId}");
                     System.Diagnostics.Debug.WriteLine($"[NUMBERING]   Total pages: {pagesGenerated}");
-                    
+
                     _checkpointManager.DeleteCheckpoint(jobId); // Success, remove checkpoint
-                    
+
                     return new JobResult(jobId, true, "", pagesGenerated, errors);
                 }
                 catch (Exception endJobEx)
                 {
                     System.Diagnostics.Debug.WriteLine($"[NUMBERING] ❌ JOB FAILED: {endJobEx.Message}");
-                    
+
                     errors.Add($"Print job completion failed: {endJobEx.Message}");
-                    
+
                     return new JobResult(jobId, false, "", pagesGenerated, errors);
                 }
             }
@@ -372,9 +383,9 @@ namespace Apex.NumberedBooksEngine.Core
             {
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] ❌ JOB EXCEPTION: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING]   Stack: {ex.StackTrace}");
-                
+
                 errors.Add(ex.Message);
-                
+
                 return new JobResult(jobId, false, "", 0, errors);
             }
         }
@@ -385,7 +396,7 @@ namespace Apex.NumberedBooksEngine.Core
         public async Task<JobResult> RunJobAsync(BookJobOptions options, IProgress<ProgressInfo> progress, CancellationToken ct)
         {
             var result = new JobResult(Guid.NewGuid().ToString(), false, options.OutputPath, 0, new List<string>());
-            
+
             try
             {
                 using var templateLoader = new TemplateLoader();
@@ -409,20 +420,20 @@ namespace Apex.NumberedBooksEngine.Core
 
                         using var pageImage = _composer.ComposePage(templateImage, pageNumbers, options, copy);
                         pdfStreamer.AddPage(pageImage);
-                        
+
                         pagesGenerated++;
-                        
+
                         if (pagesGenerated % 10 == 0)
                         {
                             progress?.Report(new ProgressInfo(pagesGenerated, totalPages, (double)pagesGenerated / totalPages * 100, pageNumbers.LastOrDefault(n => n > 0)));
                         }
                     }
-                    
+
                     if (ct.IsCancellationRequested) break;
                 }
 
                 pdfStreamer.Save();
-                
+
                 return result with { Success = true, TotalPagesGenerated = pagesGenerated };
             }
             catch (Exception ex)

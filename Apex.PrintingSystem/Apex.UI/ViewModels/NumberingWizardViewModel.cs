@@ -52,14 +52,14 @@ namespace Apex.UI.ViewModels
         private Task? _monitorTask;
         private bool _isLoadingTemplate = false; // Flag to prevent recursive calls
         private DateTime _lastLoadTemplateCall = DateTime.MinValue; // Track last call time to prevent rapid double-clicks
-        
+
         // ═══════════════════════════════════════════════════════════════════
         // SINGLE SOURCE OF TRUTH: Central print job model
         // All calculations happen ONCE in this model
         // UI screens read from this model, never recalculate
         // ═══════════════════════════════════════════════════════════════════
         private NumberingPrintJobModel _printJobModel = new();
-        
+
         /// <summary>
         /// Navigation history for back button
         /// </summary>
@@ -108,14 +108,14 @@ namespace Apex.UI.ViewModels
             UpdateComputedValues();
             SchedulePreviewUpdate();
         }
-        
+
         /// <summary>
         /// Refreshes preview numbers for all slots based on current settings.
         /// </summary>
         private void RefreshAllPreviewNumbers()
         {
             if (Slots == null) return;
-            
+
             for (int i = 0; i < Slots.Count; i++)
             {
                 Slots[i].PreviewNumber = CalculatePreviewNumber(StartNumber, i);
@@ -146,11 +146,11 @@ namespace Apex.UI.ViewModels
             {
                 if (UseSmartTrayPrinting)
                 {
-                    return "سيتم طباعة كل صفحة مع صورها بالتتابع، وسيخرج الدفتر مترتب تلقائيًا بدون حاجة للتجميع اليدوي.";
+                    return L("Num_SmartDesc");
                 }
                 else
                 {
-                    return "سيتم طباعة كل صفحات الأصل أولًا، ثم كل صفحات الصور. سيتم التجميع يدويًا بعد الطباعة.";
+                    return L("Num_TraditionalDesc");
                 }
             }
         }
@@ -162,7 +162,7 @@ namespace Apex.UI.ViewModels
         {
             get
             {
-                return UseSmartTrayPrinting ? "طباعة ذكية" : "طباعة تقليدية";
+                return UseSmartTrayPrinting ? L("Num_SmartMode") : L("Num_TraditionalMode");
             }
         }
 
@@ -173,7 +173,7 @@ namespace Apex.UI.ViewModels
         }
 
         [ObservableProperty]
-        private string _printStatus = "جاهز";
+        private string _printStatus = L("Num_Ready");
 
         [ObservableProperty]
         private double _printProgress = 0;
@@ -188,13 +188,13 @@ namespace Apex.UI.ViewModels
         public bool IsPrepareMode => WorkflowMode == WorkflowMode.Prepare;
         public bool IsLayoutMode => WorkflowMode == WorkflowMode.Design;
         public bool IsExecuteMode => WorkflowMode == WorkflowMode.Print;
-        
+
         // Alias for XAML bindings that use CurrentMode
         public WorkflowMode CurrentMode => WorkflowMode;
 
         partial void OnWorkflowModeChanged(WorkflowMode value)
         {
-            
+
             OnPropertyChanged(nameof(IsPrepareMode));
             OnPropertyChanged(nameof(IsLayoutMode));
             OnPropertyChanged(nameof(IsExecuteMode));
@@ -292,6 +292,100 @@ namespace Apex.UI.ViewModels
         [ObservableProperty]
         private PrintScaleMode _printScaleMode = PrintScaleMode.ActualSize;
 
+        /// <summary>Register of already-issued numbers (duplicate prevention + audit).</summary>
+        private readonly Apex.NumberedBooksEngine.Core.NumberRegistry _numberRegistry = new();
+
+        /// <summary>Next free number in the current series — offered to the operator.</summary>
+        public long SuggestedNextNumber => _numberRegistry.NextAvailable(NumberPrefix);
+
+        [RelayCommand]
+        private void UseNextAvailableNumber() => StartNumber = SuggestedNextNumber;
+
+        // ── Issued-numbers register (audit view) ─────────────────────────────
+
+        /// <summary>Ranges already issued in the current series, newest first.</summary>
+        public ObservableCollection<string> IssuedRanges { get; } = new();
+
+        /// <summary>Unused stretches an auditor would ask about.</summary>
+        public ObservableCollection<string> NumberGaps { get; } = new();
+
+        [ObservableProperty] private string _registrySummary = "";
+        [ObservableProperty] private bool _hasRegistryEntries;
+
+        /// <summary>
+        /// Loads the register for the current series so the operator can see what was
+        /// already printed — and answer "why is 250–300 missing?" before being asked.
+        /// </summary>
+        [RelayCommand]
+        private void RefreshRegistry()
+        {
+            IssuedRanges.Clear();
+            NumberGaps.Clear();
+
+            var fmt = new Apex.NumberedBooksEngine.Core.NumberFormatOptions(
+                PadDigits: NumberPadDigits,
+                Prefix: NumberPrefix?.Trim() ?? "",
+                Suffix: NumberSuffix?.Trim() ?? "",
+                UseArabicDigits: UseArabicDigits);
+
+            var records = _numberRegistry.GetSeries(NumberPrefix);
+            foreach (var r in records.OrderByDescending(r => r.PrintedUtc))
+                IssuedRanges.Add(Apex.NumberedBooksEngine.Core.NumberRegistry.Describe(r, fmt));
+
+            foreach (var (from, to) in _numberRegistry.FindGaps(NumberPrefix))
+                NumberGaps.Add($"{Apex.NumberedBooksEngine.Core.NumberFormatter.Format(from, fmt)}" +
+                               $" – {Apex.NumberedBooksEngine.Core.NumberFormatter.Format(to, fmt)}" +
+                               $"  ({to - from + 1})");
+
+            HasRegistryEntries = IssuedRanges.Count > 0;
+            RegistrySummary = HasRegistryEntries
+                ? Lf("Num_RegistrySummary", records.Count, NumberGaps.Count)
+                : L("Num_RegistryEmpty");
+
+            OnPropertyChanged(nameof(SuggestedNextNumber));
+        }
+
+        // ── Number format ────────────────────────────────────────────────────
+        // Official books rarely print a bare integer: they carry a series prefix and
+        // often a year suffix, e.g. INV-000123/2026.
+        [ObservableProperty] private int _numberPadDigits = 6;
+        [ObservableProperty] private string _numberPrefix = "";
+        [ObservableProperty] private string _numberSuffix = "";
+
+        /// <summary>Live example of how a number will actually print.</summary>
+        public string NumberFormatPreview =>
+            Apex.NumberedBooksEngine.Core.NumberFormatter.Format(
+                StartNumber <= 0 ? 1 : StartNumber,
+                new Apex.NumberedBooksEngine.Core.NumberFormatOptions(
+                    PadDigits: NumberPadDigits,
+                    Prefix: NumberPrefix?.Trim() ?? "",
+                    Suffix: NumberSuffix?.Trim() ?? "",
+                    UseArabicDigits: UseArabicDigits));
+
+        partial void OnNumberPadDigitsChanged(int value) => OnPropertyChanged(nameof(NumberFormatPreview));
+        partial void OnNumberPrefixChanged(string value) => OnPropertyChanged(nameof(NumberFormatPreview));
+        partial void OnNumberSuffixChanged(string value) => OnPropertyChanged(nameof(NumberFormatPreview));
+
+        // Digit style: Arabic-Indic (٠١٢...) or Western (012...)
+        [ObservableProperty]
+        private bool _useArabicDigits = false;   // false = Western (0123), true = Arabic-Indic (٠١٢٣)
+
+        [ObservableProperty]
+        private bool _useWesternDigits = true;   // mirror for RadioButton binding
+
+        partial void OnUseArabicDigitsChanged(bool value)
+        {
+            _useWesternDigits = !value;
+            OnPropertyChanged(nameof(UseWesternDigits));
+            OnPropertyChanged(nameof(NumberFormatPreview));
+        }
+
+        partial void OnUseWesternDigitsChanged(bool value)
+        {
+            _useArabicDigits = !value;
+            OnPropertyChanged(nameof(UseArabicDigits));
+        }
+
         // Numbering mode properties (Linear/Imposed)
         [ObservableProperty]
         private bool _isLinearMode = true;  // Default to linear (ترقيم الشرشرة)
@@ -302,7 +396,7 @@ namespace Apex.UI.ViewModels
             {
                 IsImposedMode = false;
             }
-            
+
             // Update preview numbers when mode changes
             OnStartNumberChanged(StartNumber);
         }
@@ -316,7 +410,7 @@ namespace Apex.UI.ViewModels
             {
                 IsLinearMode = false;
             }
-            
+
             // Update preview numbers when mode changes
             OnStartNumberChanged(StartNumber);
         }
@@ -343,30 +437,30 @@ namespace Apex.UI.ViewModels
         public NumberingWizardViewModel(NumberingService numberingService)
         {
             _numberingService = numberingService;
-            
+
             // Initialize available fonts
             InitializeFonts();
-            
+
             // Initialize grid lines
             InitializeGridLines();
-            
+
             // Subscribe to Slots collection changes for debugging
             Slots.CollectionChanged += (s, e) =>
             {
             };
-            
+
             // Initialize available printers
             foreach (string printer in PrinterSettings.InstalledPrinters)
             {
                 AvailablePrinters.Add(printer);
             }
-            
+
             // Auto-select first printer if available
             if (AvailablePrinters.Count > 0 && string.IsNullOrEmpty(SelectedPrinter))
             {
                 SelectedPrinter = AvailablePrinters[0];
             }
-            
+
             // Initialize WorkflowMode properties to ensure UI visibility is correct
             // This is needed because OnWorkflowModeChanged is not called during initialization
             // Use Dispatcher to ensure UI updates happen on the correct thread
@@ -383,7 +477,7 @@ namespace Apex.UI.ViewModels
             // Only show common, practical tray options instead of raw enum values
             // ═══════════════════════════════════════════════════════════════════
             InitializeTrayOptions();
-            
+
             // Set default tray for Original
             OriginalTray = PaperSourceKind.Upper;
 
@@ -425,7 +519,7 @@ namespace Apex.UI.ViewModels
                 if (dialog.ShowDialog() == true)
                 {
                     TemplatePath = dialog.FileName;
-                    PrintStatus = "تم اختيار التصميم";
+                    PrintStatus = L("Num_DesignSelected");
                 }
                 else
                 {
@@ -436,7 +530,7 @@ namespace Apex.UI.ViewModels
                 _isLoadingTemplate = false;
             }
         }
-        
+
         partial void OnTemplatePathChanged(string? value)
         {
             // Load and display template image
@@ -458,7 +552,7 @@ namespace Apex.UI.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"خطأ في تحميل التصميم: {ex.Message}", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(Lf("Num_DesignLoadError", ex.Message), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                     TemplateImage = null;
                 }
             }
@@ -475,12 +569,12 @@ namespace Apex.UI.ViewModels
             // NumberOfCopies can be 1, 2, or 3
             int numCopies = Math.Max(1, Math.Min(3, NumberOfCopies));
             CopiesCount = numCopies;
-            
+
             // Update UseCopy1, UseCopy2, UseCopy3 based on NumberOfCopies
             UseCopy1 = numCopies >= 2;
             UseCopy2 = numCopies >= 3;
             UseCopy3 = false; // Only support up to 3 copies (Original + 2 copies)
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // CRITICAL FIX: Correct calculation for TotalPagesComputed
             // Formula: (TotalNumbers / SlotsPerPage) * CopiesCount
@@ -488,10 +582,10 @@ namespace Apex.UI.ViewModels
             // ═══════════════════════════════════════════════════════════════════
             int slotsPerPage = Slots?.Count ?? 1;
             if (slotsPerPage == 0) slotsPerPage = 1; // Prevent division by zero
-            
+
             long pagesPerCopy = (long)Math.Ceiling((double)TotalNumbers / slotsPerPage);
             TotalPagesComputed = pagesPerCopy * CopiesCount;
-            
+
             OnPropertyChanged(nameof(HasMultipleCopies));
         }
 
@@ -500,7 +594,7 @@ namespace Apex.UI.ViewModels
             // Clamp value between 1 and 3
             if (value < 1) NumberOfCopies = 1;
             else if (value > 3) NumberOfCopies = 3;
-            
+
             UpdateComputedValues();
         }
 
@@ -513,18 +607,39 @@ namespace Apex.UI.ViewModels
 
             if (string.IsNullOrEmpty(SelectedPrinter))
             {
-                MessageBox.Show("يرجى اختيار طابعة", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(L("Num_SelectPrinter"), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             if (TotalNumbers <= 0)
             {
-                MessageBox.Show("يرجى إدخال عدد صحيح من الأرقام", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(L("Num_EnterValidCount"), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
+            // Compliance gate: never reissue numbers that were already printed.
+            // A duplicated invoice/receipt number is a breach for the press and the
+            // customer, so this asks for an explicit decision rather than silently
+            // proceeding.
+            var check = _numberRegistry.Check(NumberPrefix, StartNumber, TotalNumbers);
+            if (check.Status == Apex.NumberedBooksEngine.Core.RangeCheckStatus.Invalid)
+            {
+                MessageBox.Show(check.Message, L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if (!check.IsAvailable)
+            {
+                var proceed = MessageBox.Show(
+                    Lf("Num_DuplicateWarning", check.Message),
+                    L("Num_DuplicateTitle"),
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning,
+                    MessageBoxResult.No);          // default is to STOP
+                if (proceed != MessageBoxResult.Yes) return;
+            }
+
             IsPrinting = true;
-            PrintStatus = "جاري التحضير...";
+            PrintStatus = L("Num_Preparing");
             PrintProgress = 0;
 
             try
@@ -540,29 +655,46 @@ namespace Apex.UI.ViewModels
             }
             catch (OperationCanceledException)
             {
-                PrintStatus = "تم إلغاء الطباعة";
-                RecordPrintHistory((long)(PrintProgress / 100.0 * TotalPagesComputed), "ملغي");
+                PrintStatus = L("Num_PrintCancelled");
+                RecordPrintHistory((long)(PrintProgress / 100.0 * TotalPagesComputed), L("Num_Cancelled"));
             }
             catch (Exception ex)
             {
                 // Show user-friendly error message
                 var errorMessage = ex.Message;
                 if (ex.InnerException != null)
-                    errorMessage += $"\n\nتفاصيل: {ex.InnerException.Message}";
+                    errorMessage += Lf("Num_ErrorDetails", ex.InnerException.Message);
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    MessageBox.Show($"حدث خطأ أثناء الطباعة:\n{errorMessage}", "خطأ في الطباعة", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(Lf("Num_PrintErrorDuring", errorMessage), L("Num_PrintErrorTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
                 });
 
-                PrintStatus = $"خطأ: {ex.Message}";
-                RecordPrintHistory((long)(PrintProgress / 100.0 * TotalPagesComputed), "خطأ");
+                PrintStatus = Lf("Num_ErrorColon", ex.Message);
+                RecordPrintHistory((long)(PrintProgress / 100.0 * TotalPagesComputed), L("Dlg_Error"));
             }
             finally
             {
                 // Record successful completion
                 if (PrintProgress >= 99.9)
-                    RecordPrintHistory(TotalPagesComputed, "مكتمل");
+                {
+                    RecordPrintHistory(TotalPagesComputed, L("Num_Complete"));
+
+                    // Burn the range in the register only once the job really printed —
+                    // reserving up front would consume numbers on a cancelled job and
+                    // create a gap the operator cannot explain.
+                    try
+                    {
+                        _numberRegistry.Record(
+                            NumberPrefix, StartNumber, TotalNumbers,
+                            SelectedPrinter ?? "",
+                            notes: CurrentProjectPath ?? "");
+                    }
+                    catch (Exception ex)
+                    {
+                        Apex.Core.Diagnostics.AppDiagnostics.LogWarning("Numbering.RecordRange", ex);
+                    }
+                }
 
                 IsPrinting = false;
                 if (_cts != null)
@@ -577,24 +709,24 @@ namespace Apex.UI.ViewModels
         {
             if (string.IsNullOrEmpty(SelectedPrinter))
             {
-                MessageBox.Show("يرجى اختيار طابعة", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(L("Num_SelectPrinter"), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             if (string.IsNullOrEmpty(TemplatePath))
             {
-                MessageBox.Show("يرجى تحديد مسار القالب", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(L("Num_SelectTemplatePath"), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             var slots = Slots.Select(s => s.ToSlotSpec()).ToList();
             if (slots.Count == 0)
             {
-                MessageBox.Show("يرجى إضافة slot واحد على الأقل", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(L("Num_AddOneSlot"), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            PrintStatus = "جاري الطباعة...";
+            PrintStatus = L("Num_Printing");
             PrintProgress = 0;
 
             try
@@ -607,28 +739,28 @@ namespace Apex.UI.ViewModels
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         PrintProgress = info.Percent;
-                        PrintStatus = $"جاري الطباعة... {info.Percent:F0}%";
+                        PrintStatus = Lf("Num_PrintingPct", info.Percent);
                     });
                 });
 
                 // Build tray mapping for traditional printing
                 var trayMapping = new Dictionary<int, PaperSourceKind>();
-                
+
                 // Original (Copy 0) - allow user to select tray
                 trayMapping[0] = OriginalTray;
-                
+
                 // Copy 1 (الصورة 1)
                 if (UseCopy1 && Copy1Tray.HasValue)
                 {
                     trayMapping[1] = Copy1Tray.Value;
                 }
-                
+
                 // Copy 2 (الصورة 2)
                 if (UseCopy2 && Copy2Tray.HasValue)
                 {
                     trayMapping[2] = Copy2Tray.Value;
                 }
-                
+
                 // Copy 3 (not used, but keep for compatibility)
                 if (UseCopy3 && Copy3Tray.HasValue)
                 {
@@ -645,7 +777,7 @@ namespace Apex.UI.ViewModels
                 {
                     numberingMode = NumberingMode.Imposed;
                 }
-                
+
                 // ═══════════════════════════════════════════════════════════════════
                 // CRITICAL FIX: Pass UseSmartTrayPrinting to control printing mode
                 // true = Smart Printing (Interleaved: Page→Copies)
@@ -663,31 +795,36 @@ namespace Apex.UI.ViewModels
                     progress,
                     ct,
                     numberingMode,
-                    useSmartPrinting: UseSmartTrayPrinting);  // Pass printing mode
+                    useSmartPrinting: UseSmartTrayPrinting,
+                    useArabicDigits:  UseArabicDigits,
+                    numberFormat: new Apex.NumberedBooksEngine.Core.NumberFormatOptions(
+                        PadDigits: NumberPadDigits,
+                        Prefix: NumberPrefix?.Trim() ?? "",
+                        Suffix: NumberSuffix?.Trim() ?? ""));
 
                 if (result.Success)
                 {
-                    PrintStatus = "اكتملت الطباعة بنجاح";
+                    PrintStatus = L("Num_PrintDoneStatus");
                     PrintProgress = 100;
-                    MessageBox.Show("اكتملت الطباعة بنجاح!", "نجاح", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(L("Num_PrintDoneMsg"), L("Dlg_Success"), MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
                     var errorText = (result.Errors != null && result.Errors.Count > 0)
                         ? string.Join("; ", result.Errors)
-                        : "سبب غير معروف";
-                    PrintStatus = $"خطأ في الطباعة: {errorText}";
-                    MessageBox.Show($"خطأ في الطباعة: {errorText}", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                        : L("Num_UnknownReason");
+                    PrintStatus = Lf("Num_PrintErrorText", errorText);
+                    MessageBox.Show(Lf("Num_PrintErrorText", errorText), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (OperationCanceledException)
             {
-                PrintStatus = "تم إلغاء الطباعة";
+                PrintStatus = L("Num_PrintCancelled");
             }
             catch (Exception ex)
             {
-                PrintStatus = $"خطأ: {ex.Message}";
-                MessageBox.Show($"حدث خطأ أثناء الطباعة:\n{ex.Message}", "خطأ في الطباعة", MessageBoxButton.OK, MessageBoxImage.Error);
+                PrintStatus = Lf("Num_ErrorColon", ex.Message);
+                MessageBox.Show(Lf("Num_PrintErrorDuring", ex.Message), L("Num_PrintErrorTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
                 // Don't re-throw - handle error gracefully without crashing
             }
         }
@@ -702,7 +839,7 @@ namespace Apex.UI.ViewModels
 
             // Build tray mapping
             var trayMapping = new Dictionary<int, PaperSourceKind>();
-            
+
             // Original (Copy 0) - allow user to select tray
             trayMapping[0] = OriginalTray;
 
@@ -725,18 +862,18 @@ namespace Apex.UI.ViewModels
             var slots = Slots.Select(s => s.ToSlotSpec()).ToList();
             if (slots.Count == 0)
             {
-                MessageBox.Show("يرجى إضافة slot واحد على الأقل", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(L("Num_AddOneSlot"), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             if (string.IsNullOrEmpty(TemplatePath))
             {
-                MessageBox.Show("يرجى تحديد مسار القالب", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(L("Num_SelectTemplatePath"), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             // Start cycle printing
-            PrintStatus = "جاري بدء الطباعة الدورية...";
+            PrintStatus = L("Num_StartingCyclic");
             TotalCycles = (int)TotalNumbers;
             CurrentCycleNumber = 0;
             CompletedCycles = 0;
@@ -748,7 +885,7 @@ namespace Apex.UI.ViewModels
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     PrintProgress = info.Percent;
-                    PrintStatus = $"جاري الطباعة... {info.Percent:F0}%";
+                    PrintStatus = Lf("Num_PrintingPct", info.Percent);
                 });
             });
 
@@ -775,27 +912,27 @@ namespace Apex.UI.ViewModels
 
                 if (result.Success)
                 {
-                    PrintStatus = "اكتملت الطباعة بنجاح";
+                    PrintStatus = L("Num_PrintDoneStatus");
                     PrintProgress = 100;
-                    MessageBox.Show($"اكتملت الطباعة بنجاح!\nتم طباعة {result.Completed} دورة.", 
-                        "نجاح", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(Lf("Num_CyclicDoneMsg", result.Completed),
+                        L("Dlg_Success"), MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
-                    PrintStatus = $"اكتملت مع أخطاء: {result.Failed} دورة فاشلة";
-                    MessageBox.Show($"اكتملت الطباعة مع أخطاء.\nنجحت: {result.Completed}\nفشلت: {result.Failed}", 
-                        "تحذير", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    PrintStatus = Lf("Num_DoneWithErrorsStatus", result.Failed);
+                    MessageBox.Show(Lf("Num_DoneWithErrorsMsg", result.Completed, result.Failed),
+                        L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
             catch (OperationCanceledException)
             {
-                PrintStatus = "تم إلغاء الطباعة";
-                MessageBox.Show("تم إلغاء الطباعة", "إلغاء", MessageBoxButton.OK, MessageBoxImage.Information);
+                PrintStatus = L("Num_PrintCancelled");
+                MessageBox.Show(L("Num_PrintCancelled"), L("Dlg_Cancel"), MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                PrintStatus = $"خطأ: {ex.Message}";
-                MessageBox.Show($"حدث خطأ أثناء الطباعة الدورية:\n{ex.Message}", "خطأ في الطباعة", MessageBoxButton.OK, MessageBoxImage.Error);
+                PrintStatus = Lf("Num_ErrorColon", ex.Message);
+                MessageBox.Show(Lf("Num_CyclicPrintErrorDuring", ex.Message), L("Num_PrintErrorTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
                 // Don't re-throw - handle error gracefully without crashing
             }
             finally
@@ -875,12 +1012,12 @@ namespace Apex.UI.ViewModels
             if (_numberingService.IsCyclePrintingPaused)
             {
                 _numberingService.ResumeCyclePrinting();
-                PrintStatus = "جاري الاستئناف...";
+                PrintStatus = L("Num_Resuming");
             }
             else
             {
                 _numberingService.PauseCyclePrinting();
-                PrintStatus = "متوقف مؤقتاً";
+                PrintStatus = L("Num_Paused");
             }
         }
 
@@ -889,21 +1026,21 @@ namespace Apex.UI.ViewModels
         {
             if (SelectedFailedCycle == null)
             {
-                MessageBox.Show("يرجى اختيار دورة فاشلة لإعادة المحاولة", "تحذير", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(L("Num_SelectFailedRetry"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             var success = _numberingService.RetryCycle(SelectedFailedCycle.JobId);
             if (success)
             {
-                PrintStatus = $"جاري إعادة محاولة الدورة {SelectedFailedCycle.CycleNumber}...";
-                MessageBox.Show($"تم بدء إعادة محاولة الدورة {SelectedFailedCycle.CycleNumber}", 
-                    "نجاح", MessageBoxButton.OK, MessageBoxImage.Information);
+                PrintStatus = Lf("Num_RetryingCycle", SelectedFailedCycle.CycleNumber);
+                MessageBox.Show(Lf("Num_RetryStarted", SelectedFailedCycle.CycleNumber),
+                    L("Dlg_Success"), MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
-                MessageBox.Show("فشل في إعادة المحاولة. تأكد من أن الدورة في حالة فاشلة.", 
-                    "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(L("Num_RetryFailed"),
+                    L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             await Task.CompletedTask;
@@ -914,29 +1051,29 @@ namespace Apex.UI.ViewModels
         {
             if (SelectedFailedCycle == null)
             {
-                MessageBox.Show("يرجى اختيار دورة فاشلة للتخطي", "تحذير", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(L("Num_SelectFailedSkip"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             var result = MessageBox.Show(
-                $"هل تريد تخطي الدورة {SelectedFailedCycle.CycleNumber}؟\nسيتم تخطي هذه الدورة والمتابعة إلى التالية.",
-                "تأكيد التخطي",
+                Lf("Num_SkipConfirm", SelectedFailedCycle.CycleNumber),
+                L("Num_SkipConfirmTitle"),
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
             {
-                var success = _numberingService.SkipCycle(SelectedFailedCycle.JobId, "تم التخطي بواسطة المستخدم");
+                var success = _numberingService.SkipCycle(SelectedFailedCycle.JobId, L("Num_SkippedByUser"));
                 if (success)
                 {
-                    PrintStatus = $"تم تخطي الدورة {SelectedFailedCycle.CycleNumber}";
-                    MessageBox.Show($"تم تخطي الدورة {SelectedFailedCycle.CycleNumber}", 
-                        "نجاح", MessageBoxButton.OK, MessageBoxImage.Information);
+                    PrintStatus = Lf("Num_CycleSkipped", SelectedFailedCycle.CycleNumber);
+                    MessageBox.Show(Lf("Num_CycleSkipped", SelectedFailedCycle.CycleNumber),
+                        L("Dlg_Success"), MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
-                    MessageBox.Show("فشل في تخطي الدورة.", 
-                        "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(L("Num_SkipFailed"),
+                        L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
 
@@ -947,14 +1084,14 @@ namespace Apex.UI.ViewModels
         private void PauseCyclePrinting()
         {
             _numberingService.PauseCyclePrinting();
-            PrintStatus = "متوقف مؤقتاً";
+            PrintStatus = L("Num_Paused");
         }
 
         [RelayCommand]
         private void ResumeCyclePrinting()
         {
             _numberingService.ResumeCyclePrinting();
-            PrintStatus = "جاري الاستئناف...";
+            PrintStatus = L("Num_Resuming");
         }
 
         [RelayCommand]
@@ -962,20 +1099,20 @@ namespace Apex.UI.ViewModels
         {
             if (SelectedPendingState == null)
             {
-                MessageBox.Show("يرجى اختيار حالة محفوظة للاستئناف", "تحذير", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(L("Num_SelectSavedResume"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             var result = MessageBox.Show(
-                $"هل تريد الاستئناف من الحالة المحفوظة؟\nالطابعة: {SelectedPendingState.PrinterName}\nالرقم الأول: {SelectedPendingState.StartNumber}\nإجمالي الأرقام: {SelectedPendingState.TotalNumbers}",
-                "تأكيد الاستئناف",
+                Lf("Num_ResumeConfirm", SelectedPendingState.PrinterName, SelectedPendingState.StartNumber, SelectedPendingState.TotalNumbers),
+                L("Num_ResumeConfirmTitle"),
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
             {
                 IsPrinting = true;
-                PrintStatus = "جاري الاستئناف من الحالة المحفوظة...";
+                PrintStatus = L("Num_ResumingFromSaved");
                 PrintProgress = 0;
 
                 _cts = new CancellationTokenSource();
@@ -1000,33 +1137,33 @@ namespace Apex.UI.ViewModels
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             PrintProgress = info.Percent;
-                            PrintStatus = $"جاري الاستئناف... {info.Percent:F0}%";
+                            PrintStatus = Lf("Num_ResumingPct", info.Percent);
                         });
                     }));
 
                     if (resumeResult.Success)
                     {
-                        PrintStatus = "اكتمل الاستئناف بنجاح";
+                        PrintStatus = L("Num_ResumeDoneStatus");
                         PrintProgress = 100;
-                        MessageBox.Show($"اكتمل الاستئناف بنجاح!\nتم طباعة {resumeResult.Completed} دورة.",
-                            "نجاح", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show(Lf("Num_ResumeDoneMsg", resumeResult.Completed),
+                            L("Dlg_Success"), MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {
-                        PrintStatus = $"اكتمل الاستئناف مع أخطاء: {resumeResult.Failed} دورة فاشلة";
-                        MessageBox.Show($"اكتمل الاستئناف مع أخطاء.\nنجحت: {resumeResult.Completed}\nفشلت: {resumeResult.Failed}",
-                            "تحذير", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        PrintStatus = Lf("Num_ResumeErrorsStatus", resumeResult.Failed);
+                        MessageBox.Show(Lf("Num_ResumeErrorsMsg", resumeResult.Completed, resumeResult.Failed),
+                            L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                 }
                 catch (OperationCanceledException)
                 {
-                    PrintStatus = "تم إلغاء الاستئناف";
-                    MessageBox.Show("تم إلغاء الاستئناف", "إلغاء", MessageBoxButton.OK, MessageBoxImage.Information);
+                    PrintStatus = L("Num_ResumeCancelled");
+                    MessageBox.Show(L("Num_ResumeCancelled"), L("Dlg_Cancel"), MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
-                    PrintStatus = $"خطأ: {ex.Message}";
-                    MessageBox.Show($"خطأ في الاستئناف: {ex.Message}", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                    PrintStatus = Lf("Num_ErrorColon", ex.Message);
+                    MessageBox.Show(Lf("Num_ResumeError", ex.Message), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 finally
                 {
@@ -1063,7 +1200,7 @@ namespace Apex.UI.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"خطأ في تحميل الحالات المحفوظة: {ex.Message}", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Lf("Num_LoadSavedError", ex.Message), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -1073,35 +1210,35 @@ namespace Apex.UI.ViewModels
         [RelayCommand]
         private void NavigateToPrepare()
         {
-            
+
             _navigationHistory.Push(WorkflowMode);
             WorkflowMode = WorkflowMode.Prepare;
         }
-        
+
         /// <summary>
         /// Navigate to Layout mode (Design tab)
         /// </summary>
         [RelayCommand]
         private void NavigateToLayout()
         {
-            
+
             if (string.IsNullOrEmpty(TemplatePath))
             {
-                MessageBox.Show("يرجى إدراج التصميم أولاً", "تحذير", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(L("Num_InsertDesignFirst"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            
+
             _navigationHistory.Push(WorkflowMode);
             WorkflowMode = WorkflowMode.Design;
         }
-        
+
         [RelayCommand]
         private void StartLayout()
         {
 
             if (string.IsNullOrEmpty(TemplatePath))
             {
-                MessageBox.Show("يرجى إدراج التصميم أولاً", "تحذير", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(L("Num_InsertDesignFirst"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -1110,7 +1247,7 @@ namespace Apex.UI.ViewModels
             // ═══════════════════════════════════════════════════════════════════
             _navigationHistory.Push(WorkflowMode);
             WorkflowMode = WorkflowMode.Design;
-            
+
         }
 
         [RelayCommand]
@@ -1120,19 +1257,19 @@ namespace Apex.UI.ViewModels
             // Check printer first (most important)
             if (string.IsNullOrEmpty(SelectedPrinter))
             {
-                MessageBox.Show("يرجى اختيار طابعة", "تحذير", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(L("Num_SelectPrinter"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             if (string.IsNullOrEmpty(TemplatePath))
             {
-                MessageBox.Show("يرجى تحديد مسار القالب أولاً", "تحذير", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(L("Num_SelectTemplatePathFirst"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             if (Slots == null || Slots.Count == 0)
             {
-                MessageBox.Show("يرجى إضافة slot واحد على الأقل", "تحذير", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(L("Num_AddOneSlot"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -1167,16 +1304,16 @@ namespace Apex.UI.ViewModels
 
             if (WorkflowMode != WorkflowMode.Design)
             {
-                MessageBox.Show("يرجى الانتقال إلى وضع التصميم أولاً", "تحذير", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(L("Num_SwitchDesignMode"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             SaveUndoState(); // snapshot before adding
             _slotCounter++;
-            
+
             // Position each new slot slightly offset from the previous
             float yOffset = 0.1f + ((_slotCounter - 1) * 0.08f) % 0.6f;
-            
+
             var newSlot = new NumberSlot
             {
                 Id = $"Slot {_slotCounter}",
@@ -1194,25 +1331,25 @@ namespace Apex.UI.ViewModels
                 Opacity = 1.0,
                 Alignment = "Center"
             };
-            
+
             if (Slots == null)
             {
                 Slots = new ObservableCollection<NumberSlot>();
             }
-            
+
             Slots.Add(newSlot);
             SelectedSlot = newSlot;
-            
+
             // ═══════════════════════════════════════════════════════════════════
             // CRITICAL: Refresh ALL preview numbers after adding a new slot
             // Because Imposed mode calculation depends on total slot count
             // ═══════════════════════════════════════════════════════════════════
             RefreshAllPreviewNumbers();
-            
+
             // Force UI update
             OnPropertyChanged(nameof(Slots));
             OnPropertyChanged(nameof(SelectedSlot));
-            
+
             // Force collection change notification
             System.Windows.Application.Current?.Dispatcher.BeginInvoke(new System.Action(() =>
             {
@@ -1231,13 +1368,13 @@ namespace Apex.UI.ViewModels
                 {
                     SelectedSlot = Slots.FirstOrDefault();
                 }
-                
+
                 // ═══════════════════════════════════════════════════════════════════
                 // CRITICAL: Refresh ALL preview numbers after removing a slot
                 // Because Imposed mode calculation depends on total slot count
                 // ═══════════════════════════════════════════════════════════════════
                 RefreshAllPreviewNumbers();
-                
+
             }
         }
 
@@ -1251,13 +1388,13 @@ namespace Apex.UI.ViewModels
                 var slotToRemove = SelectedSlot;
                 Slots.Remove(slotToRemove);
                 SelectedSlot = Slots.FirstOrDefault();
-                
+
                 // ═══════════════════════════════════════════════════════════════════
                 // CRITICAL: Refresh ALL preview numbers after removing a slot
                 // Because Imposed mode calculation depends on total slot count
                 // ═══════════════════════════════════════════════════════════════════
                 RefreshAllPreviewNumbers();
-                
+
             }
             else
             {
@@ -1269,7 +1406,7 @@ namespace Apex.UI.ViewModels
         {
 
             ZoomLevel = Math.Min(ZoomLevel + 0.1, 3.0);
-            
+
         }
 
         [RelayCommand]
@@ -1277,7 +1414,7 @@ namespace Apex.UI.ViewModels
         {
 
             ZoomLevel = Math.Max(ZoomLevel - 0.1, 0.1);
-            
+
         }
 
         [RelayCommand]
@@ -1290,7 +1427,7 @@ namespace Apex.UI.ViewModels
             double scaleX = viewportWidth / CanvasWidth;
             double scaleY = viewportHeight / CanvasHeight;
             ZoomLevel = Math.Min(scaleX, scaleY) * 0.9; // 90% to leave some margin
-            
+
         }
 
         /// <summary>
@@ -1302,14 +1439,14 @@ namespace Apex.UI.ViewModels
         private void InitializeTrayOptions()
         {
             AvailableTrayOptions.Clear();
-            
+
             // User-friendly tray labels mapped to PaperSourceKind
             AvailableTrayOptions.Add(new TrayOption("Tray 1", PaperSourceKind.Upper));
             AvailableTrayOptions.Add(new TrayOption("Tray 2", PaperSourceKind.Lower));
             AvailableTrayOptions.Add(new TrayOption("Tray 3", PaperSourceKind.Middle));
             AvailableTrayOptions.Add(new TrayOption("Manual Feed", PaperSourceKind.Manual));
         }
-        
+
         private void InitializeFonts()
         {
 
@@ -1318,7 +1455,7 @@ namespace Apex.UI.ViewModels
                 .Select(f => f.Source)
                 .OrderBy(f => f)
                 .ToList();
-            
+
             foreach (var font in fonts)
             {
                 AvailableFonts.Add(font);
@@ -1329,10 +1466,10 @@ namespace Apex.UI.ViewModels
         {
 
             GridLines.Clear();
-            
+
             // 0.5 cm spacing = ~18.9 pixels at 96 DPI
             double spacing = 18.9;
-            
+
             // Vertical lines
             for (double x = 0; x <= CanvasWidth; x += spacing)
             {
@@ -1344,7 +1481,7 @@ namespace Apex.UI.ViewModels
                     Y2 = CanvasHeight
                 });
             }
-            
+
             // Horizontal lines
             for (double y = 0; y <= CanvasHeight; y += spacing)
             {
@@ -1356,7 +1493,7 @@ namespace Apex.UI.ViewModels
                     Y2 = y
                 });
             }
-            
+
         }
 
         partial void OnCanvasWidthChanged(double value)
@@ -1378,10 +1515,10 @@ namespace Apex.UI.ViewModels
         private string CalculatePreviewNumber(long startNumber, int slotIndex)
         {
             long previewNum;
-            
+
             // Get actual slot count (use at least 1 to avoid division by zero)
             int slotCount = Math.Max(Slots?.Count ?? 1, 1);
-            
+
             if (IsLinearMode)
             {
                 // Linear mode: sequential numbers (1, 2, 3, 4...)
@@ -1403,7 +1540,7 @@ namespace Apex.UI.ViewModels
                 long totalSheets = (long)Math.Ceiling((double)TotalNumbers / slotCount);
                 long sheetIndex = 0; // Preview shows first sheet
                 previewNum = startNumber + sheetIndex + (slotIndex * totalSheets);
-                
+
                 // Ensure preview number doesn't exceed the valid range
                 if (previewNum >= startNumber + TotalNumbers)
                 {
@@ -1415,13 +1552,13 @@ namespace Apex.UI.ViewModels
                 // Default: sequential
                 previewNum = startNumber + slotIndex;
             }
-            
+
             // Format: return empty string for invalid numbers
             if (previewNum < 0)
             {
                 return "----";
             }
-            
+
             return previewNum.ToString("D4");
         }
 
@@ -1460,9 +1597,9 @@ namespace Apex.UI.ViewModels
             {
                 _elapsedTimer?.Dispose();
                 _elapsedTimer = null;
-                ElapsedTimeDisplay   = "";
-                PrintedPagesDisplay  = "";
-                PrintSpeedDisplay    = "";
+                ElapsedTimeDisplay = "";
+                PrintedPagesDisplay = "";
+                PrintSpeedDisplay = "";
             }
         }
 
@@ -1477,7 +1614,7 @@ namespace Apex.UI.ViewModels
             {
                 if (TotalPagesComputed <= 0) return;
                 var printed = (long)(PrintProgress / 100.0 * TotalPagesComputed);
-                PrintedPagesDisplay = $"{printed:N0} / {TotalPagesComputed:N0} صفحة";
+                PrintedPagesDisplay = Lf("Num_PagesProgress", printed, TotalPagesComputed);
             });
         }
 
@@ -1489,20 +1626,20 @@ namespace Apex.UI.ViewModels
 
                 // Elapsed
                 ElapsedTimeDisplay = elapsed.TotalSeconds < 60
-                    ? $"{(int)elapsed.TotalSeconds:D2}ث"
-                    : $"{(int)elapsed.TotalMinutes}د {elapsed.Seconds:D2}ث";
+                    ? Lf("Num_ElapsedSec", (int)elapsed.TotalSeconds)
+                    : Lf("Num_ElapsedMin", (int)elapsed.TotalMinutes, elapsed.Seconds);
 
                 // Speed
                 if (elapsed.TotalMinutes > 0 && PrintProgress > 0 && TotalPagesComputed > 0)
                 {
-                    var printed        = PrintProgress / 100.0 * TotalPagesComputed;
-                    var pagesPerMin    = printed / elapsed.TotalMinutes;
-                    var remaining      = TotalPagesComputed - printed;
-                    var etaMinutes     = pagesPerMin > 0 ? remaining / pagesPerMin : 0;
-                    PrintSpeedDisplay  = etaMinutes > 1
-                        ? $"متبقٍ ~{(int)etaMinutes}د"
+                    var printed = PrintProgress / 100.0 * TotalPagesComputed;
+                    var pagesPerMin = printed / elapsed.TotalMinutes;
+                    var remaining = TotalPagesComputed - printed;
+                    var etaMinutes = pagesPerMin > 0 ? remaining / pagesPerMin : 0;
+                    PrintSpeedDisplay = etaMinutes > 1
+                        ? Lf("Num_EtaMin", (int)etaMinutes)
                         : etaMinutes > 0
-                            ? "متبقٍ < دقيقة"
+                            ? L("Num_EtaSubMin")
                             : "";
                 }
             });
@@ -1516,7 +1653,7 @@ namespace Apex.UI.ViewModels
             try
             {
                 _cts.Cancel();
-                PrintStatus = "جارٍ الإيقاف...";
+                PrintStatus = L("Num_Stopping");
             }
             catch { }
         }
@@ -1608,7 +1745,7 @@ namespace Apex.UI.ViewModels
         {
             var dlg = new SaveFileDialog
             {
-                Title = "حفظ مشروع الترقيم",
+                Title = L("Num_SaveProject"),
                 Filter = "Apex Job|*.apex-job",
                 DefaultExt = ".apex-job",
                 FileName = "numbering-project"
@@ -1617,29 +1754,29 @@ namespace Apex.UI.ViewModels
 
             var project = new NumberingProjectFile
             {
-                TemplatePath         = TemplatePath ?? "",
-                StartNumber          = StartNumber,
-                TotalNumbers         = TotalNumbers,
-                NumberOfCopies       = NumberOfCopies,
-                IsLinearMode         = IsLinearMode,
-                IsImposedMode        = IsImposedMode,
+                TemplatePath = TemplatePath ?? "",
+                StartNumber = StartNumber,
+                TotalNumbers = TotalNumbers,
+                NumberOfCopies = NumberOfCopies,
+                IsLinearMode = IsLinearMode,
+                IsImposedMode = IsImposedMode,
                 UseSmartTrayPrinting = UseSmartTrayPrinting,
-                SelectedPrinter      = SelectedPrinter ?? "",
-                Notes                = ProjectNotes,
-                Slots                = Slots.Select(s => new NumberingSlotData
+                SelectedPrinter = SelectedPrinter ?? "",
+                Notes = ProjectNotes,
+                Slots = Slots.Select(s => new NumberingSlotData
                 {
-                    Id         = s.Id,
-                    X          = s.X,
-                    Y          = s.Y,
-                    Width      = s.Width,
-                    Height     = s.Height,
+                    Id = s.Id,
+                    X = s.X,
+                    Y = s.Y,
+                    Width = s.Width,
+                    Height = s.Height,
                     FontFamily = s.FontFamily,
-                    FontSize   = s.FontSize,
-                    FontColor  = s.FontColor,
-                    IsBold     = s.IsBold,
-                    Rotation   = s.Rotation,
-                    Alignment  = s.Alignment,
-                    Opacity    = s.Opacity
+                    FontSize = s.FontSize,
+                    FontColor = s.FontColor,
+                    IsBold = s.IsBold,
+                    Rotation = s.Rotation,
+                    Alignment = s.Alignment,
+                    Opacity = s.Opacity
                 }).ToList()
             };
 
@@ -1647,7 +1784,7 @@ namespace Apex.UI.ViewModels
             File.WriteAllText(dlg.FileName, json);
             CurrentProjectPath = dlg.FileName;
             AddToRecentProjects(dlg.FileName);
-            PrintStatus = $"✅ تم حفظ المشروع: {Path.GetFileName(dlg.FileName)}";
+            PrintStatus = Lf("Num_ProjectSaved", Path.GetFileName(dlg.FileName));
         }
 
         [RelayCommand]
@@ -1655,23 +1792,23 @@ namespace Apex.UI.ViewModels
         {
             var dlg = new OpenFileDialog
             {
-                Title = "تحميل مشروع الترقيم",
+                Title = L("Num_LoadProject"),
                 Filter = "Apex Job|*.apex-job|All Files|*.*"
             };
             if (dlg.ShowDialog() != true) return;
 
             try
             {
-                var json    = File.ReadAllText(dlg.FileName);
+                var json = File.ReadAllText(dlg.FileName);
                 var project = JsonSerializer.Deserialize<NumberingProjectFile>(json);
-                if (project == null) throw new Exception("ملف المشروع تالف أو فارغ");
+                if (project == null) throw new Exception(L("Num_ProjectCorrupt"));
 
-                TemplatePath         = project.TemplatePath;
-                StartNumber          = project.StartNumber;
-                TotalNumbers         = project.TotalNumbers;
-                NumberOfCopies       = project.NumberOfCopies;
-                IsLinearMode         = project.IsLinearMode;
-                IsImposedMode        = project.IsImposedMode;
+                TemplatePath = project.TemplatePath;
+                StartNumber = project.StartNumber;
+                TotalNumbers = project.TotalNumbers;
+                NumberOfCopies = project.NumberOfCopies;
+                IsLinearMode = project.IsLinearMode;
+                IsImposedMode = project.IsImposedMode;
                 UseSmartTrayPrinting = project.UseSmartTrayPrinting;
 
                 if (!string.IsNullOrEmpty(project.SelectedPrinter) &&
@@ -1683,32 +1820,32 @@ namespace Apex.UI.ViewModels
                 {
                     Slots.Add(new NumberSlot
                     {
-                        Id         = sd.Id,
-                        X          = sd.X,
-                        Y          = sd.Y,
-                        Width      = sd.Width,
-                        Height     = sd.Height,
+                        Id = sd.Id,
+                        X = sd.X,
+                        Y = sd.Y,
+                        Width = sd.Width,
+                        Height = sd.Height,
                         FontFamily = sd.FontFamily,
-                        FontSize   = sd.FontSize,
-                        FontColor  = sd.FontColor,
-                        IsBold     = sd.IsBold,
-                        Rotation   = sd.Rotation,
-                        Alignment  = sd.Alignment,
-                        Opacity    = sd.Opacity
+                        FontSize = sd.FontSize,
+                        FontColor = sd.FontColor,
+                        IsBold = sd.IsBold,
+                        Rotation = sd.Rotation,
+                        Alignment = sd.Alignment,
+                        Opacity = sd.Opacity
                     });
                 }
 
-                ProjectNotes       = project.Notes ?? "";
+                ProjectNotes = project.Notes ?? "";
                 CurrentProjectPath = dlg.FileName;
                 AddToRecentProjects(dlg.FileName);
                 RefreshAllPreviewNumbers();
                 UpdateComputedValues();
                 SchedulePreviewUpdate();
-                PrintStatus = $"✅ تم تحميل المشروع: {Path.GetFileName(dlg.FileName)}";
+                PrintStatus = Lf("Num_ProjectLoaded", Path.GetFileName(dlg.FileName));
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"خطأ في تحميل المشروع:\n{ex.Message}", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Lf("Num_ProjectLoadError", ex.Message), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -1721,45 +1858,45 @@ namespace Apex.UI.ViewModels
         {
             if (Slots == null || Slots.Count == 0)
             {
-                MessageBox.Show("لا توجد عناصر للتصدير. أضف عناصر في وضع التصميم أولاً.",
-                    "تصدير الإعدادات", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(L("Num_NoItemsExport"),
+                    L("Num_ExportSettingsTitle"), MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             var dlg = new SaveFileDialog
             {
-                Title       = "تصدير إعدادات التصميم",
-                Filter      = "Apex Numbering Design|*.apexnr",
-                DefaultExt  = ".apexnr",
-                FileName    = "numbering-design"
+                Title = L("Num_ExportDesignSettings"),
+                Filter = "Apex Numbering Design|*.apexnr",
+                DefaultExt = ".apexnr",
+                FileName = "numbering-design"
             };
             if (dlg.ShowDialog() != true) return;
 
             var design = new NumberingDesignSettings
             {
                 ExportedAt = DateTime.Now,
-                Version    = "1.0",
-                SlotCount  = Slots.Count,
-                Slots      = Slots.Select(s => new NumberingSlotData
+                Version = "1.0",
+                SlotCount = Slots.Count,
+                Slots = Slots.Select(s => new NumberingSlotData
                 {
-                    Id         = s.Id,
-                    X          = s.X,
-                    Y          = s.Y,
-                    Width      = s.Width,
-                    Height     = s.Height,
+                    Id = s.Id,
+                    X = s.X,
+                    Y = s.Y,
+                    Width = s.Width,
+                    Height = s.Height,
                     FontFamily = s.FontFamily,
-                    FontSize   = s.FontSize,
-                    FontColor  = s.FontColor,
-                    IsBold     = s.IsBold,
-                    Rotation   = s.Rotation,
-                    Alignment  = s.Alignment,
-                    Opacity    = s.Opacity
+                    FontSize = s.FontSize,
+                    FontColor = s.FontColor,
+                    IsBold = s.IsBold,
+                    Rotation = s.Rotation,
+                    Alignment = s.Alignment,
+                    Opacity = s.Opacity
                 }).ToList()
             };
 
             var json = JsonSerializer.Serialize(design, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(dlg.FileName, json);
-            PrintStatus = $"✅ تم تصدير التصميم ({Slots.Count} عنصر): {Path.GetFileName(dlg.FileName)}";
+            PrintStatus = Lf("Num_DesignExported", Slots.Count, Path.GetFileName(dlg.FileName));
         }
 
         [RelayCommand]
@@ -1767,17 +1904,17 @@ namespace Apex.UI.ViewModels
         {
             var dlg = new OpenFileDialog
             {
-                Title  = "استيراد إعدادات التصميم",
+                Title = L("Num_ImportDesignSettings"),
                 Filter = "Apex Numbering Design|*.apexnr|All Files|*.*"
             };
             if (dlg.ShowDialog() != true) return;
 
             try
             {
-                var json   = File.ReadAllText(dlg.FileName);
+                var json = File.ReadAllText(dlg.FileName);
                 var design = JsonSerializer.Deserialize<NumberingDesignSettings>(json);
                 if (design?.Slots == null || design.Slots.Count == 0)
-                    throw new Exception("ملف الإعدادات تالف أو لا يحتوي على عناصر");
+                    throw new Exception(L("Num_SettingsCorrupt"));
 
                 SaveUndoState(); // Allow undo of the import
 
@@ -1786,18 +1923,18 @@ namespace Apex.UI.ViewModels
                 {
                     Slots.Add(new NumberSlot
                     {
-                        Id         = sd.Id,
-                        X          = sd.X,
-                        Y          = sd.Y,
-                        Width      = sd.Width,
-                        Height     = sd.Height,
+                        Id = sd.Id,
+                        X = sd.X,
+                        Y = sd.Y,
+                        Width = sd.Width,
+                        Height = sd.Height,
                         FontFamily = sd.FontFamily,
-                        FontSize   = sd.FontSize,
-                        FontColor  = sd.FontColor,
-                        IsBold     = sd.IsBold,
-                        Rotation   = sd.Rotation,
-                        Alignment  = sd.Alignment,
-                        Opacity    = sd.Opacity
+                        FontSize = sd.FontSize,
+                        FontColor = sd.FontColor,
+                        IsBold = sd.IsBold,
+                        Rotation = sd.Rotation,
+                        Alignment = sd.Alignment,
+                        Opacity = sd.Opacity
                     });
                 }
 
@@ -1805,12 +1942,12 @@ namespace Apex.UI.ViewModels
                 RefreshAllPreviewNumbers();
                 SchedulePreviewUpdate();
                 OnPropertyChanged(nameof(Slots));
-                PrintStatus = $"✅ تم استيراد {design.Slots.Count} عنصر من: {Path.GetFileName(dlg.FileName)}";
+                PrintStatus = Lf("Num_DesignImported", design.Slots.Count, Path.GetFileName(dlg.FileName));
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"خطأ في استيراد الإعدادات:\n{ex.Message}",
-                    "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Lf("Num_ImportError", ex.Message),
+                    L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -1840,7 +1977,7 @@ namespace Apex.UI.ViewModels
         {
             if (_undoStack.Count == 0)
             {
-                PrintStatus = "↩ لا توجد إجراءات للتراجع عنها";
+                PrintStatus = L("Num_NothingUndo");
                 return;
             }
 
@@ -1850,7 +1987,7 @@ namespace Apex.UI.ViewModels
 
             CanUndo = _undoStack.Count > 0;
             CanRedo = _redoStack.Count > 0;
-            PrintStatus = $"↩ تم التراجع (متبقٍّ: {_undoStack.Count} خطوة)";
+            PrintStatus = Lf("Num_Undone", _undoStack.Count);
         }
 
         [RelayCommand]
@@ -1858,7 +1995,7 @@ namespace Apex.UI.ViewModels
         {
             if (_redoStack.Count == 0)
             {
-                PrintStatus = "↪ لا توجد إجراءات للإعادة";
+                PrintStatus = L("Num_NothingRedo");
                 return;
             }
 
@@ -1868,7 +2005,7 @@ namespace Apex.UI.ViewModels
 
             CanUndo = _undoStack.Count > 0;
             CanRedo = _redoStack.Count > 0;
-            PrintStatus = $"↪ تم الإعادة (متبقٍّ: {_redoStack.Count} خطوة)";
+            PrintStatus = Lf("Num_Redone", _redoStack.Count);
         }
 
         private List<NumberingSlotData> SnapshotSlots()
@@ -1876,18 +2013,18 @@ namespace Apex.UI.ViewModels
             return (Slots ?? Enumerable.Empty<NumberSlot>())
                 .Select(s => new NumberingSlotData
                 {
-                    Id         = s.Id,
-                    X          = s.X,
-                    Y          = s.Y,
-                    Width      = s.Width,
-                    Height     = s.Height,
+                    Id = s.Id,
+                    X = s.X,
+                    Y = s.Y,
+                    Width = s.Width,
+                    Height = s.Height,
                     FontFamily = s.FontFamily,
-                    FontSize   = s.FontSize,
-                    FontColor  = s.FontColor,
-                    IsBold     = s.IsBold,
-                    Rotation   = s.Rotation,
-                    Alignment  = s.Alignment,
-                    Opacity    = s.Opacity
+                    FontSize = s.FontSize,
+                    FontColor = s.FontColor,
+                    IsBold = s.IsBold,
+                    Rotation = s.Rotation,
+                    Alignment = s.Alignment,
+                    Opacity = s.Opacity
                 }).ToList();
         }
 
@@ -1898,18 +2035,18 @@ namespace Apex.UI.ViewModels
             {
                 Slots.Add(new NumberSlot
                 {
-                    Id         = sd.Id,
-                    X          = sd.X,
-                    Y          = sd.Y,
-                    Width      = sd.Width,
-                    Height     = sd.Height,
+                    Id = sd.Id,
+                    X = sd.X,
+                    Y = sd.Y,
+                    Width = sd.Width,
+                    Height = sd.Height,
                     FontFamily = sd.FontFamily,
-                    FontSize   = sd.FontSize,
-                    FontColor  = sd.FontColor,
-                    IsBold     = sd.IsBold,
-                    Rotation   = sd.Rotation,
-                    Alignment  = sd.Alignment,
-                    Opacity    = sd.Opacity
+                    FontSize = sd.FontSize,
+                    FontColor = sd.FontColor,
+                    IsBold = sd.IsBold,
+                    Rotation = sd.Rotation,
+                    Alignment = sd.Alignment,
+                    Opacity = sd.Opacity
                 });
             }
             SelectedSlot = Slots.FirstOrDefault();
@@ -1937,9 +2074,9 @@ namespace Apex.UI.ViewModels
                 CheckpointStates.Add(r);
 
             if (CheckpointStates.Count == 0)
-                PrintStatus = "لا توجد نقاط إيقاف محفوظة";
+                PrintStatus = L("Num_NoCheckpoints");
             else
-                PrintStatus = $"تم العثور على {CheckpointStates.Count} نقطة إيقاف";
+                PrintStatus = Lf("Num_CheckpointsFound", CheckpointStates.Count);
         }
 
         [RelayCommand]
@@ -1948,7 +2085,7 @@ namespace Apex.UI.ViewModels
             if (SelectedCheckpoint == null) return;
             // Resume = set StartNumber to the number AFTER the last printed
             StartNumber = SelectedCheckpoint.LastPrintedNumber + 1;
-            PrintStatus = $"✅ سيتم الاستمرار من الرقم {StartNumber:N0}";
+            PrintStatus = Lf("Num_ContinueFrom", StartNumber);
         }
 
         [RelayCommand]
@@ -1958,7 +2095,7 @@ namespace Apex.UI.ViewModels
             _checkpointManager.DeleteCheckpoint(SelectedCheckpoint.JobId);
             CheckpointStates.Remove(SelectedCheckpoint);
             SelectedCheckpoint = null;
-            PrintStatus = "تم حذف نقطة الإيقاف";
+            PrintStatus = L("Num_CheckpointDeleted");
         }
 
         // ══════════════════════════════════════════════════════════════
@@ -1974,12 +2111,12 @@ namespace Apex.UI.ViewModels
         {
             if (string.IsNullOrEmpty(TemplatePath) || !File.Exists(TemplatePath))
             {
-                MessageBox.Show("يرجى تحميل ملف تصميم أولاً", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(L("Num_LoadDesignFirst"), L("Dlg_Notice"), MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
             if (Slots.Count == 0)
             {
-                MessageBox.Show("يرجى إضافة حقل ترقيم على الأقل", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(L("Num_AddNumberingField"), L("Dlg_Notice"), MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -1989,10 +2126,10 @@ namespace Apex.UI.ViewModels
 
             try
             {
-                var slots  = Slots.Select(s => s.ToSlotSpec()).ToList();
-                var isPdf  = TemplatePath.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
+                var slots = Slots.Select(s => s.ToSlotSpec()).ToList();
+                var isPdf = TemplatePath.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
                 var format = isPdf ? TemplateFormat.Pdf : TemplateFormat.Image;
-                var count  = (int)Math.Min(TotalNumbers, 4);
+                var count = (int)Math.Min(TotalNumbers, 4);
 
                 List<SkiaSharp.SKImage> pages;
                 using (var stream = File.OpenRead(TemplatePath))
@@ -2006,7 +2143,7 @@ namespace Apex.UI.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"خطأ في توليد المعاينة:\n{ex.Message}", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Lf("Num_PreviewError", ex.Message), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -2032,9 +2169,9 @@ namespace Apex.UI.ViewModels
                 if (TotalPagesComputed <= 0) return "—";
                 const double pagesPerMinute = 30.0;
                 var minutes = TotalPagesComputed / pagesPerMinute;
-                if (minutes < 1) return "أقل من دقيقة";
-                if (minutes < 60) return $"~{(int)Math.Ceiling(minutes)} دقيقة";
-                return $"~{(int)(minutes / 60)} ساعة {(int)(minutes % 60)} دقيقة";
+                if (minutes < 1) return L("Num_LessThanMinute");
+                if (minutes < 60) return Lf("Num_AboutMinutes", (int)Math.Ceiling(minutes));
+                return Lf("Num_AboutHoursMinutes", (int)(minutes / 60), (int)(minutes % 60));
             }
         }
 
@@ -2066,7 +2203,7 @@ namespace Apex.UI.ViewModels
                 foreach (var p in list.Where(File.Exists).Take(8))
                     RecentProjects.Add(p);
             }
-            catch { }
+            catch (System.Exception ex) { Apex.Core.Diagnostics.AppDiagnostics.LogWarning("Numbering.LoadRecentProjects", ex); }
         }
 
         private void AddToRecentProjects(string path)
@@ -2083,7 +2220,7 @@ namespace Apex.UI.ViewModels
                 Directory.CreateDirectory(Path.GetDirectoryName(RecentProjectsPath)!);
                 File.WriteAllText(RecentProjectsPath, JsonSerializer.Serialize(list));
             }
-            catch { }
+            catch (System.Exception ex) { Apex.Core.Diagnostics.AppDiagnostics.LogWarning("Numbering.AddRecentProject", ex); }
         }
 
         [RelayCommand]
@@ -2096,18 +2233,18 @@ namespace Apex.UI.ViewModels
             }
             try
             {
-                var json    = File.ReadAllText(path);
+                var json = File.ReadAllText(path);
                 var project = JsonSerializer.Deserialize<NumberingProjectFile>(json);
                 if (project == null) return;
 
-                TemplatePath         = project.TemplatePath;
-                StartNumber          = project.StartNumber;
-                TotalNumbers         = project.TotalNumbers;
-                NumberOfCopies       = project.NumberOfCopies;
-                IsLinearMode         = project.IsLinearMode;
-                IsImposedMode        = project.IsImposedMode;
+                TemplatePath = project.TemplatePath;
+                StartNumber = project.StartNumber;
+                TotalNumbers = project.TotalNumbers;
+                NumberOfCopies = project.NumberOfCopies;
+                IsLinearMode = project.IsLinearMode;
+                IsImposedMode = project.IsImposedMode;
                 UseSmartTrayPrinting = project.UseSmartTrayPrinting;
-                ProjectNotes         = project.Notes ?? "";
+                ProjectNotes = project.Notes ?? "";
 
                 if (!string.IsNullOrEmpty(project.SelectedPrinter) &&
                     AvailablePrinters.Contains(project.SelectedPrinter))
@@ -2117,18 +2254,18 @@ namespace Apex.UI.ViewModels
                 foreach (var sd in project.Slots)
                     Slots.Add(new NumberSlot
                     {
-                        Id         = sd.Id,
-                        X          = sd.X,
-                        Y          = sd.Y,
-                        Width      = sd.Width,
-                        Height     = sd.Height,
+                        Id = sd.Id,
+                        X = sd.X,
+                        Y = sd.Y,
+                        Width = sd.Width,
+                        Height = sd.Height,
                         FontFamily = sd.FontFamily,
-                        FontSize   = sd.FontSize,
-                        FontColor  = sd.FontColor,
-                        IsBold     = sd.IsBold,
-                        Rotation   = sd.Rotation,
-                        Alignment  = sd.Alignment,
-                        Opacity    = sd.Opacity
+                        FontSize = sd.FontSize,
+                        FontColor = sd.FontColor,
+                        IsBold = sd.IsBold,
+                        Rotation = sd.Rotation,
+                        Alignment = sd.Alignment,
+                        Opacity = sd.Opacity
                     });
 
                 CurrentProjectPath = path;
@@ -2136,11 +2273,11 @@ namespace Apex.UI.ViewModels
                 RefreshAllPreviewNumbers();
                 UpdateComputedValues();
                 SchedulePreviewUpdate();
-                PrintStatus = $"✅ تم تحميل: {Path.GetFileName(path)}";
+                PrintStatus = Lf("Num_LoadedFile", Path.GetFileName(path));
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"خطأ:\n{ex.Message}", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Lf("Num_ErrorNewline", ex.Message), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -2166,18 +2303,18 @@ namespace Apex.UI.ViewModels
             _slotCounter++;
             var clone = new NumberSlot
             {
-                Id         = $"Slot {_slotCounter}",
-                X          = Math.Min(src.X + 0.03f, 0.85f),
-                Y          = Math.Min(src.Y + 0.03f, 0.85f),
-                Width      = src.Width,
-                Height     = src.Height,
+                Id = $"Slot {_slotCounter}",
+                X = Math.Min(src.X + 0.03f, 0.85f),
+                Y = Math.Min(src.Y + 0.03f, 0.85f),
+                Width = src.Width,
+                Height = src.Height,
                 FontFamily = src.FontFamily,
-                FontSize   = src.FontSize,
-                FontColor  = src.FontColor,
-                IsBold     = src.IsBold,
-                Rotation   = src.Rotation,
-                Alignment  = src.Alignment,
-                Opacity    = src.Opacity
+                FontSize = src.FontSize,
+                FontColor = src.FontColor,
+                IsBold = src.IsBold,
+                Rotation = src.Rotation,
+                Alignment = src.Alignment,
+                Opacity = src.Opacity
             };
             Slots.Add(clone);
             SelectedSlot = clone;
@@ -2217,7 +2354,7 @@ namespace Apex.UI.ViewModels
                 foreach (var r in list.OrderByDescending(r => r.Timestamp).Take(50))
                     PrintHistory.Add(r);
             }
-            catch { }
+            catch (System.Exception ex) { Apex.Core.Diagnostics.AppDiagnostics.LogWarning("Numbering.LoadPrintHistory", ex); }
         }
 
         internal void RecordPrintHistory(long pagesCount, string status)
@@ -2226,14 +2363,14 @@ namespace Apex.UI.ViewModels
             {
                 var record = new PrintHistoryRecord
                 {
-                    Timestamp    = DateTime.Now,
-                    StartNumber  = StartNumber,
+                    Timestamp = DateTime.Now,
+                    StartNumber = StartNumber,
                     TotalNumbers = TotalNumbers,
-                    PagesCount   = pagesCount,
-                    Printer      = SelectedPrinter ?? "",
-                    Status       = status,
-                    ProjectName  = string.IsNullOrEmpty(CurrentProjectPath)
-                                    ? "بدون اسم"
+                    PagesCount = pagesCount,
+                    Printer = SelectedPrinter ?? "",
+                    Status = status,
+                    ProjectName = string.IsNullOrEmpty(CurrentProjectPath)
+                                    ? L("Num_Untitled")
                                     : Path.GetFileNameWithoutExtension(CurrentProjectPath)
                 };
 
@@ -2261,7 +2398,7 @@ namespace Apex.UI.ViewModels
                     });
                 }
             }
-            catch { }
+            catch (System.Exception ex) { Apex.Core.Diagnostics.AppDiagnostics.LogWarning("Numbering.RecordPrintHistory", ex); }
         }
 
         [RelayCommand]
@@ -2271,9 +2408,9 @@ namespace Apex.UI.ViewModels
             {
                 if (File.Exists(PrintHistoryPath)) File.Delete(PrintHistoryPath);
                 PrintHistory.Clear();
-                PrintStatus = "تم مسح السجل";
+                PrintStatus = L("Num_LogCleared");
             }
-            catch { }
+            catch (System.Exception ex) { Apex.Core.Diagnostics.AppDiagnostics.LogWarning("Numbering.ClearPrintHistory", ex); }
         }
 
         // ══════════════════════════════════════════════════════════════
@@ -2286,17 +2423,17 @@ namespace Apex.UI.ViewModels
             var image = LivePreviewImage ?? TemplateImage;
             if (image == null)
             {
-                MessageBox.Show("لا توجد معاينة لتصديرها — حمّل قالباً أولاً",
-                    "تنبيه", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(L("Num_NoPreviewExport"),
+                    L("Dlg_Notice"), MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             var dlg = new SaveFileDialog
             {
-                Title      = "تصدير المعاينة",
-                Filter     = "PNG Image|*.png|JPEG Image|*.jpg",
+                Title = L("Num_ExportPreview"),
+                Filter = "PNG Image|*.png|JPEG Image|*.jpg",
                 DefaultExt = ".png",
-                FileName   = $"preview-{StartNumber:D6}"
+                FileName = $"preview-{StartNumber:D6}"
             };
             if (dlg.ShowDialog() != true) return;
 
@@ -2309,11 +2446,11 @@ namespace Apex.UI.ViewModels
                 encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(image));
                 using var fs = File.OpenWrite(dlg.FileName);
                 encoder.Save(fs);
-                PrintStatus = $"✅ تم تصدير المعاينة: {Path.GetFileName(dlg.FileName)}";
+                PrintStatus = Lf("Num_PreviewExported", Path.GetFileName(dlg.FileName));
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"خطأ في التصدير:\n{ex.Message}", "خطأ",
+                MessageBox.Show(Lf("Num_ExportError", ex.Message), L("Dlg_Error"),
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -2359,32 +2496,32 @@ namespace Apex.UI.ViewModels
 {
     public class NumberingProjectFile
     {
-        public string TemplatePath         { get; set; } = "";
-        public long   StartNumber          { get; set; } = 1;
-        public long   TotalNumbers         { get; set; } = 100;
-        public int    NumberOfCopies       { get; set; } = 1;
-        public bool   IsLinearMode         { get; set; } = true;
-        public bool   IsImposedMode        { get; set; } = false;
-        public bool   UseSmartTrayPrinting { get; set; } = false;
-        public string SelectedPrinter      { get; set; } = "";
-        public string? Notes               { get; set; }
+        public string TemplatePath { get; set; } = "";
+        public long StartNumber { get; set; } = 1;
+        public long TotalNumbers { get; set; } = 100;
+        public int NumberOfCopies { get; set; } = 1;
+        public bool IsLinearMode { get; set; } = true;
+        public bool IsImposedMode { get; set; } = false;
+        public bool UseSmartTrayPrinting { get; set; } = false;
+        public string SelectedPrinter { get; set; } = "";
+        public string? Notes { get; set; }
         public List<NumberingSlotData> Slots { get; set; } = new();
     }
 
     public class NumberingSlotData
     {
-        public string Id         { get; set; } = "";
-        public float  X          { get; set; }
-        public float  Y          { get; set; }
-        public float  Width      { get; set; } = 0.1f;
-        public float  Height     { get; set; } = 0.05f;
+        public string Id { get; set; } = "";
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Width { get; set; } = 0.1f;
+        public float Height { get; set; } = 0.05f;
         public string FontFamily { get; set; } = "Arial";
-        public float  FontSize   { get; set; } = 24;
-        public string FontColor  { get; set; } = "#000000";
-        public bool   IsBold     { get; set; }
-        public double Rotation   { get; set; }
-        public string Alignment  { get; set; } = "Left";
-        public double Opacity    { get; set; } = 1.0;
+        public float FontSize { get; set; } = 24;
+        public string FontColor { get; set; } = "#000000";
+        public bool IsBold { get; set; }
+        public double Rotation { get; set; }
+        public string Alignment { get; set; } = "Left";
+        public double Opacity { get; set; } = 1.0;
     }
 
     /// <summary>
@@ -2393,21 +2530,21 @@ namespace Apex.UI.ViewModels
     /// </summary>
     public class NumberingDesignSettings
     {
-        public string   Version    { get; set; } = "1.0";
+        public string Version { get; set; } = "1.0";
         public DateTime ExportedAt { get; set; } = DateTime.Now;
-        public int      SlotCount  { get; set; }
+        public int SlotCount { get; set; }
         public List<NumberingSlotData> Slots { get; set; } = new();
     }
 
     public class PrintHistoryRecord
     {
-        public DateTime Timestamp    { get; set; } = DateTime.Now;
-        public long     StartNumber  { get; set; }
-        public long     TotalNumbers { get; set; }
-        public long     PagesCount   { get; set; }
-        public string   Printer      { get; set; } = "";
-        public string   Status       { get; set; } = "";
-        public string   ProjectName  { get; set; } = "";
+        public DateTime Timestamp { get; set; } = DateTime.Now;
+        public long StartNumber { get; set; }
+        public long TotalNumbers { get; set; }
+        public long PagesCount { get; set; }
+        public string Printer { get; set; } = "";
+        public string Status { get; set; } = "";
+        public string ProjectName { get; set; } = "";
     }
 }
 

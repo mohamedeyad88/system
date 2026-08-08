@@ -16,46 +16,46 @@ namespace Apex.Services.Printing.VendorDetection
     /// </summary>
     public class VendorDetectionEngine
     {
-        private static readonly Lazy<VendorDetectionEngine> _instance = 
+        private static readonly Lazy<VendorDetectionEngine> _instance =
             new(() => new VendorDetectionEngine());
-        
+
         public static VendorDetectionEngine Instance => _instance.Value;
-        
+
         // Cache of detected printers (thread-safe)
         private readonly ConcurrentDictionary<string, PrinterMetadata> _printerCache = new();
-        
+
         // Vendor detection patterns (case-insensitive)
         private static readonly Dictionary<PrinterVendor, string[]> VendorPatterns = new()
         {
-            [PrinterVendor.HP] = new[] 
-            { 
-                "hp", "hewlett", "packard", "laserjet", "deskjet", "officejet", 
+            [PrinterVendor.HP] = new[]
+            {
+                "hp", "hewlett", "packard", "laserjet", "deskjet", "officejet",
                 "photosmart", "envy", "pagewide", "designjet"
             },
-            [PrinterVendor.Epson] = new[] 
-            { 
-                "epson", "workforce", "ecotank", "surecolor", "stylus", 
+            [PrinterVendor.Epson] = new[]
+            {
+                "epson", "workforce", "ecotank", "surecolor", "stylus",
                 "expression", "picturemate"
             },
-            [PrinterVendor.Canon] = new[] 
-            { 
+            [PrinterVendor.Canon] = new[]
+            {
                 "canon", "pixma", "imagerunner", "imageclass", "selphy",
                 "maxify", "megatank"
             },
-            [PrinterVendor.Brother] = new[] 
-            { 
+            [PrinterVendor.Brother] = new[]
+            {
                 "brother", "mfc", "hl-", "dcp-"
             },
-            [PrinterVendor.Xerox] = new[] 
-            { 
+            [PrinterVendor.Xerox] = new[]
+            {
                 "xerox", "phaser", "workcentre", "versalink", "altalink"
             },
-            [PrinterVendor.Ricoh] = new[] 
-            { 
+            [PrinterVendor.Ricoh] = new[]
+            {
                 "ricoh", "aficio", "mp c", "sp "
             }
         };
-        
+
         // Print language detection patterns
         private static readonly Dictionary<PrintLanguage, string[]> LanguagePatterns = new()
         {
@@ -66,9 +66,9 @@ namespace Apex.Services.Printing.VendorDetection
             [PrintLanguage.PDF] = new[] { "pdf", "direct pdf" },
             [PrintLanguage.XPS] = new[] { "xps", "xml paper" }
         };
-        
+
         private VendorDetectionEngine() { }
-        
+
         /// <summary>
         /// Detect all printers silently and cache results.
         /// </summary>
@@ -77,13 +77,13 @@ namespace Apex.Services.Printing.VendorDetection
             return await Task.Run(() =>
             {
                 var results = new List<PrinterMetadata>();
-                
+
                 try
                 {
                     // Get printers via WMI for detailed info
                     using var searcher = new ManagementObjectSearcher(
                         "SELECT * FROM Win32_Printer");
-                    
+
                     foreach (ManagementObject printer in searcher.Get())
                     {
                         try
@@ -101,7 +101,7 @@ namespace Apex.Services.Printing.VendorDetection
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine($"WMI detection failed: {ex.Message}");
-                    
+
                     // Fallback to basic detection
                     foreach (string printerName in PrinterSettings.InstalledPrinters)
                     {
@@ -110,11 +110,11 @@ namespace Apex.Services.Printing.VendorDetection
                         results.Add(metadata);
                     }
                 }
-                
+
                 return results;
             });
         }
-        
+
         /// <summary>
         /// Get cached metadata for a specific printer.
         /// If not cached, performs quick detection.
@@ -127,29 +127,29 @@ namespace Apex.Services.Printing.VendorDetection
                 if ((DateTime.UtcNow - cached.LastUpdated).TotalMinutes < 5)
                     return cached;
             }
-            
+
             // Quick detection for single printer
             var metadata = DetectSinglePrinter(printerName);
             _printerCache[printerName] = metadata;
             return metadata;
         }
-        
+
         /// <summary>
         /// Detect vendor from printer name/driver.
         /// </summary>
         public PrinterVendor DetectVendor(string printerName, string? driverName = null)
         {
             var searchText = $"{printerName} {driverName ?? ""}".ToLowerInvariant();
-            
+
             foreach (var (vendor, patterns) in VendorPatterns)
             {
                 if (patterns.Any(p => searchText.Contains(p)))
                     return vendor;
             }
-            
+
             return PrinterVendor.Generic;
         }
-        
+
         /// <summary>
         /// Extract complete metadata from WMI object.
         /// </summary>
@@ -158,7 +158,7 @@ namespace Apex.Services.Printing.VendorDetection
             var name = GetWmiString(printer, "Name");
             var driverName = GetWmiString(printer, "DriverName");
             var portName = GetWmiString(printer, "PortName");
-            
+
             var metadata = new PrinterMetadata
             {
                 Name = name,
@@ -170,36 +170,36 @@ namespace Apex.Services.Printing.VendorDetection
                 SupportsColor = GetWmiBool(printer, "Color"),
                 LastUpdated = DateTime.UtcNow
             };
-            
+
             // Detect vendor
             metadata.Vendor = DetectVendor(name, driverName);
             metadata.DetectionConfidence = CalculateConfidence(metadata.Vendor, name, driverName);
-            
+
             // Detect connection type
             metadata.ConnectionType = DetectConnectionType(portName);
             metadata.IsNetworkPrinter = metadata.ConnectionType == PrinterConnectionType.Network ||
                                         metadata.ConnectionType == PrinterConnectionType.WiFi;
-            
+
             // Detect print language
             metadata.PrintLanguage = DetectPrintLanguage(driverName);
-            
+
             // Check for duplex support
-            metadata.SupportsDuplex = GetWmiBool(printer, "Duplex") || 
+            metadata.SupportsDuplex = GetWmiBool(printer, "Duplex") ||
                                       driverName.ToLowerInvariant().Contains("duplex");
-            
+
             // Check for direct PDF support (HP/Xerox enterprise printers)
             metadata.SupportsDirectPdf = DetectDirectPdfSupport(metadata);
-            
+
             return metadata;
         }
-        
+
         /// <summary>
         /// Quick detection from printer name only (fallback).
         /// </summary>
         private PrinterMetadata DetectFromNameOnly(string printerName)
         {
             var vendor = DetectVendor(printerName);
-            
+
             return new PrinterMetadata
             {
                 Name = printerName,
@@ -211,7 +211,7 @@ namespace Apex.Services.Printing.VendorDetection
                 LastUpdated = DateTime.UtcNow
             };
         }
-        
+
         /// <summary>
         /// Detect single printer via WMI.
         /// </summary>
@@ -221,7 +221,7 @@ namespace Apex.Services.Printing.VendorDetection
             {
                 using var searcher = new ManagementObjectSearcher(
                     $"SELECT * FROM Win32_Printer WHERE Name = '{printerName.Replace("'", "''")}'");
-                
+
                 foreach (ManagementObject printer in searcher.Get())
                 {
                     return ExtractMetadata(printer);
@@ -231,10 +231,10 @@ namespace Apex.Services.Printing.VendorDetection
             {
                 // Fallback silently
             }
-            
+
             return DetectFromNameOnly(printerName);
         }
-        
+
         /// <summary>
         /// Detect connection type from port name.
         /// </summary>
@@ -242,40 +242,40 @@ namespace Apex.Services.Printing.VendorDetection
         {
             if (string.IsNullOrEmpty(portName))
                 return PrinterConnectionType.Unknown;
-            
+
             var port = portName.ToUpperInvariant();
-            
+
             // USB ports
             if (port.StartsWith("USB") || port.Contains("DOT4"))
                 return PrinterConnectionType.USB;
-            
+
             // Network ports (IP address pattern)
             if (Regex.IsMatch(port, @"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"))
                 return PrinterConnectionType.Network;
-            
+
             // WSD (Web Services for Devices) - network
             if (port.StartsWith("WSD") || port.Contains("WSDPRINT"))
                 return PrinterConnectionType.Network;
-            
+
             // TCP/IP port
             if (port.Contains("TCP") || port.Contains("IP_"))
                 return PrinterConnectionType.Network;
-            
+
             // Parallel/LPT
             if (port.StartsWith("LPT"))
                 return PrinterConnectionType.Parallel;
-            
+
             // Serial/COM
             if (port.StartsWith("COM"))
                 return PrinterConnectionType.Serial;
-            
+
             // File/PDF printer
             if (port.Contains("FILE") || port.Contains("PDF") || port.Contains("XPS"))
                 return PrinterConnectionType.Unknown;
-            
+
             return PrinterConnectionType.Unknown;
         }
-        
+
         /// <summary>
         /// Detect print language from driver name.
         /// </summary>
@@ -283,19 +283,19 @@ namespace Apex.Services.Printing.VendorDetection
         {
             if (string.IsNullOrEmpty(driverName))
                 return PrintLanguage.GDI;
-            
+
             var driver = driverName.ToLowerInvariant();
-            
+
             foreach (var (language, patterns) in LanguagePatterns)
             {
                 if (patterns.Any(p => driver.Contains(p)))
                     return language;
             }
-            
+
             // Default to GDI for Windows printers
             return PrintLanguage.GDI;
         }
-        
+
         /// <summary>
         /// Check if printer supports direct PDF printing.
         /// </summary>
@@ -305,22 +305,22 @@ namespace Apex.Services.Printing.VendorDetection
             if (metadata.Vendor == PrinterVendor.HP)
             {
                 var name = metadata.Name.ToLowerInvariant();
-                if (name.Contains("enterprise") || name.Contains("mfp") || 
+                if (name.Contains("enterprise") || name.Contains("mfp") ||
                     name.Contains("m6") || name.Contains("m5"))
                     return true;
             }
-            
+
             // Xerox enterprise printers
             if (metadata.Vendor == PrinterVendor.Xerox)
                 return true;
-            
+
             // Check driver name
             if (metadata.DriverName.ToLowerInvariant().Contains("pdf"))
                 return true;
-            
+
             return false;
         }
-        
+
         /// <summary>
         /// Calculate detection confidence score.
         /// </summary>
@@ -328,15 +328,15 @@ namespace Apex.Services.Printing.VendorDetection
         {
             if (vendor == PrinterVendor.Generic)
                 return 30;
-            
+
             var searchText = $"{name} {driverName}".ToLowerInvariant();
             var patterns = VendorPatterns[vendor];
             var matchCount = patterns.Count(p => searchText.Contains(p));
-            
+
             // More matches = higher confidence
             return Math.Min(100, 50 + (matchCount * 15));
         }
-        
+
         private static string GetWmiString(ManagementObject obj, string property)
         {
             try
@@ -348,7 +348,7 @@ namespace Apex.Services.Printing.VendorDetection
                 return string.Empty;
             }
         }
-        
+
         private static bool GetWmiBool(ManagementObject obj, string property)
         {
             try
@@ -360,7 +360,7 @@ namespace Apex.Services.Printing.VendorDetection
                 return false;
             }
         }
-        
+
         /// <summary>
         /// Clear the printer cache (force re-detection).
         /// </summary>

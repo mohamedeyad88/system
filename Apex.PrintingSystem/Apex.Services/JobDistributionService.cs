@@ -17,7 +17,7 @@ namespace Apex.Services
         private readonly PrinterMonitoringService _monitoringService;
 
         public JobDistributionService(
-            IRepository<PrintJob> jobRepository, 
+            IRepository<PrintJob> jobRepository,
             IPrinterService printerService,
             IRoutingRulesEngine routingRulesEngine,
             ILoadBalancer loadBalancer,
@@ -52,15 +52,15 @@ namespace Apex.Services
                     // 2. Load Balancing for Pool
                     var allPrinters = await _printerService.GetAllPrintersAsync();
                     var poolPrinters = allPrinters.Where(p => p.PoolName == rule.TargetPool).ToList();
-                    
+
                     if (poolPrinters.Any())
                     {
                         // Map to PrinterInfo with real-time status
-                        var candidates = poolPrinters.Select(p => 
+                        var candidates = poolPrinters.Select(p =>
                         {
-                            var info = new PrinterInfo 
-                            { 
-                                Name = p.Name, 
+                            var info = new PrinterInfo
+                            {
+                                Name = p.Name,
                                 PoolName = p.PoolName ?? "",
                                 IsOnline = true, // Default
                                 QueueLength = 0
@@ -100,7 +100,7 @@ namespace Apex.Services
                 job.TargetPrinterName = targetPrinter;
                 job.Status = PrintJobStatus.Pending; // Ready for processing
                 await _jobRepository.UpdateAsync(job);
-                
+
                 // Trigger processing
                 await ProcessJobAsync(job.Id);
             }
@@ -113,10 +113,10 @@ namespace Apex.Services
         }
 
         private const int MaxRetryAttempts = 3;
-        private static readonly TimeSpan[] RetryDelays = { 
-            TimeSpan.FromSeconds(5), 
-            TimeSpan.FromSeconds(15), 
-            TimeSpan.FromSeconds(30) 
+        private static readonly TimeSpan[] RetryDelays = {
+            TimeSpan.FromSeconds(5),
+            TimeSpan.FromSeconds(15),
+            TimeSpan.FromSeconds(30)
         };
 
         public async Task ProcessJobAsync(int jobId)
@@ -134,12 +134,12 @@ namespace Apex.Services
             while (job.Attempts < MaxRetryAttempts && !success)
             {
                 job.Attempts++;
-                
+
                 try
                 {
                     // Use the overload that accepts the full job with settings
                     success = await _printerService.PrintFileAsync(job.TargetPrinterName, job.FilePath, job);
-                    
+
                     if (!success)
                     {
                         lastError = "Printing failed.";
@@ -498,8 +498,8 @@ namespace Apex.Services
             if (sourceJob == null) return null;
 
             // Only allow resubmitting completed, failed, or cancelled jobs
-            if (sourceJob.Status != PrintJobStatus.Completed && 
-                sourceJob.Status != PrintJobStatus.Failed && 
+            if (sourceJob.Status != PrintJobStatus.Completed &&
+                sourceJob.Status != PrintJobStatus.Failed &&
                 sourceJob.Status != PrintJobStatus.Error &&
                 sourceJob.Status != PrintJobStatus.Cancelled)
             {

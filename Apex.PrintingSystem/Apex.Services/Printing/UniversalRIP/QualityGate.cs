@@ -26,8 +26,8 @@ namespace Apex.Services.Printing.UniversalRIP
             UniversalPrinterProfile printerProfile)
         {
             // Check 1: Text preservation
-            if (contentProfile.HasText && 
-                !decision.PreserveText && 
+            if (contentProfile.HasText &&
+                !decision.PreserveText &&
                 printerProfile.CanHandleTextNative)
             {
                 Debug.WriteLine("[QualityGate] WARNING: Text will be rasterized but printer supports native text");
@@ -35,8 +35,8 @@ namespace Apex.Services.Printing.UniversalRIP
             }
 
             // Check 2: Vector preservation
-            if (contentProfile.HasVectorGraphics && 
-                !decision.PreserveVectors && 
+            if (contentProfile.HasVectorGraphics &&
+                !decision.PreserveVectors &&
                 printerProfile.CanHandleVector)
             {
                 Debug.WriteLine("[QualityGate] WARNING: Vectors will be rasterized but printer supports native vectors");

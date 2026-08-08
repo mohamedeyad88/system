@@ -19,10 +19,19 @@ namespace Apex.Licensing
         //  Constants
         // ──────────────────────────────────────────────────────────────────
 
-        public  const int   TrialDays         = 30;   // Field trial: 30 days
-        private const string AppFolder        = "ApexPrintingSystem";
-        private const string TrialFileName    = "apex_trial.dat";
-        private const string RegistrySubKey   = @"SOFTWARE\ApexPrintingSystem\Trial";
+        public const int TrialDays = 7;   // Commercial trial: 7 days (must stay unified with the website's trial length)
+
+        /// <summary>
+        /// Current trial epoch. Any stored trial state with a different epoch is
+        /// discarded and a fresh trial begins. Increment this ONCE to force a
+        /// one-time trial reset across all machines on the next build (e.g. for a
+        /// new field-test rollout). Do NOT bump it every release, or the trial
+        /// would reset on every update.
+        /// </summary>
+        public const int TrialEpoch = 1;
+        private const string AppFolder = "ApexPrintingSystem";
+        private const string TrialFileName = "apex_trial.dat";
+        private const string RegistrySubKey = @"SOFTWARE\ApexPrintingSystem\Trial";
 
         private static readonly TimeSpan BackdateTolerance = TimeSpan.FromDays(1);
 
@@ -54,30 +63,35 @@ namespace Apex.Licensing
             try
             {
                 var deviceId = MachineIdentity.GetDeviceId();
-                var now      = DateTime.UtcNow;
+                var now = DateTime.UtcNow;
 
                 // ── 1. Load state (consensus across multiple locations) ──
                 var state = LoadConsensusState();
+
+                // Discard states written by an older trial epoch → fresh trial.
+                if (state != null && state.Epoch != TrialEpoch)
+                    state = null;
 
                 if (state == null)
                 {
                     // First run – initialise trial
                     var newState = new TrialState
                     {
-                        StartUtc    = now,
+                        StartUtc = now,
                         LastSeenUtc = now,
-                        DeviceId    = deviceId
+                        DeviceId = deviceId,
+                        Epoch = TrialEpoch
                     };
                     newState.Hmac = LicenseCrypto.ComputeTrialHmac(newState);
                     SaveAllLocations(newState);
 
                     return new ValidationResult
                     {
-                        IsValid       = true,
-                        Status        = LicenseStatus.Valid,
-                        Type          = LicenseType.Trial,
+                        IsValid = true,
+                        Status = LicenseStatus.Valid,
+                        Type = LicenseType.Trial,
                         DaysRemaining = TrialDays,
-                        ExpiresUtc    = now.AddDays(TrialDays)
+                        ExpiresUtc = now.AddDays(TrialDays)
                     };
                 }
 
@@ -113,17 +127,17 @@ namespace Apex.Licensing
 
                 // ── 6. Update LastSeen monotonically ──
                 state.LastSeenUtc = now > state.LastSeenUtc ? now : state.LastSeenUtc;
-                state.Hmac        = LicenseCrypto.ComputeTrialHmac(state);
+                state.Hmac = LicenseCrypto.ComputeTrialHmac(state);
                 SaveAllLocations(state);
 
                 int remaining = Math.Max(0, TrialDays - (int)daysUsed);
                 return new ValidationResult
                 {
-                    IsValid       = true,
-                    Status        = LicenseStatus.Valid,
-                    Type          = LicenseType.Trial,
+                    IsValid = true,
+                    Status = LicenseStatus.Valid,
+                    Type = LicenseType.Trial,
                     DaysRemaining = remaining,
-                    ExpiresUtc    = state.StartUtc.AddDays(TrialDays)
+                    ExpiresUtc = state.StartUtc.AddDays(TrialDays)
                 };
             }
             catch (Exception ex)
@@ -143,7 +157,7 @@ namespace Apex.Licensing
         private static void SaveAllLocations(TrialState state)
         {
             var json = JsonSerializer.Serialize(state);
-            var enc  = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+            var enc = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
 
             // AppData
             SafeWriteFile(AppDataPath, enc);
@@ -163,8 +177,8 @@ namespace Apex.Licensing
         {
             var candidates = new System.Collections.Generic.List<TrialState>();
 
-            TryLoad(AppDataPath,      candidates);
-            TryLoad(ProgramDataPath,  candidates);
+            TryLoad(AppDataPath, candidates);
+            TryLoad(ProgramDataPath, candidates);
             TryLoadRegistry(candidates);
 
             if (candidates.Count == 0)
@@ -200,8 +214,8 @@ namespace Apex.Licensing
             try
             {
                 if (!File.Exists(path)) return;
-                var enc   = File.ReadAllText(path, Encoding.UTF8).Trim();
-                var json  = Encoding.UTF8.GetString(Convert.FromBase64String(enc));
+                var enc = File.ReadAllText(path, Encoding.UTF8).Trim();
+                var json = Encoding.UTF8.GetString(Convert.FromBase64String(enc));
                 var state = JsonSerializer.Deserialize<TrialState>(json);
                 if (state != null) list.Add(state);
             }
@@ -227,9 +241,9 @@ namespace Apex.Licensing
             try
             {
                 using var key = Registry.CurrentUser.OpenSubKey(RegistrySubKey, writable: false);
-                var enc   = key?.GetValue("State")?.ToString();
+                var enc = key?.GetValue("State")?.ToString();
                 if (string.IsNullOrEmpty(enc)) return;
-                var json  = Encoding.UTF8.GetString(Convert.FromBase64String(enc));
+                var json = Encoding.UTF8.GetString(Convert.FromBase64String(enc));
                 var state = JsonSerializer.Deserialize<TrialState>(json);
                 if (state != null) list.Add(state);
             }

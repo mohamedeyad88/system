@@ -79,18 +79,18 @@ namespace Apex.UI.Controls
 
             double length = Orientation == Orientation.Horizontal ? ActualWidth : ActualHeight;
             double thickness = Orientation == Orientation.Horizontal ? ActualHeight : ActualWidth;
-            
+
             if (length <= 0 || thickness <= 0) return;
 
             // Get canvas dimension for this ruler
             double canvasDimension = Orientation == Orientation.Horizontal ? CanvasWidth : CanvasHeight;
-            
+
             // Calculate effective length in points (accounting for zoom)
             double effectiveLength = canvasDimension * ZoomLevel;
-            
+
             // Calculate tick intervals based on unit and zoom
             (double majorIntervalPoints, double minorIntervalPoints) = CalculateTickIntervals();
-            
+
             // Convert intervals to pixels for drawing
             double scaleFactor = length / effectiveLength;
             double majorIntervalPixels = majorIntervalPoints * scaleFactor;
@@ -115,7 +115,7 @@ namespace Apex.UI.Controls
             {
                 // Convert pixel position back to points
                 double posPoints = (posPixels / scaleFactor);
-                
+
                 bool isMajor = Math.Abs(posPoints % majorIntervalPoints) < 0.1;
                 double tickHeight = isMajor ? thickness * 0.6 : thickness * 0.3;
 
@@ -128,12 +128,12 @@ namespace Apex.UI.Controls
                 }
             }
         }
-        
+
         private (double major, double minor) CalculateTickIntervals()
         {
             // Base intervals in points
             double majorPoints, minorPoints;
-            
+
             switch (MeasurementUnit)
             {
                 case MeasurementUnit.Centimeters:
@@ -150,7 +150,7 @@ namespace Apex.UI.Controls
                     minorPoints = 5.0;  // 5 points
                     break;
             }
-            
+
             // Adjust based on zoom level
             if (ZoomLevel < 0.5)
             {
@@ -164,7 +164,7 @@ namespace Apex.UI.Controls
                 majorPoints *= 0.5;
                 minorPoints *= 0.5;
             }
-            
+
             return (majorPoints, minorPoints);
         }
 
@@ -176,8 +176,10 @@ namespace Apex.UI.Controls
             {
                 tick = new Line
                 {
-                    X1 = pos, Y1 = thickness,
-                    X2 = pos, Y2 = thickness - tickHeight,
+                    X1 = pos,
+                    Y1 = thickness,
+                    X2 = pos,
+                    Y2 = thickness - tickHeight,
                     Stroke = brush,
                     StrokeThickness = 1
                 };
@@ -186,8 +188,10 @@ namespace Apex.UI.Controls
             {
                 tick = new Line
                 {
-                    X1 = thickness, Y1 = pos,
-                    X2 = thickness - tickHeight, Y2 = pos,
+                    X1 = thickness,
+                    Y1 = pos,
+                    X2 = thickness - tickHeight,
+                    Y2 = pos,
                     Stroke = brush,
                     StrokeThickness = 1
                 };
@@ -221,7 +225,7 @@ namespace Apex.UI.Controls
                 // Vertical ruler: labels rotated correctly, positioned at left side
                 label.RenderTransform = new RotateTransform(-90);
                 label.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
-                
+
                 // Position: left side of ruler, centered vertically
                 Canvas.SetLeft(label, thickness / 2 - label.DesiredSize.Height / 2);
                 Canvas.SetTop(label, posPixels - label.DesiredSize.Width / 2);

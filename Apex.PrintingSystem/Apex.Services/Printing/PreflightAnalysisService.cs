@@ -21,11 +21,11 @@ namespace Apex.Services.Printing
 
     public class PreflightItem
     {
-        public PreflightSeverity Severity    { get; init; }
-        public string            Category    { get; init; } = "";   // "File", "Image", "Font", "Color", "Printer"
-        public string            Message     { get; init; } = "";   // English/Arabic message
-        public string?           Suggestion  { get; init; }         // How to fix
-        public bool              BlocksPrint { get; init; }         // Critical = blocks print
+        public PreflightSeverity Severity { get; init; }
+        public string Category { get; init; } = "";   // "File", "Image", "Font", "Color", "Printer"
+        public string Message { get; init; } = "";   // English/Arabic message
+        public string? Suggestion { get; init; }         // How to fix
+        public bool BlocksPrint { get; init; }         // Critical = blocks print
 
         public override string ToString() =>
             $"[{Severity}] {Category}: {Message}" +
@@ -38,38 +38,38 @@ namespace Apex.Services.Printing
 
     public class PreflightReport
     {
-        public string         FilePath      { get; init; } = "";
-        public string?        PrinterName   { get; init; }
-        public DateTime       AnalyzedAt    { get; init; } = DateTime.Now;
-        public TimeSpan       AnalysisDuration { get; init; }
+        public string FilePath { get; init; } = "";
+        public string? PrinterName { get; init; }
+        public DateTime AnalyzedAt { get; init; } = DateTime.Now;
+        public TimeSpan AnalysisDuration { get; init; }
 
-        public List<PreflightItem> Items    { get; init; } = new();
+        public List<PreflightItem> Items { get; init; } = new();
 
         // ── Convenience accessors ─────────────────────────────────────────
-        public bool  CanPrint         => !Items.Any(i => i.BlocksPrint);
-        public bool  HasWarnings      => Items.Any(i => i.Severity == PreflightSeverity.Warning);
-        public bool  HasErrors        => Items.Any(i => i.Severity >= PreflightSeverity.Error);
-        public int   ErrorCount       => Items.Count(i => i.Severity >= PreflightSeverity.Error);
-        public int   WarningCount     => Items.Count(i => i.Severity == PreflightSeverity.Warning);
+        public bool CanPrint => !Items.Any(i => i.BlocksPrint);
+        public bool HasWarnings => Items.Any(i => i.Severity == PreflightSeverity.Warning);
+        public bool HasErrors => Items.Any(i => i.Severity >= PreflightSeverity.Error);
+        public int ErrorCount => Items.Count(i => i.Severity >= PreflightSeverity.Error);
+        public int WarningCount => Items.Count(i => i.Severity == PreflightSeverity.Warning);
 
         // ── Summary ───────────────────────────────────────────────────────
         public PreflightSeverity OverallSeverity =>
             Items.Count == 0 ? PreflightSeverity.Pass :
             Items.Any(i => i.Severity == PreflightSeverity.Critical) ? PreflightSeverity.Critical :
-            Items.Any(i => i.Severity == PreflightSeverity.Error)    ? PreflightSeverity.Error :
-            Items.Any(i => i.Severity == PreflightSeverity.Warning)  ? PreflightSeverity.Warning :
-            Items.Any(i => i.Severity == PreflightSeverity.Info)     ? PreflightSeverity.Info :
+            Items.Any(i => i.Severity == PreflightSeverity.Error) ? PreflightSeverity.Error :
+            Items.Any(i => i.Severity == PreflightSeverity.Warning) ? PreflightSeverity.Warning :
+            Items.Any(i => i.Severity == PreflightSeverity.Info) ? PreflightSeverity.Info :
             PreflightSeverity.Pass;
 
         public string SummaryArabic =>
             OverallSeverity switch
             {
-                PreflightSeverity.Pass     => "✅ الملف جاهز للطباعة",
-                PreflightSeverity.Info     => $"ℹ️ جاهز مع {Items.Count} ملاحظة",
-                PreflightSeverity.Warning  => $"⚠️ {WarningCount} تحذير — يُنصح بالمراجعة",
-                PreflightSeverity.Error    => $"❌ {ErrorCount} خطأ — يُنصح بالإصلاح",
+                PreflightSeverity.Pass => "✅ الملف جاهز للطباعة",
+                PreflightSeverity.Info => $"ℹ️ جاهز مع {Items.Count} ملاحظة",
+                PreflightSeverity.Warning => $"⚠️ {WarningCount} تحذير — يُنصح بالمراجعة",
+                PreflightSeverity.Error => $"❌ {ErrorCount} خطأ — يُنصح بالإصلاح",
                 PreflightSeverity.Critical => "🚫 لا يمكن الطباعة — يرجى إصلاح الأخطاء الحرجة",
-                _                          => "غير معروف"
+                _ => "غير معروف"
             };
     }
 
@@ -98,12 +98,12 @@ namespace Apex.Services.Printing
         private PreflightAnalysisService() { }
 
         // ── Configuration ─────────────────────────────────────────────────
-        private const long   MaxFileSizeBytes       = 500 * 1024 * 1024; // 500 MB
-        private const long   WarnFileSizeBytes      = 100 * 1024 * 1024; // 100 MB
-        private const int    MinRecommendedDpi      = 150;
-        private const int    MinAcceptableDpi       = 72;
-        private const long   MaxPageCount           = 2000;
-        private const long   WarnPageCount          = 500;
+        private const long MaxFileSizeBytes = 500 * 1024 * 1024; // 500 MB
+        private const long WarnFileSizeBytes = 100 * 1024 * 1024; // 100 MB
+        private const int MinRecommendedDpi = 150;
+        private const int MinAcceptableDpi = 72;
+        private const long MaxPageCount = 2000;
+        private const long WarnPageCount = 500;
 
         // ── Supported extensions ──────────────────────────────────────────
         private static readonly HashSet<string> SupportedExtensions = new(StringComparer.OrdinalIgnoreCase)
@@ -127,7 +127,7 @@ namespace Apex.Services.Printing
             string? printerName = null,
             CancellationToken cancellationToken = default)
         {
-            var sw    = Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
             var items = new List<PreflightItem>();
 
             await Task.Run(async () =>
@@ -138,7 +138,7 @@ namespace Apex.Services.Printing
                     return; // No point continuing if file can't be opened
 
                 var fileInfo = new FileInfo(filePath);
-                var ext      = fileInfo.Extension.ToLowerInvariant();
+                var ext = fileInfo.Extension.ToLowerInvariant();
 
                 // ── 2. File format ──────────────────────────────────────
                 CheckFileFormat(ext, items);
@@ -164,11 +164,11 @@ namespace Apex.Services.Printing
 
             return new PreflightReport
             {
-                FilePath         = filePath,
-                PrinterName      = printerName,
-                AnalyzedAt       = DateTime.Now,
+                FilePath = filePath,
+                PrinterName = printerName,
+                AnalyzedAt = DateTime.Now,
                 AnalysisDuration = sw.Elapsed,
-                Items            = items
+                Items = items
             };
         }
 
@@ -180,9 +180,9 @@ namespace Apex.Services.Printing
             {
                 items.Add(new PreflightItem
                 {
-                    Severity    = PreflightSeverity.Critical,
-                    Category    = "File",
-                    Message     = "مسار الملف فارغ",
+                    Severity = PreflightSeverity.Critical,
+                    Category = "File",
+                    Message = "مسار الملف فارغ",
                     BlocksPrint = true
                 });
                 return;
@@ -192,10 +192,10 @@ namespace Apex.Services.Printing
             {
                 items.Add(new PreflightItem
                 {
-                    Severity    = PreflightSeverity.Critical,
-                    Category    = "File",
-                    Message     = $"الملف غير موجود: {Path.GetFileName(filePath)}",
-                    Suggestion  = "تأكد من مسار الملف وحاول مرة أخرى",
+                    Severity = PreflightSeverity.Critical,
+                    Category = "File",
+                    Message = $"الملف غير موجود: {Path.GetFileName(filePath)}",
+                    Suggestion = "تأكد من مسار الملف وحاول مرة أخرى",
                     BlocksPrint = true
                 });
                 return;
@@ -208,17 +208,17 @@ namespace Apex.Services.Printing
                 {
                     Severity = PreflightSeverity.Pass,
                     Category = "File",
-                    Message  = "الملف موجود ويمكن الوصول إليه"
+                    Message = "الملف موجود ويمكن الوصول إليه"
                 });
             }
             catch (UnauthorizedAccessException)
             {
                 items.Add(new PreflightItem
                 {
-                    Severity    = PreflightSeverity.Critical,
-                    Category    = "File",
-                    Message     = "لا توجد صلاحية لفتح الملف",
-                    Suggestion  = "تحقق من صلاحيات الملف",
+                    Severity = PreflightSeverity.Critical,
+                    Category = "File",
+                    Message = "لا توجد صلاحية لفتح الملف",
+                    Suggestion = "تحقق من صلاحيات الملف",
                     BlocksPrint = true
                 });
             }
@@ -226,10 +226,10 @@ namespace Apex.Services.Printing
             {
                 items.Add(new PreflightItem
                 {
-                    Severity    = PreflightSeverity.Error,
-                    Category    = "File",
-                    Message     = $"الملف مفتوح في تطبيق آخر: {ex.Message}",
-                    Suggestion  = "أغلق الملف في البرامج الأخرى قبل الطباعة",
+                    Severity = PreflightSeverity.Error,
+                    Category = "File",
+                    Message = $"الملف مفتوح في تطبيق آخر: {ex.Message}",
+                    Suggestion = "أغلق الملف في البرامج الأخرى قبل الطباعة",
                     BlocksPrint = true
                 });
             }
@@ -241,10 +241,10 @@ namespace Apex.Services.Printing
             {
                 items.Add(new PreflightItem
                 {
-                    Severity    = PreflightSeverity.Error,
-                    Category    = "Format",
-                    Message     = $"نوع الملف '{ext}' غير مدعوم",
-                    Suggestion  = "الأنواع المدعومة: PDF, PNG, JPG, BMP, TIFF, TXT, DOC, DOCX",
+                    Severity = PreflightSeverity.Error,
+                    Category = "Format",
+                    Message = $"نوع الملف '{ext}' غير مدعوم",
+                    Suggestion = "الأنواع المدعومة: PDF, PNG, JPG, BMP, TIFF, TXT, DOC, DOCX",
                     BlocksPrint = true
                 });
                 return;
@@ -254,9 +254,9 @@ namespace Apex.Services.Printing
             {
                 items.Add(new PreflightItem
                 {
-                    Severity   = PreflightSeverity.Info,
-                    Category   = "Format",
-                    Message    = $"ملف Office ({ext}) يتطلب تحويلاً أولياً",
+                    Severity = PreflightSeverity.Info,
+                    Category = "Format",
+                    Message = $"ملف Office ({ext}) يتطلب تحويلاً أولياً",
                     Suggestion = "التحويل يحدث تلقائياً ولكن قد يأخذ وقتاً إضافياً"
                 });
             }
@@ -268,9 +268,9 @@ namespace Apex.Services.Printing
             {
                 items.Add(new PreflightItem
                 {
-                    Severity    = PreflightSeverity.Critical,
-                    Category    = "File",
-                    Message     = "الملف فارغ (0 بايت)",
+                    Severity = PreflightSeverity.Critical,
+                    Category = "File",
+                    Message = "الملف فارغ (0 بايت)",
                     BlocksPrint = true
                 });
                 return;
@@ -280,10 +280,10 @@ namespace Apex.Services.Printing
             {
                 items.Add(new PreflightItem
                 {
-                    Severity    = PreflightSeverity.Error,
-                    Category    = "File",
-                    Message     = $"حجم الملف كبير جداً: {bytes / (1024 * 1024):N0} MB (الحد: 500 MB)",
-                    Suggestion  = "قسّم الملف إلى أجزاء أصغر",
+                    Severity = PreflightSeverity.Error,
+                    Category = "File",
+                    Message = $"حجم الملف كبير جداً: {bytes / (1024 * 1024):N0} MB (الحد: 500 MB)",
+                    Suggestion = "قسّم الملف إلى أجزاء أصغر",
                     BlocksPrint = false
                 });
             }
@@ -291,9 +291,9 @@ namespace Apex.Services.Printing
             {
                 items.Add(new PreflightItem
                 {
-                    Severity   = PreflightSeverity.Warning,
-                    Category   = "File",
-                    Message    = $"الملف كبير الحجم: {bytes / (1024 * 1024):N0} MB",
+                    Severity = PreflightSeverity.Warning,
+                    Category = "File",
+                    Message = $"الملف كبير الحجم: {bytes / (1024 * 1024):N0} MB",
                     Suggestion = "قد يستغرق التحميل وقتاً أطول من المعتاد"
                 });
             }
@@ -312,9 +312,9 @@ namespace Apex.Services.Printing
                     {
                         items.Add(new PreflightItem
                         {
-                            Severity    = PreflightSeverity.Critical,
-                            Category    = "PDF",
-                            Message     = "ملف PDF لا يحتوي على صفحات",
+                            Severity = PreflightSeverity.Critical,
+                            Category = "PDF",
+                            Message = "ملف PDF لا يحتوي على صفحات",
                             BlocksPrint = true
                         });
                         return;
@@ -324,16 +324,16 @@ namespace Apex.Services.Printing
                     {
                         Severity = PreflightSeverity.Pass,
                         Category = "PDF",
-                        Message  = $"عدد الصفحات: {pageCount}"
+                        Message = $"عدد الصفحات: {pageCount}"
                     });
 
                     if (pageCount > MaxPageCount)
                     {
                         items.Add(new PreflightItem
                         {
-                            Severity   = PreflightSeverity.Warning,
-                            Category   = "PDF",
-                            Message    = $"عدد كبير من الصفحات: {pageCount} صفحة",
+                            Severity = PreflightSeverity.Warning,
+                            Category = "PDF",
+                            Message = $"عدد كبير من الصفحات: {pageCount} صفحة",
                             Suggestion = "يُنصح بتقسيم الملف إلى أجزاء أصغر"
                         });
                     }
@@ -341,9 +341,9 @@ namespace Apex.Services.Printing
                     {
                         items.Add(new PreflightItem
                         {
-                            Severity   = PreflightSeverity.Info,
-                            Category   = "PDF",
-                            Message    = $"عدد الصفحات كبير نسبياً: {pageCount}",
+                            Severity = PreflightSeverity.Info,
+                            Category = "PDF",
+                            Message = $"عدد الصفحات كبير نسبياً: {pageCount}",
                             Suggestion = "قد تستغرق الطباعة وقتاً أطول"
                         });
                     }
@@ -354,7 +354,7 @@ namespace Apex.Services.Printing
                         var pageSize = doc.PageSizes[0];
                         // PDF dimensions are in points (1 point = 1/72 inch)
                         // At 300 DPI: pixels = (points/72) * 300
-                        double widthInches  = pageSize.Width  / 72.0;
+                        double widthInches = pageSize.Width / 72.0;
                         double heightInches = pageSize.Height / 72.0;
 
                         // Render a tiny sample to detect effective resolution
@@ -368,12 +368,12 @@ namespace Apex.Services.Printing
                             // Sample a few pixels
                             int whitePx = 0, colorPx = 0;
                             for (int x = 10; x < bmp.Width - 10; x += 15)
-                            for (int y = 10; y < bmp.Height - 10; y += 15)
-                            {
-                                var px = bmp.GetPixel(x, y);
-                                if (px.R > 240 && px.G > 240 && px.B > 240) whitePx++;
-                                else colorPx++;
-                            }
+                                for (int y = 10; y < bmp.Height - 10; y += 15)
+                                {
+                                    var px = bmp.GetPixel(x, y);
+                                    if (px.R > 240 && px.G > 240 && px.B > 240) whitePx++;
+                                    else colorPx++;
+                                }
                             hasContent = colorPx > 5;
                         }
 
@@ -381,9 +381,9 @@ namespace Apex.Services.Printing
                         {
                             items.Add(new PreflightItem
                             {
-                                Severity   = PreflightSeverity.Warning,
-                                Category   = "PDF",
-                                Message    = "الصفحة الأولى تبدو فارغة",
+                                Severity = PreflightSeverity.Warning,
+                                Category = "PDF",
+                                Message = "الصفحة الأولى تبدو فارغة",
                                 Suggestion = "تأكد أن الملف يحتوي على محتوى مرئي"
                             });
                         }
@@ -393,9 +393,9 @@ namespace Apex.Services.Printing
                         {
                             items.Add(new PreflightItem
                             {
-                                Severity   = PreflightSeverity.Warning,
-                                Category   = "PDF",
-                                Message    = $"أبعاد الصفحة صغيرة جداً: {widthInches:F1}\" × {heightInches:F1}\"",
+                                Severity = PreflightSeverity.Warning,
+                                Category = "PDF",
+                                Message = $"أبعاد الصفحة صغيرة جداً: {widthInches:F1}\" × {heightInches:F1}\"",
                                 Suggestion = "تأكد من صحة حجم الصفحة في ملف PDF"
                             });
                         }
@@ -403,9 +403,9 @@ namespace Apex.Services.Printing
                         {
                             items.Add(new PreflightItem
                             {
-                                Severity   = PreflightSeverity.Warning,
-                                Category   = "PDF",
-                                Message    = $"أبعاد الصفحة كبيرة: {widthInches:F1}\" × {heightInches:F1}\"",
+                                Severity = PreflightSeverity.Warning,
+                                Category = "PDF",
+                                Message = $"أبعاد الصفحة كبيرة: {widthInches:F1}\" × {heightInches:F1}\"",
                                 Suggestion = "تأكد من توافق حجم الصفحة مع ورق الطابعة"
                             });
                         }
@@ -415,7 +415,7 @@ namespace Apex.Services.Printing
                             {
                                 Severity = PreflightSeverity.Pass,
                                 Category = "PDF",
-                                Message  = $"أبعاد الصفحة: {widthInches:F1}\" × {heightInches:F1}\""
+                                Message = $"أبعاد الصفحة: {widthInches:F1}\" × {heightInches:F1}\""
                             });
                         }
                     }
@@ -431,10 +431,10 @@ namespace Apex.Services.Printing
             {
                 items.Add(new PreflightItem
                 {
-                    Severity    = PreflightSeverity.Critical,
-                    Category    = "PDF",
-                    Message     = $"تعذّر فتح ملف PDF: {ex.Message}",
-                    Suggestion  = "قد يكون الملف تالفاً أو محمياً بكلمة مرور",
+                    Severity = PreflightSeverity.Critical,
+                    Category = "PDF",
+                    Message = $"تعذّر فتح ملف PDF: {ex.Message}",
+                    Suggestion = "قد يكون الملف تالفاً أو محمياً بكلمة مرور",
                     BlocksPrint = true
                 });
             }
@@ -447,23 +447,23 @@ namespace Apex.Services.Printing
                 using var img = System.Drawing.Image.FromFile(filePath);
                 float dpiX = img.HorizontalResolution;
                 float dpiY = img.VerticalResolution;
-                int   w    = img.Width;
-                int   h    = img.Height;
+                int w = img.Width;
+                int h = img.Height;
 
                 items.Add(new PreflightItem
                 {
                     Severity = PreflightSeverity.Pass,
                     Category = "Image",
-                    Message  = $"أبعاد الصورة: {w}×{h} بكسل"
+                    Message = $"أبعاد الصورة: {w}×{h} بكسل"
                 });
 
                 if (dpiX < MinAcceptableDpi || dpiY < MinAcceptableDpi)
                 {
                     items.Add(new PreflightItem
                     {
-                        Severity   = PreflightSeverity.Warning,
-                        Category   = "Image",
-                        Message    = $"دقة الصورة منخفضة جداً: {dpiX:F0} DPI",
+                        Severity = PreflightSeverity.Warning,
+                        Category = "Image",
+                        Message = $"دقة الصورة منخفضة جداً: {dpiX:F0} DPI",
                         Suggestion = $"يُنصح بدقة لا تقل عن {MinRecommendedDpi} DPI للحصول على جودة طباعة جيدة"
                     });
                 }
@@ -471,9 +471,9 @@ namespace Apex.Services.Printing
                 {
                     items.Add(new PreflightItem
                     {
-                        Severity   = PreflightSeverity.Info,
-                        Category   = "Image",
-                        Message    = $"دقة الصورة متوسطة: {dpiX:F0} DPI",
+                        Severity = PreflightSeverity.Info,
+                        Category = "Image",
+                        Message = $"دقة الصورة متوسطة: {dpiX:F0} DPI",
                         Suggestion = $"للحصول على جودة أفضل استخدم {MinRecommendedDpi} DPI أو أعلى"
                     });
                 }
@@ -483,20 +483,20 @@ namespace Apex.Services.Printing
                     {
                         Severity = PreflightSeverity.Pass,
                         Category = "Image",
-                        Message  = $"دقة الصورة جيدة: {dpiX:F0} DPI"
+                        Message = $"دقة الصورة جيدة: {dpiX:F0} DPI"
                     });
                 }
 
                 // Warn if image is very small in print terms
-                double printWidthInches  = w / (dpiX > 0 ? dpiX : 72f);
+                double printWidthInches = w / (dpiX > 0 ? dpiX : 72f);
                 double printHeightInches = h / (dpiY > 0 ? dpiY : 72f);
                 if (printWidthInches < 0.5 || printHeightInches < 0.5)
                 {
                     items.Add(new PreflightItem
                     {
-                        Severity   = PreflightSeverity.Warning,
-                        Category   = "Image",
-                        Message    = $"الصورة صغيرة جداً عند الطباعة: {printWidthInches:F1}\" × {printHeightInches:F1}\"",
+                        Severity = PreflightSeverity.Warning,
+                        Category = "Image",
+                        Message = $"الصورة صغيرة جداً عند الطباعة: {printWidthInches:F1}\" × {printHeightInches:F1}\"",
                         Suggestion = "قد تظهر الصورة ضبابية عند التكبير"
                     });
                 }
@@ -505,9 +505,9 @@ namespace Apex.Services.Printing
             {
                 items.Add(new PreflightItem
                 {
-                    Severity    = PreflightSeverity.Error,
-                    Category    = "Image",
-                    Message     = $"تعذّر قراءة الصورة: {ex.Message}",
+                    Severity = PreflightSeverity.Error,
+                    Category = "Image",
+                    Message = $"تعذّر قراءة الصورة: {ex.Message}",
                     BlocksPrint = false
                 });
             }
@@ -529,9 +529,9 @@ namespace Apex.Services.Printing
             {
                 items.Add(new PreflightItem
                 {
-                    Severity   = PreflightSeverity.Warning,
-                    Category   = "Office",
-                    Message    = "LibreOffice غير مثبّت — قد لا يتم تحويل ملفات Office بشكل صحيح",
+                    Severity = PreflightSeverity.Warning,
+                    Category = "Office",
+                    Message = "LibreOffice غير مثبّت — قد لا يتم تحويل ملفات Office بشكل صحيح",
                     Suggestion = "ثبّت LibreOffice من https://www.libreoffice.org لدعم ملفات Word/Excel"
                 });
             }
@@ -541,7 +541,7 @@ namespace Apex.Services.Printing
                 {
                     Severity = PreflightSeverity.Pass,
                     Category = "Office",
-                    Message  = "LibreOffice متوفر لتحويل ملفات Office"
+                    Message = "LibreOffice متوفر لتحويل ملفات Office"
                 });
             }
         }
@@ -560,9 +560,9 @@ namespace Apex.Services.Printing
                 {
                     items.Add(new PreflightItem
                     {
-                        Severity   = PreflightSeverity.Warning,
-                        Category   = "Printer",
-                        Message    = $"تعذّر الحصول على معلومات الطابعة: {printerName}",
+                        Severity = PreflightSeverity.Warning,
+                        Category = "Printer",
+                        Message = $"تعذّر الحصول على معلومات الطابعة: {printerName}",
                         Suggestion = "تأكد من تثبيت الطابعة وتشغيلها"
                     });
                     return;
@@ -573,10 +573,10 @@ namespace Apex.Services.Printing
                 {
                     items.Add(new PreflightItem
                     {
-                        Severity    = PreflightSeverity.Error,
-                        Category    = "Printer",
-                        Message     = $"الطابعة '{printerName}' غير متصلة",
-                        Suggestion  = "تأكد من تشغيل الطابعة وتوصيلها",
+                        Severity = PreflightSeverity.Error,
+                        Category = "Printer",
+                        Message = $"الطابعة '{printerName}' غير متصلة",
+                        Suggestion = "تأكد من تشغيل الطابعة وتوصيلها",
                         BlocksPrint = false   // Circuit breaker will handle retries
                     });
                 }
@@ -586,7 +586,7 @@ namespace Apex.Services.Printing
                     {
                         Severity = PreflightSeverity.Pass,
                         Category = "Printer",
-                        Message  = $"الطابعة '{printerName}' متصلة وجاهزة"
+                        Message = $"الطابعة '{printerName}' متصلة وجاهزة"
                     });
                 }
 
@@ -601,20 +601,20 @@ namespace Apex.Services.Printing
                         {
                             bool hasColor = false;
                             for (int x = 0; x < bmp.Width && !hasColor; x += bmp.Width / 10 + 1)
-                            for (int y = 0; y < bmp.Height && !hasColor; y += bmp.Height / 10 + 1)
-                            {
-                                var px = bmp.GetPixel(x, y);
-                                if (Math.Abs(px.R - px.G) > 20 || Math.Abs(px.G - px.B) > 20)
-                                    hasColor = true;
-                            }
+                                for (int y = 0; y < bmp.Height && !hasColor; y += bmp.Height / 10 + 1)
+                                {
+                                    var px = bmp.GetPixel(x, y);
+                                    if (Math.Abs(px.R - px.G) > 20 || Math.Abs(px.G - px.B) > 20)
+                                        hasColor = true;
+                                }
 
                             if (hasColor && !metadata.SupportsColor)
                             {
                                 items.Add(new PreflightItem
                                 {
-                                    Severity   = PreflightSeverity.Warning,
-                                    Category   = "Color",
-                                    Message    = "الصورة ملونة لكن الطابعة تطبع بالأبيض والأسود فقط",
+                                    Severity = PreflightSeverity.Warning,
+                                    Category = "Color",
+                                    Message = "الصورة ملونة لكن الطابعة تطبع بالأبيض والأسود فقط",
                                     Suggestion = "ستتم طباعة الصورة بتدرجات الرمادي تلقائياً"
                                 });
                             }
@@ -629,9 +629,9 @@ namespace Apex.Services.Printing
                 {
                     items.Add(new PreflightItem
                     {
-                        Severity   = PreflightSeverity.Info,
-                        Category   = "Network",
-                        Message    = "ملف كبير على طابعة شبكية — قد يستغرق الإرسال وقتاً أطول",
+                        Severity = PreflightSeverity.Info,
+                        Category = "Network",
+                        Message = "ملف كبير على طابعة شبكية — قد يستغرق الإرسال وقتاً أطول",
                         Suggestion = "تأكد من استقرار اتصال الشبكة"
                     });
                 }

@@ -57,7 +57,7 @@ namespace Apex.Services.Printing
         public PrinterTray? GetTray(string printerName, string trayName)
         {
             var trays = GetAvailableTrays(printerName);
-            return trays.FirstOrDefault(t => 
+            return trays.FirstOrDefault(t =>
                 t.Name.Equals(trayName, StringComparison.OrdinalIgnoreCase) ||
                 t.Kind.ToString().Equals(trayName, StringComparison.OrdinalIgnoreCase));
         }
@@ -104,7 +104,7 @@ namespace Apex.Services.Printing
 
                 // Get all paper sources
                 var paperSources = printDoc.PrinterSettings.PaperSources;
-                
+
                 for (int i = 0; i < paperSources.Count; i++)
                 {
                     var source = paperSources[i];

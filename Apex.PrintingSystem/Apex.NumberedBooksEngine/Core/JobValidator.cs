@@ -264,7 +264,7 @@ namespace Apex.NumberedBooksEngine.Core
         /// </summary>
         public static string FormatErrors(List<ValidationError> errors)
         {
-            return string.Join("\n", errors.Select(e => 
+            return string.Join("\n", errors.Select(e =>
                 e.Severity == ValidationSeverity.Error ? $"❌ {e.Message}" :
                 e.Severity == ValidationSeverity.Warning ? $"⚠ {e.Message}" :
                 $"ℹ {e.Message}"));

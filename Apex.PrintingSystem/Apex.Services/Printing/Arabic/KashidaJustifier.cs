@@ -11,16 +11,16 @@ namespace Apex.Services.Printing.Arabic
     public class KashidaInsertionPoint
     {
         /// <summary>Index in the original string after which to insert the kashida.</summary>
-        public int  Position   { get; set; }
+        public int Position { get; set; }
         /// <summary>The character immediately before the insertion point.</summary>
         public char BeforeChar { get; set; }
         /// <summary>The character immediately after the insertion point.</summary>
-        public char AfterChar  { get; set; }
+        public char AfterChar { get; set; }
         /// <summary>
         /// Priority 1 = highest (adjacent to Shadda/Harakat),
         /// Priority 5 = lowest (generic medial connection).
         /// </summary>
-        public int  Priority   { get; set; }
+        public int Priority { get; set; }
         /// <summary>True when the insertion is visually valid at this position.</summary>
         public bool CanStretch { get; set; }
     }
@@ -50,8 +50,8 @@ namespace Apex.Services.Printing.Arabic
         // We explicitly list the known initial/medial chars for accuracy.
 
         private static readonly HashSet<char> s_initialForms = BuildInitialForms();
-        private static readonly HashSet<char> s_medialForms  = BuildMedialForms();
-        private static readonly HashSet<char> s_finalForms   = BuildFinalForms();
+        private static readonly HashSet<char> s_medialForms = BuildMedialForms();
+        private static readonly HashSet<char> s_finalForms = BuildFinalForms();
 
         // Letters that have high-priority stretching (Ba, Ta, Tha, Nun, Yeh family)
         // represented by their base Unicode code points
@@ -84,9 +84,9 @@ namespace Apex.Services.Printing.Arabic
             for (int i = 0; i < shapedText.Length - 1; i++)
             {
                 char before = shapedText[i];
-                char after  = shapedText[i + 1];
+                char after = shapedText[i + 1];
 
-                int  priority   = GetJustificationPriority(before, after);
+                int priority = GetJustificationPriority(before, after);
                 bool canStretch = AcceptsKashidaRight(before) && AcceptsKashidaLeft(after);
 
                 if (!canStretch)
@@ -99,10 +99,10 @@ namespace Apex.Services.Printing.Arabic
 
                 points.Add(new KashidaInsertionPoint
                 {
-                    Position   = i,
+                    Position = i,
                     BeforeChar = before,
-                    AfterChar  = after,
-                    Priority   = priority,
+                    AfterChar = after,
+                    Priority = priority,
                     CanStretch = true
                 });
             }
@@ -147,8 +147,8 @@ namespace Apex.Services.Printing.Arabic
             // from highest priority to lowest until the quota is filled.
             // Build a map: position → number of kashidas to insert.
             var insertCounts = new Dictionary<int, int>();
-            int distributed  = 0;
-            int cycleIndex   = 0;
+            int distributed = 0;
+            int cycleIndex = 0;
 
             // Limit to avoid degenerate cases where a single position gets all kashidas
             int maxPerPosition = Math.Max(1, (needed / insertionPoints.Count) + 1);
@@ -156,7 +156,7 @@ namespace Apex.Services.Printing.Arabic
             while (distributed < needed)
             {
                 var point = insertionPoints[cycleIndex % insertionPoints.Count];
-                int pos   = point.Position;
+                int pos = point.Position;
 
                 insertCounts.TryGetValue(pos, out int existing);
                 if (existing < maxPerPosition || insertionPoints.Count == 1)
@@ -174,7 +174,7 @@ namespace Apex.Services.Printing.Arabic
             // Build the output string, inserting kashidas after each flagged position.
             // Positions are in terms of the *original* shaped text, so we iterate
             // forward and adjust for the growing offset.
-            var sb     = new StringBuilder(shapedText.Length + distributed);
+            var sb = new StringBuilder(shapedText.Length + distributed);
             int offset = 0;
 
             for (int i = 0; i < shapedText.Length; i++)
@@ -414,8 +414,8 @@ namespace Apex.Services.Printing.Arabic
             {
                 foreach (var kvp in formsDict)
                 {
-                    char baseChar  = kvp.Key;
-                    char[] forms   = kvp.Value;
+                    char baseChar = kvp.Key;
+                    char[] forms = kvp.Value;
                     // forms[0]=Isolated, [1]=Initial, [2]=Medial, [3]=Final
                     foreach (char f in forms)
                     {

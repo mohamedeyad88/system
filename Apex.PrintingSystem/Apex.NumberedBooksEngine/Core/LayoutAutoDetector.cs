@@ -24,7 +24,7 @@ namespace Apex.NumberedBooksEngine.Core
 
             // Heuristic 2: Check if slots form a regular grid
             var gridInfo = AnalyzeGrid(slots);
-            
+
             if (gridInfo.IsGrid && gridInfo.Rows > 1 && gridInfo.Columns > 1)
             {
                 // Regular grid suggests imposed/cutting mode
@@ -58,7 +58,7 @@ namespace Apex.NumberedBooksEngine.Core
             // Group by approximate Y position (rows)
             const float tolerance = 0.05f; // 5% tolerance
             var rowGroups = GroupByPosition(slots, s => s.Y, tolerance);
-            
+
             // Group by approximate X position (columns)
             var colGroups = GroupByPosition(slots, s => s.X, tolerance);
 
@@ -110,8 +110,8 @@ namespace Apex.NumberedBooksEngine.Core
         }
 
         private static List<List<SlotSpec>> GroupByPosition(
-            IReadOnlyList<SlotSpec> slots, 
-            Func<SlotSpec, float> positionSelector, 
+            IReadOnlyList<SlotSpec> slots,
+            Func<SlotSpec, float> positionSelector,
             float tolerance)
         {
             var groups = new List<List<SlotSpec>>();
@@ -146,11 +146,11 @@ namespace Apex.NumberedBooksEngine.Core
         {
             return mode switch
             {
-                NumberingMode.Linear or NumberingMode.Shershara => 
+                NumberingMode.Linear or NumberingMode.Shershara =>
                     "Shershara (Perforated Pads) - Linear top-to-bottom numbering",
-                NumberingMode.Imposed or NumberingMode.Cutting => 
+                NumberingMode.Imposed or NumberingMode.Cutting =>
                     "Cutting (Imposed Sheets) - Grid-based imposition numbering",
-                NumberingMode.Custom => 
+                NumberingMode.Custom =>
                     "Custom - User-defined numbering pattern",
                 _ => "Automatic - Will detect based on layout"
             };

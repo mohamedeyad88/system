@@ -1,0 +1,570 @@
+﻿<UserControl x:Class="Apex.UI.Views.ImpositionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:svc="clr-namespace:Apex.UI.Services"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Apex.UI.ViewModels"
+             xmlns:controls="clr-namespace:Apex.UI.Controls"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:ImpositionViewModel}"
+             FlowDirection="{Binding Source={x:Static svc:LocalizationService.Instance},
+                                     Path=FlowDirection, Mode=OneWay}"
+             Background="{DynamicResource Brush.Background}">
+
+    <UserControl.Resources>
+        <!-- All screen styles derive from the shared design system (Styles/*.xaml):
+             values flow from tokens â€” no hardcoded palette in this view. -->
+        <Style x:Key="LocalCard" TargetType="Border" BasedOn="{StaticResource CardStyle}">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Margin"       Value="0,0,0,12"/>
+        </Style>
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
+            <Setter Property="FontSize"   Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin"     Value="0,0,0,12"/>
+        </Style>
+        <Style x:Key="Label" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
+            <Setter Property="FontSize"   Value="12"/>
+            <Setter Property="Margin"     Value="0,0,0,4"/>
+        </Style>
+        <Style x:Key="Value" TargetType="TextBlock" BasedOn="{StaticResource PropValue}">
+            <Setter Property="FontSize"   Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="LocalInput" TargetType="TextBox" BasedOn="{StaticResource InputBox}">
+            <Setter Property="Background"   Value="{DynamicResource Brush.Background}"/>
+            <Setter Property="Padding"      Value="8,6"/>
+            <Setter Property="FontSize"     Value="13"/>
+            <Setter Property="CaretBrush"   Value="{DynamicResource Brush.Text.Primary}"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <!-- Inherits the global dark ComboBox template (correct popup colours) -->
+        <Style x:Key="ComboStyle" TargetType="ComboBox"
+               BasedOn="{StaticResource {x:Type ComboBox}}">
+            <Setter Property="Background"  Value="{DynamicResource Brush.Background}"/>
+            <Setter Property="Foreground"  Value="{DynamicResource Brush.Text.Primary}"/>
+            <Setter Property="FontSize"    Value="13"/>
+        </Style>
+        <Style x:Key="CheckStyle" TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
+            <Setter Property="FontSize"   Value="13"/>
+            <Setter Property="Margin"     Value="0,3"/>
+        </Style>
+        <Style x:Key="LocalStatCard" TargetType="Border">
+            <Setter Property="Background"   Value="{DynamicResource Brush.Background}"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding"      Value="16,12"/>
+        </Style>
+        <!-- Primary/secondary actions inherit the app-wide button system (hover included). -->
+        <Style x:Key="PrimaryBtn" TargetType="Button" BasedOn="{StaticResource Button.Primary}">
+            <Setter Property="Padding" Value="20,10"/>
+        </Style>
+        <Style x:Key="SecondaryBtn" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource Brush.Surface.Elevated}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource Brush.Slate.600}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="360" MinWidth="320"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ═══════════ LEFT — Inputs ═══════════ -->
+        <Border Grid.Column="0" Background="{DynamicResource Brush.Surface}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="20">
+                    <StackPanel Margin="0,0,0,18">
+                        <TextBlock Text="{DynamicResource Imp_Title}" FontSize="20" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="{DynamicResource Imp_Subtitle}" FontSize="12" Foreground="{DynamicResource Brush.Text.Tertiary}" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <!-- Source -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Imp_Source}" Style="{StaticResource SectionTitle}"/>
+                            <Button Command="{Binding BrowseSourceCommand}"
+                                    Content="{DynamicResource Imp_Browse}"
+                                    Style="{StaticResource SecondaryBtn}"
+                                    HorizontalAlignment="Stretch" Margin="0,0,0,8"/>
+                            <TextBlock Text="{Binding SourcePath}" Foreground="{DynamicResource Brush.Text.Secondary}" FontSize="11"
+                                       TextTrimming="CharacterEllipsis"
+                                       Visibility="{Binding HasSource, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <TextBlock Text="{DynamicResource Imp_NoSource}" Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="11"
+                                       FontStyle="Italic"
+                                       Visibility="{Binding HasSource, Converter={StaticResource InverseBoolConverter}}"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0"
+                                        Visibility="{Binding HasSource, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="{DynamicResource Imp_Pages}" Style="{StaticResource Label}" Margin="0,0,8,0"/>
+                                <TextBlock Text="{Binding SourcePageCount}" Style="{StaticResource Value}" Foreground="{DynamicResource Brush.Primary.Light}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- PDF resize tool -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Imp_ResizeTool}" Style="{StaticResource SectionTitle}"/>
+                            <TextBlock Text="{DynamicResource Imp_ResizeTarget}" Style="{StaticResource Label}"/>
+                            <ComboBox ItemsSource="{Binding SheetPresets}"
+                                      SelectedItem="{Binding ResizePreset}"
+                                      Style="{StaticResource ComboStyle}" Margin="0,0,0,8"/>
+                            <Grid Visibility="{Binding IsResizeCustom, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{DynamicResource Imp_Width}" Style="{StaticResource Label}"/>
+                                    <TextBox Text="{Binding ResizeWidth, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="{DynamicResource Imp_Height}" Style="{StaticResource Label}"/>
+                                    <TextBox Text="{Binding ResizeHeight, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                </StackPanel>
+                            </Grid>
+                            <CheckBox IsChecked="{Binding ResizeMaintainAspect}" Content="{DynamicResource Imp_ResizeAspect}"
+                                      Style="{StaticResource CheckStyle}" Margin="0,0,0,8"/>
+                            <Button Command="{Binding ResizePdfCommand}" Content="{DynamicResource Imp_ResizeApply}"
+                                    Style="{StaticResource SecondaryBtn}" HorizontalAlignment="Stretch"
+                                    IsEnabled="{Binding HasSource}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Page size -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Imp_PageSize}" Style="{StaticResource SectionTitle}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{DynamicResource Imp_Width}" Style="{StaticResource Label}"/>
+                                    <TextBox Text="{Binding PageWidth, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="{DynamicResource Imp_Height}" Style="{StaticResource Label}"/>
+                                    <TextBox Text="{Binding PageHeight, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Sheet size -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Imp_SheetSize}" Style="{StaticResource SectionTitle}"/>
+                            <ComboBox ItemsSource="{Binding SheetPresets}"
+                                      SelectedItem="{Binding SelectedSheetPreset}"
+                                      Style="{StaticResource ComboStyle}" Margin="0,0,0,8"/>
+                            <Grid Visibility="{Binding IsCustomSheet, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{DynamicResource Imp_Width}" Style="{StaticResource Label}"/>
+                                    <TextBox Text="{Binding SheetWidth, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="{DynamicResource Imp_Height}" Style="{StaticResource Label}"/>
+                                    <TextBox Text="{Binding SheetHeight, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Scheme -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Imp_Scheme}" Style="{StaticResource SectionTitle}"/>
+                            <ComboBox ItemsSource="{Binding AvailableTypes}"
+                                      SelectedIndex="{Binding SelectedTypeIndex}"
+                                      Style="{StaticResource ComboStyle}" Margin="0,0,0,4"/>
+
+                            <!-- Plain-language explanation of the selected imposition type -->
+                            <TextBlock Text="{Binding SchemeDescription}"
+                                       TextWrapping="Wrap" FontSize="11" Foreground="{DynamicResource Brush.Text.Secondary}"
+                                       Margin="2,0,2,10"/>
+
+                            <StackPanel Visibility="{Binding IsNUpScheme, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="{DynamicResource Imp_NUp}" Style="{StaticResource Label}"/>
+                                <ComboBox ItemsSource="{Binding AvailableNUps}"
+                                          SelectedIndex="{Binding SelectedNUpIndex}"
+                                          Style="{StaticResource ComboStyle}"/>
+
+                                <TextBlock Text="{DynamicResource Imp_Alignment}" Style="{StaticResource Label}" Margin="0,8,0,4"/>
+                                <ComboBox ItemsSource="{Binding AvailableAlignments}"
+                                          SelectedIndex="{Binding SelectedAlignmentIndex}"
+                                          Style="{StaticResource ComboStyle}"/>
+                                <TextBlock Text="{DynamicResource IMPX_001}"
+                                           Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="10" TextWrapping="Wrap" Margin="2,3,0,0"/>
+                            </StackPanel>
+
+                            <StackPanel Visibility="{Binding IsPerfectBinding, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="{DynamicResource Imp_Leaves}" Style="{StaticResource Label}" Margin="0,8,0,4"/>
+                                <TextBox Text="{Binding LeavesPerSignature, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                            </StackPanel>
+
+                            <StackPanel Visibility="{Binding IsBookletScheme, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <CheckBox IsChecked="{Binding MirrorBacks}" Content="{DynamicResource Imp_MirrorBacks}"
+                                          Style="{StaticResource CheckStyle}" Margin="0,8,0,0"/>
+                            </StackPanel>
+
+                            <StackPanel Visibility="{Binding IsRepeatScheme, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="{DynamicResource Imp_Copies}" Style="{StaticResource Label}" Margin="0,8,0,4"/>
+                                <TextBox Text="{Binding RequiredCopies, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Pre-press -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Imp_Marks}" Style="{StaticResource SectionTitle}"/>
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/><ColumnDefinition Width="6"/><ColumnDefinition Width="*"/><ColumnDefinition Width="6"/><ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{DynamicResource Imp_Bleed}" Style="{StaticResource Label}"/>
+                                    <TextBox Text="{Binding Bleed, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="{DynamicResource Imp_Margin}" Style="{StaticResource Label}"/>
+                                    <TextBox Text="{Binding SheetMargin, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="{DynamicResource Imp_Gutter}" Style="{StaticResource Label}"/>
+                                    <TextBox Text="{Binding Gutter, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Preflight findings for the loaded source file -->
+                            <Border Background="{DynamicResource Brush.Background}" CornerRadius="8" Padding="12"
+                                    Margin="0,0,0,10"
+                                    Visibility="{Binding HasSource, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Imp_PreflightTitle}"
+                                               FontSize="12" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource Brush.Text.Secondary}" Margin="0,0,0,6"/>
+                                    <TextBlock Text="{Binding PreflightSummary}"
+                                               Foreground="{Binding PreflightSummaryColor}"
+                                               FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                    <ItemsControl ItemsSource="{Binding PreflightFindings}" Margin="0,6,0,0"
+                                                  Visibility="{Binding HasPreflightFindings, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}" FontSize="11" TextWrapping="Wrap"
+                                                           Foreground="{DynamicResource Brush.Text.Secondary}"
+                                                           Margin="0,0,0,3"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Per-edge margins / split gutters (gripper edge) -->
+                            <CheckBox IsChecked="{Binding UseAdvancedSpacing}"
+                                      Content="{DynamicResource Imp_AdvancedSpacing}"
+                                      Style="{StaticResource CheckStyle}" Margin="0,10,0,0"/>
+                            <StackPanel Visibility="{Binding UseAdvancedSpacing, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="{DynamicResource Imp_GripperHint}"
+                                           Foreground="{DynamicResource Brush.Text.Secondary}"
+                                           FontSize="11" TextWrapping="Wrap" Margin="0,4,0,8"/>
+                                <UniformGrid Columns="4">
+                                    <StackPanel Margin="0,0,6,6">
+                                        <TextBlock Text="{DynamicResource Imp_MarginLeft}" Style="{StaticResource Label}"/>
+                                        <TextBox Text="{Binding MarginLeft, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,6,6">
+                                        <TextBlock Text="{DynamicResource Imp_MarginTop}" Style="{StaticResource Label}"/>
+                                        <TextBox Text="{Binding MarginTop, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,6,6">
+                                        <TextBlock Text="{DynamicResource Imp_MarginRight}" Style="{StaticResource Label}"/>
+                                        <TextBox Text="{Binding MarginRight, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,0,6">
+                                        <TextBlock Text="{DynamicResource Imp_MarginBottom}" Style="{StaticResource Label}"/>
+                                        <TextBox Text="{Binding MarginBottom, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                    </StackPanel>
+                                </UniformGrid>
+                                <UniformGrid Columns="4">
+                                    <StackPanel Margin="0,0,6,0">
+                                        <TextBlock Text="{DynamicResource Imp_GutterH}" Style="{StaticResource Label}"/>
+                                        <TextBox Text="{Binding GutterHorizontal, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,6,0">
+                                        <TextBlock Text="{DynamicResource Imp_GutterV}" Style="{StaticResource Label}"/>
+                                        <TextBox Text="{Binding GutterVertical, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,6,0">
+                                        <TextBlock Text="{DynamicResource Imp_BleedH}" Style="{StaticResource Label}"/>
+                                        <TextBox Text="{Binding BleedHorizontal, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource Imp_BleedV}" Style="{StaticResource Label}"/>
+                                        <TextBox Text="{Binding BleedVertical, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                    </StackPanel>
+                                </UniformGrid>
+                            </StackPanel>
+
+                            <!-- Creep compensation â€” only meaningful for folded signatures -->
+                            <StackPanel Margin="0,10,0,0"
+                                        Visibility="{Binding IsBookletScheme, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="{DynamicResource Imp_PaperThickness}" Style="{StaticResource Label}"/>
+                                <TextBox Text="{Binding PaperThickness, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
+                                <TextBlock Text="{DynamicResource Imp_PaperThicknessHint}"
+                                           Foreground="{DynamicResource Brush.Text.Secondary}"
+                                           FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                            </StackPanel>
+
+                            <CheckBox IsChecked="{Binding AllowRotation}" Content="{DynamicResource Imp_Rotation}" Style="{StaticResource CheckStyle}"/>
+                            <CheckBox IsChecked="{Binding ScaleToFit}" Content="{DynamicResource Imp_ScaleToFit}" Style="{StaticResource CheckStyle}"/>
+                            <CheckBox IsChecked="{Binding AlignSheetsIndependently}" Content="{DynamicResource Imp_AlignIndep}" Style="{StaticResource CheckStyle}"/>
+                            <Separator Background="{DynamicResource Brush.Surface.Elevated}" Margin="0,8"/>
+                            <CheckBox IsChecked="{Binding CropMarks}"        Content="{DynamicResource Imp_CropMarks}" Style="{StaticResource CheckStyle}"/>
+                            <CheckBox IsChecked="{Binding FoldMarks}"        Content="{DynamicResource Imp_FoldMarks}" Style="{StaticResource CheckStyle}"/>
+                            <CheckBox IsChecked="{Binding RegistrationMarks}" Content="{DynamicResource Imp_RegMarks}" Style="{StaticResource CheckStyle}"/>
+                            <CheckBox IsChecked="{Binding ColorBars}"        Content="{DynamicResource Imp_ColorBars}" Style="{StaticResource CheckStyle}"/>
+                            <CheckBox IsChecked="{Binding JobInfo}"          Content="{DynamicResource Imp_JobInfo}" Style="{StaticResource CheckStyle}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Templates & settings -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Imp_Templates}" Style="{StaticResource SectionTitle}"/>
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/><ColumnDefinition Width="6"/><ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" Text="{Binding TemplateName, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource LocalInput}"/>
+                                <Button Grid.Column="2" Command="{Binding SaveTemplateCommand}"
+                                        Content="{DynamicResource Imp_SaveTemplate}"
+                                        Style="{StaticResource SecondaryBtn}" Padding="12,6"/>
+                            </Grid>
+                            <ComboBox ItemsSource="{Binding Templates}"
+                                      SelectedItem="{Binding SelectedTemplate}"
+                                      DisplayMemberPath="Name"
+                                      Style="{StaticResource ComboStyle}" Margin="0,0,0,8"/>
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/><ColumnDefinition Width="6"/><ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Command="{Binding LoadTemplateCommand}"
+                                        Content="{DynamicResource Imp_LoadTemplate}" Style="{StaticResource SecondaryBtn}"/>
+                                <Button Grid.Column="2" Command="{Binding DeleteTemplateCommand}"
+                                        Content="{DynamicResource Imp_DeleteTemplate}" Style="{StaticResource SecondaryBtn}"/>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/><ColumnDefinition Width="6"/><ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Command="{Binding ExportSettingsCommand}"
+                                        Content="{DynamicResource Imp_ExportSettings}" Style="{StaticResource SecondaryBtn}"/>
+                                <Button Grid.Column="2" Command="{Binding ImportSettingsCommand}"
+                                        Content="{DynamicResource Imp_ImportSettings}" Style="{StaticResource SecondaryBtn}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Export format -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Imp_ExportFormat}" Style="{StaticResource SectionTitle}"/>
+                            <ComboBox ItemsSource="{Binding AvailablePdfX}"
+                                      SelectedIndex="{Binding PdfXIndex}"
+                                      Style="{StaticResource ComboStyle}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Buttons -->
+                    <Button Command="{Binding PlanCommand}" Content="{DynamicResource Imp_Plan}"
+                            Style="{StaticResource PrimaryBtn}" HorizontalAlignment="Stretch" Margin="0,0,0,8"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Command="{Binding ExportCommand}" Content="{DynamicResource Imp_Export}"
+                                Style="{StaticResource SecondaryBtn}" IsEnabled="{Binding HasResult}"/>
+                        <Button Grid.Column="2" Command="{Binding ResetCommand}" Content="{DynamicResource Imp_Reset}"
+                                Style="{StaticResource SecondaryBtn}"/>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- ═══════════ RIGHT — Results + Preview ═══════════ -->
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20">
+
+                <!-- Error -->
+                <Border Background="{DynamicResource Brush.Error.Surface}" CornerRadius="10" Padding="16,12" Margin="0,0,0,16"
+                        Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="âڑ " Foreground="{DynamicResource Brush.Error.Light}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Brush.Error.Light}" FontSize="13" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Status -->
+                <Border Background="{DynamicResource Brush.Success.Surface}" CornerRadius="10" Padding="14,10" Margin="0,0,0,16"
+                        Visibility="{Binding StatusMessage, Converter={StaticResource StringToVisibilityConverter}}">
+                    <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource Brush.Success.Light}" FontSize="13" TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Placeholder -->
+                <Border CornerRadius="12" Padding="40" Background="{DynamicResource Brush.Surface}"
+                        Visibility="{Binding HasResult, Converter={StaticResource InverseBoolConverter}}">
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="📐" FontSize="48" HorizontalAlignment="Center" Foreground="{DynamicResource Brush.Text.Disabled}" Margin="0,0,0,16"/>
+                        <TextBlock Text="{DynamicResource Imp_PlaceholderTitle}" Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource Imp_PlaceholderDesc}" Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="12" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Results -->
+                <StackPanel Visibility="{Binding HasResult, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Imp_SummaryTitle}" FontSize="16" FontWeight="Bold" Foreground="White" Margin="0,0,0,16"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Style="{StaticResource LocalStatCard}">
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource Imp_SheetsRequired}" Style="{StaticResource SectionTitle}" Margin="0"/>
+                                        <TextBlock Text="{Binding SheetsRequired}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource Brush.Primary.Light}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="2" Style="{StaticResource LocalStatCard}">
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource Imp_PagesPerSide}" Style="{StaticResource SectionTitle}" Margin="0"/>
+                                        <TextBlock Text="{Binding PagesPerSide}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource Brush.Primary.Light}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="4" Style="{StaticResource LocalStatCard}">
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource Imp_Utilization}" Style="{StaticResource SectionTitle}" Margin="0"/>
+                                        <TextBlock Text="{Binding UtilizationPercent, StringFormat='{}{0:F1}%'}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource Brush.Warning}"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+
+                            <Grid Margin="0,14,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/><ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/><RowDefinition Height="6"/><RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource Imp_Signatures}" Style="{StaticResource Label}"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SignatureCount}" Style="{StaticResource Value}" HorizontalAlignment="Right"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource Imp_Duplex}" Style="{StaticResource Label}"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding IsDuplex}" Style="{StaticResource Value}" HorizontalAlignment="Right"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Preview -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{DynamicResource Imp_Preview}" FontSize="14" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <Button Command="{Binding PrevSheetCommand}" Content="{DynamicResource Imp_PrevSheet}"
+                                            Style="{StaticResource SecondaryBtn}" Padding="10,5" FontSize="11" Margin="0,0,6,0"/>
+                                    <Border Background="{DynamicResource Brush.Background}" CornerRadius="6" Padding="10,5" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding CurrentSheetLabel}" Foreground="{DynamicResource Brush.Primary.Light}" FontSize="12" FontWeight="SemiBold"/>
+                                    </Border>
+                                    <Button Command="{Binding NextSheetCommand}" Content="{DynamicResource Imp_NextSheet}"
+                                            Style="{StaticResource SecondaryBtn}" Padding="10,5" FontSize="11" Margin="6,0,0,0"/>
+                                    <Button Command="{Binding ToggleSideCommand}" Content="{DynamicResource Imp_ToggleSide}"
+                                            Style="{StaticResource SecondaryBtn}" Padding="10,5" FontSize="11" Margin="6,0,0,0"
+                                            Visibility="{Binding CanShowBack, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                </StackPanel>
+                            </Grid>
+                            <Border Background="{DynamicResource Brush.Surface.Sunken}" CornerRadius="10" Padding="20">
+                                <Grid MinHeight="380">
+                                    <!-- Schematic sheet preview: true aspect ratio, page order,
+                                         rotation and margin guide. Shown until a rendered PDF
+                                         page image is available. -->
+                                    <controls:ImpositionSheetPreview
+                                        SheetWidthMm="{Binding PreviewSheetWidthMm}"
+                                        SheetHeightMm="{Binding PreviewSheetHeightMm}"
+                                        MarginMm="{Binding SheetMargin}"
+                                        Slots="{Binding PreviewRects}"
+                                        EmptyHint="{DynamicResource Imp_PreviewHint}"
+                                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        Visibility="{Binding HasPreviewImage, Converter={StaticResource InverseBoolConverter}}"/>
+
+                                    <!-- Real rendered sheet as paper on a surface (soft shadow) -->
+                                    <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="White"
+                                            Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="28" ShadowDepth="0" Opacity="0.55" Color="Black"/>
+                                        </Border.Effect>
+                                        <Image Source="{Binding PreviewImage}" MaxHeight="560" Stretch="Uniform"
+                                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    </Border>
+
+                                    <!-- Loading state -->
+                                    <Border HorizontalAlignment="Center" VerticalAlignment="Center"
+                                            Background="{DynamicResource Brush.Background}" CornerRadius="8" Padding="16,10"
+                                            Visibility="{Binding IsPreviewLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="{DynamicResource PT_034}" Foreground="{DynamicResource Brush.Text.Secondary}" FontSize="13"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Full report -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Imp_FullReport}" FontSize="14" FontWeight="Bold" Foreground="White" Margin="0,0,0,12"/>
+                            <Border Background="{DynamicResource Brush.Background}" CornerRadius="8" Padding="16">
+                                <TextBox Text="{Binding HumanReadableSummary, Mode=OneWay}"
+                                         Background="Transparent" BorderThickness="0" Foreground="{DynamicResource Brush.Text.Secondary}"
+                                         FontFamily="Consolas" FontSize="12" IsReadOnly="True"
+                                         TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" MaxHeight="280"/>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

@@ -18,7 +18,7 @@ namespace Apex.Services.Printing
                         var queue = server.GetPrintQueue(printerName);
 
                         // Optional: Check if we can access properties (permission check)
-                        var status = queue.QueueStatus; 
+                        var status = queue.QueueStatus;
 
                         return (true, "Printer is ready.");
                     }

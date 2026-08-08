@@ -24,6 +24,22 @@ namespace Apex.UI.Models
         [ObservableProperty] private double opacity = 1.0;
         [ObservableProperty] private string alignment = "Left";
 
+        // What this slot prints: the number as text, or the same number encoded as a
+        // scannable code. Stored as a string for easy ComboBox binding.
+        [ObservableProperty] private string slotKind = "Text";       // Text | Barcode | QrCode
+        [ObservableProperty] private string barcodeType = "CODE128";
+
+        /// <summary>Kinds offered in the designer.</summary>
+        public static string[] AvailableKinds { get; } = { "Text", "Barcode", "QrCode" };
+
+        /// <summary>Symbologies offered for barcode slots.</summary>
+        public static string[] AvailableBarcodeTypes { get; } = { "CODE128", "CODE39", "EAN13" };
+
+        /// <summary>True when the barcode symbology picker is relevant.</summary>
+        public bool IsBarcode => string.Equals(SlotKind, "Barcode", StringComparison.OrdinalIgnoreCase);
+
+        partial void OnSlotKindChanged(string value) => OnPropertyChanged(nameof(IsBarcode));
+
         public SlotSpec ToSlotSpec()
         {
             var alignEnum = Alignment?.ToLowerInvariant() switch
@@ -44,7 +60,14 @@ namespace Apex.UI.Models
                 FontColorHex: FontColor,
                 Align: alignEnum,
                 Rotation: (float)Rotation,
-                CopyStyles: null);
+                CopyStyles: null,
+                Kind: SlotKind?.ToLowerInvariant() switch
+                {
+                    "barcode" => Apex.NumberedBooksEngine.Core.SlotKind.Barcode,
+                    "qrcode" or "qr" => Apex.NumberedBooksEngine.Core.SlotKind.QrCode,
+                    _ => Apex.NumberedBooksEngine.Core.SlotKind.Text
+                },
+                BarcodeType: BarcodeType);
         }
 
         public static NumberSlot FromSlotSpec(SlotSpec spec)
@@ -68,7 +91,14 @@ namespace Apex.UI.Models
                 },
                 PreviewNumber = "0000",
                 IsBold = false,
-                Opacity = 1.0
+                Opacity = 1.0,
+                SlotKind = spec.Kind switch
+                {
+                    Apex.NumberedBooksEngine.Core.SlotKind.Barcode => "Barcode",
+                    Apex.NumberedBooksEngine.Core.SlotKind.QrCode => "QrCode",
+                    _ => "Text"
+                },
+                BarcodeType = spec.BarcodeType ?? "CODE128"
             };
         }
     }

@@ -1,13 +1,15 @@
 <Window x:Class="Apex.UI.Views.ActivationView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:svc="clr-namespace:Apex.UI.Services"
         Title="تفعيل أبكس لحلول الطباعة المتكاملة"
         Width="600" Height="820"
         MinHeight="700" MaxHeight="920"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         Background="#0F172A"
-        FlowDirection="RightToLeft">
+        FlowDirection="{Binding Source={x:Static svc:LocalizationService.Instance},
+                                Path=FlowDirection, Mode=OneWay}">
 
     <Window.Resources>
         <!-- Converters (ensure available even when App.xaml resources haven't propagated) -->

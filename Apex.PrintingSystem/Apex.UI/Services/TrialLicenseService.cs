@@ -5,12 +5,12 @@ using System.Text;
 namespace Apex.UI.Services
 {
     /// <summary>
-    /// Handles 30-day trial enforcement with local storage (no network).
+    /// Handles 7-day trial enforcement with local storage (no network).
     /// Stores start/last-check timestamps in AppData with simple salted Base64.
     /// </summary>
     public static class TrialLicenseService
     {
-        private const int TrialDays = 30;
+        private const int TrialDays = 7;
         private const string Salt = "ApexTrialSalt2025";
 
         private static readonly string TrialFilePath = Path.Combine(

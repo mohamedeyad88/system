@@ -26,7 +26,7 @@ namespace Apex.NumberedBooksEngine.Core
             while (currentNumber < endNumber)
             {
                 var pageNumbers = new long[slotsPerPage];
-                
+
                 for (int slotIndex = 0; slotIndex < slotsPerPage; slotIndex++)
                 {
                     if (currentNumber < endNumber)
@@ -40,7 +40,7 @@ namespace Apex.NumberedBooksEngine.Core
                         pageNumbers[slotIndex] = -1;
                     }
                 }
-                
+
                 yield return pageNumbers;
             }
         }
@@ -50,7 +50,7 @@ namespace Apex.NumberedBooksEngine.Core
         /// Each number is repeated for each copy type.
         /// </summary>
         public IEnumerable<(long[] Numbers, CopyType CopyType)> GenerateMultiCopyPageNumbers(
-            BookJobOptions options, 
+            BookJobOptions options,
             IReadOnlyList<CopyType> copyTypes)
         {
             foreach (var pageNumbers in GeneratePageNumbers(options))

@@ -7,17 +7,17 @@ namespace Apex.API.Endpoints
     public record SubmitJobRequest(
         string FilePath,
         string PrinterName,
-        int    Copies         = 1,
-        bool   DocumentMode   = false,
-        int    Priority       = 5
+        int Copies = 1,
+        bool DocumentMode = false,
+        int Priority = 5
     );
 
     public record JobStatusResponse(
-        string  JobId,
-        string  Status,
-        int     Progress,
-        string  PrinterName,
-        string  FileName,
+        string JobId,
+        string Status,
+        int Progress,
+        string PrinterName,
+        string FileName,
         string? Error
     );
 
@@ -43,26 +43,26 @@ namespace Apex.API.Endpoints
                     {
                         return Results.UnprocessableEntity(new
                         {
-                            error     = preflight.SummaryArabic,
-                            issues    = preflight.Items.Select(i => new { i.Severity, i.Category, i.Message })
+                            error = preflight.SummaryArabic,
+                            issues = preflight.Items.Select(i => new { i.Severity, i.Category, i.Message })
                         });
                     }
 
                     var jobId = await PrintJobQueueManager.Instance.SubmitPrintJobAsync(
                         req.PrinterName,
                         req.FilePath,
-                        copies:       req.Copies,
-                        priority:     req.Priority,
+                        copies: req.Copies,
+                        priority: req.Priority,
                         documentMode: req.DocumentMode);
 
                     return Results.Ok(new
                     {
                         jobId,
-                        message  = "تم إرسال الوظيفة للطابور",
+                        message = "تم إرسال الوظيفة للطابور",
                         preflight = new
                         {
                             canPrint = preflight.CanPrint,
-                            summary  = preflight.SummaryArabic,
+                            summary = preflight.SummaryArabic,
                             warnings = preflight.WarningCount
                         }
                     });
@@ -143,17 +143,17 @@ namespace Apex.API.Endpoints
 
                 return Results.Ok(new
                 {
-                    canPrint    = report.CanPrint,
-                    summary     = report.SummaryArabic,
-                    severity    = report.OverallSeverity.ToString(),
-                    errorCount  = report.ErrorCount,
+                    canPrint = report.CanPrint,
+                    summary = report.SummaryArabic,
+                    severity = report.OverallSeverity.ToString(),
+                    errorCount = report.ErrorCount,
                     warningCount = report.WarningCount,
-                    durationMs  = (int)report.AnalysisDuration.TotalMilliseconds,
-                    items       = report.Items.Select(i => new
+                    durationMs = (int)report.AnalysisDuration.TotalMilliseconds,
+                    items = report.Items.Select(i => new
                     {
-                        severity   = i.Severity.ToString(),
-                        category   = i.Category,
-                        message    = i.Message,
+                        severity = i.Severity.ToString(),
+                        category = i.Category,
+                        message = i.Message,
                         suggestion = i.Suggestion,
                         blocksPrint = i.BlocksPrint
                     })

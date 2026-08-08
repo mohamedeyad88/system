@@ -53,15 +53,15 @@ namespace Apex.NumberedBooksEngine.UI.Controls
             ModeDescription.Text = SelectedMode switch
             {
                 NumberingMode.Auto => "كشف تلقائي لوضع الترقيم بناءً على تخطيط الخانات",
-                NumberingMode.Shershara or NumberingMode.Linear => 
+                NumberingMode.Shershara or NumberingMode.Linear =>
                     "ترقيم خطي من الأعلى للأسفل للدفاتر المثقوبة (الشرشرة). مثال: 1، 2، 3، 4...",
-                NumberingMode.Cutting or NumberingMode.Imposed => 
+                NumberingMode.Cutting or NumberingMode.Imposed =>
                     "ترقيم شبكي للورق المفروز (القص). مثال: [1، 2501، 5001، 7501]",
                 NumberingMode.Custom => "نمط ترقيم مخصص من تعريف المستخدم",
                 _ => ""
             };
 
-            DetectedModePanel.Visibility = SelectedMode == NumberingMode.Auto ? 
+            DetectedModePanel.Visibility = SelectedMode == NumberingMode.Auto ?
                 Visibility.Visible : Visibility.Collapsed;
         }
 

@@ -12,7 +12,7 @@ namespace Apex.Data
         public DbSet<Printer> Printers { get; set; }
         public DbSet<PrintJob> PrintJobs { get; set; }
         public DbSet<SystemSettings> Settings { get; set; }
-        
+
         // Print Manager Tables
         public DbSet<SavedQueue> SavedQueues { get; set; }
         public DbSet<SavedQueueItem> SavedQueueItems { get; set; }

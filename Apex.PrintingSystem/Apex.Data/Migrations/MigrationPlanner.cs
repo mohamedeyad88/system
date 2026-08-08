@@ -33,22 +33,22 @@ namespace Apex.Data.Migrations
             var table = _modelSchema.Tables.First(t => t.Name == tableName);
             var sb = new StringBuilder();
             sb.AppendLine($"CREATE TABLE \"{tableName}\" (");
-            
+
             var colDefs = new List<string>();
             foreach (var col in table.Columns)
             {
                 var def = $"\"{col.Name}\" {col.Type}";
                 if (col.IsPrimaryKey) def += " PRIMARY KEY AUTOINCREMENT"; // Assuming int PK for simplicity
                 else if (!col.IsNullable) def += " NOT NULL";
-                
+
                 if (col.DefaultValue != null) def += $" DEFAULT {col.DefaultValue}";
-                
+
                 colDefs.Add(def);
             }
-            
+
             sb.Append(string.Join(",\n", colDefs));
             sb.Append(");");
-            
+
             return sb.ToString();
         }
 
@@ -56,10 +56,10 @@ namespace Apex.Data.Migrations
         {
             var table = _modelSchema.Tables.First(t => t.Name == tableName);
             var col = table.Columns.First(c => c.Name == columnName);
-            
+
             var def = $"\"{col.Name}\" {col.Type}";
             if (!col.IsNullable) def += " DEFAULT ''"; // Add default for non-null new columns to avoid error
-            
+
             return $"ALTER TABLE \"{tableName}\" ADD COLUMN {def};";
         }
     }

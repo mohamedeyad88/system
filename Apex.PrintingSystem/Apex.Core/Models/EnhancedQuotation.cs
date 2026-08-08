@@ -148,8 +148,8 @@ namespace Apex.Core.Models
         private void CalculateCore()
         {
             // Step 1: Calculate sheets per copy
-            SheetsPerCopy = IsDoubleSided 
-                ? (int)Math.Ceiling(TotalPages / 2.0) 
+            SheetsPerCopy = IsDoubleSided
+                ? (int)Math.Ceiling(TotalPages / 2.0)
                 : TotalPages;
 
             TotalSheets = SheetsPerCopy * Quantity;
@@ -185,11 +185,11 @@ namespace Apex.Core.Models
             };
 
             // Calculate subtotal per copy
-            PerCopyCost.SubTotal = 
-                PerCopyCost.PaperCost + 
-                PerCopyCost.InkCost + 
-                PerCopyCost.CoverCost + 
-                PerCopyCost.FinishingCost + 
+            PerCopyCost.SubTotal =
+                PerCopyCost.PaperCost +
+                PerCopyCost.InkCost +
+                PerCopyCost.CoverCost +
+                PerCopyCost.FinishingCost +
                 PerCopyCost.SetupCostShare;
 
             // Profit per copy
@@ -212,11 +212,11 @@ namespace Apex.Core.Models
             };
 
             // Subtotal before profit
-            TotalCost.SubTotal = 
-                TotalCost.PaperCost + 
-                TotalCost.InkCost + 
-                TotalCost.CoverCost + 
-                TotalCost.FinishingCost + 
+            TotalCost.SubTotal =
+                TotalCost.PaperCost +
+                TotalCost.InkCost +
+                TotalCost.CoverCost +
+                TotalCost.FinishingCost +
                 TotalCost.SetupCost;
 
             // Profit
@@ -250,8 +250,8 @@ namespace Apex.Core.Models
             TotalCost.FinalTotal = TotalCost.TotalBeforeDiscount - DiscountAmount;
 
             // Update per-copy price after discount
-            PerCopyCost.PriceAfterDiscount = Quantity > 0 
-                ? TotalCost.FinalTotal / Quantity 
+            PerCopyCost.PriceAfterDiscount = Quantity > 0
+                ? TotalCost.FinalTotal / Quantity
                 : PerCopyCost.TotalPrice;
         }
 
@@ -282,8 +282,8 @@ namespace Apex.Core.Models
                     TotalPrice = tempQuote.TotalCost.FinalTotal,
                     PricePerCopy = tempQuote.PerCopyCost.PriceAfterDiscount,
                     AppliedDiscount = tempQuote.AppliedDiscountPercent,
-                    SavingsVsSingle = qty > 1 
-                        ? singleCopyPrice.Value - tempQuote.PerCopyCost.PriceAfterDiscount 
+                    SavingsVsSingle = qty > 1
+                        ? singleCopyPrice.Value - tempQuote.PerCopyCost.PriceAfterDiscount
                         : 0
                 });
             }
@@ -402,13 +402,13 @@ namespace Apex.Core.Models
                 sb.AppendLine("│ الكمية   │ سعر النسخة  │ الإجمالي    │ الخصم %    │ التوفير │");
                 sb.AppendLine("│ Qty      │ Per Copy    │ Total       │ Discount   │ Savings │");
                 sb.AppendLine("├──────────┼─────────────┼─────────────┼────────────┼─────────┤");
-                
+
                 foreach (var point in PriceAnalysis)
                 {
                     var marker = point.Quantity == Quantity ? "→ " : "  ";
                     sb.AppendLine($"│{marker}{point.Quantity,6}   │ {point.PricePerCopy,9:F2}   │ {point.TotalPrice,9:F2}   │ {point.AppliedDiscount,8:F1}%  │ {point.SavingsVsSingle,6:F2} │");
                 }
-                
+
                 sb.AppendLine("└──────────┴─────────────┴─────────────┴────────────┴─────────┘");
             }
 
@@ -503,7 +503,7 @@ namespace Apex.Core.Models
         public bool HasLamination { get; set; }
         public decimal LaminationCost { get; set; }
 
-        public decimal TotalCostPerPiece => 
+        public decimal TotalCostPerPiece =>
             CoverPrintCost + CoverMaterialCost + (HasLamination ? LaminationCost : 0);
     }
 

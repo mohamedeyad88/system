@@ -8,6 +8,7 @@
         xmlns:viewmodels="clr-namespace:Apex.UI.ViewModels"
         xmlns:services="clr-namespace:Apex.UI.Services"
         xmlns:properties="clr-namespace:Apex.UI.Properties"
+        xmlns:controls="clr-namespace:Apex.UI.Controls"
         mc:Ignorable="d"
         Title="{DynamicResource Welcome}" Height="800" Width="1200"
         MinWidth="1200" MinHeight="800"
@@ -15,6 +16,20 @@
         WindowStartupLocation="CenterScreen"
         WindowState="Normal"
         Background="#0F172A">
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                     From="0" To="1" Duration="0:0:0.35">
+                        <DoubleAnimation.EasingFunction>
+                            <CubicEase EasingMode="EaseOut"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -53,773 +68,198 @@
                                    Foreground="#6B7280" Margin="8,0,0,8"/>
 
                         <!-- 🏠 Dashboard -->
-                        <Button Command="{Binding NavigateToDashboardCommand}" Margin="0,0,0,4">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" Background="Transparent" CornerRadius="10" Padding="14,12" Cursor="Hand">
-                                        <Border.RenderTransform>
-                                            <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
-                                        </Border.RenderTransform>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#3B82F6" Offset="0"/>
-                                                        <GradientStop Color="#1D4ED8" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="🏠" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{DynamicResource Nav_Dashboard}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                                <TextBlock Text="{DynamicResource Nav_Dashboard_Desc}" FontSize="10" Foreground="#9CA3AF"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#374151"/>
-                                            <Trigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1.02" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1.02" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.EnterActions>
-                                            <Trigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.ExitActions>
-                                        </Trigger>
-                                        <Trigger Property="IsPressed" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#4B5563"/>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding DataContext.IsDashboardActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
+                        <Button Command="{Binding NavigateToDashboardCommand}" Style="{StaticResource NavItemButton}"
+                                controls:NavAssist.Icon="🏠"
+                                controls:NavAssist.IsActive="{Binding IsDashboardActive}">
+                            <controls:NavAssist.IconBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#3B82F6" Offset="0"/>
+                                    <GradientStop Color="#1D4ED8" Offset="1"/>
+                                </LinearGradientBrush>
+                            </controls:NavAssist.IconBrush>
+                            <Button.Content>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Nav_Dashboard}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                    <TextBlock Text="{DynamicResource Nav_Dashboard_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                </StackPanel>
+                            </Button.Content>
                         </Button>
 
-                        <!-- ══ Section: العمليات اليومية ══ -->
-                        <TextBlock Text="العمليات اليومية" FontSize="11" FontWeight="SemiBold"
+                        <!-- ══ Section: Production & Printing ══ -->
+                        <TextBlock Text="{DynamicResource Nav_Section_Daily}" FontSize="11" FontWeight="SemiBold"
                                    Foreground="#6B7280" Margin="8,16,0,8"/>
-
-                        <!-- 📤 Printer Monitor -->
-                        <Button Command="{Binding NavigateToDistributionCommand}" Margin="0,0,0,4">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" Background="Transparent" CornerRadius="10" Padding="14,12" Cursor="Hand">
-                                        <Border.RenderTransform>
-                                            <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
-                                        </Border.RenderTransform>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#8B5CF6" Offset="0"/>
-                                                        <GradientStop Color="#7C3AED" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="📤" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{DynamicResource Nav_PrinterMonitor}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                                <TextBlock Text="{DynamicResource Nav_PrinterMonitor_Desc}" FontSize="10" Foreground="#9CA3AF"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#374151"/>
-                                            <Trigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1.02" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1.02" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.EnterActions>
-                                            <Trigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.ExitActions>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding DataContext.IsDistributionActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
 
                         <!-- 📚 Numbered Books -->
-                        <Button Command="{Binding NavigateToNumberedBooksCommand}" Margin="0,0,0,4">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" Background="Transparent" CornerRadius="10" Padding="14,12" Cursor="Hand">
-                                        <Border.RenderTransform>
-                                            <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
-                                        </Border.RenderTransform>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#F59E0B" Offset="0"/>
-                                                        <GradientStop Color="#D97706" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="📚" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{DynamicResource Nav_NumberedBooks}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                                <TextBlock Text="{DynamicResource Nav_NumberedBooks_Desc}" FontSize="10" Foreground="#9CA3AF"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#374151"/>
-                                            <Trigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1.02" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1.02" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.EnterActions>
-                                            <Trigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.ExitActions>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding DataContext.IsNumberedBooksActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
+                        <Button Command="{Binding NavigateToNumberedBooksCommand}" Style="{StaticResource NavItemButton}"
+                                controls:NavAssist.Icon="📚"
+                                controls:NavAssist.IsActive="{Binding IsNumberedBooksActive}">
+                            <controls:NavAssist.IconBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#F59E0B" Offset="0"/>
+                                    <GradientStop Color="#D97706" Offset="1"/>
+                                </LinearGradientBrush>
+                            </controls:NavAssist.IconBrush>
+                            <Button.Content>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Nav_NumberedBooks}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                    <TextBlock Text="{DynamicResource Nav_NumberedBooks_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                </StackPanel>
+                            </Button.Content>
                         </Button>
 
-                        <!-- 🖨️ Print Operations -->
-                        <Button Command="{Binding NavigateToPrintersCommand}" Margin="0,0,0,4">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" Background="Transparent" CornerRadius="10" Padding="14,12" Cursor="Hand">
-                                        <Border.RenderTransform>
-                                            <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
-                                        </Border.RenderTransform>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#EC4899" Offset="0"/>
-                                                        <GradientStop Color="#BE185D" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="⚙️" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{DynamicResource Nav_PrintOps}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                                <TextBlock Text="{DynamicResource Nav_PrintOps_Desc}" FontSize="10" Foreground="#9CA3AF"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#374151"/>
-                                            <Trigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1.02" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1.02" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.EnterActions>
-                                            <Trigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.ExitActions>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding DataContext.IsPrintOperationsActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
+                        <!-- 🖨️ Printing — one place for the whole job:
+                             file queue + one or many printers + distribution mode.
+                             (Replaces the old split between "Quick Print" and
+                             "Print Operations", which each held half the workflow.) -->
+                        <Button Command="{Binding NavigateToPrintManagerCommand}" Style="{StaticResource NavItemButton}"
+                                controls:NavAssist.Icon="🖨️"
+                                controls:NavAssist.IsActive="{Binding IsPrintManagerActive}">
+                            <controls:NavAssist.IconBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#22C55E" Offset="0"/>
+                                    <GradientStop Color="#16A34A" Offset="1"/>
+                                </LinearGradientBrush>
+                            </controls:NavAssist.IconBrush>
+                            <Button.Content>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Nav_Printing}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                    <TextBlock Text="{DynamicResource Nav_Printing_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                </StackPanel>
+                            </Button.Content>
                         </Button>
 
-                        <!-- ⚡ Quick Print -->
-                        <Button Command="{Binding NavigateToPrintManagerCommand}" Margin="0,0,0,4">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" Background="Transparent" CornerRadius="10" Padding="14,12" Cursor="Hand">
-                                        <Border.RenderTransform>
-                                            <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
-                                        </Border.RenderTransform>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#22C55E" Offset="0"/>
-                                                        <GradientStop Color="#16A34A" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="⚡" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{DynamicResource Nav_QuickPrint}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                                <TextBlock Text="{DynamicResource Nav_QuickPrint_Desc}" FontSize="10" Foreground="#9CA3AF"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#374151"/>
-                                            <Trigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1.02" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1.02" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.EnterActions>
-                                            <Trigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.ExitActions>
-                                        </Trigger>
-                                        <Trigger Property="IsPressed" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#4B5563"/>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding DataContext.IsPrintManagerActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-
-                        <!-- ══ Section: الأعمال ══ -->
-                        <TextBlock Text="{DynamicResource Nav_Section_Business}" FontSize="11" FontWeight="SemiBold"
-                                   Foreground="#6B7280" Margin="8,16,0,8"/>
-
-                        <!-- 💰 Quotation -->
-                        <Button Command="{Binding NavigateToQuotationCommand}" Margin="0,0,0,4">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" Background="Transparent" CornerRadius="10" Padding="14,12" Cursor="Hand">
-                                        <Border.RenderTransform>
-                                            <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
-                                        </Border.RenderTransform>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#14B8A6" Offset="0"/>
-                                                        <GradientStop Color="#0D9488" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="💰" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{DynamicResource Nav_Quotation}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                                <TextBlock Text="{DynamicResource Nav_Quotation_Desc}" FontSize="10" Foreground="#9CA3AF"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#374151"/>
-                                            <Trigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1.02" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1.02" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.EnterActions>
-                                            <Trigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.ExitActions>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding DataContext.IsQuotationActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-
-                        <!-- 📑 Reports -->
-                        <Button Command="{Binding NavigateToReportsCommand}" Margin="0,0,0,4">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" Background="Transparent" CornerRadius="10" Padding="14,12" Cursor="Hand">
-                                        <Border.RenderTransform>
-                                            <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
-                                        </Border.RenderTransform>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#EF4444" Offset="0"/>
-                                                        <GradientStop Color="#DC2626" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="📑" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="التقارير" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                                <TextBlock Text="تقارير مجدولة وسريعة" FontSize="10" Foreground="#9CA3AF"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#374151"/>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding DataContext.IsReportsActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-
-                        <!-- 💹 Analytics -->
-                        <Button Command="{Binding NavigateToAnalyticsCommand}" Margin="0,0,0,4">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" Background="Transparent" CornerRadius="10" Padding="14,12" Cursor="Hand">
-                                        <Border.RenderTransform>
-                                            <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
-                                        </Border.RenderTransform>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#22C55E" Offset="0"/>
-                                                        <GradientStop Color="#16A34A" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="💹" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="التحليلات" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                                <TextBlock Text="إيرادات وتكاليف" FontSize="10" Foreground="#9CA3AF"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#374151"/>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding DataContext.IsAnalyticsActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-
-                        <!-- ══ Section: الإدارة ══ -->
-                        <TextBlock Text="الإدارة" FontSize="11" FontWeight="SemiBold"
-                                   Foreground="#6B7280" Margin="8,16,0,8"/>
-
-                        <!-- 👤 User Management -->
-                        <Button Command="{Binding NavigateToUserManagementCommand}" Margin="0,0,0,4">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" Background="Transparent" CornerRadius="10" Padding="14,12" Cursor="Hand">
-                                        <Border.RenderTransform>
-                                            <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
-                                        </Border.RenderTransform>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#F59E0B" Offset="0"/>
-                                                        <GradientStop Color="#D97706" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="👤" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="المستخدمون" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                                <TextBlock Text="حسابات وصلاحيات" FontSize="10" Foreground="#9CA3AF"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#374151"/>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding DataContext.IsUserManagementActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-
-                        <!-- ══ Section: الأدوات المتقدمة ══ -->
-                        <TextBlock Text="الأدوات المتقدمة" FontSize="11" FontWeight="SemiBold"
+                        <!-- ══ Section: Design & Prepress ══ -->
+                        <TextBlock Text="{DynamicResource Nav_Section_Design}" FontSize="11" FontWeight="SemiBold"
                                    Foreground="#6B7280" Margin="8,16,0,8"/>
 
                         <!-- 📄 Template Designer -->
-                        <Button Command="{Binding NavigateToTemplateDesignerCommand}" Margin="0,0,0,4">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" Background="Transparent" CornerRadius="10" Padding="14,12" Cursor="Hand">
-                                        <Border.RenderTransform>
-                                            <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
-                                        </Border.RenderTransform>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#14B8A6" Offset="0"/>
-                                                        <GradientStop Color="#0F766E" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="📄" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="مصمم القوالب" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                                <TextBlock Text="إنشاء وتعديل .apext" FontSize="10" Foreground="#9CA3AF"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#374151"/>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding DataContext.IsTemplateDesignerActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
+                        <Button Command="{Binding NavigateToTemplateDesignerCommand}" Style="{StaticResource NavItemButton}"
+                                controls:NavAssist.Icon="📄"
+                                controls:NavAssist.IsActive="{Binding IsTemplateDesignerActive}">
+                            <controls:NavAssist.IconBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#14B8A6" Offset="0"/>
+                                    <GradientStop Color="#0F766E" Offset="1"/>
+                                </LinearGradientBrush>
+                            </controls:NavAssist.IconBrush>
+                            <Button.Content>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Nav_TemplateDesigner}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                    <TextBlock Text="{DynamicResource Nav_TemplateDesigner_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                </StackPanel>
+                            </Button.Content>
                         </Button>
 
-                        <!-- ⚖️ Load Balancer -->
-                        <Button Command="{Binding NavigateToLoadBalancerCommand}" Margin="0,0,0,4">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" Background="Transparent" CornerRadius="10" Padding="14,12" Cursor="Hand">
-                                        <Border.RenderTransform>
-                                            <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
-                                        </Border.RenderTransform>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#3B82F6" Offset="0"/>
-                                                        <GradientStop Color="#2563EB" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="⚖️" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="موازن الحمل" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                                <TextBlock Text="توزيع وظائف الطباعة" FontSize="10" Foreground="#9CA3AF"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#374151"/>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding DataContext.IsLoadBalancerActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
+                        <!-- 📐 Imposition & Finishing -->
+                        <Button Command="{Binding NavigateToImpositionCommand}" Style="{StaticResource NavItemButton}"
+                                controls:NavAssist.Icon="📐"
+                                controls:NavAssist.IsActive="{Binding IsImpositionActive}">
+                            <controls:NavAssist.IconBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#8B5CF6" Offset="0"/>
+                                    <GradientStop Color="#6D28D9" Offset="1"/>
+                                </LinearGradientBrush>
+                            </controls:NavAssist.IconBrush>
+                            <Button.Content>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Nav_Imposition}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                    <TextBlock Text="{DynamicResource Nav_Imposition_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+
+                        <!-- 🧰 Page Tools -->
+                        <Button Command="{Binding NavigateToPageToolsCommand}" Style="{StaticResource NavItemButton}"
+                                controls:NavAssist.Icon="🧰"
+                                controls:NavAssist.IsActive="{Binding IsPageToolsActive}">
+                            <controls:NavAssist.IconBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#0EA5E9" Offset="0"/>
+                                    <GradientStop Color="#0369A1" Offset="1"/>
+                                </LinearGradientBrush>
+                            </controls:NavAssist.IconBrush>
+                            <Button.Content>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Nav_PageTools}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                    <TextBlock Text="{DynamicResource Nav_PageTools_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                </StackPanel>
+                            </Button.Content>
                         </Button>
 
                         <!-- 🎨 Color Calibration -->
-                        <Button Command="{Binding NavigateToColorCalibrationCommand}" Margin="0,0,0,4">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" Background="Transparent" CornerRadius="10" Padding="14,12" Cursor="Hand">
-                                        <Border.RenderTransform>
-                                            <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
-                                        </Border.RenderTransform>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#EC4899" Offset="0"/>
-                                                        <GradientStop Color="#BE185D" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="🎨" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="معايرة الألوان" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                                <TextBlock Text="ICC وضبط CMYK" FontSize="10" Foreground="#9CA3AF"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#374151"/>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding DataContext.IsColorCalibrationActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-
-                        <!-- 📊 Performance -->
-                        <Button Command="{Binding NavigateToPerformanceCommand}" Margin="0,0,0,4">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" Background="Transparent" CornerRadius="10" Padding="14,12" Cursor="Hand">
-                                        <Border.RenderTransform>
-                                            <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
-                                        </Border.RenderTransform>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#06B6D4" Offset="0"/>
-                                                        <GradientStop Color="#0891B2" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="📊" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{DynamicResource Nav_Performance}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                                <TextBlock Text="{DynamicResource Nav_Performance_Desc}" FontSize="10" Foreground="#9CA3AF"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#374151"/>
-                                            <Trigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1.02" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1.02" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.EnterActions>
-                                            <Trigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.ExitActions>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding DataContext.IsPerformanceActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
+                        <Button Command="{Binding NavigateToColorCalibrationCommand}" Style="{StaticResource NavItemButton}"
+                                controls:NavAssist.Icon="🎨"
+                                controls:NavAssist.IsActive="{Binding IsColorCalibrationActive}">
+                            <controls:NavAssist.IconBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#EC4899" Offset="0"/>
+                                    <GradientStop Color="#BE185D" Offset="1"/>
+                                </LinearGradientBrush>
+                            </controls:NavAssist.IconBrush>
+                            <Button.Content>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Nav_ColorCalibration}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                    <TextBlock Text="{DynamicResource Nav_ColorCalibration_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                </StackPanel>
+                            </Button.Content>
                         </Button>
 
                         <!-- ══ Section: النظام ══ -->
                         <TextBlock Text="{DynamicResource Nav_Section_System}" FontSize="11" FontWeight="SemiBold"
                                    Foreground="#6B7280" Margin="8,16,0,8"/>
 
+                        <!-- 📊 Performance -->
+                        <Button Command="{Binding NavigateToPerformanceCommand}" Style="{StaticResource NavItemButton}"
+                                controls:NavAssist.Icon="📊"
+                                controls:NavAssist.IsActive="{Binding IsPerformanceActive}">
+                            <controls:NavAssist.IconBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#06B6D4" Offset="0"/>
+                                    <GradientStop Color="#0891B2" Offset="1"/>
+                                </LinearGradientBrush>
+                            </controls:NavAssist.IconBrush>
+                            <Button.Content>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Nav_Performance}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                    <TextBlock Text="{DynamicResource Nav_Performance_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+
                         <!-- ⚙️ Settings -->
-                        <Button Command="{Binding NavigateToSettingsCommand}" Margin="0,0,0,4">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" Background="Transparent" CornerRadius="10" Padding="14,12" Cursor="Hand">
-                                        <Border.RenderTransform>
-                                            <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
-                                        </Border.RenderTransform>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#8B5CF6" Offset="0"/>
-                                                        <GradientStop Color="#7C3AED" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="⚙️" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{DynamicResource Nav_Settings}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                                <TextBlock Text="{DynamicResource Nav_Settings_Desc}" FontSize="10" Foreground="#9CA3AF"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#374151"/>
-                                            <Trigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1.02" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1.02" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.EnterActions>
-                                            <Trigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.ExitActions>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding DataContext.IsSettingsActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
+                        <Button Command="{Binding NavigateToSettingsCommand}" Style="{StaticResource NavItemButton}"
+                                controls:NavAssist.Icon="⚙️"
+                                controls:NavAssist.IsActive="{Binding IsSettingsActive}">
+                            <controls:NavAssist.IconBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#8B5CF6" Offset="0"/>
+                                    <GradientStop Color="#7C3AED" Offset="1"/>
+                                </LinearGradientBrush>
+                            </controls:NavAssist.IconBrush>
+                            <Button.Content>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Nav_Settings}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                    <TextBlock Text="{DynamicResource Nav_Settings_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                </StackPanel>
+                            </Button.Content>
                         </Button>
 
                         <!-- 🔑 License Management -->
-                        <Button Command="{Binding NavigateToLicensingCommand}" Margin="0,0,0,4">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" Background="Transparent" CornerRadius="10" Padding="14,12" Cursor="Hand">
-                                        <Border.RenderTransform>
-                                            <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
-                                        </Border.RenderTransform>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#F59E0B" Offset="0"/>
-                                                        <GradientStop Color="#D97706" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="🔑" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{DynamicResource Nav_Licensing}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                                <TextBlock Text="{DynamicResource Nav_Licensing_Desc}" FontSize="10" Foreground="#9CA3AF"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#374151"/>
-                                            <Trigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1.02" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1.02" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.EnterActions>
-                                            <Trigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.15"/>
-                                                        <DoubleAnimation Storyboard.TargetName="scale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.15"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.ExitActions>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding DataContext.IsLicensingActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
+                        <Button Command="{Binding NavigateToLicensingCommand}" Style="{StaticResource NavItemButton}"
+                                controls:NavAssist.Icon="🔑"
+                                controls:NavAssist.IsActive="{Binding IsLicensingActive}">
+                            <controls:NavAssist.IconBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#F59E0B" Offset="0"/>
+                                    <GradientStop Color="#D97706" Offset="1"/>
+                                </LinearGradientBrush>
+                            </controls:NavAssist.IconBrush>
+                            <Button.Content>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Nav_Licensing}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                    <TextBlock Text="{DynamicResource Nav_Licensing_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                </StackPanel>
+                            </Button.Content>
                         </Button>
 
                         <!-- 📝 System Logs -->
@@ -961,9 +401,36 @@
             </Grid>
         </Border>
 
-        <!-- Main Content Area -->
-        <Grid Grid.Column="1" Background="#0F172A">
-            <ContentPresenter Content="{Binding CurrentViewModel}" Margin="0"/>
+        <!-- Main Content Area — animated page transitions -->
+        <Grid Grid.Column="1" Background="{DynamicResource Brush.Background}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Update-available notice (server-driven, dismissible) -->
+            <Border Grid.Row="0" Background="{DynamicResource Brush.Primary}" Padding="14,8"
+                    Visibility="{Binding UpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid FlowDirection="RightToLeft">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" VerticalAlignment="Center" Foreground="White" FontSize="13">
+                        <Run Text="🚀 تحديث جديد متاح — الإصدار"/>
+                        <Run Text="{Binding UpdateVersion}" FontWeight="Bold"/>
+                    </TextBlock>
+                    <Button Grid.Column="1" Content="تحميل التحديث" Command="{Binding OpenUpdateLinkCommand}"
+                            Background="White" Foreground="{DynamicResource Brush.Primary}" BorderThickness="0"
+                            Padding="14,5" FontSize="12" FontWeight="SemiBold" Cursor="Hand" Margin="0,0,8,0"/>
+                    <Button Grid.Column="2" Content="✕" Command="{Binding DismissUpdateCommand}"
+                            Background="Transparent" Foreground="White" BorderThickness="0"
+                            Padding="8,4" FontSize="12" Cursor="Hand"/>
+                </Grid>
+            </Border>
+
+            <controls:TransitionContentControl Grid.Row="1" Content="{Binding CurrentViewModel}"/>
         </Grid>
     </Grid>
 </Window>

@@ -34,18 +34,18 @@ namespace Apex.NumberedBooksEngine.Core
 
         private SKImage LoadPdfTemplate(Stream pdfStream)
         {
-            try 
+            try
             {
                 using var doc = PdfiumViewer.PdfDocument.Load(pdfStream);
                 // Rasterize at high DPI (e.g., 300 DPI) for print quality
                 int dpi = 300;
                 using var image = doc.Render(0, dpi, dpi, PdfiumViewer.PdfRenderFlags.Annotations);
-                
+
                 // Convert System.Drawing.Image to SkiaSharp SKImage
                 using var ms = new MemoryStream();
                 image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                 ms.Position = 0;
-                
+
                 var skBitmap = SKBitmap.Decode(ms);
                 if (skBitmap == null)
                     throw new InvalidOperationException("Failed to decode PDF render to bitmap (skBitmap is null).");

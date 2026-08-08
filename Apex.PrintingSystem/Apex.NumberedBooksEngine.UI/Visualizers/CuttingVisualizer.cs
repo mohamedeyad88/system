@@ -29,7 +29,10 @@ namespace Apex.NumberedBooksEngine.UI.Visualizers
                 double y = height * i / rows;
                 var line = new Line
                 {
-                    X1 = 0, Y1 = y, X2 = width, Y2 = y,
+                    X1 = 0,
+                    Y1 = y,
+                    X2 = width,
+                    Y2 = y,
                     Stroke = cutBrush,
                     StrokeThickness = 2,
                     StrokeDashArray = new DoubleCollection { 10, 5 }
@@ -46,7 +49,10 @@ namespace Apex.NumberedBooksEngine.UI.Visualizers
                 double x = width * j / columns;
                 var line = new Line
                 {
-                    X1 = x, Y1 = 0, X2 = x, Y2 = height,
+                    X1 = x,
+                    Y1 = 0,
+                    X2 = x,
+                    Y2 = height,
                     Stroke = cutBrush,
                     StrokeThickness = 2,
                     StrokeDashArray = new DoubleCollection { 10, 5 }

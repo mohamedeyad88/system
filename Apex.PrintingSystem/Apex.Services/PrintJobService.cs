@@ -106,15 +106,15 @@ namespace Apex.Services
                 // - Automatic profile optimization
                 // - Error handling with vendor-specific recovery
                 // ═══════════════════════════════════════════════════════════════════
-                
+
                 var gateway = Printing.VendorDetection.VendorAwarePrintGateway.Instance;
-                
+
                 var result = await gateway.PrintAsync(
                     job.PrinterName,
                     job.FilePath,
                     job.TotalCopies,
                     job);
-                
+
                 if (!result.Success)
                 {
                     System.Diagnostics.Debug.WriteLine($"[VendorGateway] Print failed: {result.ErrorMessage}");

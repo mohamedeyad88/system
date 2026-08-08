@@ -14,19 +14,19 @@ namespace Apex.NumberedBooksEngine.Core
         public int Copies { get; set; } = 1;
         public bool Collate { get; set; } = true;
         public int Dpi { get; set; } = 300;
-        
+
         /// <summary>
         /// Tray selection for each copy (index 0 = Original, 1 = Copy 1, 2 = Copy 2, etc.)
         /// If null or empty, uses default tray.
         /// </summary>
         public Dictionary<int, System.Drawing.Printing.PaperSourceKind>? CopyTrayMapping { get; set; }
-        
+
         /// <summary>
         /// Fit to page - scales the content to fit the printable area of the page.
         /// </summary>
         [Obsolete("Use ScaleMode instead")]
         public bool FitToPage { get; set; } = true;
-        
+
         /// <summary>
         /// Print scaling mode. Default is ActualSize (100%).
         /// </summary>

@@ -36,7 +36,7 @@ namespace Apex.NumberedBooksEngine.CLI
             long total = long.Parse(GetArg(args, "--total") ?? "100");
             int copies = int.Parse(GetArg(args, "--copies") ?? "1");
             string modeStr = GetArg(args, "--mode") ?? "Auto";
-            
+
             if (string.IsNullOrEmpty(templatePath) || string.IsNullOrEmpty(slotsPath) || string.IsNullOrEmpty(outputPath))
             {
                 Console.WriteLine("Missing required arguments.");
@@ -45,8 +45,8 @@ namespace Apex.NumberedBooksEngine.CLI
 
             // Load Slots
             var slotsJson = File.ReadAllText(slotsPath);
-            var jsonOptions = new JsonSerializerOptions 
-            { 
+            var jsonOptions = new JsonSerializerOptions
+            {
                 PropertyNameCaseInsensitive = true,
                 Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
             };
@@ -73,14 +73,14 @@ namespace Apex.NumberedBooksEngine.CLI
             );
 
             var service = new NumberedBooksService();
-            var progress = new Progress<ProgressInfo>(p => 
+            var progress = new Progress<ProgressInfo>(p =>
             {
                 Console.Write($"\rProgress: {p.Percent:F1}% ({p.PagesGenerated}/{p.TotalPages})");
             });
 
             Console.WriteLine("Starting job...");
             var result = await service.GenerateNumberedBooksAsync(options, progress, CancellationToken.None);
-            
+
             Console.WriteLine();
             if (result.Success)
             {

@@ -8,25 +8,25 @@ namespace Apex.Services.SmartVariables
 {
     public class CleaningOptions
     {
-        public bool TrimWhitespace          { get; set; } = true;
-        public bool NormalizeArabicLetters  { get; set; } = true;  // أإآ → ا
-        public bool RemoveDiacritics        { get; set; } = false; // تشكيل
-        public bool NormalizeArabicNumbers  { get; set; } = true;  // ١٢٣ → 123
-        public bool RemoveExtraSpaces       { get; set; } = true;  // multi-space → single
-        public bool UnifyQuotes             { get; set; } = true;  // " " ' ' → " '
-        public bool RemoveControlChars      { get; set; } = true;
-        public bool PreserveLeadingZeros    { get; set; } = true;  // ALWAYS true — never convert to number
+        public bool TrimWhitespace { get; set; } = true;
+        public bool NormalizeArabicLetters { get; set; } = true;  // أإآ → ا
+        public bool RemoveDiacritics { get; set; } = false; // تشكيل
+        public bool NormalizeArabicNumbers { get; set; } = true;  // ١٢٣ → 123
+        public bool RemoveExtraSpaces { get; set; } = true;  // multi-space → single
+        public bool UnifyQuotes { get; set; } = true;  // " " ' ' → " '
+        public bool RemoveControlChars { get; set; } = true;
+        public bool PreserveLeadingZeros { get; set; } = true;  // ALWAYS true — never convert to number
         public bool DetectAndFlagDuplicates { get; set; } = true;
         public List<string> DuplicateCheckColumns { get; set; } = new();
     }
 
     public class CleaningResult
     {
-        public SmartDataSource Source         { get; set; } = null!;
-        public int             RowsProcessed  { get; set; }
-        public int             CellsModified  { get; set; }
-        public int             DuplicatesFound{ get; set; }
-        public List<string>    Log            { get; set; } = new();
+        public SmartDataSource Source { get; set; } = null!;
+        public int RowsProcessed { get; set; }
+        public int CellsModified { get; set; }
+        public int DuplicatesFound { get; set; }
+        public List<string> Log { get; set; } = new();
     }
 
     public interface IDataCleaningService
@@ -48,17 +48,36 @@ namespace Apex.Services.SmartVariables
         // Arabic-Indic digits
         private static readonly Dictionary<char, char> ArabicIndicToWestern = new()
         {
-            ['٠'] = '0', ['١'] = '1', ['٢'] = '2', ['٣'] = '3', ['٤'] = '4',
-            ['٥'] = '5', ['٦'] = '6', ['٧'] = '7', ['٨'] = '8', ['٩'] = '9',
+            ['٠'] = '0',
+            ['١'] = '1',
+            ['٢'] = '2',
+            ['٣'] = '3',
+            ['٤'] = '4',
+            ['٥'] = '5',
+            ['٦'] = '6',
+            ['٧'] = '7',
+            ['٨'] = '8',
+            ['٩'] = '9',
             // Extended Arabic-Indic (Farsi/Persian)
-            ['۰'] = '0', ['۱'] = '1', ['۲'] = '2', ['۳'] = '3', ['۴'] = '4',
-            ['۵'] = '5', ['۶'] = '6', ['۷'] = '7', ['۸'] = '8', ['۹'] = '9',
+            ['۰'] = '0',
+            ['۱'] = '1',
+            ['۲'] = '2',
+            ['۳'] = '3',
+            ['۴'] = '4',
+            ['۵'] = '5',
+            ['۶'] = '6',
+            ['۷'] = '7',
+            ['۸'] = '8',
+            ['۹'] = '9',
         };
 
         // Arabic alef normalization
         private static readonly Dictionary<char, char> ArabicAlefForms = new()
         {
-            ['أ'] = 'ا', ['إ'] = 'ا', ['آ'] = 'ا', ['ٱ'] = 'ا',
+            ['أ'] = 'ا',
+            ['إ'] = 'ا',
+            ['آ'] = 'ا',
+            ['ٱ'] = 'ا',
         };
 
         // ── Public API ─────────────────────────────────────────────────────────
@@ -68,7 +87,7 @@ namespace Apex.Services.SmartVariables
             options ??= new CleaningOptions();
             var result = new CleaningResult
             {
-                Source        = source,
+                Source = source,
                 RowsProcessed = source.Rows.Count,
             };
 
@@ -79,7 +98,7 @@ namespace Apex.Services.SmartVariables
                 foreach (var key in keys)
                 {
                     string original = row.Values[key];
-                    string cleaned  = CleanCell(original, options);
+                    string cleaned = CleanCell(original, options);
 
                     if (!string.Equals(original, cleaned, StringComparison.Ordinal))
                     {

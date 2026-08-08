@@ -113,7 +113,7 @@ namespace Apex.Services.Printing
                             pageSuccess = true;
                             result.PagesPrinted++;
                             result.LastSuccessfulPage = pageData.PageIndex;
-                            
+
                             if (pageData.DataStream != null)
                             {
                                 result.BytesTransferred += pageData.DataStream.Length;
@@ -136,16 +136,16 @@ namespace Apex.Services.Printing
                         {
                             pageRetries++;
                             metrics.RetryCount++;
-                            
-                            _logger.Log(LogLevel.Warning, 
-                                $"Page {pageData.PageNumber} failed (attempt {pageRetries}): {ex.Message}", 
+
+                            _logger.Log(LogLevel.Warning,
+                                $"Page {pageData.PageNumber} failed (attempt {pageRetries}): {ex.Message}",
                                 "StreamDispatcher", "PrintPage");
 
                             if (pageRetries < settings.MaxRetryAttempts)
                             {
                                 // Reduce chunk size on failure
                                 currentChunkSize = Math.Max(currentChunkSize / 2, settings.MinChunkSize);
-                                
+
                                 progress?.Report(new StreamingProgress
                                 {
                                     CurrentPage = pageData.PageNumber,
@@ -176,7 +176,7 @@ namespace Apex.Services.Printing
 
                 result.Success = true;
                 result.Duration = stopwatch.Elapsed;
-                
+
                 progress?.Report(new StreamingProgress
                 {
                     CurrentPage = pageSource.TotalPages,
@@ -187,8 +187,8 @@ namespace Apex.Services.Printing
                     StatusMessage = "Print completed successfully"
                 });
 
-                _logger.Log(LogLevel.Info, 
-                    $"Streaming completed: {result.PagesPrinted} pages in {result.Duration.TotalSeconds:F1}s", 
+                _logger.Log(LogLevel.Info,
+                    $"Streaming completed: {result.PagesPrinted} pages in {result.Duration.TotalSeconds:F1}s",
                     "StreamDispatcher", "Complete");
             }
             catch (OperationCanceledException)
@@ -197,7 +197,7 @@ namespace Apex.Services.Printing
                 result.CanResume = true;
                 result.ErrorMessage = "Printing was cancelled";
                 result.Duration = stopwatch.Elapsed;
-                
+
                 progress?.Report(new StreamingProgress
                 {
                     State = StreamingState.Failed,
@@ -211,7 +211,7 @@ namespace Apex.Services.Printing
                 result.ErrorMessage = ex.Message;
                 result.Exception = ex;
                 result.Duration = stopwatch.Elapsed;
-                
+
                 _logger.Log(LogLevel.Error, $"Streaming failed: {ex.Message}", "StreamDispatcher", "Stream", ex);
             }
 
@@ -244,7 +244,7 @@ namespace Apex.Services.Printing
                         pd.PrinterSettings.Duplex = Duplex.Vertical;
                     }
                     jobPageSettings.Color = settings.PrintSettings.Color;
-                    jobPageSettings.Landscape = 
+                    jobPageSettings.Landscape =
                         settings.PrintSettings.Orientation?.Equals("Landscape", StringComparison.OrdinalIgnoreCase) ?? false;
                 }
 
@@ -291,23 +291,23 @@ namespace Apex.Services.Printing
             try
             {
                 pageData.DataStream!.Position = 0;
-                
+
                 // Try to render PDF to image using PdfSharpCore and print as image
-                using var pdfDoc = PdfSharpCore.Pdf.IO.PdfReader.Open(pageData.DataStream, 
+                using var pdfDoc = PdfSharpCore.Pdf.IO.PdfReader.Open(pageData.DataStream,
                     PdfSharpCore.Pdf.IO.PdfDocumentOpenMode.Import);
-                
+
                 if (pdfDoc.PageCount > 0)
                 {
                     var page = pdfDoc.Pages[0];
-                    
+
                     // Create a print document
                     using var pd = new PrintDocument();
                     pd.PrinterSettings.PrinterName = printerName;
-                    
+
                     // Get page dimensions
                     float pageWidth = (float)page.Width.Point;
                     float pageHeight = (float)page.Height.Point;
-                    
+
                     var jobPageSettings = (PageSettings)pd.DefaultPageSettings.Clone();
                     jobPageSettings.Landscape = pageWidth > pageHeight;
 
@@ -315,7 +315,7 @@ namespace Apex.Services.Printing
                     {
                         e.PageSettings = (PageSettings)jobPageSettings.Clone();
                     };
-                    
+
                     pd.PrintPage += (sender, e) =>
                     {
                         if (e.Graphics != null)
@@ -323,7 +323,7 @@ namespace Apex.Services.Printing
                             // Draw a placeholder with page info (full PDF rendering requires PDFium)
                             // For now, we'll use raw printing via spooler
                             var bounds = e.MarginBounds;
-                            
+
                             // Try to print using raw data approach
                             e.Graphics.DrawString(
                                 $"PDF Page - Printing to {printerName}",
@@ -332,16 +332,16 @@ namespace Apex.Services.Printing
                                 bounds.X, bounds.Y);
                         }
                     };
-                    
+
                     // Use raw spooler approach instead
                     PrintPdfViaRawSpooler(printerName, pageData);
                 }
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Warning, $"PDF direct print failed, using raw spooler: {ex.Message}", 
+                _logger.Log(LogLevel.Warning, $"PDF direct print failed, using raw spooler: {ex.Message}",
                     "StreamDispatcher", "PrintPdf");
-                
+
                 // Fallback to raw spooler printing
                 PrintPdfViaRawSpooler(printerName, pageData);
             }
@@ -366,27 +366,27 @@ namespace Apex.Services.Printing
                 // These tools print silently without UI
                 var sumatraPath = FindSumatraPdf();
                 var pdfToPrinterPath = FindPdfToPrinter();
-                
+
                 bool printed = false;
-                
+
                 // Try SumatraPDF first (most reliable for silent printing)
                 if (!string.IsNullOrEmpty(sumatraPath) && File.Exists(sumatraPath))
                 {
                     printed = PrintWithSumatra(sumatraPath, tempFile, printerName);
                 }
-                
+
                 // Try PDFtoPrinter
                 if (!printed && !string.IsNullOrEmpty(pdfToPrinterPath) && File.Exists(pdfToPrinterPath))
                 {
                     printed = PrintWithPdfToPrinter(pdfToPrinterPath, tempFile, printerName);
                 }
-                
+
                 // Fallback: Use Windows print spooler directly via API
                 if (!printed)
                 {
                     printed = PrintViaWindowsSpooler(tempFile, printerName);
                 }
-                
+
                 if (!printed)
                 {
                     _logger.Log(LogLevel.Warning, "All PDF print methods failed", "StreamDispatcher", "PrintPdf");
@@ -408,7 +408,7 @@ namespace Apex.Services.Printing
             {
                 @"C:\Program Files\SumatraPDF\SumatraPDF.exe",
                 @"C:\Program Files (x86)\SumatraPDF\SumatraPDF.exe",
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), 
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "SumatraPDF", "SumatraPDF.exe")
             };
             return paths.FirstOrDefault(File.Exists);
@@ -448,7 +448,7 @@ namespace Apex.Services.Printing
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Warning, $"SumatraPDF print failed: {ex.Message}", 
+                _logger.Log(LogLevel.Warning, $"SumatraPDF print failed: {ex.Message}",
                     "StreamDispatcher", "Sumatra");
             }
             return false;
@@ -476,7 +476,7 @@ namespace Apex.Services.Printing
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Warning, $"PDFtoPrinter failed: {ex.Message}", 
+                _logger.Log(LogLevel.Warning, $"PDFtoPrinter failed: {ex.Message}",
                     "StreamDispatcher", "PdfToPrinter");
             }
             return false;
@@ -488,29 +488,29 @@ namespace Apex.Services.Printing
             {
                 // Use Windows GDI+ to render and print PDF pages
                 // This approach reads the PDF and sends it as raw data to the spooler
-                
-                using var pdfDoc = PdfSharpCore.Pdf.IO.PdfReader.Open(pdfFile, 
+
+                using var pdfDoc = PdfSharpCore.Pdf.IO.PdfReader.Open(pdfFile,
                     PdfSharpCore.Pdf.IO.PdfDocumentOpenMode.Import);
-                
+
                 using var pd = new PrintDocument();
                 pd.PrinterSettings.PrinterName = printerName;
                 pd.DocumentName = Path.GetFileName(pdfFile);
-                
+
                 int currentPage = 0;
                 int totalPages = pdfDoc.PageCount;
-                
+
                 pd.PrintPage += (sender, e) =>
                 {
                     if (e.Graphics != null && currentPage < totalPages)
                     {
                         var page = pdfDoc.Pages[currentPage];
-                        
+
                         // Draw page border and info
                         var bounds = e.MarginBounds;
-                        
+
                         using var pen = new System.Drawing.Pen(System.Drawing.Color.LightGray, 1);
                         e.Graphics.DrawRectangle(pen, bounds);
-                        
+
                         // For actual PDF content rendering, a library like PDFium is needed
                         // This is a placeholder that shows the print job went through
                         using var font = new System.Drawing.Font("Arial", 8);
@@ -519,18 +519,18 @@ namespace Apex.Services.Printing
                             font,
                             System.Drawing.Brushes.Gray,
                             bounds.X + 5, bounds.Y + 5);
-                        
+
                         currentPage++;
                         e.HasMorePages = currentPage < totalPages;
                     }
                 };
-                
+
                 pd.Print();
                 return true;
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Error, $"Windows spooler print failed: {ex.Message}", 
+                _logger.Log(LogLevel.Error, $"Windows spooler print failed: {ex.Message}",
                     "StreamDispatcher", "Spooler");
                 return false;
             }

@@ -23,7 +23,7 @@ namespace Apex.UI.Services
                 {
                     Thread.CurrentThread.CurrentUICulture = value;
                     Thread.CurrentThread.CurrentCulture = value;
-                    
+
                     UpdateResourceDictionary(value);
 
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentCulture)));
@@ -37,7 +37,7 @@ namespace Apex.UI.Services
         public FlowDirection FlowDirection =>
             CurrentCulture.TextInfo.IsRightToLeft ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
 
-        public bool IsArabicActive  => CurrentCulture.Name.StartsWith("ar");
+        public bool IsArabicActive => CurrentCulture.Name.StartsWith("ar");
         public bool IsEnglishActive => !CurrentCulture.Name.StartsWith("ar");
 
         public void SwitchLanguage(string cultureCode)
@@ -49,7 +49,7 @@ namespace Apex.UI.Services
                 "ar" => "ar",
                 _ => cultureCode
             };
-            
+
             CurrentCulture = new CultureInfo(normalizedCode);
         }
 

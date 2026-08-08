@@ -10,7 +10,7 @@ namespace Apex.Licensing
     ///
     /// Priority order:
     ///   1. Signed license file (*.apex) → Full/Pro activation
-    ///   2. Trial period (5 days)        → Limited run
+    ///   2. Trial period (7 days)        → Limited run
     ///   3. Everything else              → Activation required
     /// </summary>
     public static class LicenseManager
@@ -19,8 +19,8 @@ namespace Apex.Licensing
         //  Constants
         // ──────────────────────────────────────────────────────────────────
 
-        private const string AppFolder      = "ApexPrintingSystem";
-        private const string LicenseFile    = "license.apex";
+        private const string AppFolder = "ApexPrintingSystem";
+        private const string LicenseFile = "license.apex";
 
         private static string LicensePath =>
             Path.Combine(
@@ -77,10 +77,55 @@ namespace Apex.Licensing
             {
                 return (false, new ValidationResult
                 {
-                    IsValid      = false,
-                    Status       = LicenseStatus.Invalid,
+                    IsValid = false,
+                    Status = LicenseStatus.Invalid,
                     ErrorMessage = $"فشل تثبيت الترخيص: {ex.Message}"
                 });
+            }
+        }
+
+        /// <summary>
+        /// Installs a license obtained over the network (online activation). The signed
+        /// license is verified against the embedded public key and bound to this device
+        /// before being written to the canonical location. Returns (true, result) on
+        /// success, (false, result) with an Arabic error otherwise.
+        /// </summary>
+        public static (bool Success, ValidationResult Result) InstallSignedLicense(SignedLicense signed)
+        {
+            try
+            {
+                var (isValid, payload) = LicenseCrypto.VerifyLicense(signed);
+                if (!isValid || payload == null)
+                    return (false, Error(LicenseStatus.Invalid, "التوقيع الرقمي للترخيص غير صالح."));
+
+                var now = DateTime.UtcNow;
+                if (now > payload.ExpiresUtc)
+                    return (false, Error(LicenseStatus.Expired,
+                        $"انتهت صلاحية الترخيص في {payload.ExpiresUtc:yyyy-MM-dd}."));
+
+                var currentDevice = MachineIdentity.GetDeviceId();
+                if (!string.IsNullOrEmpty(payload.DeviceId) && payload.DeviceId != currentDevice)
+                    return (false, Error(LicenseStatus.HardwareMismatch,
+                        "هذا الترخيص مُصدَّر لجهاز آخر."));
+
+                var dir = Path.GetDirectoryName(LicensePath)!;
+                Directory.CreateDirectory(dir);
+                var json = JsonSerializer.Serialize(signed, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(LicensePath, json, Encoding.UTF8);
+
+                int days = (int)(payload.ExpiresUtc - now).TotalDays;
+                return (true, new ValidationResult
+                {
+                    IsValid = true,
+                    Status = LicenseStatus.Valid,
+                    Type = payload.Type,
+                    DaysRemaining = days,
+                    ExpiresUtc = payload.ExpiresUtc
+                });
+            }
+            catch (Exception ex)
+            {
+                return (false, Error(LicenseStatus.Corrupted, $"فشل تثبيت الترخيص: {ex.Message}"));
             }
         }
 
@@ -108,7 +153,7 @@ namespace Apex.Licensing
         {
             try
             {
-                var json         = File.ReadAllText(path, Encoding.UTF8);
+                var json = File.ReadAllText(path, Encoding.UTF8);
                 var signedLicense = JsonSerializer.Deserialize<SignedLicense>(json);
 
                 if (signedLicense == null)
@@ -135,11 +180,11 @@ namespace Apex.Licensing
                 int days = (int)(payload.ExpiresUtc - now).TotalDays;
                 return new ValidationResult
                 {
-                    IsValid       = true,
-                    Status        = LicenseStatus.Valid,
-                    Type          = payload.Type,
+                    IsValid = true,
+                    Status = LicenseStatus.Valid,
+                    Type = payload.Type,
                     DaysRemaining = days,
-                    ExpiresUtc    = payload.ExpiresUtc
+                    ExpiresUtc = payload.ExpiresUtc
                 };
             }
             catch (Exception ex)

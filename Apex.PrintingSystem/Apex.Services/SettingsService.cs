@@ -1,7 +1,8 @@
 using Apex.Core.Interfaces;
 using Apex.Core.Models;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Apex.Services
 {
@@ -12,6 +13,13 @@ namespace Apex.Services
         public SettingsService(IRepository<SystemSettings> settingsRepository)
         {
             _settingsRepository = settingsRepository;
+        }
+
+        /// <summary>Load ALL settings in a single DB round-trip.</summary>
+        public async Task<Dictionary<string, string>> GetAllSettingsAsync()
+        {
+            var all = await _settingsRepository.GetAllAsync();
+            return all.ToDictionary(s => s.Key, s => s.Value);
         }
 
         public async Task<string> GetValueAsync(string key, string defaultValue = "")
@@ -25,8 +33,7 @@ namespace Apex.Services
             var setting = (await _settingsRepository.FindAsync(s => s.Key == key)).FirstOrDefault();
             if (setting == null)
             {
-                setting = new SystemSettings { Key = key, Value = value };
-                await _settingsRepository.AddAsync(setting);
+                await _settingsRepository.AddAsync(new SystemSettings { Key = key, Value = value });
             }
             else
             {
@@ -35,12 +42,5 @@ namespace Apex.Services
             }
         }
 
-        // Restored method
-        public async Task SaveSettingAsync(int key, string value)
-        {
-            // Assuming key is ID or we convert int key to string key
-            // For now, let's treat int key as a string key
-            await SetValueAsync(key.ToString(), value);
-        }
     }
 }

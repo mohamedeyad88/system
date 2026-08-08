@@ -26,8 +26,8 @@ namespace Apex.Services.Printing.RIP
         /// Analyze a single page from a PDF file.
         /// </summary>
         public async Task<PageContentProfile> AnalyzePageAsync(
-            string pdfPath, 
-            int pageIndex, 
+            string pdfPath,
+            int pageIndex,
             CancellationToken cancellationToken = default)
         {
             return await Task.Run(() =>
@@ -40,7 +40,7 @@ namespace Apex.Services.Printing.RIP
                 try
                 {
                     using var pdfDocument = PdfDocument.Load(pdfPath);
-                    
+
                     if (pageIndex < 0 || pageIndex >= pdfDocument.PageCount)
                         throw new ArgumentOutOfRangeException(nameof(pageIndex));
 
@@ -69,7 +69,7 @@ namespace Apex.Services.Printing.RIP
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"[ContentAnalysis] Error analyzing page {pageIndex}: {ex.Message}");
-                    
+
                     // Fallback: assume mixed content requiring rasterization
                     profile.HasImages = true;
                     profile.HasText = true;
@@ -77,7 +77,7 @@ namespace Apex.Services.Printing.RIP
                     profile.RequiresRasterization = true;
                     profile.MinImageResolution = 300;
                     profile.ComplexityScore = 50;
-                    
+
                     return profile;
                 }
             }, cancellationToken);
@@ -163,7 +163,7 @@ namespace Apex.Services.Printing.RIP
             {
                 // Render at low DPI to analyze content
                 using var lowResRender = pdfDocument.Render(pageIndex, 72, 72, PdfRenderFlags.None);
-                
+
                 // Analyze the rendered bitmap for content characteristics
                 AnalyzeRenderedContent(lowResRender, profile);
 
@@ -171,7 +171,7 @@ namespace Apex.Services.Printing.RIP
                 // (Larger pages with more objects suggest more complex content)
                 var pageSize = pdfDocument.PageSizes[pageIndex];
                 var pageArea = pageSize.Width * pageSize.Height;
-                
+
                 // Heuristic: If page is very large, likely contains images
                 if (pageArea > 1000000) // Large page area
                 {
@@ -181,7 +181,7 @@ namespace Apex.Services.Printing.RIP
                 // Default assumptions (conservative)
                 // We assume text is present unless proven otherwise
                 profile.HasText = true; // Most PDFs contain text
-                
+
                 // Image content analysis is done in AnalyzeRenderedContent
                 // No need to call separately
             }
@@ -213,66 +213,66 @@ namespace Apex.Services.Printing.RIP
                     // Analyze bitmap for content characteristics
                     int width = bitmap.Width;
                     int height = bitmap.Height;
-                
-                // Sample pixels to detect content type
-                int sampleCount = Math.Min(1000, width * height / 100);
-                int textLikePixels = 0;
-                int imageLikePixels = 0;
-                var colors = new HashSet<System.Drawing.Color>();
 
-                var random = new Random();
-                for (int i = 0; i < sampleCount; i++)
-                {
-                    int x = random.Next(width);
-                    int y = random.Next(height);
-                    var pixel = bitmap.GetPixel(x, y);
-                    colors.Add(pixel);
+                    // Sample pixels to detect content type
+                    int sampleCount = Math.Min(1000, width * height / 100);
+                    int textLikePixels = 0;
+                    int imageLikePixels = 0;
+                    var colors = new HashSet<System.Drawing.Color>();
 
-                    // Heuristic: Text-like pixels are usually black/white or very few colors
-                    // Image-like pixels have more color variation
-                    if (pixel.R == pixel.G && pixel.G == pixel.B)
+                    var random = new Random();
+                    for (int i = 0; i < sampleCount; i++)
                     {
-                        textLikePixels++;
+                        int x = random.Next(width);
+                        int y = random.Next(height);
+                        var pixel = bitmap.GetPixel(x, y);
+                        colors.Add(pixel);
+
+                        // Heuristic: Text-like pixels are usually black/white or very few colors
+                        // Image-like pixels have more color variation
+                        if (pixel.R == pixel.G && pixel.G == pixel.B)
+                        {
+                            textLikePixels++;
+                        }
+                        else
+                        {
+                            imageLikePixels++;
+                        }
+                    }
+
+                    // Determine content type based on analysis
+                    double textRatio = (double)textLikePixels / sampleCount;
+                    double colorVariation = colors.Count;
+
+                    if (textRatio > 0.7 && colorVariation < 10)
+                    {
+                        profile.HasText = true;
+                        profile.TextBlockCount = EstimateTextBlocks(bitmap);
+                    }
+                    else if (colorVariation > 50)
+                    {
+                        profile.HasImages = true;
+                        profile.ImageCount = EstimateImageCount(bitmap);
+                        profile.MinImageResolution = 300; // Default assumption
+                        profile.MaxImageResolution = 600;
+                        profile.AverageImageResolution = 400;
                     }
                     else
                     {
-                        imageLikePixels++;
+                        profile.IsMixedContent = true;
+                        profile.HasText = true;
+                        profile.HasImages = true;
                     }
-                }
 
-                // Determine content type based on analysis
-                double textRatio = (double)textLikePixels / sampleCount;
-                double colorVariation = colors.Count;
+                    // Detect vector graphics (heuristic: sharp edges, geometric shapes)
+                    profile.HasVectorGraphics = DetectVectorGraphics(bitmap);
+                    if (profile.HasVectorGraphics)
+                    {
+                        profile.VectorObjectCount = EstimateVectorObjects(bitmap);
+                    }
 
-                if (textRatio > 0.7 && colorVariation < 10)
-                {
-                    profile.HasText = true;
-                    profile.TextBlockCount = EstimateTextBlocks(bitmap);
-                }
-                else if (colorVariation > 50)
-                {
-                    profile.HasImages = true;
-                    profile.ImageCount = EstimateImageCount(bitmap);
-                    profile.MinImageResolution = 300; // Default assumption
-                    profile.MaxImageResolution = 600;
-                    profile.AverageImageResolution = 400;
-                }
-                else
-                {
-                    profile.IsMixedContent = true;
-                    profile.HasText = true;
-                    profile.HasImages = true;
-                }
-
-                // Detect vector graphics (heuristic: sharp edges, geometric shapes)
-                profile.HasVectorGraphics = DetectVectorGraphics(bitmap);
-                if (profile.HasVectorGraphics)
-                {
-                    profile.VectorObjectCount = EstimateVectorObjects(bitmap);
-                }
-
-                // Analyze image content
-                AnalyzeImageContent(bitmap, profile);
+                    // Analyze image content
+                    AnalyzeImageContent(bitmap, profile);
                 }
                 finally
                 {
@@ -297,12 +297,12 @@ namespace Apex.Services.Printing.RIP
             {
                 double widthInches = profile.Dimensions.WidthPoints / 72.0;
                 double heightInches = profile.Dimensions.HeightPoints / 72.0;
-                
+
                 if (widthInches > 0 && heightInches > 0)
                 {
                     double estimatedDpiX = bitmap.Width / widthInches;
                     double estimatedDpiY = bitmap.Height / heightInches;
-                    
+
                     profile.MinImageResolution = Math.Min(estimatedDpiX, estimatedDpiY);
                     profile.MaxImageResolution = Math.Max(estimatedDpiX, estimatedDpiY);
                     profile.AverageImageResolution = (estimatedDpiX + estimatedDpiY) / 2.0;
@@ -316,7 +316,7 @@ namespace Apex.Services.Printing.RIP
         private ColorProfileInfo DetectColorProfile(Image? image)
         {
             var profile = new ColorProfileInfo();
-            
+
             if (image == null)
             {
                 profile.IsColor = false;
@@ -329,7 +329,7 @@ namespace Apex.Services.Printing.RIP
                 // Convert Image to Bitmap for pixel access
                 Bitmap? bitmap = image as Bitmap;
                 bool disposeBitmap = false;
-                
+
                 if (bitmap == null)
                 {
                     bitmap = new Bitmap(image);
@@ -350,26 +350,26 @@ namespace Apex.Services.Printing.RIP
                         int y = random.Next(bitmap.Height);
                         var pixel = bitmap.GetPixel(x, y);
 
-                    if (pixel.R == pixel.G && pixel.G == pixel.B)
-                    {
-                        grayscalePixels++;
+                        if (pixel.R == pixel.G && pixel.G == pixel.B)
+                        {
+                            grayscalePixels++;
+                        }
+                        else
+                        {
+                            colorPixels++;
+                        }
                     }
-                    else
-                    {
-                        colorPixels++;
-                    }
-                }
 
-                double colorRatio = (double)colorPixels / sampleSize;
-                profile.IsColor = colorRatio > 0.1;
-                profile.IsGrayscale = grayscalePixels > colorPixels;
-                profile.IsMonochrome = colorPixels == 0;
-                profile.ColorSpace = profile.IsColor ? "RGB" : "Grayscale";
-            }
-            catch
-            {
-                profile.IsColor = true; // Conservative default
-                profile.ColorSpace = "RGB";
+                    double colorRatio = (double)colorPixels / sampleSize;
+                    profile.IsColor = colorRatio > 0.1;
+                    profile.IsGrayscale = grayscalePixels > colorPixels;
+                    profile.IsMonochrome = colorPixels == 0;
+                    profile.ColorSpace = profile.IsColor ? "RGB" : "Grayscale";
+                }
+                catch
+                {
+                    profile.IsColor = true; // Conservative default
+                    profile.ColorSpace = "RGB";
                 }
                 finally
                 {
@@ -506,14 +506,14 @@ namespace Apex.Services.Printing.RIP
                 TextBlockCount = (int)profiles.Average(p => p.TextBlockCount),
                 VectorObjectCount = (int)profiles.Average(p => p.VectorObjectCount),
                 ImageCount = (int)profiles.Average(p => p.ImageCount),
-                MinImageResolution = profiles.Where(p => p.HasImages).Any() 
-                    ? profiles.Where(p => p.HasImages).Min(p => p.MinImageResolution) 
+                MinImageResolution = profiles.Where(p => p.HasImages).Any()
+                    ? profiles.Where(p => p.HasImages).Min(p => p.MinImageResolution)
                     : 0,
-                MaxImageResolution = profiles.Where(p => p.HasImages).Any() 
-                    ? profiles.Where(p => p.HasImages).Max(p => p.MaxImageResolution) 
+                MaxImageResolution = profiles.Where(p => p.HasImages).Any()
+                    ? profiles.Where(p => p.HasImages).Max(p => p.MaxImageResolution)
                     : 0,
-                AverageImageResolution = profiles.Where(p => p.HasImages).Any() 
-                    ? profiles.Where(p => p.HasImages).Average(p => p.AverageImageResolution) 
+                AverageImageResolution = profiles.Where(p => p.HasImages).Any()
+                    ? profiles.Where(p => p.HasImages).Average(p => p.AverageImageResolution)
                     : 0,
                 ComplexityScore = (int)profiles.Average(p => p.ComplexityScore),
                 RequiresRasterization = profiles.Any(p => p.RequiresRasterization)

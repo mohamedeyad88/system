@@ -20,17 +20,17 @@ namespace Apex.NumberedBooksEngine.Core
         public void AddPage(SKImage pageImage)
         {
             var page = _document.AddPage();
-            
+
             // Set page size to match image
             page.Width = pageImage.Width * 72 / 96.0; // Convert px (96dpi) to points (72dpi) approx
             page.Height = pageImage.Height * 72 / 96.0;
 
             using var gfx = XGraphics.FromPdfPage(page);
-            
+
             // Convert SKImage to byte array for PdfSharp
             using var data = pageImage.Encode(SKEncodedImageFormat.Png, 100);
             using var ms = new MemoryStream(data.ToArray());
-            
+
             var xImage = XImage.FromStream(() => ms);
             gfx.DrawImage(xImage, 0, 0, page.Width, page.Height);
         }

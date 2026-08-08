@@ -7,19 +7,19 @@ namespace Apex.Services.SmartVariables
     public interface IPreflightService
     {
         PreflightReport Run(
-            SmartDataSource       source,
+            SmartDataSource source,
             List<VariableMapping> mappings,
-            List<ImageAsset>      imageLibrary,
-            ExportSettings        exportSettings);
+            List<ImageAsset> imageLibrary,
+            ExportSettings exportSettings);
     }
 
     public class PreflightService : IPreflightService
     {
         public PreflightReport Run(
-            SmartDataSource       source,
+            SmartDataSource source,
             List<VariableMapping> mappings,
-            List<ImageAsset>      imageLibrary,
-            ExportSettings        exportSettings)
+            List<ImageAsset> imageLibrary,
+            ExportSettings exportSettings)
         {
             var report = new PreflightReport();
 
@@ -28,9 +28,9 @@ namespace Apex.Services.SmartVariables
             {
                 report.Issues.Add(new ValidationIssue
                 {
-                    Level    = IssueLevel.Error,
+                    Level = IssueLevel.Error,
                     Category = IssueCategory.NoData,
-                    Message  = "لا توجد بيانات. الصق جدول البيانات من Excel أو Google Sheets أولاً.",
+                    Message = "لا توجد بيانات. الصق جدول البيانات من Excel أو Google Sheets أولاً.",
                 });
                 return report; // nothing else to check
             }
@@ -40,10 +40,10 @@ namespace Apex.Services.SmartVariables
             {
                 report.Issues.Add(new ValidationIssue
                 {
-                    Level      = IssueLevel.Error,
-                    Category   = IssueCategory.MissingRequiredField,
+                    Level = IssueLevel.Error,
+                    Category = IssueCategory.MissingRequiredField,
                     FieldLabel = mapping.FieldLabel,
-                    Message    = $"الحقل المطلوب '{mapping.FieldLabel}' غير مربوط بأي عمود.",
+                    Message = $"الحقل المطلوب '{mapping.FieldLabel}' غير مربوط بأي عمود.",
                     Suggestion = "اذهب إلى تبويب ربط المتغيرات واربط هذا الحقل بعمود البيانات.",
                 });
             }
@@ -53,24 +53,36 @@ namespace Apex.Services.SmartVariables
             {
                 report.Issues.Add(new ValidationIssue
                 {
-                    Level      = IssueLevel.Info,
-                    Category   = IssueCategory.UnmappedField,
+                    Level = IssueLevel.Info,
+                    Category = IssueCategory.UnmappedField,
                     FieldLabel = mapping.FieldLabel,
-                    Message    = $"الحقل الاختياري '{mapping.FieldLabel}' غير مربوط — سيظهر فارغاً أو بالقيمة الافتراضية.",
+                    Message = $"الحقل الاختياري '{mapping.FieldLabel}' غير مربوط — سيظهر فارغاً أو بالقيمة الافتراضية.",
                 });
             }
 
             // ── 4. Per-row issues ──────────────────────────────────────────────
+            //
+            // Image-required check:
+            //   • Error   — there is at least one REQUIRED image mapping that is linked
+            //               to a data column, meaning a real image was expected.
+            //   • Warning — the template has image fields but none is marked Required,
+            //               so a missing image shows as a placeholder without blocking export.
+            bool hasRequiredImageMapping = mappings.Any(
+                m => m.FieldType == SmartFieldType.ImageVariable && m.IsRequired && m.IsMapped);
+
+            bool hasAnyImageMapping = mappings.Any(
+                m => m.FieldType == SmartFieldType.ImageVariable && m.IsMapped);
+
             foreach (var row in source.Rows)
             {
                 foreach (string err in row.Errors)
                 {
                     report.Issues.Add(new ValidationIssue
                     {
-                        Level    = IssueLevel.Error,
+                        Level = IssueLevel.Error,
                         Category = IssueCategory.MissingRequiredField,
                         RowIndex = row.RowIndex,
-                        Message  = err,
+                        Message = err,
                     });
                 }
 
@@ -79,23 +91,27 @@ namespace Apex.Services.SmartVariables
                     var category = ClassifyWarning(warn);
                     report.Issues.Add(new ValidationIssue
                     {
-                        Level    = IssueLevel.Warning,
+                        Level = IssueLevel.Warning,
                         Category = category,
                         RowIndex = row.RowIndex,
-                        Message  = warn,
+                        Message = warn,
                     });
                 }
 
-                // Missing image → error
-                if (row.ImageStatus == ImageStatus.Missing)
+                // Missing image:
+                //   → Error  if image field is Required (marked by user in slot properties)
+                //   → Warning if image field is optional or no image mapping exists
+                if (row.ImageStatus == ImageStatus.Missing && hasAnyImageMapping)
                 {
                     report.Issues.Add(new ValidationIssue
                     {
-                        Level    = IssueLevel.Error,
+                        Level = hasRequiredImageMapping ? IssueLevel.Error : IssueLevel.Warning,
                         Category = IssueCategory.MissingImage,
                         RowIndex = row.RowIndex,
-                        Message  = $"السجل {row.RowIndex + 1}: الصورة مطلوبة ولم يتم العثور عليها.",
-                        Suggestion = "تحقق من اسم الملف أو اضبط مجلد الصور.",
+                        Message = hasRequiredImageMapping
+                            ? $"السجل {row.RowIndex + 1}: الصورة مطلوبة ولم يتم العثور عليها."
+                            : $"السجل {row.RowIndex + 1}: الصورة غير موجودة — سيُستخدم placeholder في التصدير.",
+                        Suggestion = "تحقق من اسم الملف أو اختر مجلد الصور.",
                     });
                 }
 
@@ -103,10 +119,10 @@ namespace Apex.Services.SmartVariables
                 {
                     report.Issues.Add(new ValidationIssue
                     {
-                        Level    = IssueLevel.Warning,
+                        Level = IssueLevel.Warning,
                         Category = IssueCategory.MissingImage,
                         RowIndex = row.RowIndex,
-                        Message  = $"السجل {row.RowIndex + 1}: تم العثور على عدة صور بنفس الاسم، تم استخدام أول تطابق.",
+                        Message = $"السجل {row.RowIndex + 1}: تم العثور على عدة صور بنفس الاسم، تم استخدام أول تطابق.",
                     });
                 }
             }
@@ -119,9 +135,9 @@ namespace Apex.Services.SmartVariables
             {
                 report.Issues.Add(new ValidationIssue
                 {
-                    Level    = IssueLevel.Error,
+                    Level = IssueLevel.Error,
                     Category = IssueCategory.General,
-                    Message  = "لم يتم تحديد مجلد الحفظ.",
+                    Message = "لم يتم تحديد مجلد الحفظ.",
                     Suggestion = "اختر مجلداً لحفظ الملفات في تبويب التصدير.",
                 });
             }
@@ -132,9 +148,9 @@ namespace Apex.Services.SmartVariables
             {
                 report.Issues.Add(new ValidationIssue
                 {
-                    Level    = IssueLevel.Error,
+                    Level = IssueLevel.Error,
                     Category = IssueCategory.General,
-                    Message  = "لم يتم اختيار طابعة.",
+                    Message = "لم يتم اختيار طابعة.",
                     Suggestion = "اختر طابعة من قائمة الطابعات المتاحة.",
                 });
             }
@@ -144,9 +160,9 @@ namespace Apex.Services.SmartVariables
             {
                 report.Issues.Add(new ValidationIssue
                 {
-                    Level    = IssueLevel.Warning,
+                    Level = IssueLevel.Warning,
                     Category = IssueCategory.ImageQuality,
-                    Message  = $"دقة التصدير منخفضة جداً ({exportSettings.DpiResolution} DPI). يُنصح بـ 150 DPI كحد أدنى.",
+                    Message = $"دقة التصدير منخفضة جداً ({exportSettings.DpiResolution} DPI). يُنصح بـ 150 DPI كحد أدنى.",
                 });
             }
 
@@ -158,9 +174,9 @@ namespace Apex.Services.SmartVariables
                 {
                     report.Issues.Add(new ValidationIssue
                     {
-                        Level    = IssueLevel.Info,
+                        Level = IssueLevel.Info,
                         Category = IssueCategory.UnusedImage,
-                        Message  = $"الصورة '{img.FileName}' موجودة في المكتبة لكنها غير مستخدمة.",
+                        Message = $"الصورة '{img.FileName}' موجودة في المكتبة لكنها غير مستخدمة.",
                     });
                 }
             }
@@ -168,9 +184,9 @@ namespace Apex.Services.SmartVariables
             {
                 report.Issues.Add(new ValidationIssue
                 {
-                    Level    = IssueLevel.Info,
+                    Level = IssueLevel.Info,
                     Category = IssueCategory.UnusedImage,
-                    Message  = $"يوجد {unusedImages.Count} صورة في المكتبة غير مستخدمة.",
+                    Message = $"يوجد {unusedImages.Count} صورة في المكتبة غير مستخدمة.",
                 });
             }
 

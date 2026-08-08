@@ -11,31 +11,31 @@ namespace Apex.UI.Converters
         {
             try
             {
-                if (values == null || values.Length < 2) 
+                if (values == null || values.Length < 2)
                     return 0.0;
-                
+
                 if (values[0] == DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue)
                     return 0.0;
-                
+
                 double normalized = 0;
                 double totalSize = 0;
-                
+
                 // Handle different numeric types for normalized value
                 if (values[0] is float f) normalized = f;
                 else if (values[0] is double d) normalized = d;
                 else if (values[0] is int i) normalized = i;
                 else return 0.0;
-                
+
                 // Handle totalSize
                 if (values[1] is double ts) totalSize = ts;
                 else if (values[1] is float fs) totalSize = fs;
                 else if (values[1] is int its) totalSize = its;
                 else return 0.0;
-                
+
                 // Clamp to prevent negative or excessively large values
                 var result = normalized * totalSize;
                 var clamped = Math.Max(0, Math.Min(result, totalSize));
-                
+
                 return clamped;
             }
             catch

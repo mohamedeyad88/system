@@ -10,7 +10,7 @@ namespace Apex.Core.Interfaces
         Task<IEnumerable<Printer>> GetAllPrintersAsync();
         Task AddPrinterAsync(Printer printer);
         Task CheckPrintersStatusAsync();
-        
+
         // Restored methods
         Task<bool> PrintFileAsync(string printerName, string filePath, int copies);
         Task<bool> PrintFileAsync(string printerName, string filePath, PrintJob jobWithSettings);

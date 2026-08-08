@@ -11,6 +11,15 @@ using Xunit;
 namespace Apex.NumberedBooksEngine.Tests.Numbering
 {
     /// <summary>
+    /// Test stub: always returns OK so unit tests don't depend on real WMI printer trays.
+    /// </summary>
+    internal sealed class AlwaysOkTrayVerifier : ITrayVerificationService
+    {
+        public TrayVerificationResult Verify(string printerName, Dictionary<int, PaperSourceKind> trayMapping)
+            => TrayVerificationResult.Ok();
+    }
+
+    /// <summary>
     /// Unit tests for CycleOrchestrator.
     /// Tests cycle creation, dependency assignment, batch preparation, and tray verification.
     /// </summary>
@@ -18,14 +27,14 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
     {
         private readonly JobDependencyManager _dependencyManager;
         private readonly SequencedJobQueue _queue;
-        private readonly TrayVerificationService _trayVerifier;
+        private readonly ITrayVerificationService _trayVerifier;
         private readonly CycleOrchestrator _orchestrator;
 
         public CycleOrchestratorTests()
         {
             _dependencyManager = new JobDependencyManager();
             _queue = new SequencedJobQueue(_dependencyManager);
-            _trayVerifier = new TrayVerificationService();
+            _trayVerifier = new AlwaysOkTrayVerifier();   // Stub — bypasses WMI in unit tests
             _orchestrator = new CycleOrchestrator(_dependencyManager, _queue, _trayVerifier, batchSize: 5);
         }
 
@@ -211,7 +220,7 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
             // Assert
             var allJobs = _queue.GetAllJobs();
             Assert.Equal(3, allJobs.Count);
-            Assert.All(cycles, cycle => 
+            Assert.All(cycles, cycle =>
                 Assert.Contains(allJobs, job => job.JobId == cycle.JobId));
         }
 

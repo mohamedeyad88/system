@@ -97,12 +97,12 @@ namespace Apex.Services.Numbering
             while (true)
             {
                 ct.ThrowIfCancellationRequested();
-                
+
                 // Check if paused
                 if (_queue.IsPaused)
                 {
                     // Save state on pause
-                    await SaveStateAsync(printerName, templatePath, slots, startNumber, totalNumbers, 
+                    await SaveStateAsync(printerName, templatePath, slots, startNumber, totalNumbers,
                         copiesPerPage, trayMapping, dpi, lastError);
                     await Task.Delay(100, ct);
                     continue;
@@ -135,7 +135,7 @@ namespace Apex.Services.Numbering
                     result.Errors.Add($"Cycle {job.CycleNumber} cancelled.");
                     lastError = $"Cycle {job.CycleNumber} cancelled.";
                     // Save state on cancellation
-                    await SaveStateAsync(printerName, templatePath, slots, startNumber, totalNumbers, 
+                    await SaveStateAsync(printerName, templatePath, slots, startNumber, totalNumbers,
                         copiesPerPage, trayMapping, dpi, lastError);
                     throw;
                 }
@@ -146,7 +146,7 @@ namespace Apex.Services.Numbering
                     result.Failed++;
                     lastError = ex.Message;
                     // Save state on error
-                    await SaveStateAsync(printerName, templatePath, slots, startNumber, totalNumbers, 
+                    await SaveStateAsync(printerName, templatePath, slots, startNumber, totalNumbers,
                         copiesPerPage, trayMapping, dpi, lastError);
                     // stop on failure to let UI decide (Retry/Skip)
                     break;
@@ -216,8 +216,8 @@ namespace Apex.Services.Numbering
                                 3 => Apex.NumberedBooksEngine.Models.CopyType.Copy3,
                                 _ => Apex.NumberedBooksEngine.Models.CopyType.Original
                             },
-                            Tray = state.TrayMapping.TryGetValue(copyIndex, out var trayKind) 
-                                ? trayKind 
+                            Tray = state.TrayMapping.TryGetValue(copyIndex, out var trayKind)
+                                ? trayKind
                                 : System.Drawing.Printing.PaperSourceKind.Upper,
                             PageIndex = copyIndex,
                             Slots = new List<Apex.NumberedBooksEngine.Models.SlotSpec> { slot }
@@ -227,7 +227,7 @@ namespace Apex.Services.Numbering
 
                 cycles.Add(cycle);
                 _dependencyManager.AddJob(cycle);
-                
+
                 // Re-enqueue cycles that are not completed
                 if (!cycle.Status.IsTerminal())
                 {

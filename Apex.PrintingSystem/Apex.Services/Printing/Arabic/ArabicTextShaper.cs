@@ -21,10 +21,10 @@ namespace Apex.Services.Printing.Arabic
     /// </summary>
     public class ShapedGlyph
     {
-        public char   OriginalChar { get; set; }
-        public char   ShapedChar   { get; set; }  // The contextual Unicode presentation form
-        public string GlyphForm    { get; set; } = ""; // "Isolated","Initial","Medial","Final"
-        public bool   IsArabic     { get; set; }
+        public char OriginalChar { get; set; }
+        public char ShapedChar { get; set; }  // The contextual Unicode presentation form
+        public string GlyphForm { get; set; } = ""; // "Isolated","Initial","Medial","Final"
+        public bool IsArabic { get; set; }
     }
 
     /// <summary>
@@ -282,9 +282,9 @@ namespace Apex.Services.Printing.Arabic
                     result.Add(new ShapedGlyph
                     {
                         OriginalChar = c,
-                        ShapedChar   = c,
-                        GlyphForm    = "",
-                        IsArabic     = false
+                        ShapedChar = c,
+                        GlyphForm = "",
+                        IsArabic = false
                     });
                     continue;
                 }
@@ -295,9 +295,9 @@ namespace Apex.Services.Printing.Arabic
                     result.Add(new ShapedGlyph
                     {
                         OriginalChar = c,
-                        ShapedChar   = c,
-                        GlyphForm    = "Diacritic",
-                        IsArabic     = true
+                        ShapedChar = c,
+                        GlyphForm = "Diacritic",
+                        IsArabic = true
                     });
                     continue;
                 }
@@ -315,14 +315,14 @@ namespace Apex.Services.Printing.Arabic
                         char alef = text[nextIdx];
                         var (iso, fin) = s_lamAlef[alef];
                         char ligature = canConnectRight ? fin : iso;
-                        string form   = canConnectRight ? "Final" : "Isolated";
+                        string form = canConnectRight ? "Final" : "Isolated";
 
                         result.Add(new ShapedGlyph
                         {
                             OriginalChar = c,
-                            ShapedChar   = ligature,
-                            GlyphForm    = form,
-                            IsArabic     = true
+                            ShapedChar = ligature,
+                            GlyphForm = form,
+                            IsArabic = true
                         });
                         // Mark intervening diacritics as pass-through then skip alef
                         for (int k = i + 1; k < nextIdx; k++)
@@ -331,9 +331,9 @@ namespace Apex.Services.Printing.Arabic
                             result.Add(new ShapedGlyph
                             {
                                 OriginalChar = text[k],
-                                ShapedChar   = text[k],
-                                GlyphForm    = "Diacritic",
-                                IsArabic     = true
+                                ShapedChar = text[k],
+                                GlyphForm = "Diacritic",
+                                IsArabic = true
                             });
                         }
                         consumed[nextIdx] = true;
@@ -351,9 +351,9 @@ namespace Apex.Services.Printing.Arabic
                 result.Add(new ShapedGlyph
                 {
                     OriginalChar = c,
-                    ShapedChar   = shaped,
-                    GlyphForm    = formName,
-                    IsArabic     = true
+                    ShapedChar = shaped,
+                    GlyphForm = formName,
+                    IsArabic = true
                 });
             }
 
@@ -466,7 +466,7 @@ namespace Apex.Services.Printing.Arabic
             }
 
             // DualJoining (or LeftJoining)
-            if (connectRight && connectLeft)  return "Medial";
+            if (connectRight && connectLeft) return "Medial";
             if (!connectRight && connectLeft) return "Initial";
             if (connectRight && !connectLeft) return "Final";
             return "Isolated";
@@ -479,10 +479,10 @@ namespace Apex.Services.Printing.Arabic
 
             return form switch
             {
-                "Initial"  => forms[1],
-                "Medial"   => forms[2],
-                "Final"    => forms[3],
-                _          => forms[0]  // Isolated (also used as fallback)
+                "Initial" => forms[1],
+                "Medial" => forms[2],
+                "Final" => forms[3],
+                _ => forms[0]  // Isolated (also used as fallback)
             };
         }
     }

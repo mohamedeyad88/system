@@ -21,7 +21,7 @@ namespace Apex.NumberedBooksEngine.UI
         public void SetPages(List<SKImage> pages)
         {
             var bitmapSources = new List<BitmapSource>();
-            
+
             foreach (var page in pages)
             {
                 bitmapSources.Add(SKImageExtensions.ToBitmapSource(page));

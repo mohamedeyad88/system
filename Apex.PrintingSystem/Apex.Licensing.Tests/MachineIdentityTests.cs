@@ -52,7 +52,7 @@ namespace Apex.Licensing.Tests
         public void GetDeviceInfo_DeviceIdMatchesGetDeviceId()
         {
             var info = MachineIdentity.GetDeviceInfo();
-            var raw  = MachineIdentity.GetDeviceId();
+            var raw = MachineIdentity.GetDeviceId();
 
             Assert.Equal(raw, info.DeviceId);
         }
@@ -90,7 +90,7 @@ namespace Apex.Licensing.Tests
             var a = MachineIdentity.GetDeviceInfo();
             var b = MachineIdentity.GetDeviceInfo();
 
-            Assert.Equal(a.DeviceId,  b.DeviceId);
+            Assert.Equal(a.DeviceId, b.DeviceId);
             Assert.Equal(a.DisplayId, b.DisplayId);
         }
     }

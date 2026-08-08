@@ -13,15 +13,59 @@ namespace Apex.UI
     {
         private IServiceProvider? _serviceProvider;
 
+        // Held for the app lifetime — releases automatically on process exit.
+        private static System.Threading.Mutex? _singleInstanceMutex;
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        /// <summary>
+        /// Enforces one running copy. Two instances share the same SQLite database
+        /// and state files, which risks corruption — so a second launch activates
+        /// the existing window and exits.
+        /// </summary>
+        private bool EnsureSingleInstance()
+        {
+            _singleInstanceMutex = new System.Threading.Mutex(
+                initiallyOwned: true, @"Local\ApexPrintOS_SingleInstance", out bool createdNew);
+            if (createdNew) return true;
+
+            // Bring the existing instance's window to the front, then bail out.
+            try
+            {
+                var current = System.Diagnostics.Process.GetCurrentProcess();
+                foreach (var p in System.Diagnostics.Process.GetProcessesByName(current.ProcessName))
+                {
+                    if (p.Id != current.Id && p.MainWindowHandle != IntPtr.Zero)
+                    {
+                        ShowWindow(p.MainWindowHandle, 9);   // SW_RESTORE
+                        SetForegroundWindow(p.MainWindowHandle);
+                        break;
+                    }
+                }
+            }
+            catch { /* best-effort activation */ }
+            return false;
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            // ── Prevent WPF from shutting down when LoginWindow closes ────────
-            // Default OnLastWindowClose would kill the app between ShowDialog()
-            // returning and mainWindow.Show() being called.
-            ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            // Route service-layer localization through the active language dictionary.
+            // TryFindResource is UI-thread-affine, so the service layer (which may call
+            // from background threads) is marshalled onto the Dispatcher via L().
+            Apex.Core.Localization.AppLocalizer.Resolver = ViewModels.ViewModelBase.L;
 
+            if (!EnsureSingleInstance())
+            {
+                Shutdown();
+                return;
+            }
+
+            ShutdownMode = ShutdownMode.OnLastWindowClose;
             InstallGlobalExceptionHandlers();
 
             try
@@ -30,7 +74,7 @@ namespace Apex.UI
                 var licenseResult = LicenseManager.Validate();
                 if (!licenseResult.IsValid)
                 {
-                    var activationVm  = new ActivationViewModel { ValidationResult = licenseResult };
+                    var activationVm = new ActivationViewModel { ValidationResult = licenseResult };
                     var activationWin = new ActivationView(activationVm);
                     activationWin.ShowDialog();
                     Shutdown();
@@ -60,21 +104,10 @@ namespace Apex.UI
                     dbInitializer.InitializeAsync().GetAwaiter().GetResult();
                 }
 
-                // ── Login Gate ────────────────────────────────────────────────
-                var loginWindow = new Views.LoginWindow();
-                bool? loginResult = loginWindow.ShowDialog();
-                if (loginResult != true)
-                {
-                    Shutdown();
-                    return;
-                }
-
                 // Create and show main window
                 var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
-                var mainWindow    = _serviceProvider.GetService<MainWindow>() ?? new MainWindow();
+                var mainWindow = _serviceProvider.GetService<MainWindow>() ?? new MainWindow();
                 mainWindow.DataContext = mainViewModel;
-                // Shut down when the main window closes
-                mainWindow.Closed += (_, __) => Shutdown();
                 mainWindow.Show();
 
                 // Start print queue
@@ -84,13 +117,13 @@ namespace Apex.UI
                 }
                 catch { /* queue will start on demand if needed */ }
 
-                // Start scheduled report manager
+                // Start printer monitoring service
                 try
                 {
-                    Apex.Services.Analytics.ScheduledReportManager.Instance.EnsureDefaultSchedules();
-                    Apex.Services.Analytics.ScheduledReportManager.Instance.Start();
+                    var monitoringService = _serviceProvider.GetRequiredService<Apex.Services.PrinterMonitoringService>();
+                    monitoringService.StartAsync(System.Threading.CancellationToken.None).GetAwaiter().GetResult();
                 }
-                catch { /* scheduled reports will be initialized on demand if needed */ }
+                catch { /* monitoring will degrade gracefully if WMI is unavailable */ }
             }
             catch (Exception ex)
             {
@@ -105,7 +138,25 @@ namespace Apex.UI
         private void InstallGlobalExceptionHandlers()
         {
             AppDomain.CurrentDomain.UnhandledException += (_, e) =>
-                WriteCrashLog("fatal_crash.log", "AppDomain.UnhandledException", e.ExceptionObject as Exception);
+            {
+                var ex = e.ExceptionObject as Exception;
+                WriteCrashLog("fatal_crash.log", "AppDomain.UnhandledException", ex);
+
+                try
+                {
+                    var msg = ex is not null
+                        ? $"البرنامج سيُغلق بسبب خطأ غير متوقع:\n\n{ex.GetType().Name}: {ex.Message}\n\nتم حفظ تقرير الخطأ."
+                        : "البرنامج سيُغلق بسبب خطأ غير متوقع.\n\nتم حفظ تقرير الخطأ.";
+
+                    var dispatcher = Current?.Dispatcher;
+                    if (dispatcher is not null && !dispatcher.HasShutdownStarted)
+                        dispatcher.Invoke(() =>
+                            MessageBox.Show(msg, "خطأ فادح", MessageBoxButton.OK, MessageBoxImage.Error));
+                    else
+                        MessageBox.Show(msg, "خطأ فادح", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch { }
+            };
 
             Current.DispatcherUnhandledException += (_, e) =>
             {
@@ -127,7 +178,7 @@ namespace Apex.UI
         {
             try
             {
-                var dir  = Path.Combine(
+                var dir = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ApexPrintingSystem");
                 Directory.CreateDirectory(dir);

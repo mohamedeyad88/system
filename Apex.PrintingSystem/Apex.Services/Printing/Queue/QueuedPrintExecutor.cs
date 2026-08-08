@@ -32,33 +32,33 @@ namespace Apex.Services.Printing.Queue
         private readonly PrinterLockManager _lockManager;
         private readonly ConcurrentDictionary<string, Task> _workerTasks = new();
         private readonly CancellationTokenSource _shutdownTokenSource = new();
-        
+
         // Configuration (tuned for snappy field-trial dispatch)
         private readonly TimeSpan _jobThrottleDelay = TimeSpan.FromMilliseconds(50);  // Delay between jobs (was 500ms — too slow)
         private readonly TimeSpan _retryBackoffBase = TimeSpan.FromSeconds(5);        // Base retry delay
         private readonly int _maxConcurrentPrinters = 10;                              // Max printers processing simultaneously
-        
+
         // Throttling semaphore to prevent network storms
         private readonly SemaphoreSlim _networkThrottle;
-        
+
         private bool _isRunning;
         private bool _disposed;
-        
+
         // Singleton
-        private static readonly Lazy<QueuedPrintExecutor> _instance = 
+        private static readonly Lazy<QueuedPrintExecutor> _instance =
             new(() => new QueuedPrintExecutor());
-        
+
         public static QueuedPrintExecutor Instance => _instance.Value;
-        
+
         private QueuedPrintExecutor()
         {
             _queue = CentralizedPrintQueue.Instance;
             _lockManager = PrinterLockManager.Instance;
             _networkThrottle = new SemaphoreSlim(_maxConcurrentPrinters, _maxConcurrentPrinters);
-            
+
             Debug.WriteLine("[Executor] ✓ Queued Print Executor initialized");
         }
-        
+
         /// <summary>
         /// Starts the executor - begins processing print queues.
         /// </summary>
@@ -69,15 +69,15 @@ namespace Apex.Services.Printing.Queue
                 Debug.WriteLine("[Executor] Already running");
                 return;
             }
-            
+
             _isRunning = true;
-            
+
             // Start master worker that spawns per-printer workers
             Task.Run(() => MasterWorkerAsync(_shutdownTokenSource.Token), _shutdownTokenSource.Token);
-            
+
             Debug.WriteLine("[Executor] ▶️ Executor started - ready to process jobs");
         }
-        
+
         /// <summary>
         /// Stops the executor gracefully.
         /// </summary>
@@ -85,12 +85,12 @@ namespace Apex.Services.Printing.Queue
         {
             if (!_isRunning)
                 return;
-            
+
             Debug.WriteLine("[Executor] ⏸️ Stopping executor...");
-            
+
             _isRunning = false;
             _shutdownTokenSource.Cancel();
-            
+
             // Wait for all workers to complete (with exception handling)
             try
             {
@@ -101,17 +101,17 @@ namespace Apex.Services.Printing.Queue
                 Debug.WriteLine($"[Executor] Worker shutdown errors: {ex.Message}");
                 // Continue with shutdown - don't rethrow
             }
-            
+
             Debug.WriteLine("[Executor] ⏹️ Executor stopped");
         }
-        
+
         /// <summary>
         /// Master worker - monitors queue and spawns per-printer workers.
         /// </summary>
         private async Task MasterWorkerAsync(CancellationToken cancellationToken)
         {
             Debug.WriteLine("[Executor] Master worker started");
-            
+
             while (!cancellationToken.IsCancellationRequested)
             {
                 try
@@ -122,33 +122,33 @@ namespace Apex.Services.Printing.Queue
                         .Select(j => j.PrinterName)
                         .Distinct()
                         .ToList();
-                    
+
                     foreach (var printer in printers)
                     {
                         // Ensure worker exists for this printer
                         if (!_workerTasks.ContainsKey(printer))
                         {
                             var workerTask = Task.Run(
-                                () => PrinterWorkerAsync(printer, cancellationToken), 
+                                () => PrinterWorkerAsync(printer, cancellationToken),
                                 cancellationToken);
-                            
+
                             _workerTasks[printer] = workerTask;
-                            
+
                             Debug.WriteLine($"[Executor] Spawned worker for printer '{printer}'");
                         }
                     }
-                    
+
                     // Clean up completed workers
                     var completed = _workerTasks
                         .Where(kvp => kvp.Value.IsCompleted)
                         .Select(kvp => kvp.Key)
                         .ToList();
-                    
+
                     foreach (var printer in completed)
                     {
                         _workerTasks.TryRemove(printer, out _);
                     }
-                    
+
                     // Sleep before next iteration (reduced for snappier dispatch)
                     await Task.Delay(150, cancellationToken);
                 }
@@ -162,24 +162,24 @@ namespace Apex.Services.Printing.Queue
                     await Task.Delay(5000, cancellationToken);
                 }
             }
-            
+
             Debug.WriteLine("[Executor] Master worker stopped");
         }
-        
+
         /// <summary>
         /// Per-printer worker - processes jobs for a specific printer.
         /// </summary>
         private async Task PrinterWorkerAsync(string printerName, CancellationToken cancellationToken)
         {
             Debug.WriteLine($"[Executor] Worker for '{printerName}' started");
-            
+
             while (!cancellationToken.IsCancellationRequested)
             {
                 try
                 {
                     // Get next job for this printer
                     var job = _queue.GetNextJob(printerName);
-                    
+
                     if (job == null)
                     {
                         // No jobs available - sleep and check again
@@ -205,12 +205,12 @@ namespace Apex.Services.Printing.Queue
 
                     // THROTTLING: Wait for network slot
                     await _networkThrottle.WaitAsync(cancellationToken);
-                    
+
                     try
                     {
                         // Execute the job
                         await ExecuteJobAsync(job, cancellationToken);
-                        
+
                         // THROTTLING: Delay before next job to prevent network storms
                         if (_jobThrottleDelay > TimeSpan.Zero)
                         {
@@ -234,54 +234,54 @@ namespace Apex.Services.Printing.Queue
                     await Task.Delay(5000, cancellationToken);
                 }
             }
-            
+
             Debug.WriteLine($"[Executor] Worker for '{printerName}' stopped");
         }
-        
+
         /// <summary>
         /// Executes a single print job with full lifecycle management.
         /// </summary>
         private async Task ExecuteJobAsync(PrintJob job, CancellationToken cancellationToken)
         {
             Debug.WriteLine($"[Executor] ▶️ Executing job {job.JobId} ({job.JobName}) on '{job.PrinterName}'");
-            
+
             PrinterLockHandle? lockHandle = null;
-            
+
             try
             {
                 // CRITICAL: Acquire printer lock (blocks if printer busy)
                 lockHandle = await _lockManager.AcquireLockAsync(
-                    job.PrinterName, 
-                    job.JobId, 
+                    job.PrinterName,
+                    job.JobId,
                     cancellationToken);
-                
+
                 // Validate file exists
                 if (!File.Exists(job.FilePath))
                 {
                     throw new FileNotFoundException($"File not found: {job.FilePath}");
                 }
-                
+
                 // Update state
                 _queue.UpdateJobState(job.JobId, PrintJobState.Preparing, "Preparing to print...");
-                
+
                 // Get file info
                 var fileInfo = new FileInfo(job.FilePath);
                 job.FileSize = fileInfo.Length;
-                
+
                 // Use VendorAwarePrintGateway for actual printing
                 var gateway = VendorAwarePrintGateway.Instance;
-                
+
                 // Wire up progress events with named handlers for proper cleanup
-                Action<string> statusHandler = (msg) => 
+                Action<string> statusHandler = (msg) =>
                 {
                     _queue.UpdateJobProgress(job.JobId, job.Progress, msg);
                 };
-                
-                Action<int> progressHandler = (progress) => 
+
+                Action<int> progressHandler = (progress) =>
                 {
                     _queue.UpdateJobProgress(job.JobId, progress);
                 };
-                
+
                 // ═══════════════════════════════════════════════════════════════════
                 // CRITICAL: Separate paths for Print Operations vs Quick Print
                 // NO FALLBACK between paths.
@@ -297,7 +297,7 @@ namespace Apex.Services.Printing.Queue
                 Debug.WriteLine($"║ UseRawDocumentMode:  {job.UseRawDocumentMode} ◄◄◄ THIS DECIDES THE PATH");
                 Debug.WriteLine($"╚══════════════════════════════════════════════════════════════════╝");
                 Debug.WriteLine($"");
-                
+
                 if (job.UseRawDocumentMode)
                 {
                     // PRINT OPERATIONS PATH - Document-based, no rendering, no fallback
@@ -305,9 +305,9 @@ namespace Apex.Services.Printing.Queue
                     Debug.WriteLine($"[Executor] ★★★ PRINT OPERATIONS PATH (UseRawDocumentMode=true) ★★★");
                     Debug.WriteLine($"[Executor] Using: DocumentPrintService (NO PdfiumViewer, NO RIP)");
                     Debug.WriteLine($"[Executor] ══════════════════════════════════════");
-                    
+
                     _queue.UpdateJobState(job.JobId, PrintJobState.Sending, "Sending document to printer...");
-                    
+
                     try
                     {
                         var docService = DocumentPrintService.Instance;
@@ -316,7 +316,7 @@ namespace Apex.Services.Printing.Queue
                             job.FilePath,
                             job.Copies,
                             cancellationToken);
-                        
+
                         if (success)
                         {
                             _queue.CompleteJob(job.JobId, true);
@@ -346,14 +346,14 @@ namespace Apex.Services.Printing.Queue
                     Debug.WriteLine($"[Executor] Using: VendorAwarePrintGateway (PdfiumViewer + RIP)");
                     Debug.WriteLine($"[Executor] WARNING: This will render pages and may create large spool files!");
                     Debug.WriteLine($"[Executor] ══════════════════════════════════════");
-                    
+
                     try
                     {
                         gateway.StatusChanged += statusHandler;
                         gateway.ProgressChanged += progressHandler;
-                        
+
                         _queue.UpdateJobState(job.JobId, PrintJobState.Sending, "Sending to printer...");
-                        
+
                         var result = await gateway.PrintAsync(
                             job.PrinterName,
                             job.FilePath,
@@ -361,7 +361,7 @@ namespace Apex.Services.Printing.Queue
                             null,
                             cancellationToken,
                             documentMode: false);  // Always false for Quick Print
-                    
+
                         if (result.Success)
                         {
                             _queue.CompleteJob(job.JobId, true);
@@ -397,7 +397,7 @@ namespace Apex.Services.Printing.Queue
             catch (Exception ex)
             {
                 Debug.WriteLine($"[Executor] ❌ Job {job.JobId} error: {ex.Message}");
-                
+
                 // Check if can retry
                 if (job.CanRetry)
                 {
@@ -416,7 +416,7 @@ namespace Apex.Services.Printing.Queue
                 lockHandle?.Dispose();
             }
         }
-        
+
         /// <summary>
         /// Handles failed job with intelligent retry logic.
         /// </summary>
@@ -426,32 +426,32 @@ namespace Apex.Services.Printing.Queue
             var retryDelay = _retryBackoffBase * Math.Pow(2, job.RetryCount);
             var jitter = TimeSpan.FromMilliseconds(Random.Shared.Next(0, 1000));
             var totalDelay = retryDelay + jitter;
-            
+
             Debug.WriteLine($"[Executor] ↻ Job {job.JobId} will retry in {totalDelay.TotalSeconds:F1}s (attempt {job.RetryCount + 1}/{job.MaxRetries})");
-            
+
             // Mark as retrying
             _queue.UpdateJobState(
-                job.JobId, 
-                PrintJobState.Retrying, 
+                job.JobId,
+                PrintJobState.Retrying,
                 $"Retrying in {totalDelay.TotalSeconds:F0}s... (attempt {job.RetryCount + 1}/{job.MaxRetries})");
-            
+
             // Wait before retry
             await Task.Delay(totalDelay);
-            
+
             // Re-queue for retry
             _queue.RetryJob(job.JobId);
         }
-        
+
         public void Dispose()
         {
             if (_disposed) return;
-            
+
             _shutdownTokenSource.Cancel();
             _shutdownTokenSource.Dispose();
             _networkThrottle.Dispose();
-            
+
             _disposed = true;
-            
+
             Debug.WriteLine("[Executor] Disposed");
         }
     }
