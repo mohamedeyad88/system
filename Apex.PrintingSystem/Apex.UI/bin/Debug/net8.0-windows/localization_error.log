@@ -1,5 +1,0 @@
-[30‏‏/12‏‏/2025 11:17:19 م] Error loading language dictionary Language.ar.xaml: Ambiguous match found for 'CommunityToolkit.Mvvm.ComponentModel.ObservableObject Void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)'.
-   at System.RuntimeType.GetMethodImplCommon(String name, Int32 genericParameterCount, BindingFlags bindingAttr, Binder binder, CallingConventions callConv, Type[] types, ParameterModifier[] modifiers)
-   at System.RuntimeType.GetMethodImpl(String name, BindingFlags bindingAttr, Binder binder, CallingConventions callConv, Type[] types, ParameterModifier[] modifiers)
-   at System.Type.GetMethod(String name, BindingFlags bindingAttr)
-   at Apex.UI.Services.LocalizationService.<>c__DisplayClass13_0.<UpdateResourceDictionary>b__0() in D:\Apex\system\Apex.PrintingSystem\Apex.UI\Services\LocalizationService.cs:line 121

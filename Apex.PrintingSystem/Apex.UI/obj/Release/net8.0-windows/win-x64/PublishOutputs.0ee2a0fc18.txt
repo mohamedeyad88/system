@@ -1,6 +1,0 @@
-D:\Apex\system\Apex.PrintingSystem\Publish\Apex.Services.pdb
-D:\Apex\system\Apex.PrintingSystem\Publish\Apex.Core.pdb
-D:\Apex\system\Apex.PrintingSystem\Publish\Apex.NumberedBooksEngine.UI.pdb
-D:\Apex\system\Apex.PrintingSystem\Publish\Apex.NumberedBooksEngine.pdb
-D:\Apex\system\Apex.PrintingSystem\Publish\Apex.Data.pdb
-D:\Apex\system\Apex.PrintingSystem\Publish\Apex.UI.exe

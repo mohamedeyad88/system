@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\Apex.API.props" />
-</Project>

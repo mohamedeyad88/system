@@ -1,7 +1,0 @@
-D:\Apex\Publish\ApexPrintOS-Trial\Apex.Services.pdb
-D:\Apex\Publish\ApexPrintOS-Trial\Apex.Core.pdb
-D:\Apex\Publish\ApexPrintOS-Trial\Apex.NumberedBooksEngine.UI.pdb
-D:\Apex\Publish\ApexPrintOS-Trial\Apex.NumberedBooksEngine.pdb
-D:\Apex\Publish\ApexPrintOS-Trial\Apex.Licensing.pdb
-D:\Apex\Publish\ApexPrintOS-Trial\Apex.Data.pdb
-D:\Apex\Publish\ApexPrintOS-Trial\Apex.UI.exe

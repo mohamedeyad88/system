@@ -1,7 +1,0 @@
-D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.Tests\bin\Debug\net8.0\CoverletSourceRootsMapping_Apex.NumberedBooksEngine.Tests
-D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.Tests\obj\Debug\net8.0\Apex.NumberedBooksEngine.Tests.csproj.AssemblyReference.cache
-D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.Tests\obj\Debug\net8.0\Apex.NumberedBooksEngine.Tests.GeneratedMSBuildEditorConfig.editorconfig
-D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.Tests\obj\Debug\net8.0\Apex.NumberedBooksEngine.Tests.AssemblyInfoInputs.cache
-D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.Tests\obj\Debug\net8.0\Apex.NumberedBooksEngine.Tests.AssemblyInfo.cs
-D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.Tests\obj\Debug\net8.0\Apex.NumberedBooksEngine.Tests.csproj.CoreCompileInputs.cache
-D:\Apex\system\Apex.PrintingSystem\Apex.NumberedBooksEngine.Tests\obj\Debug\net8.0\Apex.NumberedBooksEngine.Tests.sourcelink.json

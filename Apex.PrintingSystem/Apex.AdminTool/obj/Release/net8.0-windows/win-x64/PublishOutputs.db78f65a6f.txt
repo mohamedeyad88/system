@@ -1,2 +1,0 @@
-D:\Apex\publish\v2.0.0-beta.1\admin-tool\Apex.Licensing.pdb
-D:\Apex\publish\v2.0.0-beta.1\admin-tool\ApexLicenseTool.exe
