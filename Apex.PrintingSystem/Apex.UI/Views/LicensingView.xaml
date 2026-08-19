@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             Background="#0F172A">
+             Background="#FAF9F7">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </UserControl.Resources>
@@ -15,40 +15,40 @@
 
             <!-- Header -->
             <TextBlock Text="{DynamicResource LIC_001}" FontSize="28" FontWeight="Bold"
-                       Foreground="#F1F5F9" Margin="0,0,0,6"/>
+                       Foreground="#14181D" Margin="0,0,0,6"/>
             <TextBlock Text="{DynamicResource LIC_002}"
-                       FontSize="14" Foreground="#64748B" Margin="0,0,0,32"/>
+                       FontSize="14" Foreground="#6B6864" Margin="0,0,0,32"/>
 
             <!-- Status Card -->
-            <Border Background="#1E293B" CornerRadius="12" Padding="24" Margin="0,0,0,20"
-                    BorderBrush="#334155" BorderThickness="1">
+            <Border Background="#FFFFFF" CornerRadius="12" Padding="24" Margin="0,0,0,20"
+                    BorderBrush="#DDD9D3" BorderThickness="1">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel>
-                        <TextBlock Text="{DynamicResource LIC_003}" FontSize="12" Foreground="#64748B" Margin="0,0,0,6"/>
+                        <TextBlock Text="{DynamicResource LIC_003}" FontSize="12" Foreground="#6B6864" Margin="0,0,0,6"/>
                         <TextBlock Text="{Binding LicenseStatusText}" FontSize="20" FontWeight="Bold"
                                    Foreground="{Binding StatusColor}" Margin="0,0,0,8"/>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{DynamicResource LIC_004}" FontSize="13" Foreground="#94A3B8"/>
-                            <TextBlock Text="{Binding LicenseTypeText}" FontSize="13" Foreground="#E2E8F0" FontWeight="SemiBold"/>
-                            <TextBlock Text="   |   " FontSize="13" Foreground="#475569"/>
-                            <TextBlock Text="{DynamicResource LIC_005}" FontSize="13" Foreground="#94A3B8"/>
-                            <TextBlock Text="{Binding ExpiryText}" FontSize="13" Foreground="#E2E8F0" FontWeight="SemiBold"/>
+                            <TextBlock Text="{DynamicResource LIC_004}" FontSize="13" Foreground="#6B6864"/>
+                            <TextBlock Text="{Binding LicenseTypeText}" FontSize="13" Foreground="#14181D" FontWeight="SemiBold"/>
+                            <TextBlock Text="   |   " FontSize="13" Foreground="#6B6864"/>
+                            <TextBlock Text="{DynamicResource LIC_005}" FontSize="13" Foreground="#6B6864"/>
+                            <TextBlock Text="{Binding ExpiryText}" FontSize="13" Foreground="#14181D" FontWeight="SemiBold"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,6,0,0"
                                     Visibility="{Binding IsTrialActive, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <TextBlock Text="{DynamicResource LIC_006}" FontSize="13" Foreground="#94A3B8"/>
+                            <TextBlock Text="{DynamicResource LIC_006}" FontSize="13" Foreground="#6B6864"/>
                             <TextBlock Text="{Binding DaysRemaining}" FontSize="13"
-                                       Foreground="#F59E0B" FontWeight="Bold"/>
+                                       Foreground="#E08A00" FontWeight="Bold"/>
                         </StackPanel>
                     </StackPanel>
                     <Button Grid.Column="1" Command="{Binding RefreshStatusCommand}"
                             Content="{DynamicResource LIC_007}" Padding="14,8"
-                            Background="#334155" Foreground="#94A3B8"
-                            BorderThickness="1" BorderBrush="#475569"
+                            Background="#DDD9D3" Foreground="#6B6864"
+                            BorderThickness="1" BorderBrush="#6B6864"
                             FontSize="12" Cursor="Hand" VerticalAlignment="Top">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
@@ -59,7 +59,7 @@
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="b" Property="Background" Value="#475569"/>
+                                        <Setter TargetName="b" Property="Background" Value="#6B6864"/>
                                         <Setter Property="Foreground" Value="White"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
@@ -70,15 +70,15 @@
             </Border>
 
             <!-- Device ID Card -->
-            <Border Background="#1E293B" CornerRadius="12" Padding="24" Margin="0,0,0,20"
-                    BorderBrush="#334155" BorderThickness="1">
+            <Border Background="#FFFFFF" CornerRadius="12" Padding="24" Margin="0,0,0,20"
+                    BorderBrush="#DDD9D3" BorderThickness="1">
                 <StackPanel>
                     <TextBlock Text="{DynamicResource ACT_005}" FontSize="14" FontWeight="SemiBold"
-                               Foreground="#F1F5F9" Margin="0,0,0,6"/>
+                               Foreground="#14181D" Margin="0,0,0,6"/>
                     <TextBlock Text="{DynamicResource LIC_008}"
-                               FontSize="12" Foreground="#64748B" Margin="0,0,0,14"/>
+                               FontSize="12" Foreground="#6B6864" Margin="0,0,0,14"/>
 
-                    <Border Background="#0F172A" BorderBrush="#475569" BorderThickness="1"
+                    <Border Background="#FAF9F7" BorderBrush="#6B6864" BorderThickness="1"
                             CornerRadius="8" Padding="16,12" Margin="0,0,0,14">
                         <!-- European digits, always. Under an Arabic UI WPF renders the
                              Latin digits of this identifier as ٠١٢٣ while the underlying
@@ -90,7 +90,7 @@
                         <TextBlock Text="{Binding DeviceDisplayId}"
                                    NumberSubstitution.Substitution="European"
                                    FontFamily="Consolas" FontSize="16" FontWeight="Bold"
-                                   Foreground="#60A5FA" TextAlignment="Center"/>
+                                   Foreground="#0891B2" TextAlignment="Center"/>
                     </Border>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -99,8 +99,8 @@
                                 Cursor="Hand">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
-                                    <Border x:Name="b" Background="#334155" CornerRadius="8"
-                                            Padding="16,10" BorderBrush="#475569" BorderThickness="1">
+                                    <Border x:Name="b" Background="#DDD9D3" CornerRadius="8"
+                                            Padding="16,10" BorderBrush="#6B6864" BorderThickness="1">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="📋 " FontSize="14"/>
                                             <TextBlock Text="{DynamicResource LIC_009}" FontSize="13" FontWeight="SemiBold"
@@ -109,7 +109,7 @@
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="b" Property="Background" Value="#475569"/>
+                                            <Setter TargetName="b" Property="Background" Value="#6B6864"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -146,19 +146,19 @@
             </Border>
 
             <!-- Activate Card -->
-            <Border Background="#1E293B" CornerRadius="12" Padding="24"
-                    BorderBrush="#334155" BorderThickness="1">
+            <Border Background="#FFFFFF" CornerRadius="12" Padding="24"
+                    BorderBrush="#DDD9D3" BorderThickness="1">
                 <StackPanel>
                     <TextBlock Text="{DynamicResource LIC_011}" FontSize="14" FontWeight="SemiBold"
-                               Foreground="#F1F5F9" Margin="0,0,0,6"/>
+                               Foreground="#14181D" Margin="0,0,0,6"/>
                     <TextBlock Text="{DynamicResource LIC_012}"
-                               FontSize="12" Foreground="#64748B" Margin="0,0,0,16"/>
+                               FontSize="12" Foreground="#6B6864" Margin="0,0,0,16"/>
 
                     <!-- Instant online activation by serial (buy now, no need to wait for the trial to end) -->
                     <TextBlock Text="تفعيل فوري برقم السيريال" FontSize="13" FontWeight="SemiBold"
-                               Foreground="#F1F5F9" Margin="0,0,0,4"/>
+                               Foreground="#14181D" Margin="0,0,0,4"/>
                     <TextBlock Text="أدخل السيريال (APX-XXXXX-XXXXX-XXXXX) للتفعيل مباشرةً دون انتظار انتهاء الفترة التجريبية."
-                               FontSize="12" Foreground="#64748B" Margin="0,0,0,10" TextWrapping="Wrap"/>
+                               FontSize="12" Foreground="#6B6864" Margin="0,0,0,10" TextWrapping="Wrap"/>
                     <Grid Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -168,19 +168,19 @@
                                  IsEnabled="{Binding IsNotActivating}"
                                  FontFamily="Consolas" FontSize="14" Padding="12,10"
                                  VerticalContentAlignment="Center" MinWidth="220"
-                                 Background="#0F172A" Foreground="#E2E8F0" CaretBrush="#E2E8F0"
-                                 BorderBrush="#334155" BorderThickness="1"/>
+                                 Background="#FAF9F7" Foreground="#14181D" CaretBrush="#14181D"
+                                 BorderBrush="#DDD9D3" BorderThickness="1"/>
                         <Button Grid.Column="1" Command="{Binding ActivateWithSerialCommand}"
                                 IsEnabled="{Binding IsNotActivating}" Margin="10,0,0,0" Cursor="Hand"
-                                Padding="22,10" Background="#22C55E" BorderThickness="0"
+                                Padding="22,10" Background="#1B7F4C" BorderThickness="0"
                                 Foreground="White" FontWeight="SemiBold" Content="تفعيل"/>
                     </Grid>
                     <TextBlock Text="{Binding OnlineStatus}" Foreground="{Binding OnlineStatusColor}"
                                FontSize="12" Margin="0,0,0,16" TextWrapping="Wrap"/>
 
-                    <Border Height="1" Background="#334155" Margin="0,0,0,16"/>
+                    <Border Height="1" Background="#DDD9D3" Margin="0,0,0,16"/>
                     <TextBlock Text="أو لديك ملف ترخيص (.apex):" FontSize="12"
-                               Foreground="#64748B" Margin="0,0,0,10"/>
+                               Foreground="#6B6864" Margin="0,0,0,10"/>
 
                     <Button Command="{Binding ImportLicenseCommand}" HorizontalAlignment="Left"
                             Cursor="Hand">
@@ -189,8 +189,8 @@
                                 <Border x:Name="b" CornerRadius="8" Padding="20,12">
                                     <Border.Background>
                                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                            <GradientStop Color="#2563EB" Offset="0"/>
-                                            <GradientStop Color="#1D4ED8" Offset="1"/>
+                                            <GradientStop Color="#0891B2" Offset="0"/>
+                                            <GradientStop Color="#0E7490" Offset="1"/>
                                         </LinearGradientBrush>
                                     </Border.Background>
                                     <StackPanel Orientation="Horizontal">

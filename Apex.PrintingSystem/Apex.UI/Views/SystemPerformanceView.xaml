@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="900"
-             Background="#0F172A">
+             Background="#FAF9F7">
     
     <UserControl.Resources>
         <!-- Metric Card — dark surface with a hairline border, matching the dashboard
@@ -14,7 +14,7 @@
         <Style x:Key="MetricCard" TargetType="Border">
             <Setter Property="CornerRadius" Value="16"/>
             <Setter Property="Padding" Value="24"/>
-            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderBrush" Value="#DDD9D3"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Effect">
                 <Setter.Value>
@@ -33,7 +33,7 @@
 
         <!-- Header -->
         <StackPanel Grid.Row="0" Margin="0,0,0,24">
-            <TextBlock FontSize="28" FontWeight="Bold" Foreground="#F1F5F9">
+            <TextBlock FontSize="28" FontWeight="Bold" Foreground="#14181D">
                 <Run Text="📊 "/><Run Text="{DynamicResource Nav_Performance}"/>
             </TextBlock>
             <TextBlock Text="{DynamicResource Performance_RealTimeMetrics}" FontSize="14" Foreground="{DynamicResource Brush.Text.Secondary}" Margin="0,4,0,0"/>
@@ -45,8 +45,8 @@
             <Border Style="{StaticResource MetricCard}" Margin="0,0,16,0">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#1E293B" Offset="0"/>
-                        <GradientStop Color="#1E3A5F" Offset="1"/>
+                        <GradientStop Color="#FFFFFF" Offset="0"/>
+                        <GradientStop Color="#E6F3F6" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
                 <Grid>
@@ -55,11 +55,11 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="#3B82F6" HorizontalAlignment="Left" Margin="0,0,0,16">
+                    <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="#0891B2" HorizontalAlignment="Left" Margin="0,0,0,16">
                         <TextBlock Text="💾" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
-                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_MemoryUsage}" FontSize="13" Foreground="#94A3B8" Margin="0,0,0,4"/>
-                    <TextBlock Grid.Row="2" Text="{Binding MemoryUsageMB, StringFormat='{}{0:F1} MB'}" FontSize="28" FontWeight="Bold" Foreground="#60A5FA"/>
+                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_MemoryUsage}" FontSize="13" Foreground="#6B6864" Margin="0,0,0,4"/>
+                    <TextBlock Grid.Row="2" Text="{Binding MemoryUsageMB, StringFormat='{}{0:F1} MB'}" FontSize="28" FontWeight="Bold" Foreground="#0891B2"/>
                 </Grid>
             </Border>
 
@@ -67,7 +67,7 @@
             <Border Style="{StaticResource MetricCard}" Margin="8,0">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#1E293B" Offset="0"/>
+                        <GradientStop Color="#FFFFFF" Offset="0"/>
                         <GradientStop Color="#14342B" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
@@ -77,11 +77,11 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="#10B981" HorizontalAlignment="Left" Margin="0,0,0,16">
+                    <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="#1B7F4C" HorizontalAlignment="Left" Margin="0,0,0,16">
                         <TextBlock Text="🧵" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
-                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_ActiveThreads}" FontSize="13" Foreground="#94A3B8" Margin="0,0,0,4"/>
-                    <TextBlock Grid.Row="2" Text="{Binding ThreadCount}" FontSize="28" FontWeight="Bold" Foreground="#34D399"/>
+                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_ActiveThreads}" FontSize="13" Foreground="#6B6864" Margin="0,0,0,4"/>
+                    <TextBlock Grid.Row="2" Text="{Binding ThreadCount}" FontSize="28" FontWeight="Bold" Foreground="#1B7F4C"/>
                 </Grid>
             </Border>
 
@@ -89,7 +89,7 @@
             <Border Style="{StaticResource MetricCard}" Margin="8,0">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#1E293B" Offset="0"/>
+                        <GradientStop Color="#FFFFFF" Offset="0"/>
                         <GradientStop Color="#2D2008" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
@@ -99,11 +99,11 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="#F59E0B" HorizontalAlignment="Left" Margin="0,0,0,16">
+                    <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="#E08A00" HorizontalAlignment="Left" Margin="0,0,0,16">
                         <TextBlock Text="⏱️" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
-                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_SystemUptime}" FontSize="13" Foreground="#94A3B8" Margin="0,0,0,4"/>
-                    <TextBlock Grid.Row="2" Text="{Binding Uptime}" FontSize="28" FontWeight="Bold" Foreground="#FBBF24"/>
+                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_SystemUptime}" FontSize="13" Foreground="#6B6864" Margin="0,0,0,4"/>
+                    <TextBlock Grid.Row="2" Text="{Binding Uptime}" FontSize="28" FontWeight="Bold" Foreground="#E08A00"/>
                 </Grid>
             </Border>
 
@@ -111,7 +111,7 @@
             <Border Style="{StaticResource MetricCard}" Margin="16,0,0,0">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#1E293B" Offset="0"/>
+                        <GradientStop Color="#FFFFFF" Offset="0"/>
                         <GradientStop Color="#2D1B4E" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
@@ -121,11 +121,11 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="#8B5CF6" HorizontalAlignment="Left" Margin="0,0,0,16">
+                    <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="#0891B2" HorizontalAlignment="Left" Margin="0,0,0,16">
                         <TextBlock Text="⚡" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
-                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_CpuUsage}" FontSize="13" Foreground="#94A3B8" Margin="0,0,0,4"/>
-                    <TextBlock Grid.Row="2" Text="{Binding CpuUsage, StringFormat='{}{0:F1}%', FallbackValue='0.0%'}" FontSize="28" FontWeight="Bold" Foreground="#A78BFA"/>
+                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_CpuUsage}" FontSize="13" Foreground="#6B6864" Margin="0,0,0,4"/>
+                    <TextBlock Grid.Row="2" Text="{Binding CpuUsage, StringFormat='{}{0:F1}%', FallbackValue='0.0%'}" FontSize="28" FontWeight="Bold" Foreground="#0E7490"/>
                 </Grid>
             </Border>
         </UniformGrid>
@@ -198,14 +198,14 @@
                         <ItemsControl ItemsSource="{Binding RecentActivities}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="#0F172A" CornerRadius="8" Padding="12" Margin="0,0,0,8">
+                                    <Border Background="#FAF9F7" CornerRadius="8" Padding="12" Margin="0,0,0,8">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock Text="{Binding Message}" FontSize="13" Foreground="#475569"/>
-                                            <TextBlock Grid.Column="1" Text="{Binding Time}" FontSize="11" Foreground="#94A3B8"/>
+                                            <TextBlock Text="{Binding Message}" FontSize="13" Foreground="#6B6864"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Time}" FontSize="11" Foreground="#6B6864"/>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>

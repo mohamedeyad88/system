@@ -6,14 +6,14 @@
              xmlns:properties="clr-namespace:Apex.UI.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="900"
-             Background="#0F172A">
+             Background="#FAF9F7">
     
     <UserControl.Resources>
         <!-- Dark Card -->
         <Style x:Key="DarkCard" TargetType="Border">
-            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Background" Value="#FFFFFF"/>
             <Setter Property="CornerRadius" Value="16"/>
-            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderBrush" Value="#DDD9D3"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="24"/>
             <Setter Property="Margin" Value="0,0,0,20"/>
@@ -22,8 +22,8 @@
         <!-- Dark TextBox -->
         <Style x:Key="DarkTextBox" TargetType="TextBox">
             <Setter Property="Padding" Value="14,12"/>
-            <Setter Property="Background" Value="#0F172A"/>
-            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="Background" Value="#FAF9F7"/>
+            <Setter Property="BorderBrush" Value="#DDD9D3"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontSize" Value="14"/>
@@ -39,7 +39,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="#3B82F6"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#0891B2"/>
                                 <Setter TargetName="border" Property="BorderThickness" Value="2"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -50,7 +50,7 @@
 
         <!-- Dark Button -->
         <Style x:Key="DarkButton" TargetType="Button">
-            <Setter Property="Background" Value="#3B82F6"/>
+            <Setter Property="Background" Value="#0891B2"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="24,14"/>
@@ -65,7 +65,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#2563EB"/>
+                                <Setter TargetName="border" Property="Background" Value="#0891B2"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -75,8 +75,8 @@
 
         <!-- Dark Secondary Button -->
         <Style x:Key="DarkSecondaryButton" TargetType="Button">
-            <Setter Property="Background" Value="#334155"/>
-            <Setter Property="Foreground" Value="#94A3B8"/>
+            <Setter Property="Background" Value="#DDD9D3"/>
+            <Setter Property="Foreground" Value="#6B6864"/>
             <Setter Property="Padding" Value="12,10"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -89,7 +89,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#475569"/>
+                                <Setter TargetName="border" Property="Background" Value="#6B6864"/>
                                 <Setter Property="Foreground" Value="White"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -110,7 +110,7 @@
         <Style x:Key="DarkFieldLabel" TargetType="TextBlock">
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="Foreground" Value="#64748B"/>
+            <Setter Property="Foreground" Value="#6B6864"/>
             <Setter Property="Margin" Value="0,0,0,8"/>
         </Style>
     </UserControl.Resources>
@@ -127,7 +127,7 @@
             <TextBlock FontSize="32" FontWeight="Bold" Foreground="White">
                 <Run Text="⚙️ "/><Run Text="{DynamicResource Settings_Title}"/>
             </TextBlock>
-            <TextBlock Text="{DynamicResource Settings_Description}" FontSize="14" Foreground="#64748B" Margin="0,8,0,0"/>
+            <TextBlock Text="{DynamicResource Settings_Description}" FontSize="14" Foreground="#6B6864" Margin="0,8,0,0"/>
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -205,7 +205,7 @@
                             
                             <StackPanel>
                                 <TextBlock Text="{DynamicResource Settings_ApplicationLanguage}" Style="{StaticResource DarkFieldLabel}"/>
-                                <Border Background="#0F172A" BorderBrush="#334155" BorderThickness="1" CornerRadius="10" Padding="4">
+                                <Border Background="#FAF9F7" BorderBrush="#DDD9D3" BorderThickness="1" CornerRadius="10" Padding="4">
                                     <ComboBox SelectedValue="{Binding SelectedLanguage}" SelectedValuePath="Tag" 
                                               BorderThickness="0" Background="Transparent" Foreground="White"
                                               FontSize="14" Padding="10,8">
@@ -242,8 +242,8 @@
                                 <Button Command="{Binding RunBackupCommand}" Style="{StaticResource DarkButton}" HorizontalAlignment="Left">
                                     <Button.Background>
                                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                            <GradientStop Color="#F59E0B" Offset="0"/>
-                                            <GradientStop Color="#D97706" Offset="1"/>
+                                            <GradientStop Color="#E08A00" Offset="0"/>
+                                            <GradientStop Color="#E08A00" Offset="1"/>
                                         </LinearGradientBrush>
                                     </Button.Background>
                                     <StackPanel Orientation="Horizontal">
@@ -263,8 +263,8 @@
             <Button Command="{Binding SaveSettingsCommand}" Style="{StaticResource DarkButton}">
                 <Button.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#22C55E" Offset="0"/>
-                        <GradientStop Color="#16A34A" Offset="1"/>
+                        <GradientStop Color="#1B7F4C" Offset="0"/>
+                        <GradientStop Color="#1B7F4C" Offset="1"/>
                     </LinearGradientBrush>
                 </Button.Background>
                 <TextBlock FontSize="15" FontWeight="SemiBold" Foreground="White">

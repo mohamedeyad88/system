@@ -4,17 +4,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="400"
-             Background="#0F172A">
+             Background="#FAF9F7">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Style x:Key="PropLabel" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#64748B"/>
+            <Setter Property="Foreground" Value="#6B6864"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Margin" Value="0,0,0,4"/>
         </Style>
         <Style x:Key="PropValue" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#0F172A"/>
+            <Setter Property="Foreground" Value="#FAF9F7"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
@@ -28,18 +28,18 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Border Grid.Row="0" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1" Padding="20">
+        <Border Grid.Row="0" BorderBrush="#14181D" BorderThickness="0,0,0,1" Padding="20">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel>
-                    <TextBlock Text="⚙️ Printer Properties" FontSize="18" FontWeight="Bold" Foreground="#0F172A"/>
-                    <TextBlock Text="{Binding PropertiesPrinter.Name}" FontSize="14" Foreground="#64748B" Margin="0,4,0,0"/>
+                    <TextBlock Text="⚙️ Printer Properties" FontSize="18" FontWeight="Bold" Foreground="#FAF9F7"/>
+                    <TextBlock Text="{Binding PropertiesPrinter.Name}" FontSize="14" Foreground="#6B6864" Margin="0,4,0,0"/>
                 </StackPanel>
                 <Button Grid.Column="1" Content="✕" Command="{Binding ClosePropertiesCommand}"
-                        Background="Transparent" BorderThickness="0" FontSize="16" Foreground="#94A3B8" Cursor="Hand"/>
+                        Background="Transparent" BorderThickness="0" FontSize="16" Foreground="#6B6864" Cursor="Hand"/>
             </Grid>
         </Border>
 
@@ -70,11 +70,11 @@
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Text" Value="Offline"/>
-                                            <Setter Property="Foreground" Value="#DC2626"/>
+                                            <Setter Property="Foreground" Value="#B42318"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding PropertiesPrinter.IsOnline}" Value="True">
                                                     <Setter Property="Text" Value="Online"/>
-                                                    <Setter Property="Foreground" Value="#059669"/>
+                                                    <Setter Property="Foreground" Value="#1B7F4C"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -133,8 +133,8 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Background="#F1F5F9" CornerRadius="6" Padding="10,6" Margin="0,0,8,8">
-                                    <TextBlock Text="{Binding}" Foreground="#475569" FontSize="12"/>
+                                <Border Background="#14181D" CornerRadius="6" Padding="10,6" Margin="0,0,8,8">
+                                    <TextBlock Text="{Binding}" Foreground="#6B6864" FontSize="12"/>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -155,12 +155,12 @@
         </ScrollViewer>
 
         <!-- Actions -->
-        <Border Grid.Row="2" BorderBrush="#E2E8F0" BorderThickness="0,1,0,0" Padding="20" Background="#F8FAFC">
+        <Border Grid.Row="2" BorderBrush="#14181D" BorderThickness="0,1,0,0" Padding="20" Background="#F8FAFC">
             <StackPanel>
                 <Button Content="🖨️ Print Test Page" 
                         Command="{Binding TestPrintCommand}" 
                         CommandParameter="{Binding PropertiesPrinter}"
-                        Height="40" Background="#3B82F6" Foreground="White" BorderThickness="0" Margin="0,0,0,10">
+                        Height="40" Background="#0891B2" Foreground="White" BorderThickness="0" Margin="0,0,0,10">
                     <Button.Resources>
                         <Style TargetType="Border">
                             <Setter Property="CornerRadius" Value="8"/>
@@ -171,7 +171,7 @@
                 <Button Content="🗑️ Flush Print Queue" 
                         Command="{Binding FlushQueueCommand}" 
                         CommandParameter="{Binding PropertiesPrinter}"
-                        Height="40" Background="#EF4444" Foreground="White" BorderThickness="0">
+                        Height="40" Background="#B42318" Foreground="White" BorderThickness="0">
                     <Button.Resources>
                         <Style TargetType="Border">
                             <Setter Property="CornerRadius" Value="8"/>

@@ -7,7 +7,7 @@
         MinHeight="700" MaxHeight="920"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Background="#0F172A"
+        Background="#FAF9F7"
         FlowDirection="{Binding Source={x:Static svc:LocalizationService.Instance},
                                 Path=FlowDirection, Mode=OneWay}">
 
@@ -17,9 +17,9 @@
 
         <!-- Card style -->
         <Style x:Key="Card" TargetType="Border">
-            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Background" Value="#FFFFFF"/>
             <Setter Property="CornerRadius" Value="16"/>
-            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderBrush" Value="#DDD9D3"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="24"/>
             <Setter Property="Margin" Value="0,0,0,16"/>
@@ -27,7 +27,7 @@
 
         <!-- Primary action button -->
         <Style x:Key="BtnPrimary" TargetType="Button">
-            <Setter Property="Background" Value="#2563EB"/>
+            <Setter Property="Background" Value="#0891B2"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="FontSize" Value="14"/>
@@ -43,7 +43,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="#1D4ED8"/>
+                                <Setter TargetName="b" Property="Background" Value="#0E7490"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -58,8 +58,8 @@
 
         <!-- Ghost / secondary button -->
         <Style x:Key="BtnSecondary" TargetType="Button" BasedOn="{StaticResource BtnPrimary}">
-            <Setter Property="Background" Value="#334155"/>
-            <Setter Property="Foreground" Value="#94A3B8"/>
+            <Setter Property="Background" Value="#DDD9D3"/>
+            <Setter Property="Foreground" Value="#6B6864"/>
         </Style>
     </Window.Resources>
 
@@ -86,7 +86,7 @@
                        FontSize="22" FontWeight="Bold" Foreground="White"
                        HorizontalAlignment="Center"/>
             <TextBlock Text="Apex Printing Solutions"
-                       FontSize="13" Foreground="#64748B"
+                       FontSize="13" Foreground="#6B6864"
                        HorizontalAlignment="Center" Margin="0,4,0,0"/>
         </StackPanel>
 
@@ -99,7 +99,7 @@
                            FontSize="18" FontWeight="SemiBold" Foreground="White"
                            HorizontalAlignment="Center"/>
                 <TextBlock Text="{Binding StatusDetail}"
-                           FontSize="13" Foreground="#94A3B8"
+                           FontSize="13" Foreground="#6B6864"
                            HorizontalAlignment="Center" Margin="0,8,0,0"
                            Visibility="{Binding StatusDetail, Converter={StaticResource StringToVisibilityConverter}}"/>
 
@@ -107,9 +107,9 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                             Margin="0,12,0,0"
                             Visibility="{Binding ShowTrialInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <TextBlock Text="الأيام المتبقية في التجربة: " FontSize="14" Foreground="#94A3B8"/>
-                    <TextBlock Text="{Binding TrialDaysRemaining}" FontSize="20" FontWeight="Bold" Foreground="#F59E0B"/>
-                    <TextBlock Text=" يوم" FontSize="14" Foreground="#94A3B8" Margin="4,0,0,0"/>
+                    <TextBlock Text="الأيام المتبقية في التجربة: " FontSize="14" Foreground="#6B6864"/>
+                    <TextBlock Text="{Binding TrialDaysRemaining}" FontSize="20" FontWeight="Bold" Foreground="#E08A00"/>
+                    <TextBlock Text=" يوم" FontSize="14" Foreground="#6B6864" Margin="4,0,0,0"/>
                 </StackPanel>
             </StackPanel>
         </Border>
@@ -125,11 +125,11 @@
                 </StackPanel>
 
                 <TextBlock Text="يحتاج الموظف للتفعيل إلى رقم الجهاز هذا. انسخه وأرسله لطلب الترخيص."
-                           FontSize="12" Foreground="#94A3B8" TextWrapping="Wrap" Margin="0,0,0,12"/>
+                           FontSize="12" Foreground="#6B6864" TextWrapping="Wrap" Margin="0,0,0,12"/>
 
                 <!-- Device ID display -->
-                <Border Background="#0F172A" CornerRadius="10" Padding="16,12"
-                        BorderBrush="#334155" BorderThickness="1">
+                <Border Background="#FAF9F7" CornerRadius="10" Padding="16,12"
+                        BorderBrush="#DDD9D3" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -140,7 +140,7 @@
                         <TextBlock Text="{Binding DeviceDisplayId}"
                                    NumberSubstitution.Substitution="European"
                                    FontFamily="Consolas, Courier New" FontSize="16"
-                                   FontWeight="Bold" Foreground="#60A5FA"
+                                   FontWeight="Bold" Foreground="#0891B2"
                                    VerticalAlignment="Center"/>
                         <Button Grid.Column="1"
                                 Command="{Binding CopyDeviceIdCommand}"
@@ -180,9 +180,9 @@
 
                 <!-- Separator -->
                 <Grid Margin="0,4,0,12">
-                    <Rectangle Height="1" Fill="#334155" VerticalAlignment="Center"/>
-                    <Border Background="#1E293B" HorizontalAlignment="Center" Padding="12,0">
-                        <TextBlock Text="أو" FontSize="12" Foreground="#64748B"/>
+                    <Rectangle Height="1" Fill="#DDD9D3" VerticalAlignment="Center"/>
+                    <Border Background="#FFFFFF" HorizontalAlignment="Center" Padding="12,0">
+                        <TextBlock Text="أو" FontSize="12" Foreground="#6B6864"/>
                     </Border>
                 </Grid>
 
@@ -205,7 +205,7 @@
              ══════════════════════════════════════════ -->
         <TextBlock Grid.Row="5"
                    Text="Apex Printing Solutions © 2025 | الدعم الفني: 01099088053"
-                   FontSize="11" Foreground="#475569"
+                   FontSize="11" Foreground="#6B6864"
                    HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
     </Grid>
     </ScrollViewer>

@@ -10,8 +10,8 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <!-- Modern Button -->
         <Style x:Key="CardButton" TargetType="Button">
-            <Setter Property="Background" Value="#F1F5F9"/>
-            <Setter Property="Foreground" Value="#475569"/>
+            <Setter Property="Background" Value="#14181D"/>
+            <Setter Property="Foreground" Value="#6B6864"/>
             <Setter Property="FontWeight" Value="Medium"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Padding" Value="12,8"/>
@@ -30,7 +30,7 @@
 
         <Style x:Key="PrimaryCardButton" TargetType="Button" BasedOn="{StaticResource CardButton}">
             <Setter Property="Background" Value="#DBEAFE"/>
-            <Setter Property="Foreground" Value="#1D4ED8"/>
+            <Setter Property="Foreground" Value="#0E7490"/>
         </Style>
     </UserControl.Resources>
     
@@ -64,26 +64,26 @@
                 <Border Grid.Column="0" Width="40" Height="40" CornerRadius="10" Margin="0,0,12,0">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Color="#3B82F6" Offset="0"/>
-                            <GradientStop Color="#1D4ED8" Offset="1"/>
+                            <GradientStop Color="#0891B2" Offset="0"/>
+                            <GradientStop Color="#0E7490" Offset="1"/>
                         </LinearGradientBrush>
                     </Border.Background>
                     <TextBlock Text="🖨️" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Border>
                 
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="15" Foreground="#1E293B" TextTrimming="CharacterEllipsis"/>
-                    <TextBlock Text="{Binding StatusText}" FontSize="12" Foreground="#64748B" Margin="0,2,0,0"/>
+                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="15" Foreground="#FFFFFF" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding StatusText}" FontSize="12" Foreground="#6B6864" Margin="0,2,0,0"/>
                 </StackPanel>
                 
                 <!-- Status Indicator -->
                 <Border Grid.Column="2" Width="10" Height="10" CornerRadius="5">
                     <Border.Style>
                         <Style TargetType="Border">
-                            <Setter Property="Background" Value="#EF4444"/>
+                            <Setter Property="Background" Value="#B42318"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsOnline}" Value="True">
-                                    <Setter Property="Background" Value="#10B981"/>
+                                    <Setter Property="Background" Value="#1B7F4C"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -101,11 +101,11 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel>
-                            <TextBlock Text="{DynamicResource PrinterCard_QueueLength}" FontSize="11" Foreground="#64748B"/>
-                            <TextBlock Text="{Binding QueueLength, StringFormat='{}{0} jobs'}" FontWeight="Bold" FontSize="16" Foreground="#1E293B"/>
+                            <TextBlock Text="{DynamicResource PrinterCard_QueueLength}" FontSize="11" Foreground="#6B6864"/>
+                            <TextBlock Text="{Binding QueueLength, StringFormat='{}{0} jobs'}" FontWeight="Bold" FontSize="16" Foreground="#FFFFFF"/>
                         </StackPanel>
                         <Border Grid.Column="1" Background="#DBEAFE" CornerRadius="6" Padding="8,4" VerticalAlignment="Center">
-                            <TextBlock Text="{Binding JobsToday, StringFormat='{}{0} today'}" FontSize="11" Foreground="#1D4ED8"/>
+                            <TextBlock Text="{Binding JobsToday, StringFormat='{}{0} today'}" FontSize="11" Foreground="#0E7490"/>
                         </Border>
                     </Grid>
                 </Border>
@@ -114,7 +114,7 @@
                 <WrapPanel Margin="0,0,0,8">
                     <Border Background="#FEF3C7" CornerRadius="6" Padding="8,4" Margin="0,0,6,4" 
                             Visibility="{Binding HasPaperJam, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Text="⚠️ Paper Jam" Foreground="#92400E" FontSize="11" FontWeight="SemiBold"/>
+                        <TextBlock Text="⚠️ Paper Jam" Foreground="#E08A00" FontSize="11" FontWeight="SemiBold"/>
                     </Border>
                     <Border Background="#FEE2E2" CornerRadius="6" Padding="8,4" Margin="0,0,6,4"
                             Visibility="{Binding IsTonerLow, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -134,7 +134,7 @@
                     </Border>
                     <Border Background="#FCE7F3" CornerRadius="6" Padding="8,4" Margin="0,0,6,4"
                             Visibility="{Binding Capabilities.CanStaple, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Text="📎 Staple" Foreground="#BE185D" FontSize="11" FontWeight="SemiBold"/>
+                        <TextBlock Text="📎 Staple" Foreground="#0E7490" FontSize="11" FontWeight="SemiBold"/>
                     </Border>
                 </WrapPanel>
             </StackPanel>

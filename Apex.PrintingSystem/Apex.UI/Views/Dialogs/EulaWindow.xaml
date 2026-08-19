@@ -4,7 +4,7 @@
         Title="{DynamicResource Eula_Title}"
         Width="720" Height="620"
         WindowStartupLocation="CenterOwner"
-        Background="#0F172A"
+        Background="#FAF9F7"
         ResizeMode="CanResize"
         ShowInTaskbar="False">
     <Grid Margin="0">
@@ -15,7 +15,7 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Border Grid.Row="0" Background="#1E293B" Padding="24,18">
+        <Border Grid.Row="0" Background="#FFFFFF" Padding="24,18">
             <TextBlock Text="{DynamicResource Eula_Title}"
                        FontSize="18" FontWeight="Bold" Foreground="White"/>
         </Border>
@@ -23,17 +23,17 @@
         <!-- Body -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="24,18">
             <TextBlock Text="{DynamicResource Eula_Body}"
-                       Foreground="#CBD5E1" FontSize="13" LineHeight="21"
+                       Foreground="#14181D" FontSize="13" LineHeight="21"
                        TextWrapping="Wrap"/>
         </ScrollViewer>
 
         <!-- Footer -->
-        <Border Grid.Row="2" Background="#1E293B" Padding="24,14">
+        <Border Grid.Row="2" Background="#FFFFFF" Padding="24,14">
             <Button Content="{DynamicResource Eula_Close}"
                     Click="CloseButton_Click"
                     HorizontalAlignment="Right"
                     Padding="26,9" FontSize="14" FontWeight="SemiBold"
-                    Foreground="White" Background="#2563EB" BorderThickness="0"
+                    Foreground="White" Background="#0891B2" BorderThickness="0"
                     Cursor="Hand"/>
         </Border>
     </Grid>

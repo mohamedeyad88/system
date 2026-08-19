@@ -8,7 +8,7 @@
              FlowDirection="{Binding Source={x:Static svc:LocalizationService.Instance},
                                      Path=FlowDirection, Mode=OneWay}"
              Loaded="SmartVariablesView_Loaded"
-             Background="#0F172A">
+             Background="#FAF9F7">
 
     <UserControl.Resources>
         <!-- Local converter instances (Converters.xaml merged in App.xaml already,
@@ -23,27 +23,27 @@
         <!-- ── Shared styles ─────────────────────────────────────────────────── -->
 
         <Style x:Key="DarkBox" TargetType="TextBox">
-            <Setter Property="Background"      Value="#1E293B"/>
-            <Setter Property="Foreground"      Value="#E2E8F0"/>
-            <Setter Property="BorderBrush"     Value="#334155"/>
+            <Setter Property="Background"      Value="#FFFFFF"/>
+            <Setter Property="Foreground"      Value="#14181D"/>
+            <Setter Property="BorderBrush"     Value="#DDD9D3"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding"         Value="8,5"/>
             <Setter Property="FontSize"        Value="12"/>
             <Setter Property="CaretBrush"      Value="White"/>
-            <Setter Property="SelectionBrush"  Value="#2563EB"/>
+            <Setter Property="SelectionBrush"  Value="#0891B2"/>
         </Style>
 
         <Style x:Key="DarkCombo" TargetType="ComboBox">
-            <Setter Property="Background"      Value="#1E293B"/>
-            <Setter Property="Foreground"      Value="#E2E8F0"/>
-            <Setter Property="BorderBrush"     Value="#334155"/>
+            <Setter Property="Background"      Value="#FFFFFF"/>
+            <Setter Property="Foreground"      Value="#14181D"/>
+            <Setter Property="BorderBrush"     Value="#DDD9D3"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Height"          Value="32"/>
             <Setter Property="FontSize"        Value="12"/>
         </Style>
 
         <Style x:Key="ActionBtn" TargetType="Button">
-            <Setter Property="Background"   Value="#2563EB"/>
+            <Setter Property="Background"   Value="#0891B2"/>
             <Setter Property="Foreground"   Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding"      Value="14,7"/>
@@ -59,7 +59,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#1D4ED8"/>
+                                <Setter Property="Background" Value="#0E7490"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.5"/>
@@ -71,32 +71,32 @@
         </Style>
 
         <Style x:Key="GhostBtn" TargetType="Button" BasedOn="{StaticResource ActionBtn}">
-            <Setter Property="Background"   Value="#334155"/>
+            <Setter Property="Background"   Value="#DDD9D3"/>
         </Style>
 
         <Style x:Key="DangerBtn" TargetType="Button" BasedOn="{StaticResource ActionBtn}">
-            <Setter Property="Background"   Value="#DC2626"/>
+            <Setter Property="Background"   Value="#B42318"/>
         </Style>
 
         <Style x:Key="SuccessBtn" TargetType="Button" BasedOn="{StaticResource ActionBtn}">
-            <Setter Property="Background"   Value="#16A34A"/>
+            <Setter Property="Background"   Value="#1B7F4C"/>
         </Style>
 
         <Style x:Key="FieldLabel" TargetType="TextBlock">
-            <Setter Property="Foreground"  Value="#94A3B8"/>
+            <Setter Property="Foreground"  Value="#6B6864"/>
             <Setter Property="FontSize"    Value="11"/>
             <Setter Property="Margin"      Value="0,0,0,3"/>
         </Style>
 
         <Style x:Key="SectionTitle" TargetType="TextBlock">
-            <Setter Property="Foreground"  Value="#CBD5E1"/>
+            <Setter Property="Foreground"  Value="#14181D"/>
             <Setter Property="FontSize"    Value="12"/>
             <Setter Property="FontWeight"  Value="SemiBold"/>
             <Setter Property="Margin"      Value="0,0,0,10"/>
         </Style>
 
         <Style x:Key="CheckStyle" TargetType="CheckBox">
-            <Setter Property="Foreground"  Value="#CBD5E1"/>
+            <Setter Property="Foreground"  Value="#14181D"/>
             <Setter Property="FontSize"    Value="12"/>
             <Setter Property="Margin"      Value="0,4"/>
         </Style>
@@ -114,8 +114,8 @@
              HEADER BAR
         ══════════════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="0"
-                Background="#1E293B"
-                BorderBrush="#334155"
+                Background="#FFFFFF"
+                BorderBrush="#DDD9D3"
                 BorderThickness="0,0,0,1"
                 Padding="16,10">
             <Grid>
@@ -133,7 +133,7 @@
                     <!-- Data summary badge -->
                     <Border Background="#0F3460" CornerRadius="4" Padding="8,3" Margin="16,0,0,0"
                             Visibility="{Binding HasPastedData, Converter={StaticResource BoolToVis}}">
-                        <TextBlock Foreground="#60A5FA" FontSize="11"
+                        <TextBlock Foreground="#0891B2" FontSize="11"
                                    Text="{Binding TotalRowCount, StringFormat='{}{0} سجل'}"/>
                     </Border>
                 </StackPanel>
@@ -156,24 +156,24 @@
         ══════════════════════════════════════════════════════════════════════ -->
         <TabControl Grid.Row="1"
                     SelectedIndex="{Binding ActiveTabIndex}"
-                    Background="#0F172A"
-                    BorderBrush="#334155">
+                    Background="#FAF9F7"
+                    BorderBrush="#DDD9D3">
 
             <TabControl.Resources>
                 <Style TargetType="TabItem">
-                    <Setter Property="Background"       Value="#1E293B"/>
-                    <Setter Property="Foreground"       Value="#94A3B8"/>
+                    <Setter Property="Background"       Value="#FFFFFF"/>
+                    <Setter Property="Foreground"       Value="#6B6864"/>
                     <Setter Property="FontSize"         Value="12"/>
                     <Setter Property="Padding"          Value="14,8"/>
                     <Setter Property="BorderThickness"  Value="0"/>
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="#0F172A"/>
-                            <Setter Property="Foreground" Value="#60A5FA"/>
+                            <Setter Property="Background" Value="#FAF9F7"/>
+                            <Setter Property="Foreground" Value="#0891B2"/>
                             <Setter Property="FontWeight" Value="SemiBold"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Foreground" Value="#CBD5E1"/>
+                            <Setter Property="Foreground" Value="#14181D"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -193,8 +193,8 @@
                     </Grid.RowDefinitions>
 
                     <!-- Instructions -->
-                    <Border Grid.Row="0" Background="#1E293B" CornerRadius="6" Padding="12,10" Margin="0,0,0,12">
-                        <TextBlock Foreground="#94A3B8" FontSize="11" TextWrapping="Wrap"
+                    <Border Grid.Row="0" Background="#FFFFFF" CornerRadius="6" Padding="12,10" Margin="0,0,0,12">
+                        <TextBlock Foreground="#6B6864" FontSize="11" TextWrapping="Wrap"
                                    Text="انسخ الجدول من Excel أو Google Sheets (Ctrl+C) ثم اضغط 'لصق من الحافظة' أو الصق مباشرة في الحقل أدناه. يتم اكتشاف الفاصل تلقائياً."/>
                     </Border>
 
@@ -247,7 +247,7 @@
                         <!-- Separator label -->
                         <TextBlock Grid.Column="4"
                                    Text="{Binding DetectedSeparatorLabel, StringFormat='فاصل: {0}'}"
-                                   Foreground="#64748B" FontSize="11"
+                                   Foreground="#6B6864" FontSize="11"
                                    VerticalAlignment="Center"
                                    Visibility="{Binding HasPastedData, Converter={StaticResource BoolToVis}}"/>
                     </Grid>
@@ -255,9 +255,9 @@
                     <!-- Cleaning options -->
                     <Expander Grid.Row="3"
                               Header="⚙ خيارات التنظيف"
-                              Foreground="#94A3B8"
+                              Foreground="#6B6864"
                               Margin="0,0,0,10">
-                        <Border Background="#1E293B" CornerRadius="6" Padding="12,8">
+                        <Border Background="#FFFFFF" CornerRadius="6" Padding="12,8">
                             <WrapPanel>
                                 <CheckBox Content="حذف المسافات الزائدة"    Style="{StaticResource CheckStyle}" IsChecked="{Binding CleanTrimWhitespace}"   Margin="0,4,16,4"/>
                                 <CheckBox Content="توحيد الأرقام العربية"    Style="{StaticResource CheckStyle}" IsChecked="{Binding CleanNormalizeNumbers}"  Margin="0,4,16,4"/>
@@ -274,16 +274,16 @@
                          REAL pasted headers (الاسم, الصف, رقم الجلوس…), not from
                          DataRowItem reflection properties like Cells / StatusIcon.
                     -->
-                    <Border Grid.Row="4" BorderBrush="#334155" BorderThickness="1" CornerRadius="6">
+                    <Border Grid.Row="4" BorderBrush="#DDD9D3" BorderThickness="1" CornerRadius="6">
                         <DataGrid x:Name="DataPreviewGrid"
                                   AutoGenerateColumns="True"
                                   IsReadOnly="True"
-                                  Background="#0F172A"
-                                  Foreground="#E2E8F0"
+                                  Background="#FAF9F7"
+                                  Foreground="#14181D"
                                   GridLinesVisibility="Horizontal"
-                                  HorizontalGridLinesBrush="#1E293B"
-                                  RowBackground="#0F172A"
-                                  AlternatingRowBackground="#0A1628"
+                                  HorizontalGridLinesBrush="#FFFFFF"
+                                  RowBackground="#FAF9F7"
+                                  AlternatingRowBackground="#FAF9F7"
                                   HeadersVisibility="Column"
                                   FontSize="12"
                                   CanUserResizeColumns="True"
@@ -292,11 +292,11 @@
                                   ItemsSource="{Binding DataTableView}">
                             <DataGrid.ColumnHeaderStyle>
                                 <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="Background"      Value="#1E293B"/>
-                                    <Setter Property="Foreground"      Value="#60A5FA"/>
+                                    <Setter Property="Background"      Value="#FFFFFF"/>
+                                    <Setter Property="Foreground"      Value="#0891B2"/>
                                     <Setter Property="FontWeight"      Value="SemiBold"/>
                                     <Setter Property="Padding"         Value="8,6"/>
-                                    <Setter Property="BorderBrush"     Value="#334155"/>
+                                    <Setter Property="BorderBrush"     Value="#DDD9D3"/>
                                     <Setter Property="BorderThickness" Value="0,0,1,0"/>
                                 </Style>
                             </DataGrid.ColumnHeaderStyle>
@@ -332,18 +332,18 @@
                                        FontSize="12" FontWeight="SemiBold"/>
                         </Border>
 
-                        <Border Background="#1E293B" CornerRadius="4" Padding="8,4" VerticalAlignment="Center">
+                        <Border Background="#FFFFFF" CornerRadius="4" Padding="8,4" VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding MappedCount}"   Foreground="#22C55E" FontSize="12" FontWeight="Bold"/>
-                                <TextBlock Text=" مربوط · " Foreground="#64748B" FontSize="12"/>
-                                <TextBlock Text="{Binding UnmappedRequiredCount}" Foreground="#EF4444" FontSize="12" FontWeight="Bold"/>
-                                <TextBlock Text=" مطلوب غير مربوط" Foreground="#64748B" FontSize="12"/>
+                                <TextBlock Text="{Binding MappedCount}"   Foreground="#1B7F4C" FontSize="12" FontWeight="Bold"/>
+                                <TextBlock Text=" مربوط · " Foreground="#6B6864" FontSize="12"/>
+                                <TextBlock Text="{Binding UnmappedRequiredCount}" Foreground="#B42318" FontSize="12" FontWeight="Bold"/>
+                                <TextBlock Text=" مطلوب غير مربوط" Foreground="#6B6864" FontSize="12"/>
                             </StackPanel>
                         </Border>
                     </StackPanel>
 
                     <!-- Column headers -->
-                    <Border Grid.Row="1" Background="#1E293B" CornerRadius="6,6,0,0" Padding="12,8">
+                    <Border Grid.Row="1" Background="#FFFFFF" CornerRadius="6,6,0,0" Padding="12,8">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="20"/>
@@ -352,11 +352,11 @@
                                 <ColumnDefinition Width="150"/>
                                 <ColumnDefinition Width="80"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="⚑"  Foreground="#64748B" FontSize="11"/>
-                            <TextBlock Grid.Column="1" Text="الحقل في القالب"         Foreground="#94A3B8" FontSize="11" FontWeight="SemiBold"/>
-                            <TextBlock Grid.Column="2" Text="عمود البيانات"            Foreground="#94A3B8" FontSize="11" FontWeight="SemiBold"/>
-                            <TextBlock Grid.Column="3" Text="القيمة الافتراضية"        Foreground="#94A3B8" FontSize="11" FontWeight="SemiBold"/>
-                            <TextBlock Grid.Column="4" Text="ثقة الربط"                Foreground="#94A3B8" FontSize="11" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="0" Text="⚑"  Foreground="#6B6864" FontSize="11"/>
+                            <TextBlock Grid.Column="1" Text="الحقل في القالب"         Foreground="#6B6864" FontSize="11" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="2" Text="عمود البيانات"            Foreground="#6B6864" FontSize="11" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="3" Text="القيمة الافتراضية"        Foreground="#6B6864" FontSize="11" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="4" Text="ثقة الربط"                Foreground="#6B6864" FontSize="11" FontWeight="SemiBold"/>
                         </Grid>
                     </Border>
 
@@ -365,7 +365,7 @@
                         <ItemsControl ItemsSource="{Binding MappingRows}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type vm:MappingRowItem}">
-                                    <Border BorderBrush="#1E293B" BorderThickness="0,0,0,1" Padding="12,7">
+                                    <Border BorderBrush="#FFFFFF" BorderThickness="0,0,0,1" Padding="12,7">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="20"/>
@@ -383,10 +383,10 @@
                                             <!-- Field label -->
                                             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding FieldLabel}"
-                                                           Foreground="#E2E8F0" FontSize="12"/>
-                                                <Border Background="#1E3A5F" CornerRadius="3" Padding="4,1" Margin="8,0,0,0"
+                                                           Foreground="#14181D" FontSize="12"/>
+                                                <Border Background="#E6F3F6" CornerRadius="3" Padding="4,1" Margin="8,0,0,0"
                                                         Visibility="{Binding IsRequired, Converter={StaticResource BoolToVis}}">
-                                                    <TextBlock Text="مطلوب" Foreground="#60A5FA" FontSize="10"/>
+                                                    <TextBlock Text="مطلوب" Foreground="#0891B2" FontSize="10"/>
                                                 </Border>
                                             </StackPanel>
 
@@ -406,10 +406,10 @@
 
                                             <!-- Confidence badge -->
                                             <Border Grid.Column="4"
-                                                    Background="#1E293B" CornerRadius="4" Padding="5,2"
+                                                    Background="#FFFFFF" CornerRadius="4" Padding="5,2"
                                                     HorizontalAlignment="Right" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding ConfidenceLabel}"
-                                                           Foreground="#94A3B8" FontSize="11"/>
+                                                           Foreground="#6B6864" FontSize="11"/>
                                             </Border>
                                         </Grid>
                                     </Border>
@@ -494,7 +494,7 @@
                     <!-- Progress + status -->
                     <StackPanel Grid.Row="2" Margin="0,0,0,12">
                         <ProgressBar Height="4" Value="{Binding ScanProgress}"
-                                     Background="#1E293B" Foreground="#3B82F6"
+                                     Background="#FFFFFF" Foreground="#0891B2"
                                      Visibility="{Binding IsScanning, Converter={StaticResource BoolToVis}}"
                                      Margin="0,0,0,6"/>
                         <TextBlock Text="{Binding ImageStatusText}"
@@ -503,7 +503,7 @@
                     </StackPanel>
 
                     <!-- Image asset grid -->
-                    <Border Grid.Row="3" BorderBrush="#334155" BorderThickness="1" CornerRadius="6">
+                    <Border Grid.Row="3" BorderBrush="#DDD9D3" BorderThickness="1" CornerRadius="6">
                         <ScrollViewer>
                             <WrapPanel x:Name="ImageGrid" Margin="8">
                                 <ItemsControl ItemsSource="{Binding ImageAssets}">
@@ -515,8 +515,8 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate DataType="{x:Type vm:ImageAssetItem}">
                                             <Border Width="100" Height="120" Margin="6"
-                                                    Background="#1E293B" CornerRadius="6"
-                                                    BorderBrush="#334155" BorderThickness="1">
+                                                    Background="#FFFFFF" CornerRadius="6"
+                                                    BorderBrush="#DDD9D3" BorderThickness="1">
                                                 <Grid>
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="72"/>
@@ -542,7 +542,7 @@
                                                     <Border Grid.Row="0"
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Top"
-                                                            Background="#16A34A" CornerRadius="3" Padding="3,1" Margin="4"
+                                                            Background="#1B7F4C" CornerRadius="3" Padding="3,1" Margin="4"
                                                             Visibility="{Binding IsUsed, Converter={StaticResource BoolToVis}}">
                                                         <TextBlock Text="✓" Foreground="White" FontSize="10"/>
                                                     </Border>
@@ -550,11 +550,11 @@
                                                     <!-- File info -->
                                                     <StackPanel Grid.Row="1" Margin="6,4">
                                                         <TextBlock Text="{Binding FileName}"
-                                                                   Foreground="#E2E8F0" FontSize="10"
+                                                                   Foreground="#14181D" FontSize="10"
                                                                    TextTrimming="CharacterEllipsis"
                                                                    ToolTip="{Binding FileName}"/>
                                                         <TextBlock Text="{Binding SizeLabel}"
-                                                                   Foreground="#64748B" FontSize="10"/>
+                                                                   Foreground="#6B6864" FontSize="10"/>
                                                     </StackPanel>
                                                 </Grid>
                                             </Border>
@@ -586,7 +586,7 @@
                         </Grid.RowDefinitions>
 
                         <!-- Navigation bar -->
-                        <Border Grid.Row="0" Background="#1E293B" CornerRadius="6" Padding="10,8" Margin="0,0,0,10">
+                        <Border Grid.Row="0" Background="#FFFFFF" CornerRadius="6" Padding="10,8" Margin="0,0,0,10">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -605,7 +605,7 @@
 
                                 <TextBlock Grid.Column="2"
                                            Text="{Binding PreviewRowInfo}"
-                                           Foreground="#94A3B8" FontSize="11"
+                                           Foreground="#6B6864" FontSize="11"
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                                 <Button Grid.Column="3" Content="▶" Style="{StaticResource GhostBtn}"
@@ -618,14 +618,14 @@
                         </Border>
 
                         <!-- Image preview -->
-                        <Border Grid.Row="1" Height="140" Background="#1E293B" CornerRadius="6" Margin="0,0,0,10"
+                        <Border Grid.Row="1" Height="140" Background="#FFFFFF" CornerRadius="6" Margin="0,0,0,10"
                                 Visibility="{Binding PreviewImagePath, Converter={StaticResource NullToCollapsed}}">
-                            <TextBlock Text="[صورة السجل]" Foreground="#64748B" FontSize="12"
+                            <TextBlock Text="[صورة السجل]" Foreground="#6B6864" FontSize="12"
                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
 
                         <!-- Field values list -->
-                        <Border Grid.Row="2" BorderBrush="#334155" BorderThickness="1" CornerRadius="6">
+                        <Border Grid.Row="2" BorderBrush="#DDD9D3" BorderThickness="1" CornerRadius="6">
                             <ScrollViewer>
                                 <ItemsControl ItemsSource="{Binding PreviewFields}">
                                     <ItemsControl.ItemTemplate>
@@ -637,10 +637,10 @@
                                                 </Grid.RowDefinitions>
                                                 <TextBlock Grid.Row="0"
                                                            Text="{Binding FieldLabel}"
-                                                           Foreground="#64748B" FontSize="10"/>
+                                                           Foreground="#6B6864" FontSize="10"/>
                                                 <TextBlock Grid.Row="1"
                                                            Text="{Binding Value}"
-                                                           Foreground="#E2E8F0" FontSize="12"
+                                                           Foreground="#14181D" FontSize="12"
                                                            TextWrapping="Wrap"/>
                                             </Grid>
                                         </DataTemplate>
@@ -654,7 +654,7 @@
                          TemplatePreviewControl paints through TemplatePainter — the
                          same code path the PNG/PDF export uses — so what is shown here
                          is the output itself, not a XAML look-alike of it. -->
-                    <Border Grid.Column="1" Background="#1E293B" CornerRadius="8" BorderBrush="#334155" BorderThickness="1">
+                    <Border Grid.Column="1" Background="#FFFFFF" CornerRadius="8" BorderBrush="#DDD9D3" BorderThickness="1">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
@@ -676,10 +676,10 @@
                                                      Converter={StaticResource NullToVisible}}">
                                 <TextBlock Text="👁" FontSize="48" HorizontalAlignment="Center" Opacity="0.3"/>
                                 <TextBlock Text="معاينة القالب مع بيانات السجل الحالي"
-                                           Foreground="#64748B" FontSize="13"
+                                           Foreground="#6B6864" FontSize="13"
                                            HorizontalAlignment="Center" Margin="0,8,0,0"/>
                                 <TextBlock Text="(يتطلب ربط المتغيرات أولاً)"
-                                           Foreground="#475569" FontSize="11"
+                                           Foreground="#6B6864" FontSize="11"
                                            HorizontalAlignment="Center" Margin="0,4,0,0"/>
                             </StackPanel>
 
@@ -719,7 +719,7 @@
                                 Command="{Binding RunPreflightCommand}"
                                 Margin="0,0,12,0"/>
 
-                        <Border Background="#1E293B" CornerRadius="6" Padding="12,8" VerticalAlignment="Center">
+                        <Border Background="#FFFFFF" CornerRadius="6" Padding="12,8" VerticalAlignment="Center">
                             <TextBlock Text="{Binding PreflightSummary}"
                                        Foreground="{Binding PreflightSummaryColor}"
                                        FontSize="13" FontWeight="SemiBold"/>
@@ -728,33 +728,33 @@
 
                     <!-- Summary counters -->
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12">
-                        <Border Background="#1E293B" CornerRadius="6" Padding="12,6" Margin="0,0,8,0">
+                        <Border Background="#FFFFFF" CornerRadius="6" Padding="12,6" Margin="0,0,8,0">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding ErrorCount}" Foreground="#EF4444" FontSize="18" FontWeight="Bold"/>
-                                <TextBlock Text=" خطأ" Foreground="#94A3B8" FontSize="12" VerticalAlignment="Bottom" Margin="4,0,0,2"/>
+                                <TextBlock Text="{Binding ErrorCount}" Foreground="#B42318" FontSize="18" FontWeight="Bold"/>
+                                <TextBlock Text=" خطأ" Foreground="#6B6864" FontSize="12" VerticalAlignment="Bottom" Margin="4,0,0,2"/>
                             </StackPanel>
                         </Border>
-                        <Border Background="#1E293B" CornerRadius="6" Padding="12,6" Margin="0,0,8,0">
+                        <Border Background="#FFFFFF" CornerRadius="6" Padding="12,6" Margin="0,0,8,0">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding WarningCount}" Foreground="#F59E0B" FontSize="18" FontWeight="Bold"/>
-                                <TextBlock Text=" تحذير" Foreground="#94A3B8" FontSize="12" VerticalAlignment="Bottom" Margin="4,0,0,2"/>
+                                <TextBlock Text="{Binding WarningCount}" Foreground="#E08A00" FontSize="18" FontWeight="Bold"/>
+                                <TextBlock Text=" تحذير" Foreground="#6B6864" FontSize="12" VerticalAlignment="Bottom" Margin="4,0,0,2"/>
                             </StackPanel>
                         </Border>
-                        <Border Background="#1E293B" CornerRadius="6" Padding="12,6">
+                        <Border Background="#FFFFFF" CornerRadius="6" Padding="12,6">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding InfoCount}" Foreground="#3B82F6" FontSize="18" FontWeight="Bold"/>
-                                <TextBlock Text=" ملاحظة" Foreground="#94A3B8" FontSize="12" VerticalAlignment="Bottom" Margin="4,0,0,2"/>
+                                <TextBlock Text="{Binding InfoCount}" Foreground="#0891B2" FontSize="18" FontWeight="Bold"/>
+                                <TextBlock Text=" ملاحظة" Foreground="#6B6864" FontSize="12" VerticalAlignment="Bottom" Margin="4,0,0,2"/>
                             </StackPanel>
                         </Border>
                     </StackPanel>
 
                     <!-- Issues list -->
-                    <Border Grid.Row="2" BorderBrush="#334155" BorderThickness="1" CornerRadius="6">
+                    <Border Grid.Row="2" BorderBrush="#DDD9D3" BorderThickness="1" CornerRadius="6">
                         <ScrollViewer>
                             <ItemsControl ItemsSource="{Binding PreflightIssues}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="{x:Type vm:PreflightIssueItem}">
-                                        <Border BorderBrush="#1E293B" BorderThickness="0,0,0,1" Padding="12,8">
+                                        <Border BorderBrush="#FFFFFF" BorderThickness="0,0,0,1" Padding="12,8">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="24"/>
@@ -767,14 +767,14 @@
                                                            FontSize="14" VerticalAlignment="Top"/>
                                                 <TextBlock Grid.Column="1"
                                                            Text="{Binding RowLabel}"
-                                                           Foreground="#64748B" FontSize="11"
+                                                           Foreground="#6B6864" FontSize="11"
                                                            VerticalAlignment="Top"/>
                                                 <StackPanel Grid.Column="2">
                                                     <TextBlock Text="{Binding Message}"
-                                                               Foreground="#E2E8F0" FontSize="12"
+                                                               Foreground="#14181D" FontSize="12"
                                                                TextWrapping="Wrap"/>
                                                     <TextBlock Text="{Binding Suggestion}"
-                                                               Foreground="#64748B" FontSize="11"
+                                                               Foreground="#6B6864" FontSize="11"
                                                                TextWrapping="Wrap"
                                                                Margin="0,2,0,0"
                                                                Visibility="{Binding Suggestion,
@@ -877,8 +877,8 @@
 
                         <!-- Grid layout for multi-item -->
                         <Expander Header="📐 تخطيط متعدد على الصفحة (بطاقات وملصقات)"
-                                  Foreground="#94A3B8" Margin="0,0,0,16">
-                            <Border Background="#1E293B" CornerRadius="6" Padding="14,12">
+                                  Foreground="#6B6864" Margin="0,0,0,16">
+                            <Border Background="#FFFFFF" CornerRadius="6" Padding="14,12">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -922,10 +922,10 @@
                         </Expander>
 
                         <!-- Export button + progress -->
-                        <Border Background="#1E293B" CornerRadius="8" Padding="16,14">
+                        <Border Background="#FFFFFF" CornerRadius="8" Padding="16,14">
                             <StackPanel>
                                 <ProgressBar Height="6" Value="{Binding ExportProgress}"
-                                             Background="#334155" Foreground="#22C55E"
+                                             Background="#DDD9D3" Foreground="#1B7F4C"
                                              Visibility="{Binding IsExporting, Converter={StaticResource BoolToVis}}"
                                              Margin="0,0,0,8"/>
                                 <StackPanel Orientation="Horizontal">
@@ -953,8 +953,8 @@
              STATUS BAR
         ══════════════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="2"
-                Background="#1E293B"
-                BorderBrush="#334155"
+                Background="#FFFFFF"
+                BorderBrush="#DDD9D3"
                 BorderThickness="0,1,0,0"
                 Padding="16,6">
             <StackPanel Orientation="Horizontal">
