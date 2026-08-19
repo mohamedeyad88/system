@@ -68,7 +68,14 @@
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="470"/>
+                <!-- Auto, not a fixed 470: the rows are right-aligned horizontal
+                     stacks, so anything wider than the column slid off the left edge
+                     and was clipped — which ate the FIRST label of each row. "ارتفاع"
+                     rendered as "اع", and two inputs lost their captions entirely.
+                     Arabic labels run longer than English ones, so no single fixed
+                     width fits both. MinWidth keeps the panel from collapsing when
+                     the rows are short. -->
+                <ColumnDefinition Width="Auto" MinWidth="470"/>
                 <ColumnDefinition Width="16"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
@@ -87,12 +94,73 @@
                             <TextBlock Style="{StaticResource Lbl}" TextTrimming="CharacterEllipsis">
                                 <Run Text="{DynamicResource PT_004}"/><Run Text=" "/><Run Text="{Binding PageCount}" Foreground="White"/>
                             </TextBlock>
+
+                            <!-- Pipeline history: operations chain on the working document;
+                                 undo/redo/reset step through or discard the whole pipeline. -->
+                            <TextBlock Style="{StaticResource Lbl}" TextWrapping="Wrap" Margin="0,6,0,0"
+                                       Visibility="{Binding HasResult, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Run Text="{DynamicResource PT_Pipeline}"/><Run Text=" "/><Run Text="{Binding PipelineLabel}" Foreground="White"/>
+                            </TextBlock>
+                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                <Button Content="{DynamicResource PT_Undo}" Command="{Binding UndoCommand}"
+                                        Style="{StaticResource Btn}" IsEnabled="{Binding CanUndo}" MinWidth="64" Margin="0,0,6,0"/>
+                                <Button Content="{DynamicResource PT_Redo}" Command="{Binding RedoCommand}"
+                                        Style="{StaticResource Btn}" IsEnabled="{Binding CanRedo}" MinWidth="64" Margin="0,0,6,0"/>
+                                <Button Content="{DynamicResource PT_ResetPipeline}" Command="{Binding ResetPipelineCommand}"
+                                        Style="{StaticResource Btn}" IsEnabled="{Binding HasResult}" MinWidth="64"/>
+                            </StackPanel>
+
                             <Button Content="{DynamicResource PT_005}" Command="{Binding SaveResultCommand}"
                                     Style="{StaticResource SaveBtn}" IsEnabled="{Binding HasResult}" Margin="0,10,0,0"/>
+                            <!-- Workflow chain: hand the result straight to the print queue. -->
+                            <Button Content="{DynamicResource PT_SendToPrint}" Command="{Binding SendToPrintingCommand}"
+                                    Style="{StaticResource Btn}" IsEnabled="{Binding HasResult}" Margin="0,8,0,0"/>
                         </StackPanel>
                     </Border>
 
-                    <!-- Page management -->
+                    <!-- Preflight — file check before print -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource PF_Title}" Style="{StaticResource Section}"/>
+                            <Button Content="{DynamicResource PF_Run}" Command="{Binding RunPreflightCommand}"
+                                    Style="{StaticResource Btn}" IsEnabled="{Binding HasSource}"/>
+
+                            <!-- Pass/fail banner -->
+                            <Border Margin="0,10,0,0" CornerRadius="8" Padding="10,7"
+                                    Visibility="{Binding HasPreflight, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="#052E16"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding PreflightPassed}" Value="False">
+                                                <Setter Property="Background" Value="#450A0A"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock Text="{Binding PreflightSummary}" Foreground="White"
+                                           FontWeight="SemiBold" FontSize="12" TextWrapping="Wrap"/>
+                            </Border>
+
+                            <!-- Findings -->
+                            <ItemsControl ItemsSource="{Binding PreflightResults}" Margin="0,8,0,0"
+                                          Visibility="{Binding HasPreflight, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                                            <TextBlock Text="{Binding Icon}" FontSize="11" Margin="0,0,6,0" VerticalAlignment="Top"/>
+                                            <TextBlock Text="{Binding Message}" Foreground="{Binding Color}"
+                                                       FontSize="12" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Page management (core prep: reverse, interleave, insert, join,
+                         tile, bleed, trim) — placed right after Preflight because these
+                         are the everyday operations; the niche tools follow. -->
                     <Border Style="{StaticResource LocalCard}">
                         <StackPanel>
                             <TextBlock Text="{DynamicResource PT_006}" Style="{StaticResource Section}"/>
@@ -138,6 +206,124 @@
                                 <TextBlock Text="{DynamicResource PT_023}" Style="{StaticResource Lbl}"/>
                                 <TextBox Text="{Binding TrimMm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
                                 <Button Content="{DynamicResource PT_024}" Command="{Binding TrimCommand}" Style="{StaticResource Btn}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Step & Repeat — cards / stickers many-up -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource PT_StepTitle}" Style="{StaticResource Section}"/>
+                            <StackPanel Style="{StaticResource Row}">
+                                <TextBlock Text="{DynamicResource PT_StepSheetW}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding StepSheetWidthMm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_StepSheetH}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding StepSheetHeightMm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                            </StackPanel>
+                            <StackPanel Style="{StaticResource Row}">
+                                <TextBlock Text="{DynamicResource PT_StepCols}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding StepCols, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_StepRows}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding StepRows, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_StepGutter}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding StepGutterMm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                            </StackPanel>
+                            <StackPanel Style="{StaticResource Row}">
+                                <CheckBox Content="{DynamicResource PT_StepCrop}" IsChecked="{Binding StepCropMarks}"
+                                          Foreground="{DynamicResource Brush.Text.Secondary}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                <Button Content="{DynamicResource PT_StepRun}" Command="{Binding StepRepeatCommand}" Style="{StaticResource Btn}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Watermark / stamp -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource PT_StampTitle}" Style="{StaticResource Section}"/>
+                            <StackPanel Style="{StaticResource Row}">
+                                <TextBlock Text="{DynamicResource PT_LblX}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding StampXmm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_LblY}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding StampYmm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_LblW}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding StampWidthMm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_LblH}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding StampHeightMm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                            </StackPanel>
+                            <StackPanel Style="{StaticResource Row}">
+                                <Button Content="{DynamicResource PT_StampRun}" Command="{Binding StampCommand}" Style="{StaticResource Btn}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Mask / cover area -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource PT_MaskTitle}" Style="{StaticResource Section}"/>
+                            <StackPanel Style="{StaticResource Row}">
+                                <TextBlock Text="{DynamicResource PT_LblPage}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding MaskPage, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_LblX}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding MaskXmm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_LblY}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding MaskYmm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                            </StackPanel>
+                            <StackPanel Style="{StaticResource Row}">
+                                <TextBlock Text="{DynamicResource PT_LblW}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding MaskWidthMm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_LblH}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding MaskHeightMm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <Button Content="{DynamicResource PT_MaskRun}" Command="{Binding MaskCommand}" Style="{StaticResource Btn}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Rotate / extract / delete a page range -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource PT_RangeTitle}" Style="{StaticResource Section}"/>
+                            <StackPanel Style="{StaticResource Row}">
+                                <TextBlock Text="{DynamicResource PT_RangeFrom}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding RangeFrom, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <TextBlock Text="{DynamicResource PT_RangeTo}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding RangeTo, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                            </StackPanel>
+                            <StackPanel Style="{StaticResource Row}">
+                                <Button Content="{DynamicResource PT_Rotate90}" Command="{Binding Rotate90Command}" Style="{StaticResource Btn}"/>
+                                <Button Content="{DynamicResource PT_Extract}" Command="{Binding ExtractRangeCommand}" Style="{StaticResource Btn}"/>
+                                <Button Content="{DynamicResource PT_DeleteRange}" Command="{Binding DeleteRangeCommand}" Style="{StaticResource Btn}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Printer's marks -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource PT_MarksTitle}" Style="{StaticResource Section}"/>
+                            <StackPanel Style="{StaticResource Row}">
+                                <TextBlock Text="{DynamicResource PT_MarksMargin}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding MarksMarginMm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <CheckBox Content="{DynamicResource PT_MarksCrop}" IsChecked="{Binding MarksCrop}"
+                                          Foreground="{DynamicResource Brush.Text.Secondary}" VerticalAlignment="Center" Margin="8,0,8,0"/>
+                                <CheckBox Content="{DynamicResource PT_MarksReg}" IsChecked="{Binding MarksReg}"
+                                          Foreground="{DynamicResource Brush.Text.Secondary}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <CheckBox Content="{DynamicResource PT_MarksBars}" IsChecked="{Binding MarksColorBars}"
+                                          Foreground="{DynamicResource Brush.Text.Secondary}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            </StackPanel>
+                            <StackPanel Style="{StaticResource Row}">
+                                <Button Content="{DynamicResource PT_MarksRun}" Command="{Binding PrinterMarksCommand}" Style="{StaticResource Btn}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Split into files -->
+                    <Border Style="{StaticResource LocalCard}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource PT_SplitTitle}" Style="{StaticResource Section}"/>
+                            <StackPanel Style="{StaticResource Row}">
+                                <TextBlock Text="{DynamicResource PT_SplitEvery}" Style="{StaticResource Lbl}"/>
+                                <TextBox Text="{Binding SplitEveryN, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
+                                <Button Content="{DynamicResource PT_SplitRun}" Command="{Binding SplitToFilesCommand}" Style="{StaticResource Btn}"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -191,14 +377,34 @@
                         <TextBlock Text="{DynamicResource PT_033}" Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="12" HorizontalAlignment="Center" Margin="0,4,0,0"/>
                     </StackPanel>
 
-                    <!-- Rendered page as paper with soft shadow -->
-                    <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="White"
+                    <!-- Rendered page as paper with soft shadow, inside a zoomable + pannable viewport.
+                         Ctrl+Wheel zooms; scrollbars appear when the zoomed page exceeds the area. -->
+                    <ScrollViewer x:Name="PtPreviewScroll"
+                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                                  Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                  PreviewMouseWheel="PtPreview_PreviewMouseWheel">
+                        <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="White" Margin="8">
+                            <Border.LayoutTransform>
+                                <ScaleTransform ScaleX="{Binding PreviewZoom}" ScaleY="{Binding PreviewZoom}"/>
+                            </Border.LayoutTransform>
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="28" ShadowDepth="0" Opacity="0.55" Color="Black"/>
+                            </Border.Effect>
+                            <Image Source="{Binding PreviewImage}" MaxHeight="620" Stretch="Uniform"
+                                   RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Border>
+                    </ScrollViewer>
+
+                    <!-- Zoom controls (top-right overlay) -->
+                    <Border VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,4,4,0"
+                            Background="{DynamicResource Brush.Background}" CornerRadius="8" Padding="4"
                             Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="28" ShadowDepth="0" Opacity="0.55" Color="Black"/>
-                        </Border.Effect>
-                        <Image Source="{Binding PreviewImage}" MaxHeight="620" Stretch="Uniform"
-                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="−" Command="{Binding PreviewZoomOutCommand}" Style="{StaticResource Btn}" MinWidth="32" Margin="0,0,4,0"/>
+                            <TextBlock Text="{Binding PreviewZoomLabel}" Foreground="{DynamicResource Brush.Text.Secondary}" MinWidth="44" TextAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+                            <Button Content="+" Command="{Binding PreviewZoomInCommand}" Style="{StaticResource Btn}" MinWidth="32" Margin="4,0,0,0"/>
+                            <Button Content="⟳" Command="{Binding PreviewZoomResetCommand}" Style="{StaticResource Btn}" MinWidth="32" Margin="4,0,0,0"/>
+                        </StackPanel>
                     </Border>
 
                     <!-- Loading -->

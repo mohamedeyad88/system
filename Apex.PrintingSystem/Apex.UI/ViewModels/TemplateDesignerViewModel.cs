@@ -624,8 +624,26 @@ namespace Apex.UI.ViewModels
             PushUndo();
             try
             {
-                byte[] bytes = File.ReadAllBytes(filePath);
-                string assetId = Path.GetFileName(filePath);
+                byte[] raw = File.ReadAllBytes(filePath);
+                string assetId;
+                byte[] bytes;
+
+                if (string.Equals(Path.GetExtension(filePath), ".pdf", StringComparison.OrdinalIgnoreCase))
+                {
+                    // The design pipeline works on image assets, so a customer's PDF
+                    // artwork is rasterised (first page, 200 DPI) and used as the design
+                    // base — exactly what an operator wants when adding numbering or
+                    // variable fields on top of a supplied PDF. 200 DPI is crisp on the
+                    // canvas without the ~35 MB an A4 at 300 DPI would cost in memory.
+                    bytes = new Apex.Services.Imposition.PdfPageToolsService().RenderPagePng(raw, 0, 200);
+                    assetId = Path.GetFileNameWithoutExtension(filePath) + ".png";
+                }
+                else
+                {
+                    bytes = raw;
+                    assetId = Path.GetFileName(filePath);
+                }
+
                 _currentAssets[assetId] = bytes;
                 CurrentPage.BackgroundImageAssetId = assetId;
                 LoadBackgroundPreview();

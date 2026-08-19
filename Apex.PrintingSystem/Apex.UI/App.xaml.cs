@@ -68,8 +68,42 @@ namespace Apex.UI
             ShutdownMode = ShutdownMode.OnLastWindowClose;
             InstallGlobalExceptionHandlers();
 
+            // Open the print log now rather than on the first print.
+            //
+            // PrintLogger is static, so its file was only created once something
+            // printed. Anything that went wrong before that — a licence problem, a
+            // printer that would not enumerate — left no log at all, which is exactly
+            // when a field report needs evidence.
             try
             {
+                Apex.Services.Logging.PrintLogger.Info(
+                    "=== Apex Print OS {Version} started ===",
+                    System.Reflection.Assembly.GetExecutingAssembly()
+                        .GetName().Version?.ToString() ?? "?");
+            }
+            catch { /* logging must never block startup */ }
+
+            try
+            {
+                // ── Soft revocation (best-effort, fail-open) ──
+                // If this device is online and its Apex license was revoked on the
+                // server (e.g. after a refund), drop the local license so the app
+                // returns to activation-required. Offline machines are never locked
+                // out — the "works without internet" promise is preserved. Bounded so
+                // a slow/absent server never delays startup by more than a few seconds.
+                try
+                {
+                    if (LicenseManager.HasFullLicense())
+                    {
+                        var deviceId = LicenseManager.GetDeviceInfo().DeviceId;
+                        using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(5));
+                        bool revoked = new Apex.UI.Services.LicenseRevocationService()
+                            .IsRevokedAsync(deviceId, cts.Token).GetAwaiter().GetResult();
+                        if (revoked) LicenseManager.DeleteLicense();
+                    }
+                }
+                catch { /* revocation must never block or crash startup */ }
+
                 // ── License / Trial check ──
                 var licenseResult = LicenseManager.Validate();
                 if (!licenseResult.IsValid)
@@ -162,9 +196,7 @@ namespace Apex.UI
             {
                 WriteCrashLog("crash_log.txt", "DispatcherUnhandledException", e.Exception);
                 e.Handled = true;
-                MessageBox.Show(
-                    $"خطأ غير متوقع:\n{e.Exception.Message}",
-                    "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                ReportToUser(e.Exception);
             };
 
             TaskScheduler.UnobservedTaskException += (_, e) =>
@@ -172,6 +204,60 @@ namespace Apex.UI
                 WriteCrashLog("crash_log.txt", "UnobservedTaskException", e.Exception);
                 e.SetObserved();
             };
+        }
+
+        private bool _errorDialogOpen;
+        private string? _lastReportedError;
+        private DateTime _lastReportUtc = DateTime.MinValue;
+
+        /// <summary>
+        /// Shows an unexpected error without turning it into a crash.
+        ///
+        /// This used to call MessageBox.Show straight from the handler. When the
+        /// exception came from inside a layout pass — a template referencing a
+        /// resource that is not there, say — the modal dialog pumped messages, which
+        /// ran layout again, which threw again, which opened another dialog inside
+        /// the first. On 2026-08-05 that nested twelve times in one second and the
+        /// process died of a stack overflow (0xc00000fd, faulting in dwrite.dll —
+        /// the deepest frame of the nested layout, not the culprit).
+        ///
+        /// Two things prevent that recurring: the dialog is posted back to the queue
+        /// so it opens after the current pass has unwound, and a repeat of the same
+        /// error is logged but not shown again.
+        /// </summary>
+        private void ReportToUser(Exception? ex)
+        {
+            if (ex is null) return;
+
+            var message = ex.Message;
+            var now = DateTime.UtcNow;
+
+            if (_errorDialogOpen) return;
+
+            // A fault during layout repeats every frame. Say it once.
+            if (message == _lastReportedError && (now - _lastReportUtc) < TimeSpan.FromSeconds(30))
+                return;
+
+            _lastReportedError = message;
+            _lastReportUtc = now;
+
+            var dispatcher = Current?.Dispatcher;
+            if (dispatcher is null || dispatcher.HasShutdownStarted) return;
+
+            dispatcher.BeginInvoke(new Action(() =>
+            {
+                _errorDialogOpen = true;
+                try
+                {
+                    MessageBox.Show(
+                        $"خطأ غير متوقع:\n{message}",
+                        "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                finally
+                {
+                    _errorDialogOpen = false;
+                }
+            }), System.Windows.Threading.DispatcherPriority.Background);
         }
 
         private static void WriteCrashLog(string fileName, string source, Exception? ex)

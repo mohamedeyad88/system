@@ -209,7 +209,11 @@
                                     <ComboBox SelectedValue="{Binding SelectedLanguage}" SelectedValuePath="Tag" 
                                               BorderThickness="0" Background="Transparent" Foreground="White"
                                               FontSize="14" Padding="10,8">
-                                        <ComboBoxItem Content="🇺🇸 English" Tag="en"/>
+                                        <!-- No flag emoji: Windows has no glyphs for
+                                             regional-indicator pairs, so 🇺🇸 rendered as the
+                                             bare letters "US" and the item read "US English".
+                                             A language is not a country anyway. -->
+                                        <ComboBoxItem Content="{DynamicResource SET2_002}" Tag="en"/>
                                         <ComboBoxItem Content="{DynamicResource SET2_001}" Tag="ar"/>
                                     </ComboBox>
                                 </Border>

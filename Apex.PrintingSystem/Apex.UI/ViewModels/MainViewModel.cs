@@ -26,11 +26,61 @@ namespace Apex.UI.ViewModels
         public bool IsImpositionActive => CurrentViewModel is ImpositionViewModel;
         public bool IsPageToolsActive => CurrentViewModel is PageToolsViewModel;
 
-        public MainViewModel(IServiceScopeFactory scopeFactory)
+        // ── Shell-wide live print status ─────────────────────────────────────
+        // The batch runs in a singleton, so its progress can be shown from ANY
+        // section: the operator sets up the next job while a run prints, and still
+        // sees how it is going without navigating back to Printing.
+        private readonly Apex.Services.Printing.BatchPrintJobManager _batch;
+        [ObservableProperty] private bool _isPrintingGlobally;
+        [ObservableProperty] private double _printProgress;
+        [ObservableProperty] private string _printStatusText = "";
+
+        private readonly Apex.UI.Services.WorkflowHandoff _handoff;
+
+        public MainViewModel(IServiceScopeFactory scopeFactory, Apex.Services.Printing.BatchPrintJobManager batch,
+            Apex.UI.Services.WorkflowHandoff handoff)
         {
             _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
+            _batch = batch ?? throw new ArgumentNullException(nameof(batch));
+            _handoff = handoff ?? throw new ArgumentNullException(nameof(handoff));
+            HookPrintStatus();
+            // Workflow chain: a producer section asks to send its output to Printing;
+            // the shell navigates there and drops the file into the queue.
+            _handoff.SendToPrintingRequested += OnSendToPrinting;
             _ = CheckForUpdatesAsync();   // fire-and-forget; never blocks startup
         }
+
+        private void OnSendToPrinting(string filePath) => OnUi(() =>
+        {
+            NavigateToPrintManager();
+            if (CurrentViewModel is PrintManagerViewModel pm)
+                pm.IngestExternalFile(filePath);
+        });
+
+        private void HookPrintStatus()
+        {
+            _batch.OnBatchStatusChanged += (_, s) => OnUi(() =>
+            {
+                if (s == "Starting batch...")
+                { IsPrintingGlobally = true; PrintProgress = 0; PrintStatusText = L("Shell_PrintStarting"); }
+            });
+            _batch.OnBatchProgressChanged += (_, p) => OnUi(() =>
+            {
+                PrintProgress = p.PercentComplete;
+                // Still running while any job is unattempted (a held printer keeps the
+                // bar up); it clears itself once every job has been attempted.
+                IsPrintingGlobally = p.TotalJobs > 0 && p.AttemptedJobs < p.TotalJobs;
+                PrintStatusText = Lf("Shell_Printing", p.CompletedJobs, p.TotalJobs);
+            });
+            _batch.OnPrinterHeld += (_, e) => OnUi(() =>
+            {
+                IsPrintingGlobally = true;
+                PrintStatusText = Lf("Shell_PrintHeld", e.PrinterName);
+            });
+        }
+
+        private static void OnUi(Action action)
+            => System.Windows.Application.Current?.Dispatcher.InvokeAsync(action);
 
         // ── App update notice (server-driven) ─────────────────────────────────
         [ObservableProperty] private bool _updateAvailable;

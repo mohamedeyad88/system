@@ -45,11 +45,17 @@ namespace Apex.Services.Printing.VendorDetection
         /// <param name="printerName">Target printer name.</param>
         /// <param name="printData">Data to print (PDF bytes, etc.).</param>
         /// <param name="cancellationToken">Cancellation token.</param>
+        /// <param name="jobName">
+        /// What the operator sees in the printer queue — the document's file name.
+        /// Every job used to be submitted as "Apex Print Job", so a queue of twenty
+        /// files was twenty identical rows with no way to tell them apart.
+        /// </param>
         /// <returns>True if printing succeeded.</returns>
         public async Task<VendorPrintResult> PrintWithVendorOptimizationAsync(
             string printerName,
             byte[] printData,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default,
+            string? jobName = null)
         {
             var result = new VendorPrintResult { PrinterName = printerName };
             var stopwatch = Stopwatch.StartNew();
@@ -74,7 +80,8 @@ namespace Apex.Services.Printing.VendorDetection
                     printData,
                     profile,
                     metadata,
-                    cancellationToken);
+                    cancellationToken,
+                    jobName);
 
                 if (success)
                 {
@@ -116,7 +123,8 @@ namespace Apex.Services.Printing.VendorDetection
             byte[] data,
             VendorPrintProfile profile,
             PrinterMetadata metadata,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            string? jobName = null)
         {
             int retryCount = 0;
             bool success = false;
@@ -134,7 +142,7 @@ namespace Apex.Services.Printing.VendorDetection
                     }
 
                     success = await ExecutePrintWithProfileAsync(
-                        printerName, data, profile, metadata, cancellationToken);
+                        printerName, data, profile, metadata, cancellationToken, jobName);
                 }
                 catch (Exception ex)
                 {
@@ -164,7 +172,8 @@ namespace Apex.Services.Printing.VendorDetection
             byte[] data,
             VendorPrintProfile profile,
             PrinterMetadata metadata,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            string? jobName = null)
         {
             UpdateStatus(StatusMessages[2]);
 
@@ -179,7 +188,7 @@ namespace Apex.Services.Printing.VendorDetection
             if (profile.PreferRawPrinting && metadata.SupportsDirectPdf)
             {
                 return await SendRawDataAsync(printerName, data, chunkSize,
-                    profile.ChunkDelayMs, timeout, cancellationToken);
+                    profile.ChunkDelayMs, timeout, cancellationToken, jobName);
             }
             else
             {
@@ -197,7 +206,8 @@ namespace Apex.Services.Printing.VendorDetection
             int chunkSize,
             int chunkDelayMs,
             int timeoutMs,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            string? jobName = null)
         {
             return await Task.Run(async () =>
             {
@@ -215,7 +225,9 @@ namespace Apex.Services.Printing.VendorDetection
                     try
                     {
                         // Start document
-                        if (!Helpers.RawPrinterHelper.StartDocument(hPrinter, "Apex Print Job"))
+                        if (!Helpers.RawPrinterHelper.StartDocument(
+                                hPrinter,
+                                string.IsNullOrWhiteSpace(jobName) ? "Apex Print Job" : jobName!))
                         {
                             Helpers.RawPrinterHelper.ClosePrinter(hPrinter);
                             return false;

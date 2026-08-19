@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Apex.Services.SmartVariables;
 
 namespace Apex.UI.Rendering
 {
@@ -49,16 +50,54 @@ namespace Apex.UI.Rendering
         {
             if (string.IsNullOrEmpty(text) || rect.Width <= 0 || rect.Height <= 0) return;
 
+            var typeface = new Typeface(
+                new FontFamily(string.IsNullOrWhiteSpace(style.FontFamily) ? "Tahoma" : style.FontFamily),
+                style.Style,
+                style.Weight,
+                FontStretches.Normal);
+
+            double size = Math.Max(style.FontSize, 1);
+
+            // Shrink to fit before falling back to trimming.
+            //
+            // The field model has offered ShrinkToFit since the beginning — and it is
+            // the DEFAULT — while this method only ever trimmed with an ellipsis. On a
+            // run of several thousand records every unusually long name was quietly
+            // cut short, and it is only visible once the job is printed.
+            if (style.MinFontSize > 0 && style.MinFontSize < size)
+            {
+                var fit = CopyFitCalculator.Fit(
+                    text, rect.Width, rect.Height, size, style.MinFontSize,
+                    (t, s) => Measure(t, s, typeface, style));
+
+                size = fit.FontSize;
+            }
+
+            var ft = Build(text, size, typeface, style, rect);
+            _dc.DrawText(ft, rect.TopLeft);
+        }
+
+        /// <summary>Natural size of <paramref name="text"/> at a given font size.</summary>
+        private static (double Width, double Height) Measure(
+            string text, double fontSize, Typeface typeface, TextStyle style)
+        {
+            // Measured WRAPPED at the box width: the height that comes back is the
+            // height the text will actually occupy, so a long line that wraps to three
+            // lines is judged on those three lines rather than on one long one.
             var ft = new FormattedText(
-                text,
+                text, CultureInfo.CurrentUICulture, style.FlowDirection, typeface,
+                Math.Max(fontSize, 0.1), Brushes.Black, pixelsPerDip: 1.0);
+
+            return (ft.Width, ft.Height);
+        }
+
+        private static FormattedText Build(
+            string text, double size, Typeface typeface, TextStyle style, Rect rect) =>
+            new(text,
                 CultureInfo.CurrentUICulture,
                 style.FlowDirection,
-                new Typeface(
-                    new FontFamily(string.IsNullOrWhiteSpace(style.FontFamily) ? "Tahoma" : style.FontFamily),
-                    style.Style,
-                    style.Weight,
-                    FontStretches.Normal),
-                Math.Max(style.FontSize, 1),
+                typeface,
+                Math.Max(size, 1),
                 style.Foreground ?? Brushes.Black,
                 // Text is laid out in DIPs, so the pixels-per-DIP is 1 here; the
                 // RenderTargetBitmap applies the export DPI afterwards.
@@ -67,11 +106,10 @@ namespace Apex.UI.Rendering
                 MaxTextWidth = rect.Width,
                 MaxTextHeight = rect.Height,
                 TextAlignment = style.Alignment,
+                // Still the last resort: a record that cannot fit even at the minimum
+                // size is trimmed rather than allowed to spill over its neighbours.
                 Trimming = TextTrimming.CharacterEllipsis,
             };
-
-            _dc.DrawText(ft, rect.TopLeft);
-        }
 
         public void PushClip(Rect rect)
         {

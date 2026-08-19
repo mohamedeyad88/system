@@ -30,6 +30,58 @@ namespace Apex.Services.Imposition
             return Save(output);
         }
 
+        // ── Rotate / extract / delete a page range (1-based; toPage 0 = last) ─────────
+        /// <summary>Rotates pages in [from,to] by a multiple of 90°.</summary>
+        public byte[] RotatePages(byte[] pdf, int degrees, int fromPage = 1, int toPage = 0)
+        {
+            int norm = ((degrees % 360) + 360) % 360;
+            if (norm % 90 != 0) throw new ArgumentException("التدوير يجب أن يكون من مضاعفات 90 درجة.");
+
+            using var src = OpenImport(pdf);
+            (fromPage, toPage) = NormalizeRange(fromPage, toPage, src.PageCount);
+
+            using var output = new PdfDocument();
+            for (int i = 1; i <= src.PageCount; i++)
+            {
+                var page = output.AddPage(src.Pages[i - 1]);
+                if (i >= fromPage && i <= toPage) page.Rotate = (page.Rotate + norm) % 360;
+            }
+            return Save(output);
+        }
+
+        /// <summary>Keeps only pages in [from,to].</summary>
+        public byte[] ExtractPages(byte[] pdf, int fromPage, int toPage = 0)
+        {
+            using var src = OpenImport(pdf);
+            (fromPage, toPage) = NormalizeRange(fromPage, toPage, src.PageCount);
+
+            using var output = new PdfDocument();
+            for (int i = fromPage; i <= toPage; i++) output.AddPage(src.Pages[i - 1]);
+            if (output.PageCount == 0) throw new InvalidOperationException("النطاق لا يحتوي على صفحات.");
+            return Save(output);
+        }
+
+        /// <summary>Removes pages in [from,to].</summary>
+        public byte[] DeletePages(byte[] pdf, int fromPage, int toPage = 0)
+        {
+            using var src = OpenImport(pdf);
+            (fromPage, toPage) = NormalizeRange(fromPage, toPage, src.PageCount);
+
+            using var output = new PdfDocument();
+            for (int i = 1; i <= src.PageCount; i++)
+                if (i < fromPage || i > toPage) output.AddPage(src.Pages[i - 1]);
+            if (output.PageCount == 0) throw new InvalidOperationException("لا يمكن حذف كل الصفحات.");
+            return Save(output);
+        }
+
+        private static (int from, int to) NormalizeRange(int fromPage, int toPage, int pageCount)
+        {
+            if (toPage <= 0 || toPage > pageCount) toPage = pageCount;
+            if (fromPage < 1) fromPage = 1;
+            if (fromPage > toPage) throw new ArgumentException("نطاق الصفحات غير صحيح.");
+            return (fromPage, toPage);
+        }
+
         // ── Interleave fronts/backs (shuffle even/odd — duplex scan fix) ────────────
         /// <summary>
         /// Combines a document whose first half is the fronts and second half the backs
@@ -155,7 +207,16 @@ namespace Apex.Services.Imposition
         }
 
         // ── Add bleed (extend canvas) ───────────────────────────────────────────────
-        /// <summary>Extends every page by <paramref name="bleedMm"/> on all sides, content centred.</summary>
+        /// <summary>
+        /// Extends every page by <paramref name="bleedMm"/> on all sides, content centred,
+        /// and marks where the sheet is meant to be cut.
+        ///
+        /// The trim box is the point of the operation. Growing the page without one
+        /// leaves a RIP or cutter to assume the media box IS the finished size, so the
+        /// bleed gets printed as part of the product instead of being trimmed off —
+        /// the exact opposite of what was asked for. The imposition engine already
+        /// writes these boxes; this path used to drop them.
+        /// </summary>
         public byte[] AddBleed(byte[] pdf, double bleedMm)
         {
             if (bleedMm <= 0) throw new ArgumentException("قيمة النزيف يجب أن تكون أكبر من صفر.");
@@ -173,6 +234,17 @@ namespace Apex.Services.Imposition
                     page.Height = sh + bleed * 2;
                     using var gfx = XGraphics.FromPdfPage(page);
                     gfx.DrawImage(form, bleed, bleed, sw, sh);
+
+                    // The original page rectangle, centred in the enlarged sheet: the
+                    // finished size after cutting. BleedBox is the whole new sheet,
+                    // since every added millimetre is bleed by definition here.
+                    page.TrimBox = new PdfSharpCore.Pdf.PdfRectangle(
+                        new XPoint(bleed, bleed),
+                        new XPoint(bleed + sw, bleed + sh));
+
+                    page.BleedBox = new PdfSharpCore.Pdf.PdfRectangle(
+                        new XPoint(0, 0),
+                        new XPoint(sw + bleed * 2, sh + bleed * 2));
                 }
             });
         }
@@ -294,6 +366,149 @@ namespace Apex.Services.Imposition
         /// <summary>Rasterizes one page (<paramref name="page0"/>, 0-based) of a PDF to a PNG.</summary>
         public byte[] RenderPagePng(byte[] pdf, int page0 = 0, int dpi = 110)
             => PdfRasterizer.RenderPng(pdf, page0, dpi);
+
+        // ── Step-and-repeat (cards / stickers many-up) ───────────────────────────────
+        /// <summary>
+        /// Places the first page (a card / label design) on a press sheet in a
+        /// cols×rows grid with gutters, centred, optionally with crop marks at every
+        /// card corner — the classic "many-up" for business cards and stickers.
+        /// Fails loudly if the grid does not fit the sheet.
+        /// </summary>
+        public byte[] StepAndRepeat(byte[] pdf, double sheetWidthMm, double sheetHeightMm,
+            int cols, int rows, double gutterMm = 0, bool cropMarks = true)
+        {
+            if (cols < 1 || rows < 1) throw new ArgumentException("عدد الأعمدة والصفوف يجب أن يكون 1 على الأقل.");
+            double sheetW = sheetWidthMm * MmToPt, sheetH = sheetHeightMm * MmToPt, gutter = gutterMm * MmToPt;
+
+            return WithStagedForm(pdf, (tmp, output) =>
+            {
+                using var form = XPdfForm.FromFile(tmp); form.PageNumber = 1;
+                double cardW = form.PointWidth, cardH = form.PointHeight;
+
+                double gridW = cols * cardW + (cols - 1) * gutter;
+                double gridH = rows * cardH + (rows - 1) * gutter;
+                if (gridW > sheetW + 0.5 || gridH > sheetH + 0.5)
+                    throw new InvalidOperationException(
+                        $"التصميم {cols}×{rows} أكبر من الفرخ — قلّل العدد أو كبّر مقاس الفرخ.");
+
+                double offX = (sheetW - gridW) / 2;
+                double offY = (sheetH - gridH) / 2;
+
+                var page = output.AddPage();
+                page.Width = sheetW; page.Height = sheetH;
+                using var gfx = XGraphics.FromPdfPage(page);
+
+                for (int r = 0; r < rows; r++)
+                    for (int c = 0; c < cols; c++)
+                    {
+                        double x = offX + c * (cardW + gutter);
+                        double y = offY + r * (cardH + gutter);
+                        gfx.DrawImage(form, x, y, cardW, cardH);
+                        if (cropMarks) DrawCropMarks(gfx, x, y, cardW, cardH);
+                    }
+            });
+        }
+
+        /// <summary>Short black hairlines just outside each corner — the trim guide.</summary>
+        private static void DrawCropMarks(XGraphics gfx, double x, double y, double w, double h)
+        {
+            double len = 4 * MmToPt;    // 4 mm marks
+            double off = 1.5 * MmToPt;  // clear of the artwork edge
+            var pen = new XPen(XColors.Black, 0.4);
+
+            // XGraphics origin is top-left, y down; (x,y) is the card's top-left corner.
+            gfx.DrawLine(pen, x - off, y, x - off - len, y);
+            gfx.DrawLine(pen, x, y - off, x, y - off - len);
+            gfx.DrawLine(pen, x + w + off, y, x + w + off + len, y);
+            gfx.DrawLine(pen, x + w, y - off, x + w, y - off - len);
+            gfx.DrawLine(pen, x - off, y + h, x - off - len, y + h);
+            gfx.DrawLine(pen, x, y + h + off, x, y + h + off + len);
+            gfx.DrawLine(pen, x + w + off, y + h, x + w + off + len, y + h);
+            gfx.DrawLine(pen, x + w, y + h + off, x + w, y + h + off + len);
+        }
+
+        // ── Printer's marks on any sheet ─────────────────────────────────────────────
+        /// <summary>
+        /// Adds a margin around every page and draws professional printer's marks in it:
+        /// corner crop marks, registration targets on each side, and a CMYK/RGB colour
+        /// bar. The original content is the trim area, centred.
+        /// </summary>
+        public byte[] AddPrinterMarks(byte[] pdf, double marginMm = 10,
+            bool cropMarks = true, bool registration = true, bool colorBars = true)
+        {
+            if (marginMm <= 0) throw new ArgumentException("هامش العلامات يجب أن يكون أكبر من صفر.");
+            int count = GetPageCount(pdf);
+            double m = marginMm * MmToPt;
+
+            return WithStagedForm(pdf, (tmp, output) =>
+            {
+                for (int i = 1; i <= count; i++)
+                {
+                    using var form = XPdfForm.FromFile(tmp); form.PageNumber = i;
+                    double sw = form.PointWidth, sh = form.PointHeight;
+                    var page = output.AddPage();
+                    page.Width = sw + 2 * m; page.Height = sh + 2 * m;
+                    using var gfx = XGraphics.FromPdfPage(page);
+                    gfx.DrawImage(form, m, m, sw, sh);                 // content = trim area
+
+                    // Mark the trim rectangle whose top-left is (m, m).
+                    page.TrimBox = new PdfSharpCore.Pdf.PdfRectangle(
+                        new XPoint(m, m), new XPoint(m + sw, m + sh));
+
+                    if (cropMarks) DrawCropMarks(gfx, m, m, sw, sh);
+                    if (registration) DrawRegistrationMarks(gfx, m, m, sw, sh, m);
+                    if (colorBars) DrawColorBars(gfx, m, m + sh, sw, m);
+                }
+            });
+        }
+
+        private static void DrawRegistrationMarks(XGraphics gfx, double x, double y, double w, double h, double margin)
+        {
+            double r = 3 * MmToPt;
+            DrawReg(gfx, x + w / 2, y - margin / 2, r);         // top
+            DrawReg(gfx, x + w / 2, y + h + margin / 2, r);     // bottom
+            DrawReg(gfx, x - margin / 2, y + h / 2, r);         // left
+            DrawReg(gfx, x + w + margin / 2, y + h / 2, r);     // right
+        }
+
+        private static void DrawReg(XGraphics gfx, double cx, double cy, double r)
+        {
+            var pen = new XPen(XColors.Black, 0.4);
+            gfx.DrawEllipse(pen, cx - r, cy - r, 2 * r, 2 * r);
+            gfx.DrawEllipse(pen, cx - r / 2, cy - r / 2, r, r);
+            gfx.DrawLine(pen, cx - r * 1.4, cy, cx + r * 1.4, cy);
+            gfx.DrawLine(pen, cx, cy - r * 1.4, cx, cy + r * 1.4);
+        }
+
+        private static void DrawColorBars(XGraphics gfx, double x, double bottomY, double w, double margin)
+        {
+            // Approximate CMYK (PDFium renders RGB) + primaries + greys.
+            string[] swatches = { "#00AEEF", "#EC008C", "#FFF200", "#000000", "#FF0000", "#00FF00", "#0000FF", "#808080" };
+            double sw = 8 * MmToPt, sh = 5 * MmToPt, gap = 1 * MmToPt;
+            double totalW = swatches.Length * sw + (swatches.Length - 1) * gap;
+            double startX = x + (w - totalW) / 2;
+            double sy = bottomY + (margin - sh) / 2;
+            for (int i = 0; i < swatches.Length; i++)
+                gfx.DrawRectangle(new XSolidBrush(ParseHex(swatches[i])), startX + i * (sw + gap), sy, sw, sh);
+        }
+
+        // ── Split into multiple files ────────────────────────────────────────────────
+        /// <summary>Splits the document into parts of <paramref name="pagesPerFile"/> pages each.</summary>
+        public IReadOnlyList<byte[]> SplitEvery(byte[] pdf, int pagesPerFile)
+        {
+            if (pagesPerFile < 1) throw new ArgumentException("عدد الصفحات لكل ملف يجب أن يكون 1 على الأقل.");
+            using var src = OpenImport(pdf);
+            int n = src.PageCount;
+            var parts = new List<byte[]>();
+            for (int start = 1; start <= n; start += pagesPerFile)
+            {
+                using var output = new PdfDocument();
+                int end = Math.Min(start + pagesPerFile - 1, n);
+                for (int i = start; i <= end; i++) output.AddPage(src.Pages[i - 1]);
+                parts.Add(Save(output));
+            }
+            return parts;
+        }
 
         private static byte[] WithStagedForm(byte[] pdf, Action<string, PdfDocument> build)
         {

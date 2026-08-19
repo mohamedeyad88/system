@@ -5,7 +5,9 @@
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None"
         AllowsTransparency="True" Background="Transparent">
     
-    <Border Background="#FFFFFF" CornerRadius="12" BorderBrush="#E5E7EB" BorderThickness="1">
+    <!-- Dark-theme dialog (was a fully light-mode window: white surface, dark text —
+         it stood out jarringly against the dark app when opened from the slot swatch). -->
+    <Border Background="#1E293B" CornerRadius="12" BorderBrush="#334155" BorderThickness="1">
         <Border.Effect>
             <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.15" Color="#000"/>
         </Border.Effect>
@@ -17,13 +19,13 @@
             </Grid.RowDefinitions>
 
             <!-- Title -->
-            <TextBlock Text="{DynamicResource CPW_001}" FontSize="18" FontWeight="SemiBold" Foreground="#111827" Margin="0,0,0,20"/>
+            <TextBlock Text="{DynamicResource CPW_001}" FontSize="18" FontWeight="SemiBold" Foreground="#F1F5F9" Margin="0,0,0,20"/>
 
             <!-- Color Palette -->
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <!-- Preset Colors -->
-                    <TextBlock Text="{DynamicResource CPW_002}" FontSize="14" FontWeight="SemiBold" Foreground="#6B7280" Margin="0,0,0,12"/>
+                    <TextBlock Text="{DynamicResource CPW_002}" FontSize="14" FontWeight="SemiBold" Foreground="#94A3B8" Margin="0,0,0,12"/>
                     
                     <ItemsControl x:Name="PresetColorsGrid">
                         <ItemsControl.ItemsPanel>
@@ -35,7 +37,7 @@
                             <DataTemplate>
                                 <Border Width="40" Height="40" 
                                         Background="{Binding}" 
-                                        BorderBrush="#D1D5DB" 
+                                        BorderBrush="#475569" 
                                         BorderThickness="1"
                                         CornerRadius="6"
                                         Margin="4"
@@ -62,7 +64,7 @@
                     </ItemsControl>
 
                     <!-- Custom Color -->
-                    <TextBlock Text="{DynamicResource CPW_003}" FontSize="14" FontWeight="SemiBold" Foreground="#6B7280" Margin="0,20,0,12"/>
+                    <TextBlock Text="{DynamicResource CPW_003}" FontSize="14" FontWeight="SemiBold" Foreground="#94A3B8" Margin="0,20,0,12"/>
                     
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -73,27 +75,29 @@
                         <StackPanel>
                             <!-- RGB Sliders -->
                             <StackPanel Margin="0,0,0,12">
-                                <TextBlock Text="R" Foreground="#6B7280" FontSize="11" Margin="0,0,0,4"/>
+                                <TextBlock Text="R" Foreground="#94A3B8" FontSize="11" Margin="0,0,0,4"/>
                                 <Slider x:Name="RedSlider" Minimum="0" Maximum="255" Value="0" ValueChanged="ColorSlider_ValueChanged"/>
                             </StackPanel>
                             
                             <StackPanel Margin="0,0,0,12">
-                                <TextBlock Text="G" Foreground="#6B7280" FontSize="11" Margin="0,0,0,4"/>
+                                <TextBlock Text="G" Foreground="#94A3B8" FontSize="11" Margin="0,0,0,4"/>
                                 <Slider x:Name="GreenSlider" Minimum="0" Maximum="255" Value="0" ValueChanged="ColorSlider_ValueChanged"/>
                             </StackPanel>
                             
                             <StackPanel Margin="0,0,0,12">
-                                <TextBlock Text="B" Foreground="#6B7280" FontSize="11" Margin="0,0,0,4"/>
+                                <TextBlock Text="B" Foreground="#94A3B8" FontSize="11" Margin="0,0,0,4"/>
                                 <Slider x:Name="BlueSlider" Minimum="0" Maximum="255" Value="0" ValueChanged="ColorSlider_ValueChanged"/>
                             </StackPanel>
                             
                             <!-- Hex Input -->
-                            <TextBlock Text="Hex" Foreground="#6B7280" FontSize="11" Margin="0,0,0,4"/>
-                            <TextBox x:Name="HexInput" 
+                            <TextBlock Text="Hex" Foreground="#94A3B8" FontSize="11" Margin="0,0,0,4"/>
+                            <TextBox x:Name="HexInput"
                                      Text="#000000"
                                      TextChanged="HexInput_TextChanged"
-                                     Background="White"
-                                     BorderBrush="#D1D5DB"
+                                     Background="#0F172A"
+                                     Foreground="#F1F5F9"
+                                     CaretBrush="#F1F5F9"
+                                     BorderBrush="#475569"
                                      BorderThickness="1"
                                      Padding="8,6"
                                      Height="36"/>
@@ -105,7 +109,7 @@
                                 Width="80" 
                                 Height="80" 
                                 Background="#000000"
-                                BorderBrush="#D1D5DB"
+                                BorderBrush="#475569"
                                 BorderThickness="1"
                                 CornerRadius="8"
                                 Margin="16,0,0,0"/>
@@ -116,7 +120,7 @@
             <!-- Actions -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
                 <Button Content="{DynamicResource CPW_004}" x:Name="BtnCancel" Click="BtnCancel_Click"
-                        Background="#F3F4F6" Foreground="#374151" BorderThickness="0"
+                        Background="#334155" Foreground="#F1F5F9" BorderThickness="0"
                         Padding="16,10" Margin="0,0,12,0" Width="100" Cursor="Hand">
                     <Button.Style>
                         <Style TargetType="Button">

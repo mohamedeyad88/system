@@ -136,6 +136,17 @@ namespace Apex.Licensing
             MachineIdentity.GetDeviceInfo();
 
         /// <summary>
+        /// Removes the installed license file. Used by soft revocation: once the server
+        /// reports this device's license as revoked (e.g. after a refund), the local
+        /// license is dropped so the app falls back to trial / activation-required.
+        /// </summary>
+        public static void DeleteLicense()
+        {
+            try { if (File.Exists(LicensePath)) File.Delete(LicensePath); }
+            catch { /* best-effort; a locked/absent file must never crash startup */ }
+        }
+
+        /// <summary>
         /// Returns true if a valid full license is already installed.
         /// </summary>
         public static bool HasFullLicense()

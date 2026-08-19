@@ -149,6 +149,42 @@ namespace Apex.UI.ViewModels
         [ObservableProperty] private double _utilizationPercent;
         [ObservableProperty] private string _humanReadableSummary = "";
 
+        /// <summary>
+        /// "نعم" / "لا" rather than the raw boolean. The summary used to bind straight
+        /// to IsDuplex, so the operator read "طباعة وجهين: False" — a .NET literal in
+        /// an Arabic report.
+        /// </summary>
+        public string DuplexText => IsDuplex ? L("Common_Yes") : L("Common_No");
+
+        partial void OnIsDuplexChanged(bool value) => OnPropertyChanged(nameof(DuplexText));
+
+        /// <summary>
+        /// The file name alone. Binding the full path and trimming it with an ellipsis
+        /// dropped the end — which in a path is the file name, the one part the
+        /// operator needs to confirm they loaded the right job. The folder stays
+        /// available as a tooltip.
+        /// </summary>
+        public string SourceFileName =>
+            string.IsNullOrEmpty(SourcePath) ? "" : Path.GetFileName(SourcePath);
+
+        partial void OnSourcePathChanged(string value)
+        {
+            OnPropertyChanged(nameof(SourceFileName));
+            OnPropertyChanged(nameof(HasNoSource));
+        }
+
+        /// <summary>
+        /// Whether to show the "no file chosen yet" placeholder.
+        ///
+        /// The view bound that placeholder's Visibility to HasSource through a
+        /// converter that returns a bool, not a Visibility — so it never collapsed,
+        /// and the screen said "لم يتم اختيار ملف بعد" directly under the loaded
+        /// file's path.
+        /// </summary>
+        public bool HasNoSource => !HasSource;
+
+        partial void OnHasSourceChanged(bool value) => OnPropertyChanged(nameof(HasNoSource));
+
         public ObservableCollection<string> Warnings { get; } = new();
 
         // Preview rectangles (normalised 0-1) for the first sheet's front side
@@ -207,19 +243,60 @@ namespace Apex.UI.ViewModels
         public string[] AvailablePdfX { get; } =
             { Res("Imp_PlainPdf"), Res("Imp_IntentX1a"), Res("Imp_IntentX3") };
 
+        private readonly Apex.UI.Services.WorkflowHandoff? _handoff;
+
         public ImpositionViewModel(
             ImpositionService planner,
             PdfOperationsService pdfOps,
             PdfImpositionEngine engine,
             ImpositionTemplateStore templates,
-            Apex.Core.Interfaces.IFileDialogService dialogs)
+            Apex.Core.Interfaces.IFileDialogService dialogs,
+            Apex.UI.Services.WorkflowHandoff? handoff = null)
         {
             _planner = planner ?? throw new ArgumentNullException(nameof(planner));
             _pdfOps = pdfOps ?? throw new ArgumentNullException(nameof(pdfOps));
             _engine = engine ?? throw new ArgumentNullException(nameof(engine));
             _templates = templates ?? throw new ArgumentNullException(nameof(templates));
             _dialogs = dialogs ?? throw new ArgumentNullException(nameof(dialogs));
+            _handoff = handoff;   // optional: null in unit tests, provided by DI at runtime
             RefreshTemplates();
+        }
+
+        /// <summary>Workflow chain: generate the imposed sheet and send it to the print queue.</summary>
+        [RelayCommand]
+        private async Task SendToPrintingAsync()
+        {
+            if (_handoff == null) return;
+            if (_lastResult == null || !_lastResult.IsValid)
+            { HasError = true; ErrorMessage = Res("Imp_PlanFirst"); return; }
+            if (!HasSource || !File.Exists(SourcePath))
+            { HasError = true; ErrorMessage = Res("Imp_ChooseValidSource"); return; }
+
+            var result = _lastResult;
+            var source = SourcePath;
+            var marks = BuildMarks();
+            var export = new ImpositionExportOptions
+            {
+                PdfX = (PdfXConformance)PdfXIndex,
+                Title = Path.GetFileNameWithoutExtension(SourcePath),
+                Author = "Apex Print OS"
+            };
+            string tmp = Path.Combine(Path.GetTempPath(),
+                $"{Path.GetFileNameWithoutExtension(SourcePath)}-imposed-{Guid.NewGuid():N}.pdf");
+
+            IsExporting = true; HasError = false; StatusMessage = Res("Imp_Exporting");
+            try
+            {
+                await Task.Run(() =>
+                {
+                    var pdf = _engine.Generate(result, source, marks, export);
+                    File.WriteAllBytes(tmp, pdf);
+                });
+                _handoff.SendToPrinting(tmp);
+                StatusMessage = Res("PT_SentToPrint");
+            }
+            catch (Exception ex) { HasError = true; ErrorMessage = Lf("Imp_ExportFailed", ex.Message); }
+            finally { IsExporting = false; }
         }
 
         // ── Partial callbacks ──────────────────────────────────────────────
@@ -391,6 +468,22 @@ namespace Apex.UI.ViewModels
         public bool HasPreviewImage => PreviewImage != null;
         partial void OnPreviewImageChanged(System.Windows.Media.Imaging.BitmapSource? value)
             => OnPropertyChanged(nameof(HasPreviewImage));
+
+        // ── Preview zoom ─────────────────────────────────────────────────────
+        // A press operator has to be able to zoom into the imposed sheet to check
+        // registration marks, gutters and slot placement before committing a run.
+        // 1.0 = fit; step/range match the Template Designer and Page Tools preview.
+        [ObservableProperty] private double _previewZoom = 1.0;
+        public string PreviewZoomLabel => $"{(int)System.Math.Round(PreviewZoom * 100)}%";
+        partial void OnPreviewZoomChanged(double value) => OnPropertyChanged(nameof(PreviewZoomLabel));
+
+        [RelayCommand] private void PreviewZoomIn()  => PreviewZoom = System.Math.Min(3.0, System.Math.Round(PreviewZoom + 0.25, 2));
+        [RelayCommand] private void PreviewZoomOut() => PreviewZoom = System.Math.Max(0.25, System.Math.Round(PreviewZoom - 0.25, 2));
+        [RelayCommand] private void PreviewZoomReset() => PreviewZoom = 1.0;
+
+        /// <summary>Ctrl+Wheel on the preview; +/- one 0.25 step per notch.</summary>
+        public void ApplyPreviewWheelZoom(int delta)
+            => PreviewZoom = System.Math.Round(System.Math.Max(0.25, System.Math.Min(3.0, PreviewZoom + (delta > 0 ? 0.25 : -0.25))), 2);
 
         private async Task RenderPreviewAsync()
         {
@@ -780,6 +873,12 @@ namespace Apex.UI.ViewModels
             IsDuplex = r.IsDuplex;
             UtilizationPercent = r.UtilizationPercent;
             HumanReadableSummary = r.HumanReadableSummary;
+
+            // Rebuild the derived text unconditionally. IsDuplex's own change handler
+            // fires only when the value flips, so a re-impose that leaves it false (the
+            // common case) would keep whatever نعم/لا string it was first computed in —
+            // which is also how it kept the startup language after the UI switched.
+            OnPropertyChanged(nameof(DuplexText));
 
             Warnings.Clear();
             foreach (var w in r.Warnings) Warnings.Add(w);

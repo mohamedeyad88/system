@@ -71,9 +71,10 @@ namespace Apex.Services
                             {
                                 info.IsOnline = !status.IsOffline;
                                 info.QueueLength = status.QueueLength;
-                                info.HasPaperJam = status.HasError && status.Status == "Error"; // Simple mapping
-                                info.IsOutOfPaper = status.Status == "Out of Paper";
-                                info.IsTonerLow = status.Status == "Low Toner";
+                                info.HasPaperJam = status.Condition == PrinterCondition.PaperJam;
+                                info.IsOutOfPaper = status.Condition == PrinterCondition.OutOfPaper;
+                                info.IsTonerLow = status.Condition is PrinterCondition.LowToner
+                                                                   or PrinterCondition.OutOfToner;
                             }
                             return info;
                         });

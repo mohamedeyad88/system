@@ -951,7 +951,7 @@
                              Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                              Style="{StaticResource DarkBox}"
                              Height="32" Margin="10,0,10,6"
-                             Tag="بحث في القوالب...">
+                             Tag="{DynamicResource TD_SearchTemplates}">
                         <TextBox.Template>
                             <ControlTemplate TargetType="TextBox">
                                 <Border Background="{DynamicResource Brush.Background}" BorderBrush="{DynamicResource Brush.Border.Light}"

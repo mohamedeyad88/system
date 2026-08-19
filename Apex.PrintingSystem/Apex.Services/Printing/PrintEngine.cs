@@ -103,6 +103,8 @@ namespace Apex.Services.Printing
                     using (PrintDocument pd = new PrintDocument())
                     {
                         pd.PrinterSettings.PrinterName = printerName;
+                        // Name the queue entry after the file, not "document".
+                        pd.DocumentName = Path.GetFileName(filePath);
 
                         pd.PrintPage += (s, e) =>
                         {

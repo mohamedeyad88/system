@@ -11,7 +11,17 @@ using System.Threading.Tasks;
 
 namespace Apex.Services
 {
-    public class PrinterMonitoringService : IHostedService, IDisposable
+    /// <summary>
+    /// Answers "can this printer print right now?" — the question the print path
+    /// has to ask before it feeds a station, and the seam that lets a test say
+    /// "pretend printer B has its door open".
+    /// </summary>
+    public interface IPrinterHealthProbe
+    {
+        PrinterStatusEventArgs? GetCurrentStatus(string printerName);
+    }
+
+    public class PrinterMonitoringService : IHostedService, IDisposable, IPrinterHealthProbe
     {
         private readonly ILoggerService _logger;
         private readonly IPrinterService _printerService;
@@ -106,28 +116,71 @@ namespace Apex.Services
                     using var printer = (ManagementObject)baseObj;
 
                     string name = printer["Name"]?.ToString() ?? string.Empty;
-                    string status = "Online";
+                    var condition = PrinterCondition.Ready;
                     bool isOffline = false;
-                    bool hasError = false;
 
                     // Check WorkOffline
                     if (bool.TryParse(printer["WorkOffline"]?.ToString(), out bool offline) && offline)
                     {
-                        status = "Offline";
+                        condition = PrinterCondition.Offline;
                         isOffline = true;
                     }
 
-                    // Check DetectedErrorState
-                    if (int.TryParse(printer["DetectedErrorState"]?.ToString(), out int errorState))
+                    // DetectedErrorState carries the CIM_Printer enumeration. It used
+                    // to be read as "4 is out of paper, 5 is low toner, anything else
+                    // above 2 is an error" — which swept Low Paper (3) in with the
+                    // faults. Harmless while nothing read the status; not harmless now
+                    // that a fault holds the job, because a tray with sheets still in
+                    // it would stop the station.
+                    if (int.TryParse(printer["DetectedErrorState"]?.ToString(), out int errorState)
+                        && errorState != 65535)
                     {
-                        if (errorState == 4) { status = "Out of Paper"; hasError = true; }
-                        else if (errorState == 5) { status = "Low Toner"; }
-                        else if (errorState > 2 && errorState != 65535) { status = "Error"; hasError = true; }
+                        var detected = errorState switch
+                        {
+                            3  => PrinterCondition.LowPaper,
+                            4  => PrinterCondition.OutOfPaper,
+                            5  => PrinterCondition.LowToner,
+                            6  => PrinterCondition.OutOfToner,
+                            7  => PrinterCondition.DoorOpen,
+                            8  => PrinterCondition.PaperJam,
+                            9  => PrinterCondition.NeedsAttention,   // service requested
+                            10 => PrinterCondition.OutputBinFull,
+                            11 => PrinterCondition.PaperProblem,
+                            12 => PrinterCondition.NeedsAttention,   // cannot print page
+                            13 => PrinterCondition.NeedsAttention,   // user intervention
+                            14 => PrinterCondition.NeedsAttention,   // out of memory
+                            _  => PrinterCondition.Ready             // 0 unknown, 1 other, 2 no error
+                        };
+
+                        // A device fault is more actionable than the offline flag,
+                        // which is often just a stale checkbox.
+                        if (detected != PrinterCondition.Ready)
+                            condition = detected;
                     }
+
+                    string status = condition switch
+                    {
+                        PrinterCondition.Ready         => "Online",
+                        PrinterCondition.LowPaper      => "Low Paper",
+                        PrinterCondition.LowToner      => "Low Toner",
+                        PrinterCondition.OutOfPaper    => "Out of Paper",
+                        PrinterCondition.OutOfToner    => "Out of Toner",
+                        PrinterCondition.DoorOpen      => "Door Open",
+                        PrinterCondition.PaperJam      => "Paper Jam",
+                        PrinterCondition.OutputBinFull => "Output Bin Full",
+                        PrinterCondition.PaperProblem  => "Paper Problem",
+                        PrinterCondition.Offline       => "Offline",
+                        _                              => "Needs Attention"
+                    };
 
                     int queueLength = jobCounts.TryGetValue(name, out int cnt) ? cnt : 0;
 
-                    var args = new PrinterStatusEventArgs(name, status, isOffline, hasError, queueLength);
+                    var args = new PrinterStatusEventArgs(
+                        name, condition, status, isOffline,
+                        hasError: condition is not (PrinterCondition.Ready
+                                                    or PrinterCondition.LowPaper
+                                                    or PrinterCondition.LowToner),
+                        queueLength);
                     PrinterStatusChanged?.Invoke(this, args);
                     _currentStatuses[name] = args;
                 }
@@ -168,17 +221,64 @@ namespace Apex.Services
         }
     }
 
+    /// <summary>
+    /// What a printer is actually doing, from the WMI DetectedErrorState value.
+    ///
+    /// The split that matters is between conditions a person has to walk over and
+    /// fix, and conditions that are merely worth saying out loud. A tray with fifty
+    /// sheets left still prints; a tray with none does not.
+    /// </summary>
+    public enum PrinterCondition
+    {
+        Ready = 0,
+
+        // ── warnings: the printer still prints ──
+        LowPaper,
+        LowToner,
+
+        // ── faults: the printer needs a person ──
+        OutOfPaper,
+        OutOfToner,
+        DoorOpen,
+        PaperJam,
+        OutputBinFull,
+        PaperProblem,
+        NeedsAttention,
+        Offline
+    }
+
     public class PrinterStatusEventArgs : EventArgs
     {
         public string PrinterName { get; }
+        public PrinterCondition Condition { get; }
         public string Status { get; }
         public bool IsOffline { get; }
         public bool HasError { get; }
         public int QueueLength { get; }
 
-        public PrinterStatusEventArgs(string printerName, string status, bool isOffline, bool hasError, int queueLength)
+        /// <summary>
+        /// True when the printer cannot print until somebody attends to it.
+        ///
+        /// This is the flag the print path holds on. It is deliberately false for
+        /// LowPaper and LowToner: treating those as faults would stop a station
+        /// that is still perfectly able to finish the run.
+        /// </summary>
+        public bool RequiresIntervention => Condition is
+            PrinterCondition.OutOfPaper or
+            PrinterCondition.OutOfToner or
+            PrinterCondition.DoorOpen or
+            PrinterCondition.PaperJam or
+            PrinterCondition.OutputBinFull or
+            PrinterCondition.PaperProblem or
+            PrinterCondition.NeedsAttention or
+            PrinterCondition.Offline;
+
+        public PrinterStatusEventArgs(
+            string printerName, PrinterCondition condition, string status,
+            bool isOffline, bool hasError, int queueLength)
         {
             PrinterName = printerName;
+            Condition = condition;
             Status = status;
             IsOffline = isOffline;
             HasError = hasError;

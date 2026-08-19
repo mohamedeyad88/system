@@ -4,8 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodels="clr-namespace:Apex.UI.ViewModels"
+        xmlns:svc="clr-namespace:Apex.UI.Services"
         mc:Ignorable="d"
-        Title="System Logs" Height="600" Width="900" WindowStartupLocation="CenterScreen">
+        Title="{DynamicResource Log_Title}" Height="600" Width="900" WindowStartupLocation="CenterScreen"
+        FlowDirection="{Binding Source={x:Static svc:LocalizationService.Instance}, Path=FlowDirection, Mode=OneWay}">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -13,9 +15,9 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-            <Button Content="Refresh" Command="{Binding RefreshCommand}" Padding="10,5" Margin="0,0,10,0"/>
-            <Button Content="Open Log Folder" Command="{Binding OpenLogFolderCommand}" Padding="10,5"/>
-            <CheckBox Content="Auto Refresh" IsChecked="{Binding AutoRefresh}" Margin="20,0,0,0" VerticalAlignment="Center"/>
+            <Button Content="{DynamicResource Log_Refresh}" Command="{Binding RefreshCommand}" Padding="10,5" Margin="0,0,10,0"/>
+            <Button Content="{DynamicResource Log_OpenFolder}" Command="{Binding OpenLogFolderCommand}" Padding="10,5"/>
+            <CheckBox Content="{DynamicResource Log_AutoRefresh}" IsChecked="{Binding AutoRefresh}" Margin="20,0,0,0" VerticalAlignment="Center"/>
             
             <TextBlock Text="{DynamicResource Log_Filter}" VerticalAlignment="Center" Margin="20,0,5,0"/>
             <ComboBox ItemsSource="{Binding LogLevels}" 
@@ -25,6 +27,11 @@
             <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="200" VerticalContentAlignment="Center" Padding="5"/>
         </StackPanel>
 
-        <TextBox Grid.Row="1" Text="{Binding LogContent}" IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="12"/>
+        <!-- The log itself is always LTR: Serilog writes English timestamps, levels
+             and stack traces, which read wrong if the window's RTL flow reaches them. -->
+        <TextBox Grid.Row="1" Text="{Binding LogContent}" IsReadOnly="True"
+                 FlowDirection="LeftToRight"
+                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                 FontFamily="Consolas" FontSize="12"/>
     </Grid>
 </Window>

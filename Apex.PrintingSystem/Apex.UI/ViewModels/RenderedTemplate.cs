@@ -89,6 +89,14 @@ namespace Apex.UI.ViewModels
         // ── Text styling ──────────────────────────────────────────────────────
         public string FontFamily { get; set; } = "Tahoma";
         public double FontSize { get; set; } = 12;
+
+        /// <summary>
+        /// Smallest size this field may shrink to so a long value still fits its box.
+        /// 0 disables shrinking and the value is trimmed with an ellipsis instead.
+        /// Real names vary far more in length than a template author allows for, so
+        /// this is what stops a variable-data run from quietly cutting records short.
+        /// </summary>
+        public double MinFontSize { get; set; } = 6;
         public bool Bold { get; set; }
         public bool Italic { get; set; }
         public string TextColor { get; set; } = "#000000";

@@ -55,6 +55,32 @@ namespace Apex.NumberedBooksEngine.Core
         }
 
         /// <summary>
+        /// Hands the job's number format to every component that draws a number.
+        ///
+        /// There are two: the composer builds previews and PDF pages, the command
+        /// builder feeds the streaming printer. Configuring one and not the other is
+        /// how a job came to print NumberFormatOptions.Default instead of what the
+        /// operator chose, so they are set together here and nowhere else.
+        /// </summary>
+        internal void ApplyNumberFormat(NumberFormatOptions? requested, bool useArabicDigits)
+        {
+            var format = (requested ?? NumberFormatOptions.Default) with
+            {
+                UseArabicDigits = useArabicDigits
+            };
+
+            _composer.UseArabicDigits = useArabicDigits;
+            _composer.NumberFormat = format;
+            _commandBuilder.NumberFormat = format;
+        }
+
+        /// <summary>The format the composer will draw with — for tests.</summary>
+        internal NumberFormatOptions ComposerNumberFormat => _composer.NumberFormat;
+
+        /// <summary>The format the streaming printer will draw with — for tests.</summary>
+        internal NumberFormatOptions PrintBuilderNumberFormat => _commandBuilder.NumberFormat;
+
+        /// <summary>
         /// Runs a streaming print job using "template once" optimization.
         /// </summary>
         public async Task<JobResult> RunStreamingPrintJobAsync(
@@ -74,13 +100,9 @@ namespace Apex.NumberedBooksEngine.Core
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] Numbers: {options.StartNumber} to {options.StartNumber + options.TotalNumbers - 1}");
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] ═══════════════════════════════════════════════════════════");
 
-                // Apply job-level formatting options to composer
-                _composer.UseArabicDigits = options.UseArabicDigits;
-                _composer.NumberFormat =
-                    (options.NumberFormat ?? NumberFormatOptions.Default) with
-                    {
-                        UseArabicDigits = options.UseArabicDigits
-                    };
+                // The streaming path below draws through _commandBuilder, not the
+                // composer, so both have to be configured — see ApplyNumberFormat.
+                ApplyNumberFormat(options.NumberFormat, options.UseArabicDigits);
 
                 // 1. Check for resume checkpoint
                 var resumeNumber = await _checkpointManager.GetResumeStartNumberAsync(jobId);

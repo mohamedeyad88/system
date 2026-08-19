@@ -140,13 +140,24 @@ namespace Apex.UI.Views
         {
             if ((Keyboard.Modifiers & ModifierKeys.Control) == 0) return;
             if (DataContext is not TemplateDesignerViewModel vm) return;
-
-            if (e.Delta > 0)
-                vm.ZoomInCommand.Execute(null);
-            else
-                vm.ZoomOutCommand.Execute(null);
-
             e.Handled = true;
+
+            // Zoom toward the mouse pointer: keep the artboard point under the cursor
+            // fixed. ZoomBoost drives a LayoutTransform, so the ScrollViewer's extent
+            // grows with it and the scroll offset can hold the anchor in place.
+            double oldZoom = vm.ZoomBoost;
+            double newZoom = Math.Clamp(Math.Round(oldZoom + (e.Delta > 0 ? 0.25 : -0.25), 2), 0.25, 3.0);
+            if (newZoom == oldZoom) return;
+
+            var mouse = e.GetPosition(CanvasScrollViewer);
+            double factor = newZoom / oldZoom;
+            double anchorX = CanvasScrollViewer.HorizontalOffset + mouse.X;
+            double anchorY = CanvasScrollViewer.VerticalOffset + mouse.Y;
+
+            vm.ZoomBoost = newZoom;
+            CanvasScrollViewer.UpdateLayout();
+            CanvasScrollViewer.ScrollToHorizontalOffset(anchorX * factor - mouse.X);
+            CanvasScrollViewer.ScrollToVerticalOffset(anchorY * factor - mouse.Y);
         }
 
         // ── Fit to window ─────────────────────────────────────────────────────
@@ -205,8 +216,13 @@ namespace Apex.UI.Views
         {
             var dlg = new OpenFileDialog
             {
-                Title = "اختر صورة الخلفية",
-                Filter = "صور|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tiff|كل الملفات|*.*"
+                Title = "اختر خلفية التصميم (صورة أو PDF)",
+                // PDF is accepted as a design base: the first page is rasterised and set
+                // as the background, so numbering / variable fields can be laid on top.
+                Filter = "صور و PDF|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tiff;*.pdf|"
+                       + "PDF|*.pdf|"
+                       + "صور|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tiff|"
+                       + "كل الملفات|*.*"
             };
             if (dlg.ShowDialog() != true) return;
             if (DataContext is TemplateDesignerViewModel vm)

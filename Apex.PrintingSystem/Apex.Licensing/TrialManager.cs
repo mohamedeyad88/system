@@ -28,7 +28,9 @@ namespace Apex.Licensing
         /// new field-test rollout). Do NOT bump it every release, or the trial
         /// would reset on every update.
         /// </summary>
-        public const int TrialEpoch = 1;
+        // Bumped to 2 for the 2.6.0 field-test rollout: the trials opened on
+        // 2026-08-03 had run out, which stopped testing on every machine.
+        public const int TrialEpoch = 2;
         private const string AppFolder = "ApexPrintingSystem";
         private const string TrialFileName = "apex_trial.dat";
         private const string RegistrySubKey = @"SOFTWARE\ApexPrintingSystem\Trial";

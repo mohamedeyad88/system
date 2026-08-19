@@ -85,9 +85,28 @@
                             </Button.Content>
                         </Button>
 
-                        <!-- ══ Section: Production & Printing ══ -->
-                        <TextBlock Text="{DynamicResource Nav_Section_Daily}" FontSize="11" FontWeight="SemiBold"
+                        <!-- ══ Section: Design ══ — reordered into production-flow order:
+                             design → prepress → print (was Production/Design split). -->
+                        <TextBlock Text="{DynamicResource Nav_Section_Design}" FontSize="11" FontWeight="SemiBold"
                                    Foreground="#6B7280" Margin="8,16,0,8"/>
+
+                        <!-- 📄 Template Designer -->
+                        <Button Command="{Binding NavigateToTemplateDesignerCommand}" Style="{StaticResource NavItemButton}"
+                                controls:NavAssist.Icon="📄"
+                                controls:NavAssist.IsActive="{Binding IsTemplateDesignerActive}">
+                            <controls:NavAssist.IconBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#14B8A6" Offset="0"/>
+                                    <GradientStop Color="#0F766E" Offset="1"/>
+                                </LinearGradientBrush>
+                            </controls:NavAssist.IconBrush>
+                            <Button.Content>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Nav_TemplateDesigner}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                    <TextBlock Text="{DynamicResource Nav_TemplateDesigner_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
 
                         <!-- 📚 Numbered Books -->
                         <Button Command="{Binding NavigateToNumberedBooksCommand}" Style="{StaticResource NavItemButton}"
@@ -107,45 +126,24 @@
                             </Button.Content>
                         </Button>
 
-                        <!-- 🖨️ Printing — one place for the whole job:
-                             file queue + one or many printers + distribution mode.
-                             (Replaces the old split between "Quick Print" and
-                             "Print Operations", which each held half the workflow.) -->
-                        <Button Command="{Binding NavigateToPrintManagerCommand}" Style="{StaticResource NavItemButton}"
-                                controls:NavAssist.Icon="🖨️"
-                                controls:NavAssist.IsActive="{Binding IsPrintManagerActive}">
-                            <controls:NavAssist.IconBrush>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="#22C55E" Offset="0"/>
-                                    <GradientStop Color="#16A34A" Offset="1"/>
-                                </LinearGradientBrush>
-                            </controls:NavAssist.IconBrush>
-                            <Button.Content>
-                                <StackPanel>
-                                    <TextBlock Text="{DynamicResource Nav_Printing}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                    <TextBlock Text="{DynamicResource Nav_Printing_Desc}" FontSize="10" Foreground="#9CA3AF"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-
-                        <!-- ══ Section: Design & Prepress ══ -->
-                        <TextBlock Text="{DynamicResource Nav_Section_Design}" FontSize="11" FontWeight="SemiBold"
+                        <!-- ══ Section: Prepress ══ -->
+                        <TextBlock Text="{DynamicResource Nav_Section_Prepress}" FontSize="11" FontWeight="SemiBold"
                                    Foreground="#6B7280" Margin="8,16,0,8"/>
 
-                        <!-- 📄 Template Designer -->
-                        <Button Command="{Binding NavigateToTemplateDesignerCommand}" Style="{StaticResource NavItemButton}"
-                                controls:NavAssist.Icon="📄"
-                                controls:NavAssist.IsActive="{Binding IsTemplateDesignerActive}">
+                        <!-- 🧰 Page Tools -->
+                        <Button Command="{Binding NavigateToPageToolsCommand}" Style="{StaticResource NavItemButton}"
+                                controls:NavAssist.Icon="🧰"
+                                controls:NavAssist.IsActive="{Binding IsPageToolsActive}">
                             <controls:NavAssist.IconBrush>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="#14B8A6" Offset="0"/>
-                                    <GradientStop Color="#0F766E" Offset="1"/>
+                                    <GradientStop Color="#0EA5E9" Offset="0"/>
+                                    <GradientStop Color="#0369A1" Offset="1"/>
                                 </LinearGradientBrush>
                             </controls:NavAssist.IconBrush>
                             <Button.Content>
                                 <StackPanel>
-                                    <TextBlock Text="{DynamicResource Nav_TemplateDesigner}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                    <TextBlock Text="{DynamicResource Nav_TemplateDesigner_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                    <TextBlock Text="{DynamicResource Nav_PageTools}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                    <TextBlock Text="{DynamicResource Nav_PageTools_Desc}" FontSize="10" Foreground="#9CA3AF"/>
                                 </StackPanel>
                             </Button.Content>
                         </Button>
@@ -168,24 +166,6 @@
                             </Button.Content>
                         </Button>
 
-                        <!-- 🧰 Page Tools -->
-                        <Button Command="{Binding NavigateToPageToolsCommand}" Style="{StaticResource NavItemButton}"
-                                controls:NavAssist.Icon="🧰"
-                                controls:NavAssist.IsActive="{Binding IsPageToolsActive}">
-                            <controls:NavAssist.IconBrush>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="#0EA5E9" Offset="0"/>
-                                    <GradientStop Color="#0369A1" Offset="1"/>
-                                </LinearGradientBrush>
-                            </controls:NavAssist.IconBrush>
-                            <Button.Content>
-                                <StackPanel>
-                                    <TextBlock Text="{DynamicResource Nav_PageTools}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                    <TextBlock Text="{DynamicResource Nav_PageTools_Desc}" FontSize="10" Foreground="#9CA3AF"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-
                         <!-- 🎨 Color Calibration -->
                         <Button Command="{Binding NavigateToColorCalibrationCommand}" Style="{StaticResource NavItemButton}"
                                 controls:NavAssist.Icon="🎨"
@@ -200,6 +180,29 @@
                                 <StackPanel>
                                     <TextBlock Text="{DynamicResource Nav_ColorCalibration}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
                                     <TextBlock Text="{DynamicResource Nav_ColorCalibration_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+
+                        <!-- ══ Section: Printing ══ (the last stage) -->
+                        <TextBlock Text="{DynamicResource Nav_Section_Daily}" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="#6B7280" Margin="8,16,0,8"/>
+
+                        <!-- 🖨️ Printing — one place for the whole job:
+                             file queue + one or many printers + distribution mode. -->
+                        <Button Command="{Binding NavigateToPrintManagerCommand}" Style="{StaticResource NavItemButton}"
+                                controls:NavAssist.Icon="🖨️"
+                                controls:NavAssist.IsActive="{Binding IsPrintManagerActive}">
+                            <controls:NavAssist.IconBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#22C55E" Offset="0"/>
+                                    <GradientStop Color="#16A34A" Offset="1"/>
+                                </LinearGradientBrush>
+                            </controls:NavAssist.IconBrush>
+                            <Button.Content>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Nav_Printing}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                    <TextBlock Text="{DynamicResource Nav_Printing_Desc}" FontSize="10" Foreground="#9CA3AF"/>
                                 </StackPanel>
                             </Button.Content>
                         </Button>
@@ -406,6 +409,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <!-- Update-available notice (server-driven, dismissible) -->
@@ -431,6 +435,25 @@
             </Border>
 
             <controls:TransitionContentControl Grid.Row="1" Content="{Binding CurrentViewModel}"/>
+
+            <!-- Persistent live print status — shown from EVERY section while a run is
+                 active, so the operator can set up the next job and still watch the
+                 press. Driven by the singleton BatchPrintJobManager via MainViewModel. -->
+            <Border Grid.Row="2" Background="#111827" BorderBrush="#334155" BorderThickness="0,1,0,0" Padding="16,8"
+                    Visibility="{Binding IsPrintingGlobally, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="🖨️" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <ProgressBar Grid.Column="1" Value="{Binding PrintProgress}" Maximum="100" Height="8"
+                                 VerticalAlignment="Center" Foreground="#3B82F6" Background="#334155" BorderThickness="0"/>
+                    <TextBlock Grid.Column="2" Text="{Binding PrintStatusText}" Foreground="#E2E8F0" FontSize="12"
+                               FontWeight="SemiBold" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                </Grid>
+            </Border>
         </Grid>
     </Grid>
 </Window>

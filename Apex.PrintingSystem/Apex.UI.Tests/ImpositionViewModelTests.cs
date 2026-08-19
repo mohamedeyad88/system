@@ -223,4 +223,71 @@ public class ImpositionViewModelTests
         vm.ExportCommand.Execute(null);   // no plan run yet
         Assert.True(vm.HasError);
     }
+
+    /// <summary>
+    /// The duplex line in the summary must be localized نعم/لا, never the raw .NET
+    /// boolean it used to bind to — the shop owner saw "طباعة وجهين: False".
+    ///
+    /// In a headless test Application.Current is null, so L(key) returns the key. The
+    /// point stands: DuplexText is the resolved yes/no STRING, not "True"/"False".
+    /// </summary>
+    [Fact]
+    public async System.Threading.Tasks.Task DuplexText_IsLocalisedYesNo_NotARawBool()
+    {
+        var vm = NewVm();
+        string src = WriteTempPdf(4);
+        try
+        {
+            vm.LoadSource(src);
+            // Zero margin and bleed so an A4 page fits the sheet and the plan is valid;
+            // otherwise PlanAsync returns early on "page larger than sheet".
+            vm.SheetMargin = 0;
+            vm.Bleed = 0;
+            await vm.PlanCommand.ExecuteAsync(null);
+
+            Assert.True(vm.HasResult, "the plan did not succeed, so the summary was never built");
+            Assert.NotEqual("True", vm.DuplexText);
+            Assert.NotEqual("False", vm.DuplexText);
+            Assert.Equal(vm.IsDuplex ? "Common_Yes" : "Common_No", vm.DuplexText);
+        }
+        finally { TryDelete(src); }
+    }
+
+    /// <summary>
+    /// The regression this guards: DuplexText is derived from IsDuplex, whose change
+    /// handler fires only when the value flips. A re-plan that leaves IsDuplex false
+    /// (the common case) must still refresh the text — otherwise it keeps whatever
+    /// language it was first built in. ApplyResult now notifies unconditionally.
+    /// </summary>
+    [Fact]
+    public async System.Threading.Tasks.Task DuplexText_RefreshesOnEveryPlan_EvenWhenValueUnchanged()
+    {
+        var vm = NewVm();
+        string src = WriteTempPdf(4);
+        try
+        {
+            vm.LoadSource(src);
+            vm.SheetMargin = 0;
+            vm.Bleed = 0;
+
+            int notifications = 0;
+            vm.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(vm.DuplexText)) notifications++;
+            };
+
+            await vm.PlanCommand.ExecuteAsync(null);
+            await vm.PlanCommand.ExecuteAsync(null);   // IsDuplex unchanged across both
+
+            Assert.True(notifications >= 2,
+                $"DuplexText was notified {notifications} time(s); a re-plan must refresh it");
+        }
+        finally { TryDelete(src); }
+    }
+
+    /// <summary>Deletes a temp file, tolerating a preview render that still holds it.</summary>
+    private static void TryDelete(string path)
+    {
+        try { System.IO.File.Delete(path); } catch (System.IO.IOException) { }
+    }
 }

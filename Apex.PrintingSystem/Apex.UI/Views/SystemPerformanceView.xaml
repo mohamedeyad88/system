@@ -8,13 +8,17 @@
              Background="#0F172A">
     
     <UserControl.Resources>
-        <!-- Metric Card -->
+        <!-- Metric Card — dark surface with a hairline border, matching the dashboard
+             stat cards. (The four cards used to carry light pastel gradients with dark
+             text, which read as light-mode tiles marooned on the dark screen.) -->
         <Style x:Key="MetricCard" TargetType="Border">
             <Setter Property="CornerRadius" Value="16"/>
             <Setter Property="Padding" Value="24"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.08" Color="#000"/>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.25" Color="#000"/>
                 </Setter.Value>
             </Setter>
         </Style>
@@ -29,8 +33,10 @@
 
         <!-- Header -->
         <StackPanel Grid.Row="0" Margin="0,0,0,24">
-            <TextBlock Text="📊 System Performance" FontSize="28" FontWeight="Bold" Foreground="#0F172A"/>
-            <TextBlock Text="{DynamicResource Performance_RealTimeMetrics}" FontSize="14" Foreground="#64748B" Margin="0,4,0,0"/>
+            <TextBlock FontSize="28" FontWeight="Bold" Foreground="#F1F5F9">
+                <Run Text="📊 "/><Run Text="{DynamicResource Nav_Performance}"/>
+            </TextBlock>
+            <TextBlock Text="{DynamicResource Performance_RealTimeMetrics}" FontSize="14" Foreground="{DynamicResource Brush.Text.Secondary}" Margin="0,4,0,0"/>
         </StackPanel>
 
         <!-- Main Metrics -->
@@ -39,8 +45,8 @@
             <Border Style="{StaticResource MetricCard}" Margin="0,0,16,0">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#DBEAFE" Offset="0"/>
-                        <GradientStop Color="#BFDBFE" Offset="1"/>
+                        <GradientStop Color="#1E293B" Offset="0"/>
+                        <GradientStop Color="#1E3A5F" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
                 <Grid>
@@ -52,8 +58,8 @@
                     <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="#3B82F6" HorizontalAlignment="Left" Margin="0,0,0,16">
                         <TextBlock Text="💾" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
-                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_MemoryUsage}" FontSize="13" Foreground="#1E40AF" Margin="0,0,0,4"/>
-                    <TextBlock Grid.Row="2" Text="{Binding MemoryUsageMB, StringFormat='{}{0:F1} MB'}" FontSize="28" FontWeight="Bold" Foreground="#1D4ED8"/>
+                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_MemoryUsage}" FontSize="13" Foreground="#94A3B8" Margin="0,0,0,4"/>
+                    <TextBlock Grid.Row="2" Text="{Binding MemoryUsageMB, StringFormat='{}{0:F1} MB'}" FontSize="28" FontWeight="Bold" Foreground="#60A5FA"/>
                 </Grid>
             </Border>
 
@@ -61,8 +67,8 @@
             <Border Style="{StaticResource MetricCard}" Margin="8,0">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#D1FAE5" Offset="0"/>
-                        <GradientStop Color="#A7F3D0" Offset="1"/>
+                        <GradientStop Color="#1E293B" Offset="0"/>
+                        <GradientStop Color="#14342B" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
                 <Grid>
@@ -74,8 +80,8 @@
                     <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="#10B981" HorizontalAlignment="Left" Margin="0,0,0,16">
                         <TextBlock Text="🧵" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
-                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_ActiveThreads}" FontSize="13" Foreground="#065F46" Margin="0,0,0,4"/>
-                    <TextBlock Grid.Row="2" Text="{Binding ThreadCount}" FontSize="28" FontWeight="Bold" Foreground="#047857"/>
+                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_ActiveThreads}" FontSize="13" Foreground="#94A3B8" Margin="0,0,0,4"/>
+                    <TextBlock Grid.Row="2" Text="{Binding ThreadCount}" FontSize="28" FontWeight="Bold" Foreground="#34D399"/>
                 </Grid>
             </Border>
 
@@ -83,8 +89,8 @@
             <Border Style="{StaticResource MetricCard}" Margin="8,0">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#FEF3C7" Offset="0"/>
-                        <GradientStop Color="#FDE68A" Offset="1"/>
+                        <GradientStop Color="#1E293B" Offset="0"/>
+                        <GradientStop Color="#2D2008" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
                 <Grid>
@@ -96,8 +102,8 @@
                     <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="#F59E0B" HorizontalAlignment="Left" Margin="0,0,0,16">
                         <TextBlock Text="⏱️" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
-                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_SystemUptime}" FontSize="13" Foreground="#92400E" Margin="0,0,0,4"/>
-                    <TextBlock Grid.Row="2" Text="{Binding Uptime}" FontSize="28" FontWeight="Bold" Foreground="#B45309"/>
+                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_SystemUptime}" FontSize="13" Foreground="#94A3B8" Margin="0,0,0,4"/>
+                    <TextBlock Grid.Row="2" Text="{Binding Uptime}" FontSize="28" FontWeight="Bold" Foreground="#FBBF24"/>
                 </Grid>
             </Border>
 
@@ -105,8 +111,8 @@
             <Border Style="{StaticResource MetricCard}" Margin="16,0,0,0">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#EDE9FE" Offset="0"/>
-                        <GradientStop Color="#DDD6FE" Offset="1"/>
+                        <GradientStop Color="#1E293B" Offset="0"/>
+                        <GradientStop Color="#2D1B4E" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
                 <Grid>
@@ -118,8 +124,8 @@
                     <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="#8B5CF6" HorizontalAlignment="Left" Margin="0,0,0,16">
                         <TextBlock Text="⚡" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
-                    <TextBlock Grid.Row="1" Text="CPU Usage" FontSize="13" Foreground="#5B21B6" Margin="0,0,0,4"/>
-                    <TextBlock Grid.Row="2" Text="{Binding CpuUsage, StringFormat='{}{0:F1}%', FallbackValue='0.0%'}" FontSize="28" FontWeight="Bold" Foreground="#7C3AED"/>
+                    <TextBlock Grid.Row="1" Text="{DynamicResource Performance_CpuUsage}" FontSize="13" Foreground="#94A3B8" Margin="0,0,0,4"/>
+                    <TextBlock Grid.Row="2" Text="{Binding CpuUsage, StringFormat='{}{0:F1}%', FallbackValue='0.0%'}" FontSize="28" FontWeight="Bold" Foreground="#A78BFA"/>
                 </Grid>
             </Border>
         </UniformGrid>
@@ -132,20 +138,20 @@
             </Grid.ColumnDefinitions>
 
             <!-- System Info -->
-            <Border Grid.Column="0" Background="White" CornerRadius="16" Padding="24" Margin="0,0,12,0">
+            <Border Grid.Column="0" Background="{DynamicResource Brush.Surface.Elevated}" BorderBrush="{DynamicResource Brush.Border.Light}" BorderThickness="1" CornerRadius="16" Padding="24" Margin="0,0,12,0">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.08" Color="#000"/>
                 </Border.Effect>
                 <StackPanel>
-                    <TextBlock Text="🖥️ System Information" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,20"/>
+                    <TextBlock Text="{DynamicResource Performance_SystemInfo}" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource Brush.Text.Primary}" Margin="0,0,0,20"/>
                     
                     <Grid Margin="0,0,0,12">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="140"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="OS Version" Foreground="#64748B"/>
-                        <TextBlock Grid.Column="1" Text="{Binding OsVersion, FallbackValue='Windows 11'}" FontWeight="Medium" Foreground="#1E293B"/>
+                        <TextBlock Text="{DynamicResource Performance_OsVersion}" Foreground="{DynamicResource Brush.Text.Secondary}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding OsVersion, FallbackValue='Windows 11'}" FontWeight="Medium" Foreground="{DynamicResource Brush.Text.Primary}"/>
                     </Grid>
                     
                     <Grid Margin="0,0,0,12">
@@ -153,8 +159,8 @@
                             <ColumnDefinition Width="140"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text=".NET Version" Foreground="#64748B"/>
-                        <TextBlock Grid.Column="1" Text="{Binding DotNetVersion, FallbackValue='.NET 8.0'}" FontWeight="Medium" Foreground="#1E293B"/>
+                        <TextBlock Text="{DynamicResource Performance_DotNetVersion}" Foreground="{DynamicResource Brush.Text.Secondary}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding DotNetVersion, FallbackValue='.NET 8.0'}" FontWeight="Medium" Foreground="{DynamicResource Brush.Text.Primary}"/>
                     </Grid>
                     
                     <Grid Margin="0,0,0,12">
@@ -162,8 +168,8 @@
                             <ColumnDefinition Width="140"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{DynamicResource Performance_AppVersion}" Foreground="#64748B"/>
-                        <TextBlock Grid.Column="1" Text="{Binding AppVersion, FallbackValue='1.0.0'}" FontWeight="Medium" Foreground="#1E293B"/>
+                        <TextBlock Text="{DynamicResource Performance_AppVersion}" Foreground="{DynamicResource Brush.Text.Secondary}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding AppVersion, FallbackValue='1.0.0'}" FontWeight="Medium" Foreground="{DynamicResource Brush.Text.Primary}"/>
                     </Grid>
                     
                     <Grid>
@@ -171,14 +177,14 @@
                             <ColumnDefinition Width="140"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{DynamicResource Performance_ProcessID}" Foreground="#64748B"/>
-                        <TextBlock Grid.Column="1" Text="{Binding ProcessId, FallbackValue='12345'}" FontWeight="Medium" Foreground="#1E293B"/>
+                        <TextBlock Text="{DynamicResource Performance_ProcessID}" Foreground="{DynamicResource Brush.Text.Secondary}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding ProcessId, FallbackValue='12345'}" FontWeight="Medium" Foreground="{DynamicResource Brush.Text.Primary}"/>
                     </Grid>
                 </StackPanel>
             </Border>
 
             <!-- Activity Log -->
-            <Border Grid.Column="1" Background="White" CornerRadius="16" Padding="24" Margin="12,0,0,0">
+            <Border Grid.Column="1" Background="{DynamicResource Brush.Surface.Elevated}" BorderBrush="{DynamicResource Brush.Border.Light}" BorderThickness="1" CornerRadius="16" Padding="24" Margin="12,0,0,0">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.08" Color="#000"/>
                 </Border.Effect>
@@ -187,7 +193,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Text="📋 Recent Activity" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,16"/>
+                    <TextBlock Grid.Row="0" Text="{DynamicResource Performance_RecentActivity}" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource Brush.Text.Primary}" Margin="0,0,0,16"/>
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                         <ItemsControl ItemsSource="{Binding RecentActivities}">
                             <ItemsControl.ItemTemplate>

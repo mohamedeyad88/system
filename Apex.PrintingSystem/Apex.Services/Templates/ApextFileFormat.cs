@@ -44,6 +44,16 @@ namespace Apex.Services.Templates
         public string ImageFitMode { get; set; } = "Contain";
         /// <summary>Opacity 0.0–1.0 (1 = fully opaque)</summary>
         public double Opacity { get; set; } = 1.0;
+
+        /// <summary>
+        /// Conditions that decide whether this slot prints for a given record.
+        ///
+        /// Empty means "always print", so every template made before this existed
+        /// behaves exactly as before. With rules, a discount line can be left off the
+        /// records that have no discount instead of printing an empty labelled box on
+        /// every piece — or the job being split in two and merged by hand.
+        /// </summary>
+        public List<SmartVariables.FieldRule> Rules { get; set; } = new();
     }
 
     public class TemplatePageDefinition

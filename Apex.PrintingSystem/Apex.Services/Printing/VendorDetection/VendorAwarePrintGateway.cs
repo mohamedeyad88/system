@@ -245,25 +245,28 @@ namespace Apex.Services.Printing.VendorDetection
                 try
                 {
                     // ═══════════════════════════════════════════════════════════════════
-                    // CRITICAL FIX: EPSON WF-C5210 needs Windows native printing
+                    // The vendor's own Windows driver is the primary path for every
+                    // printer, not a special case for one Epson model.
+                    //
+                    // The driver rasterises at the device's real resolution and honours
+                    // the duplex/colour/tray/paper settings the user chose. The RIP
+                    // pipeline below cannot: it rasterises pages itself and emits one
+                    // spooler job per page. It stays as a fallback for devices the
+                    // driver path cannot drive.
                     // ═══════════════════════════════════════════════════════════════════
-                    bool isWFC5210 = printerName.ToLowerInvariant().Contains("wf-c5210") ||
-                                     printerName.ToLowerInvariant().Contains("wfc5210");
+                    UpdateStatus("جاري الطباعة عبر تعريف الطابعة...");
 
-                    if (isWFC5210)
+                    var pdfPrinter = new Apex.Services.Printing.PdfDirectPrinter();
+                    success = await pdfPrinter.PrintPdfAsync(printerName, pdfPath, copies, settings);
+
+                    if (!success)
                     {
-                        UpdateStatus("جاري الطباعة باستخدام Windows native printing...");
                         Apex.Services.Logging.PrintLogger.Warning(
-                            "[Gateway] EPSON WF-C5210 detected - Using PdfDirectPrinter (Windows native)");
+                            "[Gateway] Driver path did not print on '{Printer}'. Falling back to the RIP pipeline.",
+                            printerName);
 
-                        var pdfPrinter = new Apex.Services.Printing.PdfDirectPrinter();
-                        success = await pdfPrinter.PrintPdfAsync(printerName, pdfPath, copies, settings);
-                    }
-                    else
-                    {
                         UpdateStatus("جاري الطباعة باستخدام Universal RIP Engine...");
 
-                        // Use Universal RIP Engine (capability-based, supports all printers)
                         var universalResult = await universalEngine.PrintPdfAsync(
                             pdfPath,
                             printerName,
@@ -272,10 +275,17 @@ namespace Apex.Services.Printing.VendorDetection
                             cancellationToken);
 
                         success = universalResult.Success;
-                    }
 
-                    // PRIORITY: Speed - No unnecessary delays
-                    // Removed page delay for faster printing
+                        if (!success)
+                        {
+                            Apex.Services.Logging.PrintLogger.Error(
+                                "[Gateway] Both paths failed on '{Printer}'. RIP reported: {Reason} (pages printed: {Printed}, failed: {Failed})",
+                                printerName,
+                                universalResult.ErrorMessage ?? "no reason recorded",
+                                universalResult.PagesPrinted,
+                                universalResult.FailedPages.Count);
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {

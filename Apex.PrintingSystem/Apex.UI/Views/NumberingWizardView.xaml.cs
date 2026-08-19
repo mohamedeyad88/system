@@ -24,28 +24,58 @@ namespace Apex.UI.Views
             InitializeComponent();
             TemplateCanvas.MouseLeave += (s, e) => ResetDragState();
 
-            // Mouse wheel zoom on canvas (Ctrl+Wheel)
-            TemplateCanvas.MouseWheel += (s, e) =>
-            {
-                if ((Keyboard.Modifiers & ModifierKeys.Control) != 0)
-                {
-                    ViewModel?.ApplyWheelZoom(e.Delta);
-                    e.Handled = true;
-                }
-            };
-
-            // Also allow wheel zoom on the outer scroll viewer area
+            // Ctrl+Wheel zooms toward the mouse pointer (Photoshop/browser style), not
+            // toward the centre. Handled on the whole control so it works whether the
+            // pointer is over the canvas or the surrounding scroll area.
             this.PreviewMouseWheel += (s, e) =>
             {
                 if ((Keyboard.Modifiers & ModifierKeys.Control) != 0)
                 {
-                    ViewModel?.ApplyWheelZoom(e.Delta);
+                    ZoomCanvasAtPointer(e.Delta, e);
                     e.Handled = true;
                 }
             };
         }
 
         private NumberingWizardViewModel? ViewModel => DataContext as NumberingWizardViewModel;
+
+        // Keep the ViewModel's notion of the canvas viewport in sync with the real
+        // ScrollViewer, so "Fit to screen" (Ctrl+F) fits the actual visible area
+        // instead of a hardcoded 800x600 guess.
+        private void CanvasScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (ViewModel != null && sender is ScrollViewer sv)
+            {
+                ViewModel.CanvasViewportWidth = sv.ViewportWidth > 0 ? sv.ViewportWidth : sv.ActualWidth;
+                ViewModel.CanvasViewportHeight = sv.ViewportHeight > 0 ? sv.ViewportHeight : sv.ActualHeight;
+            }
+        }
+
+        /// <summary>
+        /// Zooms the design canvas about the mouse pointer: the sheet point under the
+        /// cursor stays under the cursor after the zoom. Only works because the canvas
+        /// scales via LayoutTransform, so the ScrollViewer's extent grows with the zoom
+        /// and the scroll offset can hold the anchor point in place.
+        /// </summary>
+        private void ZoomCanvasAtPointer(int delta, System.Windows.Input.MouseEventArgs e)
+        {
+            if (ViewModel == null || CanvasScrollViewer == null) return;
+
+            double oldZoom = ViewModel.ZoomLevel;
+            double newZoom = NumberingWizardViewModel.ClampZoom(
+                oldZoom + (delta > 0 ? NumberingWizardViewModel.ZoomStep : -NumberingWizardViewModel.ZoomStep));
+            if (newZoom == oldZoom) return;
+
+            var mouse = e.GetPosition(CanvasScrollViewer);
+            double factor = newZoom / oldZoom;
+            double anchorX = CanvasScrollViewer.HorizontalOffset + mouse.X;
+            double anchorY = CanvasScrollViewer.VerticalOffset + mouse.Y;
+
+            ViewModel.ZoomLevel = newZoom;
+            CanvasScrollViewer.UpdateLayout();   // grow the extent before re-offsetting
+            CanvasScrollViewer.ScrollToHorizontalOffset(anchorX * factor - mouse.X);
+            CanvasScrollViewer.ScrollToVerticalOffset(anchorY * factor - mouse.Y);
+        }
 
         private void StartLayoutButton_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -75,12 +105,6 @@ namespace Apex.UI.Views
             {
                 MessageBox.Show("يرجى إدراج التصميم أولاً", "تحذير", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-        }
-
-        private void StartPrintButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel != null && ViewModel.StartPrintCommand.CanExecute(null))
-                ViewModel.StartPrintCommand.Execute(null);
         }
 
         private void ResetDragState()

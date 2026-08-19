@@ -100,7 +100,8 @@
              Light ribbon with visible tabs
              ═══════════════════════════════════════════════════════════════════ -->
         <Style x:Key="ModernTabItem" TargetType="TabItem">
-            <Setter Property="Foreground" Value="#4B5563"/>
+            <!-- Idle text lightened for the dark ribbon (was #4B5563, too dim on #0F172A). -->
+            <Setter Property="Foreground" Value="#94A3B8"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -127,8 +128,10 @@
                                 <Setter Property="Foreground" Value="#FFFFFF"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="TabBorder" Property="Background" Value="#E5E7EB"/>
-                                <Setter Property="Foreground" Value="#1F2937"/>
+                                <!-- Dark-theme hover (was #E5E7EB/#1F2937, a light-mode leftover). -->
+                                <Setter TargetName="TabBorder" Property="Background" Value="#334155"/>
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="#475569"/>
+                                <Setter Property="Foreground" Value="#F1F5F9"/>
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
@@ -152,8 +155,9 @@
         
         <!-- Modern Tab as RadioButton - More Reliable -->
         <Style x:Key="ModernTabRadioButton" TargetType="RadioButton">
-            <Setter Property="Foreground" Value="#4B5563"/>
-            <Setter Property="Background" Value="#F3F4F6"/>
+            <!-- Dark-theme idle state (was #4B5563 text on #F3F4F6, a light-mode leftover). -->
+            <Setter Property="Foreground" Value="#94A3B8"/>
+            <Setter Property="Background" Value="#0F172A"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -176,7 +180,10 @@
                                 <Setter Property="Foreground" Value="#FFFFFF"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="TabBorder" Property="Background" Value="#E5E7EB"/>
+                                <!-- Dark-theme hover (was #E5E7EB, a light-mode leftover). -->
+                                <Setter TargetName="TabBorder" Property="Background" Value="#334155"/>
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="#475569"/>
+                                <Setter Property="Foreground" Value="#F1F5F9"/>
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
@@ -432,15 +439,25 @@
                     <!-- Bound the variable tab-content height so the action buttons (Row 2)
                          below this border are never pushed off-screen on shorter windows.
                          Content scrolls within this cap instead of overflowing. -->
+                    <!-- Horizontal scrolling disabled on purpose. A ScrollViewer that
+                         can scroll sideways measures its content with unlimited width,
+                         so the WrapPanel inside would never reach a wrapping point and
+                         the ribbon would keep overflowing exactly as it did with a
+                         StackPanel. Constraining the width is what makes it wrap. -->
                     <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled"
                                   MaxHeight="420">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <!-- HOME Tab Content -->
-                        <StackPanel x:Name="HomeTabContentStackPanel" Grid.Row="0" Orientation="Horizontal" 
+                        <!-- A WrapPanel, not a horizontal StackPanel: a StackPanel gives
+                             its children unlimited width, so the ribbon simply grew past
+                             the window and left a quarter of itself behind a horizontal
+                             scrollbar even maximised on a 1920px display. Wrapping puts
+                             the overflow on a second line where it can be read. -->
+                        <WrapPanel x:Name="HomeTabContentStackPanel" Grid.Row="0" Orientation="Horizontal"
                                    Visibility="{Binding IsPrepareMode, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <!-- Insert Design Button Group -->
                         <Border BorderBrush="#334155" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,0">
@@ -635,7 +652,13 @@
                             <StackPanel>
                                 <TextBlock Text="{DynamicResource Numbering_DigitStyle}" FontSize="11" Foreground="#64748B" Margin="0,0,0,8"/>
                                 <StackPanel Orientation="Vertical">
+                                    <!-- The "(0123)" in this label is a SAMPLE of what will be
+                                         printed, so it has to render as Latin digits. Under the
+                                         Arabic UI, WPF was substituting them, and both options
+                                         read "(٠١٢٣)" — leaving the operator no way to see the
+                                         difference before committing a run. -->
                                     <RadioButton Content="{DynamicResource Numbering_DigitWestern}"
+                                                 NumberSubstitution.Substitution="European"
                                                  IsChecked="{Binding UseWesternDigits}"
                                                  GroupName="DigitStyle"
                                                  Margin="0,0,0,6"
@@ -1072,7 +1095,7 @@
                             </StackPanel>
                         </Border>
 
-                        </StackPanel>
+                        </WrapPanel>
 
                         <!-- LAYOUT Tab Content -->
                         <StackPanel Grid.Row="0" Orientation="Horizontal" 
@@ -1124,7 +1147,7 @@
                                                 </Setter>
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#E5E7EB"/>
+                                                        <Setter Property="Background" Value="#334155"/>
                                                         <Trigger.EnterActions>
                                                             <BeginStoryboard>
                                                                 <Storyboard>
@@ -1196,7 +1219,7 @@
                                                 </Setter>
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#E5E7EB"/>
+                                                        <Setter Property="Background" Value="#334155"/>
                                                         <Trigger.EnterActions>
                                                             <BeginStoryboard>
                                                                 <Storyboard>
@@ -1253,7 +1276,7 @@
                                                 </Setter>
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#E5E7EB"/>
+                                                        <Setter Property="Background" Value="#334155"/>
                                                         <Trigger.EnterActions>
                                                             <BeginStoryboard>
                                                                 <Storyboard>
@@ -1322,7 +1345,7 @@
                                                     <Setter Property="BorderBrush" Value="#2563EB"/>
                                                 </Trigger>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#E5E7EB"/>
+                                                    <Setter Property="Background" Value="#334155"/>
                                                     <Trigger.EnterActions>
                                                         <BeginStoryboard>
                                                             <Storyboard>
@@ -1466,8 +1489,9 @@
                                                         </Trigger.ExitActions>
                                                     </Trigger>
                                                     <Trigger Property="IsEnabled" Value="False">
-                                                        <Setter Property="Background" Value="#D1D5DB"/>
-                                                        <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                        <!-- Dark-theme disabled (was #D1D5DB/#9CA3AF, light-mode leftover). -->
+                                                        <Setter Property="Background" Value="#1E293B"/>
+                                                        <Setter Property="Foreground" Value="#475569"/>
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -1550,7 +1574,8 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <!-- Wraps for the same reason as the Home ribbon above. -->
+                    <WrapPanel Grid.Row="0" Orientation="Horizontal">
                         <!-- Printer Selection Group -->
                         <Border BorderBrush="#334155" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,0">
                             <StackPanel>
@@ -1613,7 +1638,7 @@
                                                 </Setter>
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#E5E7EB"/>
+                                                        <Setter Property="Background" Value="#334155"/>
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -1827,9 +1852,14 @@
                                              Checked="PrintScaleMode_Checked"/>
                             </StackPanel>
                         </StackPanel>
-                    </StackPanel>
 
-                        <!-- ════ LOW ② — سجل الطباعة + المشاريع الأخيرة ════ -->
+                        <!-- ════ LOW ② — سجل الطباعة + المشاريع الأخيرة ════
+                             This group is a WrapPanel item like the others; it used to
+                             sit AFTER </WrapPanel> with no Grid.Row, so it defaulted to
+                             Grid.Row="0" and drew ON TOP of the ribbon — the field
+                             operator saw its buttons clipped/overlapping. Keeping it
+                             inside the WrapPanel lets it wrap to a new line like every
+                             other group instead of overlapping them. -->
                         <Border Padding="0,0,0,0" Margin="16,0,0,0">
                             <StackPanel>
                                 <TextBlock Text="{DynamicResource Numbering_HistoryLabel}" FontSize="11" Foreground="#64748B" Margin="0,0,0,8"/>
@@ -1903,6 +1933,7 @@
                                 </StackPanel>
                             </StackPanel>
                         </Border>
+                    </WrapPanel>
 
                         <!-- Print Button (moved to Grid.Row="2" in parent Grid) -->
                     </Grid>
@@ -2084,9 +2115,12 @@
                     </Button>
                     
                     <!-- Print Button (visible in Execute mode) -->
+                    <!-- Command only. It used to also carry Click="StartPrintButton_Click",
+                         and that handler executed the very same StartPrintCommand, so one
+                         press fired the print twice. It is the only button of 45+ in this
+                         view with a Click handler; every other works on Command alone. -->
                             <Button x:Name="StartPrintButton"
-                                    Command="{Binding StartPrintCommand}" 
-                                    Click="StartPrintButton_Click"
+                                    Command="{Binding StartPrintCommand}"
                             Visibility="{Binding IsExecuteMode, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Foreground="White"
                                     Padding="28,14"
@@ -2131,7 +2165,9 @@
                                                 </Trigger.EnterActions>
                                             </Trigger>
                                             <Trigger Property="IsEnabled" Value="False">
-                                                <Setter Property="Background" Value="#D1D5DB"/>
+                                                <!-- Dark-theme disabled (was #D1D5DB, light-mode leftover). -->
+                                                <Setter Property="Background" Value="#1E293B"/>
+                                                <Setter Property="Foreground" Value="#475569"/>
                                                 <Setter Property="Effect" Value="{x:Null}"/>
                                             </Trigger>
                                         </Style.Triggers>
@@ -2355,6 +2391,8 @@
             
             <!-- Canvas Area -->
             <ScrollViewer Grid.Column="0"
+                          x:Name="CanvasScrollViewer"
+                          SizeChanged="CanvasScrollViewer_SizeChanged"
                           Background="{StaticResource CanvasBackgroundGradient}"
                           Padding="20"
                           HorizontalScrollBarVisibility="Auto"
@@ -2366,19 +2404,23 @@
                         CornerRadius="12"
                         Padding="24">
                     <Border x:Name="CanvasContainer">
-                        <Border Background="#1E293B" 
-                                BorderBrush="#94A3B8" 
+                        <Border Background="#1E293B"
+                                BorderBrush="#94A3B8"
                                 BorderThickness="3">
                             <Border.Effect>
                                 <DropShadowEffect BlurRadius="24" ShadowDepth="6" Opacity="0.15" Color="#1E293B"/>
                             </Border.Effect>
-                            <Border.RenderTransform>
-                                <ScaleTransform ScaleX="{Binding ZoomLevel}" 
-                                                ScaleY="{Binding ZoomLevel}"
-                                                CenterX="{Binding CanvasWidth, Converter={StaticResource DivideByTwoConverter}}"
-                                                CenterY="{Binding CanvasHeight, Converter={StaticResource DivideByTwoConverter}}"/>
-                            </Border.RenderTransform>
-                            
+                            <!-- Zoom via LayoutTransform (was RenderTransform + centre pivot).
+                                 RenderTransform is visual-only: the ScrollViewer never saw the
+                                 scaled size, so a zoomed-in sheet could not be scrolled to and
+                                 the pivot had to be faked at the centre. LayoutTransform grows
+                                 the real layout, so the scrollbars reach every part and the
+                                 code-behind can anchor the zoom on the mouse pointer. -->
+                            <Border.LayoutTransform>
+                                <ScaleTransform ScaleX="{Binding ZoomLevel}"
+                                                ScaleY="{Binding ZoomLevel}"/>
+                            </Border.LayoutTransform>
+
                             <Canvas x:Name="TemplateCanvas" 
                                     Width="{Binding CanvasWidth}" 
                                     Height="{Binding CanvasHeight}" 
@@ -2788,33 +2830,20 @@
                                        Foreground="#F1F5F9"
                                        Margin="0,0,0,20"/>
                             
+                            <!-- Read-only here: the printer is CHOSEN once in the top
+                                 ribbon (picker + properties gear + tray). This panel used
+                                 to repeat the whole dropdown, so the operator saw the
+                                 printer selector twice on one screen. -->
                             <TextBlock Text="{DynamicResource Numbering_Printer}"
                                        FontSize="12"
                                        Foreground="#64748B"
                                        Margin="0,0,0,8"/>
-                            <ComboBox ItemsSource="{Binding AvailablePrinters}"
-                                      SelectedItem="{Binding SelectedPrinter, Mode=TwoWay}"
-                                      Height="36" FontSize="13"
-                                      Background="#1E293B" Foreground="#E2E8F0"
-                                      BorderBrush="#475569" BorderThickness="1"
-                                      Margin="0,0,0,20">
-                                <ComboBox.ItemContainerStyle>
-                                    <Style TargetType="ComboBoxItem">
-                                        <Setter Property="Background" Value="#1E293B"/>
-                                        <Setter Property="Foreground" Value="#E2E8F0"/>
-                                        <Setter Property="Padding" Value="10,6"/>
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Background" Value="#334155"/>
-                                            </Trigger>
-                                            <Trigger Property="IsSelected" Value="True">
-                                                <Setter Property="Background" Value="#3B82F6"/>
-                                                <Setter Property="Foreground" Value="White"/>
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ComboBox.ItemContainerStyle>
-                            </ComboBox>
+                            <TextBlock Text="{Binding SelectedPrinter, FallbackValue='—', TargetNullValue='—'}"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="#E2E8F0"
+                                       TextTrimming="CharacterEllipsis"
+                                       Margin="0,0,0,20"/>
                             
                             <TextBlock Text="{DynamicResource Numbering_CopiesCountLabel}" 
                                        FontSize="12" 

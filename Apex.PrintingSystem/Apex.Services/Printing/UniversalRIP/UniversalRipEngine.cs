@@ -108,9 +108,12 @@ namespace Apex.Services.Printing.UniversalRIP
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[UniversalRIP] Error: {ex.Message}");
+                PrintLogger.Error(ex,
+                    "[UniversalRIP] Setup failed for '{Printer}' before any page was processed. Attempting recovery.",
+                    printerName);
+
                 result.Success = false;
-                result.ErrorMessage = ex.Message;
+                result.ErrorMessage = $"{ex.GetType().Name}: {ex.Message}";
 
                 // Attempt recovery
                 return await _recoverySystem.AttemptRecoveryAsync(
@@ -185,6 +188,9 @@ namespace Apex.Services.Printing.UniversalRIP
                         Apex.Services.Printing.RIP.RenderResult? renderResult = null;
                         try
                         {
+                            // Everything from here to the matching catch is one page.
+                            // It used to sit inside the whole-document try, so any
+                            // failure here threw away every remaining page.
                             renderResult = await _renderStrategy.RenderPageAsync(
                                 pdfPath,
                                 pageIndex,
@@ -243,7 +249,8 @@ namespace Apex.Services.Printing.UniversalRIP
                             {
                                 try
                                 {
-                                    await SendToPrinterAsync(printerName, outputBytes, pageDecision.OutputLanguage, cancellationToken);
+                                    await SendToPrinterAsync(printerName, outputBytes, pageDecision.OutputLanguage,
+                                        cancellationToken, System.IO.Path.GetFileName(pdfPath));
                                     sent = true;
                                     result.PagesPrinted++;
                                 }
@@ -296,10 +303,24 @@ namespace Apex.Services.Printing.UniversalRIP
                                         pageDecision,
                                         cancellationToken);
 
-                                    await SendToPrinterAsync(printerName, copyOutput, pageDecision.OutputLanguage, cancellationToken);
+                                    await SendToPrinterAsync(printerName, copyOutput, pageDecision.OutputLanguage,
+                                        cancellationToken, System.IO.Path.GetFileName(pdfPath));
                                     copyResult.Dispose();
                                 }
                             }
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            throw;   // the operator stopped the batch
+                        }
+                        catch (Exception pageEx)
+                        {
+                            PrintLogger.Error(pageEx,
+                                "[UniversalRIP] Page {Page} of {Total} failed on '{Printer}'. Continuing with the next page.",
+                                pageIndex + 1, pageCount, printerName);
+
+                            result.FailedPages.Add(pageIndex);
+                            result.Errors.Add($"Page {pageIndex + 1}: {pageEx.Message}");
                         }
                         finally
                         {
@@ -308,13 +329,30 @@ namespace Apex.Services.Printing.UniversalRIP
                     }
 
                     result.Success = result.FailedPages.Count == 0;
+
+                    if (!result.Success)
+                    {
+                        result.ErrorMessage =
+                            $"طُبعت {result.PagesPrinted} صفحة، وفشلت {result.FailedPages.Count}: " +
+                            string.Join(" | ", result.Errors.Take(3));
+
+                        PrintLogger.Warning(
+                            "[UniversalRIP] '{Printer}': {Printed} pages printed, {Failed} failed.",
+                            printerName, result.PagesPrinted, result.FailedPages.Count);
+                    }
+
                     return result;
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"[UniversalRIP] Pipeline error: {ex.Message}");
+                    // This used to be a Debug.WriteLine, which writes nothing in a
+                    // released build — a field failure left no trace of its cause.
+                    PrintLogger.Error(ex,
+                        "[UniversalRIP] Pipeline aborted for '{Printer}' after {Printed} pages.",
+                        printerName, result.PagesPrinted);
+
                     result.Success = false;
-                    result.ErrorMessage = ex.Message;
+                    result.ErrorMessage = $"{ex.GetType().Name}: {ex.Message}";
                     return result;
                 }
             }, cancellationToken);
@@ -336,18 +374,24 @@ namespace Apex.Services.Printing.UniversalRIP
         }
 
 
+        /// <param name="jobName">
+        /// The queue entry's name. Every job went in as "Apex Print Job", so a queue of
+        /// twenty files showed twenty identical rows — the operator could not tell them
+        /// apart, cancel one, or match a jam to the file that caused it.
+        /// </param>
         private async Task SendToPrinterAsync(
             string printerName,
             byte[] data,
             PrintLanguage language,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            string? jobName = null)
         {
             await Task.Run(() =>
             {
                 try
                 {
                     // Use Windows Raw Printing API - now properly throws exceptions with Win32 details
-                    SendRawDataToPrinter(printerName, data, language.ToString());
+                    SendRawDataToPrinter(printerName, data, language.ToString(), jobName);
                     PrintLogger.Info("[UniversalRIP] Successfully sent {Bytes} bytes to printer '{Printer}' as {Language}",
                         data.Length, printerName, language);
                 }
@@ -369,7 +413,8 @@ namespace Apex.Services.Printing.UniversalRIP
             }, cancellationToken);
         }
 
-        private bool SendRawDataToPrinter(string printerName, byte[] data, string dataType)
+        private bool SendRawDataToPrinter(
+            string printerName, byte[] data, string dataType, string? jobName = null)
         {
             // FIXED: Use the correct RawPrinterHelper.SendBytesToPrinter method
             // This method handles ALL Win32 API calls correctly with proper error handling
@@ -385,7 +430,8 @@ namespace Apex.Services.Printing.UniversalRIP
                 return Apex.Services.Helpers.RawPrinterHelper.SendBytesToPrinter(
                     printerName,
                     pUnmanagedBytes,
-                    data.Length);
+                    data.Length,
+                    jobName);
             }
             finally
             {

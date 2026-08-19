@@ -92,7 +92,8 @@ namespace Apex.UI.Rendering
             }
 
             if (f.IsTextField)
-                target.DrawText(f.RenderedText, rect, TextStyleFor(f, f.FontSize, f.TextBrush));
+                target.DrawText(f.RenderedText, rect,
+                    TextStyleFor(f, f.FontSize, f.TextBrush, minFontSize: f.MinFontSize));
         }
 
         /// <summary>Maps the slot's fit mode string onto the painter's enum.</summary>
@@ -104,7 +105,8 @@ namespace Apex.UI.Rendering
         };
 
         private static TextStyle TextStyleFor(
-            RenderedFieldItem f, double fontSize, Brush foreground, TextAlignment? align = null) =>
+            RenderedFieldItem f, double fontSize, Brush foreground,
+            TextAlignment? align = null, double minFontSize = 0) =>
             new()
             {
                 FontFamily = f.FontFamily,
@@ -114,6 +116,10 @@ namespace Apex.UI.Rendering
                 Foreground = foreground,
                 Alignment = align ?? f.WpfTextAlignment,
                 FlowDirection = f.WpfFlowDirection,
+                // Only the field's own value shrinks. Error text and code fallbacks
+                // are diagnostics at a fixed size — shrinking those would make the
+                // very message that explains a problem harder to read.
+                MinFontSize = minFontSize,
             };
 
         private static Rect Deflate(Rect r, double by)

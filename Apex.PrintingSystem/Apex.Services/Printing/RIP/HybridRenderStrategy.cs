@@ -21,6 +21,44 @@ namespace Apex.Services.Printing.RIP
     public class HybridRenderStrategy
     {
         /// <summary>
+        /// Ceiling on rasterisation resolution.
+        ///
+        /// Pdfium hands back a 32-bit surface, so A4 costs ~35 MB at 300 dpi and
+        /// ~139 MB at 600. A batch can drive several printers at once, each holding
+        /// a page plus its clone, so the ceiling keeps a large batch inside memory.
+        /// </summary>
+        private const int MaxRasterDpi = 300;
+
+        /// <summary>
+        /// Rasterises a page at a real resolution.
+        ///
+        /// PdfiumViewer's Render(page, dpiX, dpiY, flags) overload sizes the bitmap
+        /// from the page's dimensions in POINTS and uses the dpi arguments only for
+        /// internal correction — so it returns the same 595x841 pixels for A4 whether
+        /// you ask for 72 dpi or 600. Passing the pixel size explicitly is the only
+        /// way to actually get the requested resolution.
+        /// </summary>
+        private static Bitmap RenderAtDpi(PdfDocument document, int pageIndex, int requestedDpi)
+        {
+            int dpi = Math.Clamp(requestedDpi > 0 ? requestedDpi : 300, 72, MaxRasterDpi);
+
+            var sizeInPoints = document.PageSizes[pageIndex];
+            int pxWidth = Math.Max(1, (int)Math.Round(sizeInPoints.Width / 72.0 * dpi));
+            int pxHeight = Math.Max(1, (int)Math.Round(sizeInPoints.Height / 72.0 * dpi));
+
+            using var rendered = document.Render(
+                pageIndex, pxWidth, pxHeight, dpi, dpi, PdfRenderFlags.ForPrinting);
+
+            return new Bitmap(rendered);
+        }
+
+        /// <summary>
+        /// The resolution a page was actually rasterised at, after clamping.
+        /// </summary>
+        private static int EffectiveDpi(int requestedDpi) =>
+            Math.Clamp(requestedDpi > 0 ? requestedDpi : 300, 72, MaxRasterDpi);
+
+        /// <summary>
         /// Render a page according to the decision.
         /// </summary>
         public async Task<RenderResult> RenderPageAsync(
@@ -73,15 +111,29 @@ namespace Apex.Services.Printing.RIP
             RenderDecision decision,
             PageContentProfile profile)
         {
-            // For native vector, we preserve the PDF content as-is
-            // The output generator will convert to PostScript/PCL with native text/vector commands
+            // The flag below asks the output generator for native text/vector commands.
+            // No generator emits them yet — every one converts a bitmap — so a page
+            // rendered without a raster produced zero bytes, which the quality gate
+            // rejected, which aborted the whole document. Text-only pages hit this,
+            // so a book printed its cover and then died on page two.
+            //
+            // Carry a raster alongside the flag: a generator that learns to emit
+            // native content can still prefer it, and until then there is something
+            // to print.
+            using var pdfDocument = PdfDocument.Load(pdfPath);
+            if (pageIndex < 0 || pageIndex >= pdfDocument.PageCount)
+                throw new ArgumentOutOfRangeException(nameof(pageIndex));
+
             return new RenderResult
             {
                 Success = true,
                 RenderStrategy = RenderStrategy.NativeVector,
                 RequiresNativeOutput = true,
-                RasterizedImage = null,
-                PageIndex = pageIndex
+                RasterizedImage = RenderAtDpi(pdfDocument, pageIndex, decision.RequiredDpi),
+                PageIndex = pageIndex,
+                RenderedDpi = EffectiveDpi(decision.RequiredDpi),
+                PreserveText = decision.PreserveText,
+                PreserveVectors = decision.PreserveVectors
             };
         }
 
@@ -100,22 +152,14 @@ namespace Apex.Services.Printing.RIP
                 if (pageIndex < 0 || pageIndex >= pdfDocument.PageCount)
                     throw new ArgumentOutOfRangeException(nameof(pageIndex));
 
-                // Render at required DPI
-                int dpi = decision.RequiredDpi;
-                using var rendered = pdfDocument.Render(
-                    pageIndex,
-                    dpi,
-                    dpi,
-                    PdfRenderFlags.ForPrinting);
-
                 return new RenderResult
                 {
                     Success = true,
                     RenderStrategy = RenderStrategy.HighDpiRaster,
                     RequiresNativeOutput = false,
-                    RasterizedImage = new Bitmap(rendered), // Clone for use
+                    RasterizedImage = RenderAtDpi(pdfDocument, pageIndex, decision.RequiredDpi),
                     PageIndex = pageIndex,
-                    RenderedDpi = dpi
+                    RenderedDpi = EffectiveDpi(decision.RequiredDpi)
                 };
             }
             catch (Exception ex)
@@ -151,22 +195,14 @@ namespace Apex.Services.Printing.RIP
                 if (pageIndex < 0 || pageIndex >= pdfDocument.PageCount)
                     throw new ArgumentOutOfRangeException(nameof(pageIndex));
 
-                // Render at required DPI for images
-                int dpi = decision.RequiredDpi;
-                using var rendered = pdfDocument.Render(
-                    pageIndex,
-                    dpi,
-                    dpi,
-                    PdfRenderFlags.ForPrinting);
-
                 return new RenderResult
                 {
                     Success = true,
                     RenderStrategy = RenderStrategy.Hybrid,
                     RequiresNativeOutput = decision.PreserveText || decision.PreserveVectors,
-                    RasterizedImage = new Bitmap(rendered),
+                    RasterizedImage = RenderAtDpi(pdfDocument, pageIndex, decision.RequiredDpi),
                     PageIndex = pageIndex,
-                    RenderedDpi = dpi,
+                    RenderedDpi = EffectiveDpi(decision.RequiredDpi),
                     PreserveText = decision.PreserveText,
                     PreserveVectors = decision.PreserveVectors
                 };
@@ -193,22 +229,14 @@ namespace Apex.Services.Printing.RIP
                 if (pageIndex < 0 || pageIndex >= pdfDocument.PageCount)
                     throw new ArgumentOutOfRangeException(nameof(pageIndex));
 
-                // Fallback: render at standard DPI
-                int dpi = decision.RequiredDpi > 0 ? decision.RequiredDpi : 300;
-                using var rendered = pdfDocument.Render(
-                    pageIndex,
-                    dpi,
-                    dpi,
-                    PdfRenderFlags.ForPrinting);
-
                 return new RenderResult
                 {
                     Success = true,
                     RenderStrategy = RenderStrategy.FallbackRaster,
                     RequiresNativeOutput = false,
-                    RasterizedImage = new Bitmap(rendered),
+                    RasterizedImage = RenderAtDpi(pdfDocument, pageIndex, decision.RequiredDpi),
                     PageIndex = pageIndex,
-                    RenderedDpi = dpi
+                    RenderedDpi = EffectiveDpi(decision.RequiredDpi)
                 };
             }
             catch (Exception ex)

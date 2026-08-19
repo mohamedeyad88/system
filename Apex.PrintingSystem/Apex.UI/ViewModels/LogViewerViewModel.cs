@@ -15,10 +15,12 @@ namespace Apex.UI.ViewModels
         private readonly ILoggerService _loggerService;
         private readonly ILogReaderService _logReader;
         private readonly DispatcherTimer _timer;
-        private string _fullLogContent = "";
+        private System.Collections.Generic.IReadOnlyList<LogEntryMerge.Entry> _entries =
+            System.Array.Empty<LogEntryMerge.Entry>();
 
         [ObservableProperty] private string _logContent = "";
         [ObservableProperty] private string _logPath = "";
+        [ObservableProperty] private string _printLogPath = "";
         [ObservableProperty] private bool _autoRefresh = true;
         [ObservableProperty] private string _searchText = "";
         [ObservableProperty] private LogLevelFilter _selectedLogLevel = LogLevelFilter.All;
@@ -30,6 +32,7 @@ namespace Apex.UI.ViewModels
             _loggerService = loggerService ?? throw new System.ArgumentNullException(nameof(loggerService));
             _logReader = logReader ?? throw new System.ArgumentNullException(nameof(logReader));
             LogPath = _loggerService.GetTodayLogPath();
+            PrintLogPath = TodayPrintLogPath;
 
             _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
             _timer.Tick += async (s, e) =>
@@ -52,7 +55,12 @@ namespace Apex.UI.ViewModels
         {
             try
             {
-                _fullLogContent = await _logReader.ReadLogFileAsync(LogPath);
+                // Both logs, not just the application one. The print log is the file
+                // that says why a job failed, and it lives elsewhere in its own format.
+                var app = await _logReader.ReadLogFileAsync(LogPath);
+                var print = await _logReader.ReadLogFileAsync(PrintLogPath);
+
+                _entries = LogEntryMerge.Merge(app, print);
                 FilterLogs();
             }
             catch (Exception ex)
@@ -61,34 +69,45 @@ namespace Apex.UI.ViewModels
             }
         }
 
+        /// <summary>Today's print log, written by PrintLogger under %LocalAppData%.</summary>
+        public static string TodayPrintLogPath => System.IO.Path.Combine(
+            Apex.Services.Logging.PrintLogger.LogFolder,
+            $"apex-printing-{DateTime.Now:yyyyMMdd}.log");
+
         private void FilterLogs()
         {
-            if (string.IsNullOrEmpty(_fullLogContent))
+            if (_entries.Count == 0)
             {
                 LogContent = "";
                 return;
             }
 
-            var lines = _fullLogContent.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-            var filtered = lines.Where(line =>
+            var filtered = _entries.Where(e =>
             {
-                if (SelectedLogLevel != LogLevelFilter.All && !line.Contains($"[{SelectedLogLevel}]", StringComparison.OrdinalIgnoreCase)) return false;
-                if (!string.IsNullOrWhiteSpace(SearchText) && !line.Contains(SearchText, StringComparison.OrdinalIgnoreCase)) return false;
+                if (!LogEntryMerge.MatchesLevel(e, SelectedLogLevel)) return false;
+                if (!string.IsNullOrWhiteSpace(SearchText) &&
+                    !e.Text.Contains(SearchText, StringComparison.OrdinalIgnoreCase)) return false;
                 return true;
             });
 
-            LogContent = string.Join(Environment.NewLine, filtered);
+            LogContent = LogEntryMerge.Render(filtered);
         }
 
         [RelayCommand]
         public void OpenLogFolder()
         {
+            // Prefer the print log's folder: someone opening this is almost always
+            // chasing a print failure, and that is the file worth sending on.
             try
             {
-                var folder = Path.GetDirectoryName(LogPath);
-                if (folder != null && Directory.Exists(folder))
+                foreach (var candidate in new[] { PrintLogPath, LogPath })
                 {
-                    Process.Start(new ProcessStartInfo { FileName = folder, UseShellExecute = true });
+                    var folder = Path.GetDirectoryName(candidate);
+                    if (folder != null && Directory.Exists(folder))
+                    {
+                        Process.Start(new ProcessStartInfo { FileName = folder, UseShellExecute = true });
+                        return;
+                    }
                 }
             }
             catch { }

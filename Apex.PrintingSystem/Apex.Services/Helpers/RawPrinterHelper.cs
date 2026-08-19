@@ -38,17 +38,28 @@ namespace Apex.Services.Helpers
         [DllImport("winspool.Drv", EntryPoint = "WritePrinter", SetLastError = true, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
         public static extern bool WritePrinter(IntPtr hPrinter, IntPtr pBytes, Int32 dwCount, out Int32 dwWritten);
 
-        public static bool SendBytesToPrinter(string szPrinterName, IntPtr pBytes, Int32 dwCount)
+        /// <summary>Shown when the caller supplies no name. Not a substitute for one.</summary>
+        private const string FallbackJobName = "Apex Print Job";
+
+        /// <param name="jobName">
+        /// What the operator will see in the printer queue — use the document's own
+        /// file name. Every job used to be submitted as "Apex Print Job", so a queue of
+        /// twenty files was twenty identical rows: no way to tell them apart, no way to
+        /// cancel one, and no way to match a jam to the file that caused it.
+        /// </param>
+        public static bool SendBytesToPrinter(
+            string szPrinterName, IntPtr pBytes, Int32 dwCount, string? jobName = null)
         {
-            return SendBytesToPrinterWithRetry(szPrinterName, pBytes, dwCount, 3);
+            return SendBytesToPrinterWithRetry(szPrinterName, pBytes, dwCount, 3, jobName);
         }
 
-        public static bool SendBytesToPrinterWithRetry(string szPrinterName, IntPtr pBytes, Int32 dwCount, int maxRetries)
+        public static bool SendBytesToPrinterWithRetry(
+            string szPrinterName, IntPtr pBytes, Int32 dwCount, int maxRetries, string? jobName = null)
         {
             int retryCount = 0;
             while (retryCount <= maxRetries)
             {
-                if (TrySendBytesToPrinter(szPrinterName, pBytes, dwCount))
+                if (TrySendBytesToPrinter(szPrinterName, pBytes, dwCount, jobName))
                 {
                     return true;
                 }
@@ -58,13 +69,14 @@ namespace Apex.Services.Helpers
             return false;
         }
 
-        private static bool TrySendBytesToPrinter(string szPrinterName, IntPtr pBytes, Int32 dwCount)
+        private static bool TrySendBytesToPrinter(
+            string szPrinterName, IntPtr pBytes, Int32 dwCount, string? jobName = null)
         {
             Int32 dwWritten = 0;
             IntPtr hPrinter = IntPtr.Zero;
             DOCINFOA di = new DOCINFOA();
 
-            di.pDocName = "Apex Print Job";
+            di.pDocName = string.IsNullOrWhiteSpace(jobName) ? FallbackJobName : jobName!;
             di.pDataType = "RAW";
 
             try
@@ -154,6 +166,10 @@ namespace Apex.Services.Helpers
             };
         }
 
+        /// <summary>
+        /// Sends a file, naming the queue entry after the file itself so the operator
+        /// can identify it at the machine.
+        /// </summary>
         public static bool SendFileToPrinter(string szPrinterName, string szFileName)
         {
             if (!File.Exists(szFileName)) return false;
@@ -170,7 +186,8 @@ namespace Apex.Services.Helpers
             pUnmanagedBytes = Marshal.AllocCoTaskMem(nLength);
             Marshal.Copy(bytes, 0, pUnmanagedBytes, nLength);
 
-            bSuccess = SendBytesToPrinter(szPrinterName, pUnmanagedBytes, nLength);
+            bSuccess = SendBytesToPrinter(
+                szPrinterName, pUnmanagedBytes, nLength, Path.GetFileName(szFileName));
 
             Marshal.FreeCoTaskMem(pUnmanagedBytes);
             fs.Close();

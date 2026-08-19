@@ -11,19 +11,50 @@ namespace Apex.Services.Logging
     {
         private static readonly ILogger _logger;
 
+        /// <summary>
+        /// Where the print log is written. Always the same absolute path, whatever the
+        /// process working directory happens to be.
+        /// </summary>
+        public static string LogFolder { get; }
+
         static PrintLogger()
         {
-            _logger = new LoggerConfiguration()
+            // An ABSOLUTE path under LocalAppData.
+            //
+            // This used to be the relative "logs/apex-printing-.log", which resolves
+            // against the working directory — under Program Files that is not writable
+            // by a standard user, and Serilog drops file-sink errors silently. The
+            // result was an installed copy that produced no log at all, exactly when a
+            // failed print run most needed evidence. LocalAppData is always writable
+            // and matches where AppDiagnostics already writes.
+            LogFolder = System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "ApexPrintingSystem", "logs");
+
+            try { System.IO.Directory.CreateDirectory(LogFolder); } catch { /* falls back below */ }
+
+            var config = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console(
-                    outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
-                .WriteTo.File(
-                    "logs/apex-printing-.log",
+                    outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
+
+            try
+            {
+                config = config.WriteTo.File(
+                    System.IO.Path.Combine(LogFolder, "apex-printing-.log"),
                     rollingInterval: RollingInterval.Day,
-                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-                .CreateLogger();
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}");
+            }
+            catch
+            {
+                // Console-only rather than no logger at all: losing the file sink must
+                // not take the whole print pipeline down.
+            }
+
+            _logger = config.CreateLogger();
 
             _logger.Information("=== Apex Printing System Logger Initialized ===");
+            _logger.Information("Log folder: {Folder}", LogFolder);
         }
 
         public static void Info(string message, params object[] args)
@@ -39,6 +70,15 @@ namespace Apex.Services.Logging
         public static void Error(Exception ex, string message, params object[] args)
         {
             _logger.Error(ex, message, args);
+        }
+
+        /// <summary>
+        /// Records a failure that has no exception behind it — a call that reported
+        /// false, a result that came back empty.
+        /// </summary>
+        public static void Error(string message, params object[] args)
+        {
+            _logger.Error(message, args);
         }
 
         public static void Debug(string message, params object[] args)

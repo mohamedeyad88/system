@@ -75,7 +75,21 @@ namespace Apex.Services.Printing
                 return false;
             }
 
-            // Try RIP Engine first (intelligent rendering)
+            // 1. The printer's own Windows driver, via Pdfium + GDI+.
+            //
+            // This runs first because it is the only path that carries the operator's
+            // choices — duplex, colour, paper, quality — to the device, and the only
+            // one that submits the document as a single spooler job.
+            //
+            // The RIP engine below used to run first. It rasterises page by page and
+            // sends each page as its own RAW job, so a 106-page book became 106 queue
+            // entries, and one bad page stopped the rest. It stays as a fallback for
+            // devices the driver path cannot drive.
+            if (await TryPdfiumPrintAsync(printerName, pdfPath, copies, jobSettings))
+                return true;
+
+            Debug.WriteLine("[PdfDirectPrinter] Driver path did not print — trying the RIP engine");
+
             try
             {
                 var vendorDetection = VendorDetection.VendorDetectionEngine.Instance;
@@ -92,21 +106,15 @@ namespace Apex.Services.Printing
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[PdfDirectPrinter] RIP Engine failed, falling back: {ex.Message}");
+                Apex.Services.Logging.PrintLogger.Error(ex,
+                    "[PdfDirectPrinter] RIP fallback failed for '{Printer}'", printerName);
             }
 
-            // Fallback to standard methods (all are SILENT methods!)
-
-            // 1. Try PdfiumViewer (renders at 300 DPI - fallback only)
-            //    Note: This causes pixelation for text - use only as last resort
-            if (await TryPdfiumPrintAsync(printerName, pdfPath, copies, jobSettings))
-                return true;
-
-            // 2. Try SumatraPDF (if installed - external tool but silent)
+            // 3. External silent printers, last: neither honours jobSettings, so a job
+            //    printed this way loses duplex/colour/quality.
             if (await TrySumatraPdfAsync(printerName, pdfPath, copies))
                 return true;
 
-            // 3. Try PDFtoPrinter tool if available
             if (await TryPdfToPrinterAsync(printerName, pdfPath, copies))
                 return true;
 
@@ -192,7 +200,23 @@ namespace Apex.Services.Printing
                     // PDF is vector — handing the driver a 300 DPI picture of that text
                     // throws the device's whole resolution advantage away. The result is
                     // visibly softer than printing the same PDF from a PDF reader.
-                    int printDpi = ResolveDeviceDpi(printDoc.PrinterSettings, jobPageSettings);
+                            int printDpi = ResolveDeviceDpi(
+                                printDoc.PrinterSettings, jobPageSettings, jobSettings?.Quality);
+
+                    // The values a real device actually got. On a virtual printer none
+                    // of this is exercised, so a field test on real hardware is the
+                    // first time these are proven — and if a sheet comes out wrong,
+                    // this line says whether the fault was in what we asked for.
+                    Apex.Services.Logging.PrintLogger.Info(
+                        "[PdfDirectPrinter] {Printer} | dpi={Dpi} | duplex={Duplex} | colour={Colour} | " +
+                        "orientation={Orientation} | paper={Paper} | copies={Copies}",
+                        printerName,
+                        printDpi,
+                        jobSettings?.Duplex,
+                        jobSettings?.Color,
+                        jobSettings?.Orientation,
+                        jobPageSettings.PaperSize?.PaperName,
+                        copies);
 
                     // Apply settings if provided (scoped to the cloned page settings)
                     if (jobSettings != null)
@@ -337,7 +361,17 @@ namespace Apex.Services.Printing
         /// the driver what it supports is the difference between using a 600 or 1200 DPI
         /// device properly and throwing half its resolution away on every job.
         /// </summary>
-        private static int ResolveDeviceDpi(PrinterSettings settings, PageSettings pageSettings)
+        /// <param name="requestedQuality">
+        /// The operator's choice from the print screen — "Draft", "Normal", "High" or
+        /// "Best". It used to be collected and then ignored here, so every job
+        /// rasterised at the device maximum. That costs real time: a page at 600 DPI
+        /// carries four times the pixels of the same page at 300, and a book is
+        /// hundreds of pages across several printers. Draft and Normal cap the raster
+        /// below the device maximum; High and Best let the device have its full
+        /// resolution.
+        /// </param>
+        private static int ResolveDeviceDpi(
+            PrinterSettings settings, PageSettings pageSettings, string? requestedQuality = null)
         {
             int best = 0;
 
@@ -363,7 +397,17 @@ namespace Apex.Services.Printing
 
             if (best <= 0) best = MinimumUsableDpi;
 
-            return Math.Clamp(best, MinimumUsableDpi, MaximumPracticalDpi);
+            best = Math.Clamp(best, MinimumUsableDpi, MaximumPracticalDpi);
+
+            // Never raise the device's own resolution — only cap it.
+            int ceiling = (requestedQuality?.Trim().ToLowerInvariant()) switch
+            {
+                "draft" => 150,
+                "normal" => 300,
+                _ => MaximumPracticalDpi     // High, Best, or nothing chosen
+            };
+
+            return Math.Min(best, ceiling);
         }
 
         /// <summary>

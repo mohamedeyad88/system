@@ -25,6 +25,14 @@ namespace Apex.UI.Rendering
         public Brush Foreground { get; init; }
         public TextAlignment Alignment { get; init; }
         public FlowDirection FlowDirection { get; init; }
+
+        /// <summary>
+        /// Smallest size the text may shrink to in order to fit its box.
+        /// 0 disables shrinking, which leaves the old behaviour: the run is trimmed
+        /// with an ellipsis instead. On a variable-data run that silently cuts the
+        /// longest names in half, and nobody sees it until the job is on paper.
+        /// </summary>
+        public double MinFontSize { get; init; }
     }
 
     /// <summary>

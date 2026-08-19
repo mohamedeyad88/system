@@ -352,19 +352,38 @@ namespace Apex.UI.ViewModels
         [ObservableProperty] private string _numberPrefix = "";
         [ObservableProperty] private string _numberSuffix = "";
 
+        /// <summary>
+        /// The format this job prints with — the single source for every place that
+        /// shows a number, so the ribbon example, the number drawn on the design and
+        /// the paper cannot disagree.
+        /// </summary>
+        public Apex.NumberedBooksEngine.Core.NumberFormatOptions CurrentNumberFormat =>
+            new(PadDigits: NumberPadDigits,
+                Prefix: NumberPrefix?.Trim() ?? "",
+                Suffix: NumberSuffix?.Trim() ?? "",
+                UseArabicDigits: UseArabicDigits);
+
         /// <summary>Live example of how a number will actually print.</summary>
         public string NumberFormatPreview =>
             Apex.NumberedBooksEngine.Core.NumberFormatter.Format(
-                StartNumber <= 0 ? 1 : StartNumber,
-                new Apex.NumberedBooksEngine.Core.NumberFormatOptions(
-                    PadDigits: NumberPadDigits,
-                    Prefix: NumberPrefix?.Trim() ?? "",
-                    Suffix: NumberSuffix?.Trim() ?? "",
-                    UseArabicDigits: UseArabicDigits));
+                StartNumber <= 0 ? 1 : StartNumber, CurrentNumberFormat);
 
-        partial void OnNumberPadDigitsChanged(int value) => OnPropertyChanged(nameof(NumberFormatPreview));
-        partial void OnNumberPrefixChanged(string value) => OnPropertyChanged(nameof(NumberFormatPreview));
-        partial void OnNumberSuffixChanged(string value) => OnPropertyChanged(nameof(NumberFormatPreview));
+        /// <summary>
+        /// Anything that changes the printed shape of a number has to redraw the
+        /// numbers on the design too. They used to be rendered as a bare four-digit
+        /// value, so an operator placing a slot judged its width against "0001" while
+        /// the press produced "INV-000123/2026".
+        /// </summary>
+        private void OnNumberFormatChanged()
+        {
+            OnPropertyChanged(nameof(CurrentNumberFormat));
+            OnPropertyChanged(nameof(NumberFormatPreview));
+            RefreshAllPreviewNumbers();
+        }
+
+        partial void OnNumberPadDigitsChanged(int value) => OnNumberFormatChanged();
+        partial void OnNumberPrefixChanged(string value) => OnNumberFormatChanged();
+        partial void OnNumberSuffixChanged(string value) => OnNumberFormatChanged();
 
         // Digit style: Arabic-Indic (٠١٢...) or Western (012...)
         [ObservableProperty]
@@ -377,13 +396,14 @@ namespace Apex.UI.ViewModels
         {
             _useWesternDigits = !value;
             OnPropertyChanged(nameof(UseWesternDigits));
-            OnPropertyChanged(nameof(NumberFormatPreview));
+            OnNumberFormatChanged();
         }
 
         partial void OnUseWesternDigitsChanged(bool value)
         {
             _useArabicDigits = !value;
             OnPropertyChanged(nameof(UseArabicDigits));
+            OnNumberFormatChanged();
         }
 
         // Numbering mode properties (Linear/Imposed)
@@ -797,10 +817,7 @@ namespace Apex.UI.ViewModels
                     numberingMode,
                     useSmartPrinting: UseSmartTrayPrinting,
                     useArabicDigits:  UseArabicDigits,
-                    numberFormat: new Apex.NumberedBooksEngine.Core.NumberFormatOptions(
-                        PadDigits: NumberPadDigits,
-                        Prefix: NumberPrefix?.Trim() ?? "",
-                        Suffix: NumberSuffix?.Trim() ?? ""));
+                    numberFormat: CurrentNumberFormat);
 
                 if (result.Success)
                 {
@@ -1401,33 +1418,38 @@ namespace Apex.UI.ViewModels
             }
         }
 
+        // 0.25 step / 3.0 max to match the Template Designer so the two canvases feel
+        // the same. The minimum stays low (0.1, not 0.25) because this is an ABSOLUTE
+        // scale on a fixed-size sheet — a large sheet may need to shrink below 0.25 to
+        // fit, unlike the Designer whose Viewbox fits first and boosts relative to that.
+        public const double ZoomMin = 0.1;
+        public const double ZoomMax = 3.0;
+        public const double ZoomStep = 0.25;
+
+        internal static double ClampZoom(double z) => Math.Round(Math.Max(ZoomMin, Math.Min(ZoomMax, z)), 2);
+
         [RelayCommand]
-        private void ZoomIn()
-        {
-
-            ZoomLevel = Math.Min(ZoomLevel + 0.1, 3.0);
-
-        }
+        private void ZoomIn() => ZoomLevel = ClampZoom(ZoomLevel + ZoomStep);
 
         [RelayCommand]
-        private void ZoomOut()
-        {
+        private void ZoomOut() => ZoomLevel = ClampZoom(ZoomLevel - ZoomStep);
 
-            ZoomLevel = Math.Max(ZoomLevel - 0.1, 0.1);
-
-        }
+        // The real canvas viewport, pushed in from the view on every resize. Defaults
+        // are a fallback for the first fit before the ScrollViewer has measured.
+        public double CanvasViewportWidth { get; set; } = 800;
+        public double CanvasViewportHeight { get; set; } = 600;
 
         [RelayCommand]
         private void FitToScreen()
         {
+            if (CanvasWidth <= 0 || CanvasHeight <= 0) return;
 
-            // Calculate fit-to-screen zoom (assuming viewport is approximately 800x600)
-            double viewportWidth = 800;
-            double viewportHeight = 600;
-            double scaleX = viewportWidth / CanvasWidth;
-            double scaleY = viewportHeight / CanvasHeight;
-            ZoomLevel = Math.Min(scaleX, scaleY) * 0.9; // 90% to leave some margin
-
+            // Fit to the ACTUAL viewport (was hardcoded 800x600, so "fit" was wrong on
+            // any other window size). 90% leaves a margin; clamp to the zoom range.
+            double scaleX = CanvasViewportWidth / CanvasWidth;
+            double scaleY = CanvasViewportHeight / CanvasHeight;
+            double fit = Math.Min(scaleX, scaleY) * 0.9;
+            ZoomLevel = Math.Round(Math.Max(0.1, Math.Min(3.0, fit)), 2);
         }
 
         /// <summary>
@@ -1559,7 +1581,11 @@ namespace Apex.UI.ViewModels
                 return "----";
             }
 
-            return previewNum.ToString("D4");
+            // Format exactly as the press will. This used to be ToString("D4") — a
+            // bare four digits with no prefix, no suffix and always Western — so the
+            // design showed something the printed sheet never carried.
+            return Apex.NumberedBooksEngine.Core.NumberFormatter.Format(
+                previewNum, CurrentNumberFormat);
         }
 
         // ══════════════════════════════════════════════════════════════
@@ -2460,13 +2486,12 @@ namespace Apex.UI.ViewModels
         // ══════════════════════════════════════════════════════════════
 
         /// <summary>
-        /// يُستدعى من code-behind عند Ctrl+Wheel على الـ Canvas
+        /// Fallback wheel zoom (about the canvas centre). The code-behind normally
+        /// zooms toward the mouse pointer instead; this keeps a sane result if it
+        /// ever calls in without anchoring.
         /// </summary>
         public void ApplyWheelZoom(int delta)
-        {
-            double step = delta > 0 ? 0.1 : -0.1;
-            ZoomLevel = Math.Round(Math.Max(0.1, Math.Min(3.0, ZoomLevel + step)), 1);
-        }
+            => ZoomLevel = ClampZoom(ZoomLevel + (delta > 0 ? ZoomStep : -ZoomStep));
 
         // ══════════════════════════════════════════════════════════════
         //  LOW PRIORITY ⑤  —  اختصارات لوحة المفاتيح (XAML InputBindings)

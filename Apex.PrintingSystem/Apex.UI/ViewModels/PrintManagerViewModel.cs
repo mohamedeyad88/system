@@ -262,11 +262,21 @@ namespace Apex.UI.ViewModels
         private int _duplicatesSkipped;
 
         public PrintManagerViewModel(BatchPrintJobManager batchPrintJobManager,
-                                     IPrinterDiscoveryService printerService)
+                                     IPrinterDiscoveryService printerService,
+                                     Apex.Services.PrinterMonitoringService? monitoring = null)
         {
             _batchPrintJobManager = batchPrintJobManager;
             _printerService = printerService;
             LoadPresetsFromFile();
+
+            // The alert hangs off the monitor rather than the batch, so a cover
+            // opened in the middle of a document is announced at once instead of
+            // when the run next reaches that station.
+            if (monitoring != null)
+                monitoring.PrinterStatusChanged += OnPrinterStatusChanged;
+
+            _batchPrintJobManager.OnPrinterHeld += (_, e) => NoteHeld(e.PrinterName, e.Fault);
+            _batchPrintJobManager.OnPrinterResumed += (_, printer) => ClearHeld(printer);
 
             // Re-route whenever the queue changes, so the printer column and the
             // header summary always describe the CURRENT queue.
@@ -276,6 +286,105 @@ namespace Apex.UI.ViewModels
             // so switching language has to make us rebuild them or the header summary
             // and the printer chips stay in the previous language.
             Apex.UI.Services.LocalizationService.Instance.PropertyChanged += OnLanguageChanged;
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        //  PRINTERS THAT NEED SOMEBODY
+        // ══════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// The banner text, or empty when every station is fine.
+        ///
+        /// A banner rather than a dialog: with eight or nine printers, faults arrive
+        /// together, and stacked modal dialogs would bury the screen and train the
+        /// operator to dismiss them unread.
+        /// </summary>
+        [ObservableProperty] private string _alertMessage = "";
+
+        public bool HasAlert => !string.IsNullOrEmpty(AlertMessage);
+
+        partial void OnAlertMessageChanged(string value) => OnPropertyChanged(nameof(HasAlert));
+
+        /// <summary>Fault per printer, so the banner can name several at once.</summary>
+        private readonly Dictionary<string, string> _heldPrinters =
+            new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// The monitor re-announces every printer on each sweep, so only a CHANGE is
+        /// worth a sound — otherwise a single open cover would beep every few seconds.
+        /// </summary>
+        private readonly Dictionary<string, string> _lastCondition =
+            new(StringComparer.OrdinalIgnoreCase);
+
+        private void OnPrinterStatusChanged(object? sender, Apex.Services.PrinterStatusEventArgs e)
+        {
+            // Only stations this run is actually using; a broken printer in another
+            // room is not this operator's problem right now.
+            if (TargetPrinters == null || !TargetPrinters.Contains(e.PrinterName, StringComparer.OrdinalIgnoreCase))
+                return;
+
+            string condition = e.RequiresIntervention ? e.Status : "";
+            if (_lastCondition.TryGetValue(e.PrinterName, out var previous) && previous == condition)
+                return;
+
+            _lastCondition[e.PrinterName] = condition;
+
+            if (e.RequiresIntervention) NoteHeld(e.PrinterName, e.Status);
+            else ClearHeld(e.PrinterName);
+        }
+
+        private void NoteHeld(string printer, string fault)
+        {
+            bool isNew = !_heldPrinters.ContainsKey(printer) || _heldPrinters[printer] != fault;
+            _heldPrinters[printer] = fault;
+            RebuildAlert();
+
+            // The operator is usually at a machine, not at the screen.
+            if (isNew) System.Media.SystemSounds.Exclamation.Play();
+        }
+
+        private void ClearHeld(string printer)
+        {
+            if (_heldPrinters.Remove(printer)) RebuildAlert();
+        }
+
+        private void RebuildAlert()
+        {
+            if (_heldPrinters.Count == 0)
+            {
+                AlertMessage = "";
+                return;
+            }
+
+            AlertMessage = string.Join("  ·  ",
+                _heldPrinters.Select(p => $"{p.Key} — {LocalizedFault(p.Value)}"));
+        }
+
+        /// <summary>
+        /// The monitor reports faults in the invariant WMI vocabulary; the operator
+        /// reads the screen in their own language.
+        /// </summary>
+        private string LocalizedFault(string fault) => fault switch
+        {
+            "Out of Paper"    => L("PM_FaultOutOfPaper"),
+            "Out of Toner"    => L("PM_FaultOutOfToner"),
+            "Door Open"       => L("PM_FaultDoorOpen"),
+            "Paper Jam"       => L("PM_FaultPaperJam"),
+            "Output Bin Full" => L("PM_FaultBinFull"),
+            "Paper Problem"   => L("PM_FaultPaperProblem"),
+            "Offline"         => L("PM_FaultOffline"),
+            _                 => L("PM_FaultNeedsAttention")
+        };
+
+        /// <summary>Stop waiting on a station the operator has taken out of service.</summary>
+        [RelayCommand]
+        private void AbandonHeldPrinters()
+        {
+            foreach (var printer in _heldPrinters.Keys.ToList())
+                _batchPrintJobManager.AbandonPrinter(printer);
+
+            _heldPrinters.Clear();
+            RebuildAlert();
         }
 
         private void OnLanguageChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -392,6 +501,17 @@ namespace Apex.UI.ViewModels
             foreach (var f in files) AddFileToList(f);
             UpdateStatus();
             WarnDuplicates();
+        }
+
+        /// <summary>
+        /// Adds a file produced by another section (Page Tools / Imposition) to the
+        /// print queue — the receiving end of the "send to printing" hand-off.
+        /// </summary>
+        public void IngestExternalFile(string filePath)
+        {
+            AddFileToList(filePath);
+            UpdateStatus();
+            OnPropertyChanged(nameof(CanStartPrinting));
         }
 
         private void AddFileToList(string filePath)
@@ -687,15 +807,21 @@ namespace Apex.UI.ViewModels
                     Application.Current.Dispatcher.InvokeAsync(() =>
                     {
                         ProgressValue = (int)p.PercentComplete;
-                        StatusMessage = Lf("PM_JobsDone", p.CompletedJobs, p.TotalJobs);
+                        // Show failures as they happen. Reporting only successes let a
+                        // run where every job failed look identical to one that had
+                        // simply not started yet.
+                        StatusMessage = p.FailedJobs > 0
+                            ? Lf("PM_JobsDoneWithFailures", p.CompletedJobs, p.TotalJobs, p.FailedJobs)
+                            : Lf("PM_JobsDone", p.CompletedJobs, p.TotalJobs);
                     });
 
                 _batchPrintJobManager.OnJobStatusChanged += OnJobStatus;
                 _batchPrintJobManager.OnBatchProgressChanged += OnBatchProgress;
 
+                Apex.Services.Printing.BatchResult result;
                 try
                 {
-                    await _batchPrintJobManager.ProcessBatchAsync(
+                    result = await _batchPrintJobManager.ProcessBatchAsync(
                         TargetPrinters, batchJobs, settings, DistributionMode);
                 }
                 finally
@@ -705,8 +831,7 @@ namespace Apex.UI.ViewModels
                     _batchPrintJobManager.OnBatchProgressChanged -= OnBatchProgress;
                 }
 
-                MessageBox.Show(L("PM_PrintDone"), L("Dlg_Success"),
-                    MessageBoxButton.OK, MessageBoxImage.Information);
+                ShowBatchReport(result);
             }
             catch (Exception ex)
             {
@@ -717,9 +842,115 @@ namespace Apex.UI.ViewModels
             {
                 IsPrinting = false;
                 CurrentPrintingFile = "";
-                StatusMessage = L("Num_Ready");
-                ProgressValue = 0;
+                // Deliberately NOT resetting StatusMessage/ProgressValue here.
+                // Wiping them the instant the run ended erased the only record of what
+                // happened, so the operator was left with a blank bar and no outcome.
+                // ShowBatchReport leaves the final line in place; the next run resets it.
             }
+        }
+
+        /// <summary>
+        /// Tells the operator what the run actually did.
+        ///
+        /// This used to be a single "printing finished" dialog shown whether every job
+        /// printed or none did — with the counts computed by the batch manager and then
+        /// thrown away. A print shop cannot act on "done": it needs to know how many
+        /// came out, and which files did not, before it walks to the machine.
+        /// </summary>
+        private void ShowBatchReport(Apex.Services.Printing.BatchResult r)
+        {
+            ProgressValue = r.TotalJobs > 0
+                ? (int)Math.Round(100.0 * (r.Succeeded + r.Failed) / r.TotalJobs)
+                : 0;
+
+            if (r.WasCancelled)
+            {
+                StatusMessage = Lf("PM_ReportCancelled", r.Succeeded, r.TotalJobs);
+                MessageBox.Show(StatusMessage, L("Dlg_Warning"),
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (r.AllSucceeded)
+            {
+                StatusMessage = Lf("PM_ReportAllOk", r.Succeeded);
+                MessageBox.Show(StatusMessage, L("Dlg_Success"),
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            // Something failed. Lead with COPIES, because that is what the operator can
+            // verify at the machine: a run where one of nine printers refused every
+            // file still put eight copies of each in someone's hands, and reporting
+            // "0 of 3 succeeded" sent them looking for a fault that was not there.
+            var lines = new System.Text.StringBuilder();
+            lines.AppendLine(Lf("PM_ReportCopies", r.CopiesPrinted, r.CopiesTotal));
+            lines.AppendLine(Lf("PM_ReportFilesComplete", r.Succeeded, r.TotalJobs));
+
+            if (r.Failures.Count > 0)
+            {
+                lines.AppendLine();
+
+                // Grouped by PRINTER, not by file.
+                //
+                // A run sent to nine devices where one of them cannot print silently
+                // fails every job — and a flat list of file names makes that look like
+                // nine separate problems instead of one bad printer. Grouping puts the
+                // device the operator has to change at the top of each block.
+                var byPrinter = r.Failures
+                    .GroupBy(f => f.Printer ?? L("PM_ReportNoPrinter"))
+                    .OrderByDescending(g => g.Count())
+                    .ToList();
+
+                const int MaxPrinters = 6;
+                const int MaxFilesPerPrinter = 4;
+
+                foreach (var group in byPrinter.Take(MaxPrinters))
+                {
+                    lines.AppendLine(Lf("PM_ReportPrinterFailed", group.Key, group.Count()));
+
+                    // The reason is nearly always identical within a printer; show it once.
+                    var reason = group.First().Reason;
+                    lines.AppendLine($"    {reason}");
+
+                    foreach (var f in group.Take(MaxFilesPerPrinter))
+                        lines.AppendLine($"      • {f.FileName}");
+
+                    if (group.Count() > MaxFilesPerPrinter)
+                        lines.AppendLine(Lf("PM_ReportAndMore", group.Count() - MaxFilesPerPrinter));
+
+                    lines.AppendLine();
+                }
+
+                if (byPrinter.Count > MaxPrinters)
+                    lines.AppendLine(Lf("PM_ReportAndMorePrinters", byPrinter.Count - MaxPrinters));
+            }
+
+            // Held copies are listed apart from failures. Nothing went wrong with
+            // them — their station was waiting for a person when the run stopped —
+            // and mixing them in would send the operator hunting for a fault when
+            // the answer is a tray to fill or a cover to close.
+            if (r.HasHeldCopies)
+            {
+                lines.AppendLine();
+                lines.AppendLine(Lf("PM_ReportHeldCopies", r.CopiesHeld));
+
+                foreach (var group in r.HeldCopies
+                             .GroupBy(h => h.Printer ?? L("PM_ReportNoPrinter"))
+                             .OrderByDescending(g => g.Count())
+                             .Take(6))
+                {
+                    lines.AppendLine($"  • {group.Key} — {group.First().Reason} ({group.Count()})");
+                }
+            }
+
+            StatusMessage = Lf("PM_ReportCopies", r.CopiesPrinted, r.CopiesTotal);
+
+            MessageBox.Show(lines.ToString(), L("Dlg_Warning"),
+                MessageBoxButton.OK,
+                // Partly printed is a warning; nothing at all is an error. Treating
+                // both as errors trains the operator to dismiss the dialog unread.
+                r.NothingPrinted ? MessageBoxImage.Error : MessageBoxImage.Warning);
         }
 
         [RelayCommand]

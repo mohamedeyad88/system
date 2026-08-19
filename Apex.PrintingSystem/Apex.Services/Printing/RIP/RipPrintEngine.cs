@@ -148,7 +148,8 @@ namespace Apex.Services.Printing.RIP
                         // Send to printer
                         if (outputBytes.Length > 0)
                         {
-                            await SendToPrinterAsync(printerName, outputBytes, cancellationToken);
+                            await SendToPrinterAsync(printerName, outputBytes, cancellationToken,
+                                System.IO.Path.GetFileName(pdfPath));
                         }
 
                         // Cleanup
@@ -175,7 +176,8 @@ namespace Apex.Services.Printing.RIP
 
                                 if (copyOutput.Length > 0)
                                 {
-                                    await SendToPrinterAsync(printerName, copyOutput, cancellationToken);
+                                    await SendToPrinterAsync(printerName, copyOutput, cancellationToken,
+                                        System.IO.Path.GetFileName(pdfPath));
                                 }
 
                                 copyResult.Dispose();
@@ -233,17 +235,22 @@ namespace Apex.Services.Printing.RIP
             }
         }
 
+        /// <param name="jobName">
+        /// The document's file name, shown in the printer queue. Without it every job
+        /// appears as "Apex Print Job" and the operator cannot tell one from another.
+        /// </param>
         private async Task SendToPrinterAsync(
             string printerName,
             byte[] data,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            string? jobName = null)
         {
             await Task.Run(() =>
             {
                 try
                 {
                     // RawPrinterHelper now throws Win32Exception with detailed error messages
-                    SendRawDataToPrinter(printerName, data, "RAW");
+                    SendRawDataToPrinter(printerName, data, "RAW", jobName);
                     PrintLogger.Info("[RIP] Successfully sent {Bytes} bytes to printer '{Printer}'",
                         data.Length, printerName);
                 }
@@ -264,7 +271,8 @@ namespace Apex.Services.Printing.RIP
             }, cancellationToken);
         }
 
-        private bool SendRawDataToPrinter(string printerName, byte[] data, string dataType)
+        private bool SendRawDataToPrinter(
+            string printerName, byte[] data, string dataType, string? jobName = null)
         {
             // FIXED: Use the correct RawPrinterHelper.SendBytesToPrinter method
             // This method handles ALL Win32 API calls correctly with proper error handling
@@ -280,7 +288,8 @@ namespace Apex.Services.Printing.RIP
                 return RawPrinterHelper.SendBytesToPrinter(
                     printerName,
                     pUnmanagedBytes,
-                    data.Length);
+                    data.Length,
+                    jobName);
             }
             finally
             {

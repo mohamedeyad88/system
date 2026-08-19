@@ -70,6 +70,11 @@ namespace Apex.UI
             // Monitoring (started manually in App.xaml.cs — AddHostedService is a no-op on bare ServiceCollection)
             services.AddSingleton<PrinterMonitoringService>();
 
+            // Same instance behind the probe: the print path asks it whether a station
+            // can take work, and a second instance would answer from an empty cache.
+            services.AddSingleton<IPrinterHealthProbe>(sp =>
+                sp.GetRequiredService<PrinterMonitoringService>());
+
             // Print Manager Services
             services.AddSingleton<IFileIngestService, FileIngestService>();
             services.AddSingleton<ILoadBalancer, LoadBalancer>();
@@ -88,14 +93,27 @@ namespace Apex.UI
             services.AddSingleton<Apex.Core.Interfaces.IPrintGateway, Apex.Services.Printing.UnifiedPrintGateway>();
             services.AddScoped<Apex.Core.Interfaces.IPrintJobLogger, Apex.Services.Printing.PrintJobLogger>();
             services.AddScoped<Apex.Core.Interfaces.IPrintEngine, Apex.Services.Printing.PrintEngine>();
-            services.AddScoped<Apex.Services.Printing.BatchPrintJobManager>();
+            // Singleton so the print queue and any running batch survive navigation.
+            // A field operator peeked at Numbered Books mid-run and came back to an
+            // empty queue with the job apparently cancelled — because navigation
+            // disposes the scope (MainViewModel.NavigateTo) and this was scoped, so a
+            // fresh empty instance was built each time. Safe as a singleton: printing
+            // goes through the SmartPrintManager singleton, and none of this graph's
+            // dependencies hold a DbContext (PrintJobLogger is Serilog, the converter
+            // and validator are stateless), so #15's captive-context risk does not apply.
+            services.AddSingleton<Apex.Services.Printing.BatchPrintJobManager>();
 
             // Distribution Services
             services.AddScoped<Apex.Services.Printing.PrintDispatcher>();
             services.AddScoped<Apex.Services.Printing.PrinterStatusService>();
 
             // Numbering Services
-            services.AddScoped<Apex.Services.Numbering.NumberingService>();
+            // Transient (was Scoped): NumberingWizardViewModel is now a Singleton so its
+            // state survives navigation, and a singleton must not depend on a scoped
+            // service. NumberingService is safe either way — it holds no DbContext (it
+            // news up its own orchestrator/composer/loader) — Transient just keeps the
+            // lifetimes honest so enabling scope validation later won't trip on it.
+            services.AddTransient<Apex.Services.Numbering.NumberingService>();
             services.AddScoped<Apex.NumberedBooksEngine.Core.INumberSequencer, Apex.NumberedBooksEngine.Core.NumberSequencer>();
 
             // Sheet-fill optimizer — no longer a user-facing module; kept as the
@@ -113,19 +131,37 @@ namespace Apex.UI
             services.AddSingleton<Apex.Core.Interfaces.IDialogService, Apex.UI.Services.DialogService>();
             services.AddSingleton<Apex.Core.Interfaces.IFileDialogService, Apex.UI.Services.FileDialogService>();
 
+            // Cross-section workflow bridge ("send to printing" hand-off).
+            services.AddSingleton<Apex.UI.Services.WorkflowHandoff>();
+
             // ViewModels
             services.AddSingleton<MainViewModel>();
             services.AddTransient<DashboardViewModel>();
             services.AddTransient<SettingsViewModel>();
-            services.AddTransient<PrintManagerViewModel>();
-            services.AddTransient<NumberingWizardViewModel>();
+            // Singleton: the print workspace (its file queue and active run) is a
+            // single app-wide thing, not rebuilt on every visit — see the
+            // BatchPrintJobManager note above. It holds only singletons now.
+            services.AddSingleton<PrintManagerViewModel>();
+            // Singletons: the "document" workspaces. Navigation (MainViewModel.NavigateTo)
+            // disposes the DI scope and re-resolves the screen, so a Transient view-model
+            // was rebuilt empty on every return — the operator lost the loaded file, the
+            // number slots, the imposition result, or an unsaved design just by glancing
+            // at another section. Each of these graphs was verified DbContext-free
+            // (NumberingService/PdfPageToolsService/ImpositionService & co. new up their
+            // own helpers), so they carry none of #15's captive-context risk, and none
+            // clears its working state in InitializeAsync. So they can safely live for
+            // the app's lifetime and keep their state across navigation.
+            services.AddSingleton<NumberingWizardViewModel>();
+            services.AddSingleton<TemplateDesignerViewModel>();
+            services.AddSingleton<ImpositionViewModel>();
+            services.AddSingleton<PageToolsViewModel>();
+            // Transient (rebuilt each visit): these show live/system data and SHOULD
+            // refresh on return, and hold no user-entered work worth preserving.
+            services.AddTransient<DashboardViewModel>();
             services.AddTransient<SystemPerformanceViewModel>();
             services.AddTransient<LogViewerViewModel>();
             services.AddTransient<LicensingViewModel>();
             services.AddTransient<ColorCalibrationViewModel>();
-            services.AddTransient<TemplateDesignerViewModel>();
-            services.AddTransient<ImpositionViewModel>();
-            services.AddTransient<PageToolsViewModel>();
 
             // Views
             services.AddSingleton<MainWindow>();

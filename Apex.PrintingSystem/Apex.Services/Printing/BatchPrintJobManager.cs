@@ -18,30 +18,120 @@ namespace Apex.Services.Printing
         private readonly IPrintEngine _printEngine;
         private readonly IPrintJobLogger _logger;
         private readonly IDocumentConverter? _converter;
+        private readonly IPrinterHealthProbe? _health;
 
         public event EventHandler<BatchJob>? OnJobStatusChanged;
         public event EventHandler<string>? OnBatchStatusChanged;
         public event EventHandler<BatchProgress>? OnBatchProgressChanged;
 
+        /// <summary>A station stopped taking work and is waiting for someone.</summary>
+        public event EventHandler<PrinterHoldEventArgs>? OnPrinterHeld;
+
+        /// <summary>A held station was attended to and took its work.</summary>
+        public event EventHandler<string>? OnPrinterResumed;
+
         private CancellationTokenSource? _cts;
         private bool _isPaused;
         private readonly ManualResetEventSlim _pauseEvent = new(true);
 
+        /// <summary>
+        /// Stations the operator gave up on. A held printer otherwise waits forever,
+        /// which is correct — the shop's rule is that work is never silently skipped —
+        /// but there has to be a way out when a device is broken for the day.
+        /// </summary>
+        private readonly HashSet<string> _abandoned = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>How often a held printer is re-checked.</summary>
+        private static readonly TimeSpan HoldPollInterval = TimeSpan.FromSeconds(2);
+
         public BatchPrintJobManager(
             IPrintEngine printEngine,
             IPrintJobLogger logger,
-            IDocumentConverter? converter = null)
+            IDocumentConverter? converter = null,
+            IPrinterHealthProbe? health = null)
         {
             _printEngine = printEngine;
             _logger = logger;
             _converter = converter;
+            _health = health;
+        }
+
+        /// <summary>
+        /// Stop waiting on a held printer and record its outstanding copies as
+        /// skipped. Called from the UI when the operator decides a station is out
+        /// of service.
+        /// </summary>
+        public void AbandonPrinter(string printerName)
+        {
+            if (!string.IsNullOrWhiteSpace(printerName))
+                _abandoned.Add(printerName);
+        }
+
+        /// <summary>
+        /// The fault a printer is showing, or null if it can take work.
+        ///
+        /// Warnings are deliberately not faults: a tray that is merely low still
+        /// prints, and stopping for it would idle a station that could have
+        /// finished the run.
+        /// </summary>
+        private string? FaultOn(string printerName)
+        {
+            var status = _health?.GetCurrentStatus(printerName);
+            return status is { RequiresIntervention: true } ? status.Status : null;
+        }
+
+        /// <summary>
+        /// Blocks until the printer can take work again, the operator abandons it,
+        /// or the batch is stopped. Returns false if the copy should not be printed.
+        /// </summary>
+        private async Task<bool> WaitForPrinterAsync(
+            string printerName, string fault, CancellationToken ct)
+        {
+            OnPrinterHeld?.Invoke(this, new PrinterHoldEventArgs(printerName, fault));
+            Apex.Services.Logging.PrintLogger.Warning(
+                "[Batch] Holding '{Printer}' — {Fault}. Waiting for the operator.",
+                printerName, fault);
+
+            string lastFault = fault;
+
+            while (!ct.IsCancellationRequested)
+            {
+                if (_abandoned.Contains(printerName))
+                {
+                    Apex.Services.Logging.PrintLogger.Warning(
+                        "[Batch] '{Printer}' abandoned by the operator while held.", printerName);
+                    return false;
+                }
+
+                var current = FaultOn(printerName);
+                if (current == null)
+                {
+                    OnPrinterResumed?.Invoke(this, printerName);
+                    Apex.Services.Logging.PrintLogger.Info(
+                        "[Batch] '{Printer}' is ready again — resuming.", printerName);
+                    return true;
+                }
+
+                // The fault can change while we wait — paper refilled but the cover
+                // left open. Re-announce so the operator is told what to fix now.
+                if (!string.Equals(current, lastFault, StringComparison.Ordinal))
+                {
+                    lastFault = current;
+                    OnPrinterHeld?.Invoke(this, new PrinterHoldEventArgs(printerName, current));
+                }
+
+                try { await Task.Delay(HoldPollInterval, ct); }
+                catch (OperationCanceledException) { return false; }
+            }
+
+            return false;
         }
 
         /// <summary>
         /// Processes a batch of jobs: converts then prints sequentially to one printer.
         /// </summary>
         /// <summary>Single-printer batch — kept so existing callers are unaffected.</summary>
-        public Task ProcessBatchAsync(string printerName, List<BatchJob> jobs, BatchSettings settings)
+        public Task<BatchResult> ProcessBatchAsync(string printerName, List<BatchJob> jobs, BatchSettings settings)
             => ProcessBatchAsync(new[] { printerName }, jobs, settings, PrintDistributionMode.LoadBalance);
 
         /// <summary>
@@ -56,7 +146,7 @@ namespace Apex.Services.Printing
         /// parallel — so this gets the speed-up without the failure modes of running
         /// several print pipelines at once.</para>
         /// </summary>
-        public async Task ProcessBatchAsync(
+        public async Task<BatchResult> ProcessBatchAsync(
             IReadOnlyList<string> printerNames,
             List<BatchJob> jobs,
             BatchSettings settings,
@@ -69,94 +159,197 @@ namespace Apex.Services.Printing
             if (printers.Count == 0)
                 throw new ArgumentException("لا توجد طابعات صالحة.", nameof(printerNames));
 
-            await ProcessBatchCoreAsync(printers, jobs, settings, mode);
+            return await ProcessBatchCoreAsync(printers, jobs, settings, mode);
         }
 
-        private async Task ProcessBatchCoreAsync(
+        private async Task<BatchResult> ProcessBatchCoreAsync(
             List<string> printers, List<BatchJob> jobs, BatchSettings settings, PrintDistributionMode mode)
         {
-            int jobIndex = -1;
             _cts = new CancellationTokenSource();
             _isPaused = false;
             _pauseEvent.Set();
 
+            // StopOnError must halt the run WITHOUT looking like a user cancel: the
+            // linked source cancels the workers, while _cts (checked for WasCancelled)
+            // stays untouched unless the operator actually pressed Cancel.
+            using var runCts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
+            var ct = runCts.Token;
+
             var batchStopwatch = Stopwatch.StartNew();
+
+            // ── Parallel across printers ──────────────────────────────────────────
+            // The batch used to run one file at a time — file 1 fully printed before
+            // file 2 began — so eight of nine stations sat idle and a nine-printer wall
+            // delivered single-printer throughput. Now every printer runs its own
+            // worker in parallel: real load balancing. Several threads therefore touch
+            // the tallies below, so all shared state is guarded by tallyLock — taken
+            // only when a copy FINISHES, never while a page is printing, so it costs
+            // nothing on the hot path.
+            //
+            // Copies = file × printer: in Duplicate 3 files on 9 printers is 27 copies,
+            // which is what the UI header promises; counting whole files hid the copies
+            // that a single refusing station left unprinted.
             int completedCount = 0;
             int failedCount = 0;
+            int copiesPrinted = 0;
+            int copiesFailed = 0;
+            int copiesHeld = 0;   // never attempted — station held when the run ended
+            var targetFailures = new List<BatchFailure>();
+            var heldFailures = new List<BatchFailure>();
+            var tallyLock = new object();
 
-            OnBatchStatusChanged?.Invoke(this, "Starting batch...");
-
+            // Jobs finished on an earlier pass count as completed and are not re-sent.
+            var pending = new List<BatchJob>();
             foreach (var job in jobs)
             {
-                jobIndex++;
-                if (_cts.IsCancellationRequested) break;
+                if (job.Status == "Completed" || job.Status == "Skipped") completedCount++;
+                else pending.Add(job);
+            }
+            ReportBatchProgress(jobs, completedCount, failedCount, batchStopwatch.Elapsed);
 
-                // Wait if paused
-                _pauseEvent.Wait(_cts.Token);
+            // Convert each file at most once, even when every printer needs it
+            // (Duplicate). Lazy guarantees the conversion body runs a single time no
+            // matter how many workers ask for the same file at once.
+            var conversions = new System.Collections.Concurrent.ConcurrentDictionary<BatchJob, Lazy<Task<bool>>>();
+            Task<bool> EnsureConvertedAsync(BatchJob job)
+                => conversions.GetOrAdd(job, j => new Lazy<Task<bool>>(() => ConvertJobAsync(j, ct))).Value;
 
-                if (job.Status == "Completed" || job.Status == "Skipped")
+            // Copies each pending job owes: one per printer in Duplicate, exactly one
+            // (whichever printer picks it up) in LoadBalance. A job is finalised —
+            // counted completed or failed — only when its last owed copy is done, so a
+            // job counts as succeeded only if EVERY copy it owed actually printed.
+            int copiesPerJob = mode == PrintDistributionMode.Duplicate ? Math.Max(1, printers.Count) : 1;
+            var remaining = new Dictionary<BatchJob, int>();
+            // A held copy is a THIRD outcome, not a failure: it must not mark the job
+            // "Failed" nor land in the Failures list — the shop rule is that a waiting
+            // copy sends the operator to close a cover, not to hunt a fault.
+            var hardFailed = new Dictionary<BatchJob, bool>();
+            var held = new Dictionary<BatchJob, bool>();
+            foreach (var job in pending) { remaining[job] = copiesPerJob; hardFailed[job] = false; held[job] = false; }
+
+            // Record one (file, printer) copy: 'P' printed, 'F' failed, 'H' held. When
+            // it is the file's last owed copy, finalise the job and report progress.
+            void RecordCopy(BatchJob job, string printer, char outcome, string? fault)
+            {
+                lock (tallyLock)
                 {
-                    completedCount++;
-                    continue;
-                }
+                    if (outcome == 'P')
+                    {
+                        copiesPrinted++;
+                    }
+                    else if (outcome == 'F')
+                    {
+                        copiesFailed++;
+                        hardFailed[job] = true;
+                        targetFailures.Add(new BatchFailure(
+                            System.IO.Path.GetFileName(job.FilePath),
+                            string.IsNullOrWhiteSpace(job.ErrorMessage) ? "سبب غير معروف" : job.ErrorMessage!,
+                            printer));
+                    }
+                    else // 'H'
+                    {
+                        copiesHeld++;
+                        held[job] = true;
+                        heldFailures.Add(new BatchFailure(
+                            System.IO.Path.GetFileName(job.FilePath), fault ?? "معلّق", printer));
+                    }
 
+                    if (--remaining[job] == 0)
+                    {
+                        // A real failure wins over a hold; only an all-printed job is
+                        // Completed. A job whose sole snag was a held copy is counted a
+                        // failure (it did not finish) but is NOT stamped "Failed" — that
+                        // status is what leaks a held copy into the Failures list.
+                        if (hardFailed[job]) { failedCount++; job.Status = "Failed"; }
+                        else if (held[job]) { failedCount++; }
+                        else { completedCount++; job.Status = "Completed"; }
+                        NotifyJobStatus(job);
+                        ReportBatchProgress(jobs, completedCount, failedCount, batchStopwatch.Elapsed);
+                    }
+                }
+            }
+
+            // Print one copy on one printer: convert once, honour a held station (wait
+            // for THIS printer, never skip or reroute — the shop's rule), then print
+            // with retry. Records exactly one copy outcome.
+            async Task PrintCopyAsync(BatchJob job, string printer)
+            {
                 try
                 {
-                    // Step 1: Convert if needed
-                    if (!await ConvertJobAsync(job, _cts.Token))
+                    if (!await EnsureConvertedAsync(job))
                     {
-                        failedCount++;
-                        if (settings.StopOnError) break;
-                        continue;
+                        RecordCopy(job, printer, 'F', null);
+                        if (settings.StopOnError) { OnBatchStatusChanged?.Invoke(this, "Batch stopped on error"); runCts.Cancel(); }
+                        return;
                     }
 
-                    // Step 2: Print with retry, to every printer this job targets.
-                    // A job counts as succeeded only if EVERY target accepted it —
-                    // reporting success while one station got nothing would hide a
-                    // missing copy from the operator.
-                    var targets = TargetsFor(printers, mode, jobIndex);
-                    bool printSuccess = true;
-                    foreach (var target in targets)
+                    var fault = FaultOn(printer);
+                    if (fault != null)
                     {
-                        if (!await PrintJobWithRetryAsync(target, job, settings, _cts.Token))
-                            printSuccess = false;
+                        OnBatchStatusChanged?.Invoke(this, $"بانتظار «{printer}» — {fault}");
+                        if (!await WaitForPrinterAsync(printer, fault, ct))
+                        {
+                            RecordCopy(job, printer, 'H', fault);
+                            return;
+                        }
                     }
 
-                    if (printSuccess)
-                        completedCount++;
-                    else
-                        failedCount++;
+                    bool ok = await PrintJobWithRetryAsync(printer, job, settings, ct);
+                    RecordCopy(job, printer, ok ? 'P' : 'F', null);
 
-                    // Stop on error if configured
-                    if (!printSuccess && settings.StopOnError)
+                    if (!ok && settings.StopOnError)
                     {
                         OnBatchStatusChanged?.Invoke(this, "Batch stopped on error");
-                        break;
+                        runCts.Cancel();
+                        return;
                     }
 
-                    // Delay between jobs
                     if (settings.DelayBetweenJobsMs > 0)
-                    {
-                        await Task.Delay(settings.DelayBetweenJobsMs, _cts.Token);
-                    }
+                        await Task.Delay(settings.DelayBetweenJobsMs, ct);
                 }
                 catch (OperationCanceledException)
                 {
-                    break;
+                    // Cancelled or stopped mid-copy: not a failure and not a hold — just
+                    // stop. The job stays unfinalised and BatchResult.WasCancelled (user
+                    // cancel only) carries the outcome.
                 }
                 catch (Exception ex)
                 {
-                    job.Status = "Failed";
                     job.ErrorMessage = ex.Message;
-                    failedCount++;
-                    NotifyJobStatus(job);
+                    RecordCopy(job, printer, 'F', null);
+                }
+            }
 
-                    if (settings.StopOnError) break;
+            OnBatchStatusChanged?.Invoke(this, "Starting batch...");
+
+            // LoadBalance: all printers pull from one shared queue, so a fast station
+            // simply takes more files. (Unused in Duplicate, where each worker prints
+            // the whole list to its own station.)
+            var sharedQueue = new System.Collections.Concurrent.ConcurrentQueue<BatchJob>(pending);
+
+            async Task RunPrinterAsync(string printer)
+            {
+                if (mode == PrintDistributionMode.Duplicate)
+                {
+                    foreach (var job in pending)
+                    {
+                        if (ct.IsCancellationRequested) break;
+                        try { _pauseEvent.Wait(ct); } catch (OperationCanceledException) { break; }
+                        await PrintCopyAsync(job, printer);
+                    }
+                    return;
                 }
 
-                // Update batch progress
-                ReportBatchProgress(jobs, completedCount, failedCount, batchStopwatch.Elapsed);
+                while (!ct.IsCancellationRequested)
+                {
+                    try { _pauseEvent.Wait(ct); } catch (OperationCanceledException) { break; }
+                    if (!sharedQueue.TryDequeue(out var job)) break;
+                    await PrintCopyAsync(job, printer);
+                }
             }
+
+            // One worker per printer, all running at once.
+            await Task.WhenAll(printers.Select(p => Task.Run(() => RunPrinterAsync(p))));
 
             batchStopwatch.Stop();
             var finalStatus = _cts.IsCancellationRequested
@@ -164,6 +357,36 @@ namespace Apex.Services.Printing
                 : $"Batch completed: {completedCount} succeeded, {failedCount} failed";
 
             OnBatchStatusChanged?.Invoke(this, finalStatus);
+
+            // Hand the outcome back to the caller instead of only announcing it on an
+            // event. The counts were computed here and then discarded: the UI showed a
+            // bare "done" dialog whether every job printed or every job failed, so a
+            // failed run was indistinguishable from a successful one.
+            return new BatchResult
+            {
+                TotalJobs = jobs.Count,
+                Succeeded = completedCount,
+                Failed = failedCount,
+                CopiesPrinted = copiesPrinted,
+                CopiesFailed = copiesFailed,
+                CopiesHeld = copiesHeld,
+                HeldCopies = heldFailures,
+                WasCancelled = _cts.IsCancellationRequested,
+                Elapsed = batchStopwatch.Elapsed,
+
+                // Per (file, printer). Jobs that failed before reaching a printer at
+                // all — conversion, or an exception — are added here too so nothing
+                // fails silently.
+                Failures = targetFailures
+                    .Concat(jobs
+                        .Where(j => j.Status == "Failed"
+                                    && !targetFailures.Any(f => f.FileName == System.IO.Path.GetFileName(j.FilePath)))
+                        .Select(j => new BatchFailure(
+                            System.IO.Path.GetFileName(j.FilePath),
+                            string.IsNullOrWhiteSpace(j.ErrorMessage) ? "سبب غير معروف" : j.ErrorMessage!,
+                            Printer: null)))
+                    .ToList(),
+            };
         }
 
         /// <summary>
@@ -400,18 +623,29 @@ namespace Apex.Services.Printing
             OnJobStatusChanged?.Invoke(this, job);
         }
 
+        /// <summary>
+        /// Publishes batch progress.
+        ///
+        /// PercentComplete counts everything ATTEMPTED, not just what succeeded. It
+        /// used to divide by successes alone, so a run where the jobs failed sat at 0%
+        /// from beginning to end — the operator watched a motionless bar and had no
+        /// way to tell a stuck queue from a failing one.
+        /// </summary>
         private void ReportBatchProgress(List<BatchJob> jobs, int completed, int failed, TimeSpan elapsed)
         {
+            int attempted = completed + failed;
+
             var progress = new BatchProgress
             {
                 TotalJobs = jobs.Count,
                 CompletedJobs = completed,
                 FailedJobs = failed,
+                AttemptedJobs = attempted,
                 PendingJobs = jobs.Count - completed - failed,
                 ConvertingJobs = jobs.Count(j => j.ConversionStatus == ConversionStatus.Converting),
                 PrintingJobs = jobs.Count(j => j.Status == "Printing"),
                 ElapsedTime = elapsed,
-                PercentComplete = jobs.Count > 0 ? (double)completed / jobs.Count * 100 : 0
+                PercentComplete = jobs.Count > 0 ? (double)attempted / jobs.Count * 100 : 0
             };
 
             OnBatchProgressChanged?.Invoke(this, progress);
@@ -426,6 +660,97 @@ namespace Apex.Services.Printing
     }
 
     /// <summary>
+    /// One (file, printer) pair that did not print, and why.
+    /// </summary>
+    /// <param name="Printer">
+    /// The device that refused it, or null when the job failed before any printer was
+    /// reached. Naming the printer is the difference between "three files failed" and
+    /// "these three failed on OneNote, which cannot print silently" — only the second
+    /// tells the operator what to change.
+    /// </param>
+    public sealed record BatchFailure(string FileName, string Reason, string? Printer = null);
+
+    /// <summary>
+    /// A station stopped taking work and is waiting for someone to attend to it.
+    /// Raised the moment the condition is seen, because the operator is usually
+    /// standing at a machine rather than watching the screen.
+    /// </summary>
+    public sealed class PrinterHoldEventArgs : EventArgs
+    {
+        public string PrinterName { get; }
+
+        /// <summary>What has to be fixed — "Out of Paper", "Door Open", "Paper Jam".</summary>
+        public string Fault { get; }
+
+        public PrinterHoldEventArgs(string printerName, string fault)
+        {
+            PrinterName = printerName;
+            Fault = fault;
+        }
+    }
+
+    /// <summary>
+    /// What a batch actually did.
+    ///
+    /// Returned rather than only announced on an event, because the caller has to be
+    /// able to tell a run where everything printed from one where nothing did — and
+    /// to name the files that failed. A print shop cannot act on "done".
+    /// </summary>
+    public sealed class BatchResult
+    {
+        public int TotalJobs { get; init; }
+        public int Succeeded { get; init; }
+        public int Failed { get; init; }
+
+        /// <summary>
+        /// Copies that reached a printer, counted as file × printer — the same unit the
+        /// UI header shows ("3 files · 9 printers · 27 jobs"). A file counts as failed
+        /// the moment ONE of its targets refuses it, so the file count alone says
+        /// nothing about how much actually came out.
+        /// </summary>
+        public int CopiesPrinted { get; init; }
+
+        public int CopiesFailed { get; init; }
+
+        /// <summary>
+        /// Copies never attempted because their station was waiting for a person when
+        /// the run stopped — an empty tray, an open cover, a printer the operator
+        /// took out of service.
+        ///
+        /// Held is a third outcome, not a kind of failure. Nothing went wrong with
+        /// these copies; they simply have not been printed yet. Folding them into
+        /// the failure count would send the operator looking for a fault instead of
+        /// closing a cover.
+        /// </summary>
+        public int CopiesHeld { get; init; }
+
+        /// <summary>The (file, printer, reason) behind each held copy.</summary>
+        public IReadOnlyList<BatchFailure> HeldCopies { get; init; } = Array.Empty<BatchFailure>();
+
+        public int CopiesTotal => CopiesPrinted + CopiesFailed + CopiesHeld;
+
+        public bool WasCancelled { get; init; }
+        public TimeSpan Elapsed { get; init; }
+        public IReadOnlyList<BatchFailure> Failures { get; init; } = Array.Empty<BatchFailure>();
+
+        public bool AllSucceeded =>
+            Failed == 0 && CopiesHeld == 0 && !WasCancelled && Succeeded == TotalJobs;
+
+        /// <summary>Work is outstanding because a station is waiting for attention.</summary>
+        public bool HasHeldCopies => CopiesHeld > 0;
+
+        /// <summary>
+        /// True only when NO copy came out anywhere. Judged on copies, not files:
+        /// eight stations holding their copies is not "nothing printed", however many
+        /// files a ninth printer refused.
+        /// </summary>
+        public bool NothingPrinted => CopiesPrinted == 0 && CopiesTotal > 0;
+
+        /// <summary>Some copies printed and some did not.</summary>
+        public bool PartiallyPrinted => CopiesPrinted > 0 && CopiesFailed > 0;
+    }
+
+    /// <summary>
     /// Overall batch progress information.
     /// </summary>
     public class BatchProgress
@@ -433,6 +758,10 @@ namespace Apex.Services.Printing
         public int TotalJobs { get; set; }
         public int CompletedJobs { get; set; }
         public int FailedJobs { get; set; }
+
+        /// <summary>Jobs finished either way — what the progress bar tracks.</summary>
+        public int AttemptedJobs { get; set; }
+
         public int PendingJobs { get; set; }
         public int ConvertingJobs { get; set; }
         public int PrintingJobs { get; set; }

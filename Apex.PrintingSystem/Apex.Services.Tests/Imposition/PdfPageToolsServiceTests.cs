@@ -117,6 +117,41 @@ public class PdfPageToolsServiceTests
         Assert.Equal(110, h, 1);
     }
 
+    /// <summary>
+    /// Growing the page is only half the job. Without a trim box a RIP or cutter
+    /// treats the media box as the finished size, so the bleed gets printed as part
+    /// of the product — the opposite of what the operator asked for. Measured on a
+    /// real run 2026-08-16: the source carried six trim boxes and the output carried
+    /// none.
+    /// </summary>
+    [Fact]
+    public void AddBleed_MarksWhereTheSheetGetsCut()
+    {
+        byte[] src = _tools.GenerateSampleDocument(2, 100, 100);
+        byte[] outPdf = _tools.AddBleed(src, bleedMm: 3);
+
+        using var doc = PdfReader.Open(new MemoryStream(outPdf), PdfDocumentOpenMode.InformationOnly);
+        Assert.Equal(2, doc.PageCount);
+
+        foreach (var page in doc.Pages.Cast<PdfSharpCore.Pdf.PdfPage>())
+        {
+            // Media box grew by the bleed on every side.
+            Assert.Equal(106, page.Width.Point * PtToMm, 1);
+            Assert.Equal(106, page.Height.Point * PtToMm, 1);
+
+            // Trim box is the original 100×100 page, centred — i.e. inset by the bleed.
+            var trim = page.TrimBox;
+            Assert.Equal(3, trim.X1 * PtToMm, 1);
+            Assert.Equal(3, trim.Y1 * PtToMm, 1);
+            Assert.Equal(103, trim.X2 * PtToMm, 1);
+            Assert.Equal(103, trim.Y2 * PtToMm, 1);
+
+            // Everything added is bleed, so the bleed box is the whole new sheet.
+            Assert.Equal(0, page.BleedBox.X1 * PtToMm, 1);
+            Assert.Equal(106, page.BleedBox.X2 * PtToMm, 1);
+        }
+    }
+
     [Fact]
     public void TrimAndShift_ShrinksPage()
     {

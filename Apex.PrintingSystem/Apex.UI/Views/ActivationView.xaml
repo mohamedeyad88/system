@@ -135,7 +135,10 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
+                        <!-- European digits, always — see the note in LicensingView.
+                             The customer reads this id off the screen and sends it to us. -->
                         <TextBlock Text="{Binding DeviceDisplayId}"
+                                   NumberSubstitution.Substitution="European"
                                    FontFamily="Consolas, Courier New" FontSize="16"
                                    FontWeight="Bold" Foreground="#60A5FA"
                                    VerticalAlignment="Center"/>

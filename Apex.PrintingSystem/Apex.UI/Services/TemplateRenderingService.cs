@@ -1,3 +1,4 @@
+using Apex.Services.SmartVariables;
 using Apex.Services.SmartVariables.Models;
 using Apex.Services.Templates;
 using Apex.UI.ViewModels;
@@ -73,6 +74,11 @@ namespace Apex.UI.Services
 
             foreach (var slot in page.Slots ?? Enumerable.Empty<TemplateSlotDefinition>())
             {
+                // Conditional rules decide whether this slot prints for THIS record.
+                // Evaluated here, in the single place every output path goes through,
+                // so the preview, the PNG export and the press all agree.
+                if (!ShouldPrintSlot(slot, row)) continue;
+
                 var field = new RenderedFieldItem
                 {
                     FieldId = slot.Id,
@@ -123,6 +129,22 @@ namespace Apex.UI.Services
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Whether a slot's conditions are satisfied by the current record.
+        ///
+        /// A slot with no rules always prints, so existing templates are untouched.
+        /// While designing — before any data is pasted — rules are NOT applied: hiding
+        /// fields on an empty data set would leave the designer looking at a blank
+        /// page and no way to select what it is trying to lay out.
+        /// </summary>
+        private static bool ShouldPrintSlot(TemplateSlotDefinition slot, SmartDataRow? row)
+        {
+            if (slot.Rules == null || slot.Rules.Count == 0) return true;
+            if (row == null) return true;
+
+            return FieldRuleEvaluator.ShouldPrint(slot.Rules, row.Values!);
         }
 
         // ── Text / Number / Date ──────────────────────────────────────────────

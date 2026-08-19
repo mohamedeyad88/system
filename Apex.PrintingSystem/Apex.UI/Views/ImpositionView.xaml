@@ -29,6 +29,12 @@
             <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
             <Setter Property="FontSize"   Value="12"/>
             <Setter Property="Margin"     Value="0,0,0,4"/>
+            <!-- Wrap rather than clip. These captions sit in fixed grid columns, and
+                 the longer ones were being cut mid-word — "المسافة بين العناصر"
+                 rendered as "المسافة بين العنا", which names nothing. Arabic labels
+                 run longer than their English counterparts, so the column that fits
+                 one language will not fit the other. -->
+            <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
         <Style x:Key="Value" TargetType="TextBlock" BasedOn="{StaticResource PropValue}">
             <Setter Property="FontSize"   Value="13"/>
@@ -111,12 +117,21 @@
                                     Content="{DynamicResource Imp_Browse}"
                                     Style="{StaticResource SecondaryBtn}"
                                     HorizontalAlignment="Stretch" Margin="0,0,0,8"/>
-                            <TextBlock Text="{Binding SourcePath}" Foreground="{DynamicResource Brush.Text.Secondary}" FontSize="11"
+                            <!-- File name, not the whole path: trimming a path with an
+                                 ellipsis eats the end, which is the file name — the one
+                                 part that tells the operator which job is loaded. The
+                                 folder is still one hover away. -->
+                            <TextBlock Text="{Binding SourceFileName}" Foreground="{DynamicResource Brush.Text.Secondary}" FontSize="11"
                                        TextTrimming="CharacterEllipsis"
+                                       ToolTip="{Binding SourcePath}"
                                        Visibility="{Binding HasSource, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <!-- Bound to HasNoSource, not to HasSource through a converter
+                                 that returns a bool where a Visibility is expected — that
+                                 never collapsed, so this placeholder sat under the loaded
+                                 file's name saying no file had been chosen. -->
                             <TextBlock Text="{DynamicResource Imp_NoSource}" Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="11"
                                        FontStyle="Italic"
-                                       Visibility="{Binding HasSource, Converter={StaticResource InverseBoolConverter}}"/>
+                                       Visibility="{Binding HasNoSource, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                             <StackPanel Orientation="Horizontal" Margin="0,8,0,0"
                                         Visibility="{Binding HasSource, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <TextBlock Text="{DynamicResource Imp_Pages}" Style="{StaticResource Label}" Margin="0,0,8,0"/>
@@ -416,6 +431,10 @@
                         <Button Grid.Column="2" Command="{Binding ResetCommand}" Content="{DynamicResource Imp_Reset}"
                                 Style="{StaticResource SecondaryBtn}"/>
                     </Grid>
+                    <!-- Workflow chain: send the imposed sheet straight to the print queue. -->
+                    <Button Command="{Binding SendToPrintingCommand}" Content="{DynamicResource PT_SendToPrint}"
+                            Style="{StaticResource PrimaryBtn}" HorizontalAlignment="Stretch"
+                            IsEnabled="{Binding HasResult}" Margin="0,8,0,0"/>
                 </StackPanel>
             </ScrollViewer>
         </Border>
@@ -489,7 +508,7 @@
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource Imp_Signatures}" Style="{StaticResource Label}"/>
                                 <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SignatureCount}" Style="{StaticResource Value}" HorizontalAlignment="Right"/>
                                 <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource Imp_Duplex}" Style="{StaticResource Label}"/>
-                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding IsDuplex}" Style="{StaticResource Value}" HorizontalAlignment="Right"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding DuplexText}" Style="{StaticResource Value}" HorizontalAlignment="Right"/>
                             </Grid>
                         </StackPanel>
                     </Border>
@@ -514,6 +533,17 @@
                                     <Button Command="{Binding ToggleSideCommand}" Content="{DynamicResource Imp_ToggleSide}"
                                             Style="{StaticResource SecondaryBtn}" Padding="10,5" FontSize="11" Margin="6,0,0,0"
                                             Visibility="{Binding CanShowBack, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    <!-- Zoom controls (visible once a rendered sheet is available) -->
+                                    <Button Command="{Binding PreviewZoomOutCommand}" Content="−"
+                                            Style="{StaticResource SecondaryBtn}" Padding="10,5" FontSize="11" Margin="12,0,0,0"
+                                            Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    <Border Background="{DynamicResource Brush.Background}" CornerRadius="6" Padding="8,5" VerticalAlignment="Center" Margin="4,0,0,0"
+                                            Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="{Binding PreviewZoomLabel}" Foreground="{DynamicResource Brush.Primary.Light}" FontSize="12" FontWeight="SemiBold" MinWidth="40" TextAlignment="Center"/>
+                                    </Border>
+                                    <Button Command="{Binding PreviewZoomInCommand}" Content="+"
+                                            Style="{StaticResource SecondaryBtn}" Padding="10,5" FontSize="11" Margin="4,0,0,0"
+                                            Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                 </StackPanel>
                             </Grid>
                             <Border Background="{DynamicResource Brush.Surface.Sunken}" CornerRadius="10" Padding="20">
@@ -530,15 +560,23 @@
                                         HorizontalAlignment="Center" VerticalAlignment="Center"
                                         Visibility="{Binding HasPreviewImage, Converter={StaticResource InverseBoolConverter}}"/>
 
-                                    <!-- Real rendered sheet as paper on a surface (soft shadow) -->
-                                    <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="White"
-                                            Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <Border.Effect>
-                                            <DropShadowEffect BlurRadius="28" ShadowDepth="0" Opacity="0.55" Color="Black"/>
-                                        </Border.Effect>
-                                        <Image Source="{Binding PreviewImage}" MaxHeight="560" Stretch="Uniform"
-                                               RenderOptions.BitmapScalingMode="HighQuality"/>
-                                    </Border>
+                                    <!-- Real rendered sheet as paper, inside a zoomable + pannable viewport.
+                                         Ctrl+Wheel zooms; scrollbars appear once the zoomed sheet overflows. -->
+                                    <ScrollViewer x:Name="ImpPreviewScroll" MaxHeight="600"
+                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                                                  Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                  PreviewMouseWheel="ImpPreview_PreviewMouseWheel">
+                                        <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="White" Margin="8">
+                                            <Border.LayoutTransform>
+                                                <ScaleTransform ScaleX="{Binding PreviewZoom}" ScaleY="{Binding PreviewZoom}"/>
+                                            </Border.LayoutTransform>
+                                            <Border.Effect>
+                                                <DropShadowEffect BlurRadius="28" ShadowDepth="0" Opacity="0.55" Color="Black"/>
+                                            </Border.Effect>
+                                            <Image Source="{Binding PreviewImage}" MaxHeight="560" Stretch="Uniform"
+                                                   RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        </Border>
+                                    </ScrollViewer>
 
                                     <!-- Loading state -->
                                     <Border HorizontalAlignment="Center" VerticalAlignment="Center"

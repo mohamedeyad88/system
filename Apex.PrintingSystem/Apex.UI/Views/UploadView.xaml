@@ -242,8 +242,9 @@
             <RowDefinition Height="Auto"/>   <!-- ① Printer bar      -->
             <RowDefinition Height="Auto"/>   <!-- ② Queue toolbar    -->
             <RowDefinition Height="Auto"/>   <!-- ③ Presets bar      -->
-            <RowDefinition Height="Auto"/>   <!-- ④ Progress bar     -->
-            <RowDefinition Height="*"/>      <!-- ⑤ File list        -->
+            <RowDefinition Height="Auto"/>   <!-- ④ Printer alert    -->
+            <RowDefinition Height="Auto"/>   <!-- ⑤ Progress bar     -->
+            <RowDefinition Height="*"/>      <!-- ⑥ File list        -->
         </Grid.RowDefinitions>
 
         <!-- ══════════════════════════════════════════════════════════════
@@ -330,7 +331,10 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="8"/>
-                        <ColumnDefinition Width="180"/>
+                        <!-- Auto so the mode label fits. At a fixed 180 it truncated to
+                             "Load balance — each file o…", which hides exactly the part
+                             that distinguishes the two modes. -->
+                        <ColumnDefinition Width="Auto" MinWidth="180"/>
                     </Grid.ColumnDefinitions>
 
                     <ToggleButton x:Name="PrinterPickerButton" Grid.Column="0"
@@ -657,9 +661,51 @@
         </Border>
 
         <!-- ══════════════════════════════════════════════════════════════
-             ④  PROGRESS BAR (visible when printing)
+             ④  PRINTER ALERT — a station is waiting for somebody
+
+             A banner, not a dialog: with eight or nine printers the faults arrive
+             together, and stacked modal windows would bury the screen and teach the
+             operator to dismiss them unread. Amber, because the run has not failed —
+             it is paused until a tray is filled or a cover closed.
              ══════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="3" Grid.Column="0"
+                Background="#3A2A0B"
+                BorderBrush="#B45309" BorderThickness="0,0,0,2"
+                Padding="20,10"
+                Visibility="{Binding HasAlert, Converter={StaticResource BoolToVisibility}}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="⚠" FontSize="18"
+                           Foreground="#FBBF24" VerticalAlignment="Center"
+                           Margin="0,0,12,0"/>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="{DynamicResource PM_HeldBannerTitle}"
+                               FontSize="11" FontWeight="Bold" Foreground="#FBBF24"/>
+                    <TextBlock Text="{Binding AlertMessage, Mode=OneWay}"
+                               FontSize="12" Foreground="#FDE68A"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <Button Grid.Column="2"
+                        Content="{DynamicResource PM_HeldSkip}"
+                        Command="{Binding AbandonHeldPrintersCommand}"
+                        Padding="12,5" FontSize="11"
+                        Background="#78350F" Foreground="#FDE68A"
+                        BorderBrush="#B45309" BorderThickness="1"
+                        VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <!-- ══════════════════════════════════════════════════════════════
+             ⑤  PROGRESS BAR (visible when printing)
+             ══════════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="4" Grid.Column="0"
                 Background="#0A1628"
                 BorderBrush="#1E3A5F" BorderThickness="0,0,0,1"
                 Padding="20,8"
@@ -707,9 +753,9 @@
         </Border>
 
         <!-- ══════════════════════════════════════════════════════════════
-             ⑤  FILE LIST  — full height
+             ⑥  FILE LIST  — full height
              ══════════════════════════════════════════════════════════════ -->
-        <Border Grid.Row="4" Grid.Column="0" Background="#0F172A"
+        <Border Grid.Row="5" Grid.Column="0" Background="#0F172A"
                 AllowDrop="True" Drop="Border_Drop">
             <Grid>
                 <Grid.RowDefinitions>
@@ -1021,7 +1067,7 @@
         <!-- ══════════════════════════════════════════════════════════════
              ⑥  SETTINGS RAIL — how the job prints, always in view
              ══════════════════════════════════════════════════════════════ -->
-        <Border Grid.Row="1" Grid.RowSpan="4" Grid.Column="1"
+        <Border Grid.Row="1" Grid.RowSpan="5" Grid.Column="1"
                 Width="230"
                 Background="#161F2E"
                 BorderBrush="#1E293B" BorderThickness="1,0,0,0">

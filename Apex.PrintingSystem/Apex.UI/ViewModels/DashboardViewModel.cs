@@ -236,11 +236,22 @@ namespace Apex.UI.ViewModels
             FailedJobs = failed;
             TodayJobs = completed + failed + stats.ActiveJobs + stats.QueuedJobs;
 
-            // Success rate
+            // Success rate — a dash until something has actually run.
+            //
+            // With no jobs the old code reported 100%, which reads as a measurement
+            // and is not one. On a fresh install the dashboard claimed a perfect
+            // record before the shop had printed a single page.
             long total = stats.TotalJobsCompleted + stats.TotalJobsFailed;
-            double rate = total > 0 ? (double)stats.TotalJobsCompleted / total * 100 : 100;
-            SuccessRate = Math.Round(rate, 1);
-            SuccessRateText = $"{SuccessRate:F1}%";
+            if (total > 0)
+            {
+                SuccessRate = Math.Round((double)stats.TotalJobsCompleted / total * 100, 1);
+                SuccessRateText = $"{SuccessRate:F1}%";
+            }
+            else
+            {
+                SuccessRate = 0;
+                SuccessRateText = "—";
+            }
 
             // Average (session hours → jobs/hour)
             double hoursElapsed = (DateTime.Now - _sessionStart).TotalHours;

@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <sys:String x:Key="TD_103">▼ تأخير</sys:String>
+    <sys:String x:Key="TD_SearchTemplates">بحث في القوالب...</sys:String>
     <sys:String x:Key="PaperCutting_Mode_BestUtil">أفضل استخدام للمساحة</sys:String>
     <sys:String x:Key="SV_010">⚙ خيارات التنظيف</sys:String>
     <sys:String x:Key="PrintExecution_Ready">جاهز</sys:String>
@@ -260,7 +261,8 @@
     <sys:String x:Key="SV_063">✅ فحص مسبق للبيانات</sys:String>
     <sys:String x:Key="Numbering_ActualSize">الحجم الفعلي (100%)</sys:String>
     <sys:String x:Key="ACT_015">أو</sys:String>
-    <sys:String x:Key="Nav_Section_Design">التصميم والتجهيز</sys:String>
+    <sys:String x:Key="Nav_Section_Design">التصميم</sys:String>
+    <sys:String x:Key="Nav_Section_Prepress">التجهيز</sys:String>
     <sys:String x:Key="Numbering_RecentButton">الأخيرة</sys:String>
     <sys:String x:Key="Imp_CropMarks">علامات القص</sys:String>
     <sys:String x:Key="PrintingOps">عمليات الطباعة</sys:String>
@@ -329,6 +331,10 @@
     <sys:String x:Key="Nav_TemplateDesigner">مصمم القوالب</sys:String>
     <sys:String x:Key="Distribution_Success">نجح</sys:String>
     <sys:String x:Key="Log_Filter">تصفية:</sys:String>
+    <sys:String x:Key="Log_Title">سجلات النظام</sys:String>
+    <sys:String x:Key="Log_Refresh">تحديث</sys:String>
+    <sys:String x:Key="Log_OpenFolder">فتح مجلد السجل</sys:String>
+    <sys:String x:Key="Log_AutoRefresh">تحديث تلقائي</sys:String>
     <sys:String x:Key="PrinterProps_Status">الحالة</sys:String>
     <sys:String x:Key="Imp_TemplateLoaded">✅ تم تحميل القالب: {0}</sys:String>
     <sys:String x:Key="Imp_ToggleSide">قلب الوجه ⇆</sys:String>
@@ -532,7 +538,11 @@
     <sys:String x:Key="Imp_Preview">معاينة الورقة الأولى</sys:String>
     <sys:String x:Key="Num_SmartDesc">سيتم طباعة كل صفحة مع صورها بالتتابع، وسيخرج الدفتر مترتب تلقائيًا بدون حاجة للتجميع اليدوي.</sys:String>
     <sys:String x:Key="Common_Browse">تصفح</sys:String>
-    <sys:String x:Key="ACT_016">تثبيت ملف الترخيص (.apex)</sys:String>
+    <!-- U+200E (left-to-right mark) pins the dot to "apex". Without it the dot is a
+         neutral character sitting on the boundary of an Arabic run and a Latin one,
+         so bidi reordering moved it to the far side and the extension displayed as
+         "(apex.)" instead of "(.apex)". -->
+    <sys:String x:Key="ACT_016">تثبيت ملف الترخيص (&#x200E;.apex&#x200E;)</sys:String>
     <sys:String x:Key="Numbering_TotalNumbersLabel">إجمالي الأرقام:</sys:String>
     <sys:String x:Key="SV_ChooseSaveFolder">اختر مجلد الحفظ (اكتب أي اسم ملف واضغط حفظ)</sys:String>
     <sys:String x:Key="Imp_PageSize">مقاس الصفحة (مم)</sys:String>
@@ -588,12 +598,78 @@
     <sys:String x:Key="PC_003">ورقة</sys:String>
     <sys:String x:Key="CC_023">أسود (K)</sys:String>
     <sys:String x:Key="Performance_AppVersion">إصدار التطبيق</sys:String>
+    <sys:String x:Key="Performance_CpuUsage">استخدام المعالج</sys:String>
+    <sys:String x:Key="Performance_SystemInfo">معلومات النظام</sys:String>
+    <sys:String x:Key="Performance_OsVersion">إصدار ويندوز</sys:String>
+    <sys:String x:Key="Performance_DotNetVersion">إصدار ‎.NET‎</sys:String>
+    <sys:String x:Key="Performance_RecentActivity">النشاط الأخير</sys:String>
     <sys:String x:Key="Numbering_Status">الحالة</sys:String>
     <sys:String x:Key="Quotation_FinishingCost">خدمات التشطيب</sys:String>
     <sys:String x:Key="Settings_CompanyName">اسم الشركة</sys:String>
     <sys:String x:Key="UPL_019">↑ تحريك لأعلى</sys:String>
     <sys:String x:Key="PrintExecution_PageRange">نطاق الصفحات</sys:String>
     <sys:String x:Key="Msg_OpDone">✅ تمّت العملية — عايِن الناتج ثم احفظ</sys:String>
+    <sys:String x:Key="Msg_Undone">↩ تم التراجع</sys:String>
+    <sys:String x:Key="Msg_Redone">↪ تمت الإعادة</sys:String>
+    <sys:String x:Key="Msg_PipelineReset">↺ رجوع للمستند الأصلي</sys:String>
+    <sys:String x:Key="PT_Undo">تراجع</sys:String>
+    <sys:String x:Key="PT_Redo">إعادة</sys:String>
+    <sys:String x:Key="PT_ResetPipeline">إعادة تعيين</sys:String>
+    <sys:String x:Key="PT_Pipeline">المُطبَّق:</sys:String>
+    <sys:String x:Key="PF_Title">فحص الملف قبل الطباعة</sys:String>
+    <sys:String x:Key="PF_Run">افحص الملف</sys:String>
+    <sys:String x:Key="PF_PageCount">الصفحات: {0}</sys:String>
+    <sys:String x:Key="PF_PageSize">مقاس الصفحة: {0} مم</sys:String>
+    <sys:String x:Key="PF_InconsistentSizes">مقاسات صفحات مختلطة: {0}</sys:String>
+    <sys:String x:Key="PF_NoBleed">لا يوجد نزيف في {0} صفحة</sys:String>
+    <sys:String x:Key="PF_TinyPage">الصفحة {0} صغيرة جداً ({1} مم)</sys:String>
+    <sys:String x:Key="PF_Encrypted">الملف محمي بكلمة مرور أو غير قابل للقراءة</sys:String>
+    <sys:String x:Key="PF_RgbImages">{0} صورة RGB — قد تتغيّر ألوانها في طباعة CMYK</sys:String>
+    <sys:String x:Key="PF_LowResImages">{0} صورة منخفضة الدقة — تحقّق من جودة الطباعة</sys:String>
+    <sys:String x:Key="PF_NoImages">لا توجد صور نقطية</sys:String>
+    <sys:String x:Key="PF_Clean">لا توجد مشاكل</sys:String>
+    <sys:String x:Key="PF_ImageScanSkipped">تم تخطّي فحص الصور (بنية غير مدعومة)</sys:String>
+    <sys:String x:Key="PF_SummaryPass">✅ جاهز للطباعة — {0} تحذير</sys:String>
+    <sys:String x:Key="PF_SummaryFail">❌ {0} خطأ، {1} تحذير</sys:String>
+    <sys:String x:Key="PT_StepTitle">تكرار على فرخ — كروت / استيكرات</sys:String>
+    <sys:String x:Key="PT_StepSheetW">عرض الفرخ (مم)</sys:String>
+    <sys:String x:Key="PT_StepSheetH">ارتفاع الفرخ (مم)</sys:String>
+    <sys:String x:Key="PT_StepCols">أعمدة</sys:String>
+    <sys:String x:Key="PT_StepRows">صفوف</sys:String>
+    <sys:String x:Key="PT_StepGutter">مسافة بينية (مم)</sys:String>
+    <sys:String x:Key="PT_StepCrop">علامات القص</sys:String>
+    <sys:String x:Key="PT_StepRun">كرّر على الفرخ</sys:String>
+    <sys:String x:Key="PT_LblX">س (مم)</sys:String>
+    <sys:String x:Key="PT_LblY">ص (مم)</sys:String>
+    <sys:String x:Key="PT_LblW">عرض (مم)</sys:String>
+    <sys:String x:Key="PT_LblH">ارتفاع (مم)</sys:String>
+    <sys:String x:Key="PT_LblPage">صفحة</sys:String>
+    <sys:String x:Key="PT_StampTitle">علامة مائية / ختم (فوق PDF)</sys:String>
+    <sys:String x:Key="PT_StampPick">اختر ملف الختم (PDF)</sys:String>
+    <sys:String x:Key="PT_StampRun">اختر الختم وطبّق</sys:String>
+    <sys:String x:Key="PT_MaskTitle">تغطية منطقة</sys:String>
+    <sys:String x:Key="PT_MaskRun">غطِّ المنطقة</sys:String>
+    <sys:String x:Key="PT_RangeTitle">تدوير / استخراج / حذف صفحات</sys:String>
+    <sys:String x:Key="PT_RangeFrom">من صفحة</sys:String>
+    <sys:String x:Key="PT_RangeTo">إلى (0 = الأخيرة)</sys:String>
+    <sys:String x:Key="PT_Rotate90">تدوير 90°</sys:String>
+    <sys:String x:Key="PT_Extract">استخراج النطاق</sys:String>
+    <sys:String x:Key="PT_DeleteRange">حذف النطاق</sys:String>
+    <sys:String x:Key="PT_MarksTitle">علامات الطابعة</sys:String>
+    <sys:String x:Key="PT_MarksMargin">هامش (مم)</sys:String>
+    <sys:String x:Key="PT_MarksCrop">قص</sys:String>
+    <sys:String x:Key="PT_MarksReg">تسجيل</sys:String>
+    <sys:String x:Key="PT_MarksBars">أشرطة لون</sys:String>
+    <sys:String x:Key="PT_MarksRun">أضِف العلامات</sys:String>
+    <sys:String x:Key="PT_SplitTitle">تقسيم لملفات</sys:String>
+    <sys:String x:Key="PT_SplitEvery">صفحات لكل ملف</sys:String>
+    <sys:String x:Key="PT_SplitRun">قسّم واحفظ</sys:String>
+    <sys:String x:Key="PT_SplitDone">تم حفظ {0} ملف</sys:String>
+    <sys:String x:Key="PT_SendToPrint">أرسل للطباعة ←</sys:String>
+    <sys:String x:Key="PT_SentToPrint">تم الإرسال لطابور الطباعة</sys:String>
+    <sys:String x:Key="Shell_PrintStarting">جارٍ بدء الطباعة…</sys:String>
+    <sys:String x:Key="Shell_Printing">جارٍ الطباعة {0}/{1}</sys:String>
+    <sys:String x:Key="Shell_PrintHeld">⏸ بانتظار: {0}</sys:String>
     <sys:String x:Key="Numbering_TraditionalPrint">دفتر للتجميع اليدوي</sys:String>
     <sys:String x:Key="SV_049">لا توجد بيانات — الصق البيانات أولاً قبل التصدير</sys:String>
     <sys:String x:Key="Msg_PageXofY">صفحة {0} / {1}</sys:String>
@@ -781,6 +857,35 @@
     <sys:String x:Key="PM_SelectAllShown">اختر كل الظاهر</sys:String>
     <sys:String x:Key="PM_ClearSelection">إلغاء الاختيار</sys:String>
     <sys:String x:Key="PM_NoPrinterMatch">لا طابعة تطابق البحث</sys:String>
+    <!-- تقرير نهاية التشغيلة. كانت الرسالة «تمت الطباعة» وحدها سواء نجح كل شيء أو فشل. -->
+    <!-- الفاصل «·» بين رقمين عربيين يلتصق بهما بصريًّا فيُقرأ «٠ من ٣٠٤ فشل».
+         استُبدل بكلمات تفصل الأرقام بعضها عن بعض. -->
+    <sys:String x:Key="PM_JobsDoneWithFailures">نجح {0} من {1} — فشل {2}</sys:String>
+    <sys:String x:Key="PM_ReportAllOk">تمت طباعة {0} ملف بنجاح</sys:String>
+    <sys:String x:Key="PM_ReportSummary">نجح {0} — فشل {1} — من أصل {2}</sys:String>
+    <sys:String x:Key="PM_ReportCancelled">أُلغيت التشغيلة — طُبع {0} من {1}</sys:String>
+    <sys:String x:Key="PM_ReportFailedFiles">الملفات التي لم تُطبع:</sys:String>
+    <sys:String x:Key="PM_ReportAndMore">… و{0} ملفًا آخر</sys:String>
+    <!-- النسخة = ملف × طابعة، وهي وحدة القياس التي يستطيع المشغّل التحقق منها
+         على الجهاز. عدّ الملفات وحده جعل رفض طابعة واحدة يُبلَّغ كأن شيئًا لم يُطبع. -->
+    <sys:String x:Key="PM_ReportCopies">طُبعت {0} نسخة من أصل {1}</sys:String>
+    <sys:String x:Key="PM_ReportFilesComplete">اكتمل {0} ملف من {1} على كل الطابعات</sys:String>
+    <sys:String x:Key="PM_ReportPrinterFailed">الطابعة «{0}» — فشل {1} ملف:</sys:String>
+    <sys:String x:Key="PM_ReportAndMorePrinters">… و{0} طابعة أخرى</sys:String>
+
+    <!-- نسخ محجوزة: بانتظار تدخّل، وليست فشلًا -->
+    <sys:String x:Key="PM_ReportHeldCopies">{0} نسخة بانتظار التدخّل — هذه الطابعات تحتاج إليك:</sys:String>
+    <sys:String x:Key="PM_HeldBannerTitle">بانتظارك</sys:String>
+    <sys:String x:Key="PM_HeldSkip">تخطَّ هذه الطابعة</sys:String>
+    <sys:String x:Key="PM_FaultOutOfPaper">نفد الورق</sys:String>
+    <sys:String x:Key="PM_FaultOutOfToner">نفد الحبر</sys:String>
+    <sys:String x:Key="PM_FaultDoorOpen">الباب مفتوح</sys:String>
+    <sys:String x:Key="PM_FaultPaperJam">انحشار ورق</sys:String>
+    <sys:String x:Key="PM_FaultBinFull">سلّة الإخراج ممتلئة</sys:String>
+    <sys:String x:Key="PM_FaultPaperProblem">مشكلة في الورق</sys:String>
+    <sys:String x:Key="PM_FaultOffline">غير متّصلة</sys:String>
+    <sys:String x:Key="PM_FaultNeedsAttention">تحتاج تدخّلًا</sys:String>
+    <sys:String x:Key="PM_ReportNoPrinter">قبل الوصول إلى الطابعة</sys:String>
     <sys:String x:Key="PM_ModeLoadBalance">توزيع الحمل — كل ملف مرة واحدة</sys:String>
     <sys:String x:Key="PM_ModeDuplicate">نسخ متطابقة — كل ملف على كل الطابعات</sys:String>
     <sys:String x:Key="PM_DistributionMode">طريقة التوزيع</sys:String>
@@ -802,7 +907,7 @@
     <sys:String x:Key="Distribution_Duplex">الطباعة المزدوجة</sys:String>
     <sys:String x:Key="Num_SmartMode">طباعة ذكية</sys:String>
     <sys:String x:Key="Arabic">العربية</sys:String>
-    <sys:String x:Key="TD_024">خلفية</sys:String>
+    <sys:String x:Key="TD_024">خلفية (صورة / PDF)</sys:String>
     <sys:String x:Key="Upload_Tooltip">مناسب لطباعة ملفات كثيرة على نفس الطابعة مثل الفواتير والعقود</sys:String>
     <sys:String x:Key="Imp_Desc_NUp">شبكة صفحات على الفرخ (2/4/8/16). الأنسب للفلايرز والصور والصفحات المتعددة على ورقة واحدة.</sys:String>
     <sys:String x:Key="Distribution_NoFile">لم يتم اختيار ملف</sys:String>
@@ -907,8 +1012,8 @@
     <sys:String x:Key="SV_043">الصق بيانات أولاً</sys:String>
     <sys:String x:Key="Quotation_PricePerSheet">سعر طباعة الورقة</sys:String>
     <sys:String x:Key="Numbering_AutoDetect">كشف تلقائي</sys:String>
-    <sys:String x:Key="LIC_012">لديك ملف ترخيص (.apex)؟ انقر لاستيراده وتفعيل البرنامج</sys:String>
-    <sys:String x:Key="Nav_Section_Daily">الإنتاج والطباعة</sys:String>
+    <sys:String x:Key="LIC_012">لديك ملف ترخيص (&#x200E;.apex&#x200E;)؟ انقر لاستيراده وتفعيل البرنامج</sys:String>
+    <sys:String x:Key="Nav_Section_Daily">الطباعة</sys:String>
     <sys:String x:Key="SV_007">تحميل 3 سجلات تجريبية (الاسم / الصف / رقم الجلوس / الصورة / الكود)</sys:String>
     <sys:String x:Key="Imp_SettingsExported">✅ تم تصدير الإعدادات: {0}</sys:String>
     <sys:String x:Key="Imp_Width">العرض</sys:String>
@@ -974,7 +1079,8 @@
     <sys:String x:Key="TD_004">+ قالب جديد</sys:String>
     <sys:String x:Key="SV_015">حذف التشكيل</sys:String>
     <sys:String x:Key="Refresh">تحديث</sys:String>
-    <sys:String x:Key="SET2_001">🇸🇦 العربية</sys:String>
+    <sys:String x:Key="SET2_001">العربية</sys:String>
+    <sys:String x:Key="SET2_002">English</sys:String>
     <sys:String x:Key="Num_ProjectLoaded">✅ تم تحميل المشروع: {0}</sys:String>
     <sys:String x:Key="SV_Exporting">جارٍ التصدير...</sys:String>
     <sys:String x:Key="Numbering_FontWeightBold">عريض</sys:String>
@@ -1312,7 +1418,7 @@
     <sys:String x:Key="ImpS_GutterNonNeg">المسافة بين العناصر لا يمكن أن تكون سالبة.</sys:String>
     <sys:String x:Key="ImpS_SourcePagesPositive">عدد صفحات المصدر يجب أن يكون أكبر من صفر.</sys:String>
     <sys:String x:Key="ImpS_CopiesPositive">عدد النسخ المطلوبة يجب أن يكون أكبر من صفر.</sys:String>
-    <sys:String x:Key="ImpS_PageBiggerThanSheet">الصفحة (بعد النزيف والهوامش) أكبر من الورقة — فعّل «مقياس تلقائي ليناسب الفرخ» أو كبّر مقاس الورقة.</sys:String>
+    <sys:String x:Key="ImpS_PageBiggerThanSheet">الصفحة (بعد النزيف والهوامش) أكبر من الورقة — صغّر «هامش الورقة» أو «النزيف»، أو فعّل «مقياس تلقائي ليناسب الفرخ»، أو كبّر مقاس الورقة.</sys:String>
     <sys:String x:Key="ImpS_SchemeNUp">تجميع {0}-Up</sys:String>
     <sys:String x:Key="ImpS_SchemeSaddle">تجليد غرزة السرج (Saddle Stitch)</sys:String>
     <sys:String x:Key="ImpS_SchemeWorkTurn">لوح واحد — قلب يمين/يسار (Work &amp; Turn)</sys:String>

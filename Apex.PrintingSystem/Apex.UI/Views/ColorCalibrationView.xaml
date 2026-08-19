@@ -44,14 +44,31 @@
 
         <!-- Header -->
         <Border Grid.Row="0" Background="#1E293B" Padding="24,0">
+            <!-- Two columns. The title and the button used to share one cell, so the
+                 button drew over the heading and it read "ة الألوان" — the first word
+                 gone. Both strings were hardcoded Arabic too, so the header stayed in
+                 Arabic with the app in English. -->
             <Grid>
-                <TextBlock Text="🎨 معايرة الألوان" Foreground="White"
-                           FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
-                <Button Command="{Binding LoadPrintersCommand}"
-                        HorizontalAlignment="Left" VerticalAlignment="Center"
-                        Content="🔄 تحديث" Height="32" Padding="12,0"
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Foreground="White"
+                           FontSize="20" FontWeight="Bold" VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis">
+                    <Run Text="🎨 "/><Run Text="{DynamicResource CC_001}"/>
+                </TextBlock>
+
+                <Button Grid.Column="1" Command="{Binding LoadPrintersCommand}"
+                        VerticalAlignment="Center"
+                        Height="32" Padding="12,0" Margin="12,0,0,0"
                         Background="#334155" Foreground="#94A3B8" BorderThickness="0"
-                        FontSize="12" Cursor="Hand"/>
+                        FontSize="12" Cursor="Hand">
+                    <TextBlock>
+                        <Run Text="🔄 "/><Run Text="{DynamicResource Common_Refresh}"/>
+                    </TextBlock>
+                </Button>
             </Grid>
         </Border>
 
@@ -112,7 +129,7 @@
                     <Border Grid.Row="2" Padding="16,12"
                             BorderBrush="#334155" BorderThickness="0,1,0,0">
                         <StackPanel>
-                            <TextBlock Text="ملف ICC:" Foreground="#6B7280" FontSize="10"/>
+                            <TextBlock Text="ملف ICC:" Foreground="#64748B" FontSize="10"/>
                             <TextBlock Foreground="#94A3B8" FontSize="11" TextWrapping="Wrap"
                                        Margin="0,2,0,0">
                                 <TextBlock.Style>
