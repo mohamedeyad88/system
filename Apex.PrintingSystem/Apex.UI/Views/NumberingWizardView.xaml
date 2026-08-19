@@ -2278,12 +2278,15 @@
                                     VerticalAlignment="Center"
                                     Margin="20,0,20,0"
                                     HorizontalAlignment="Right">
-                            <!-- Percent -->
+                            <!-- Percent — the hero number of the print run: big mono so it reads
+                                 from across the shop while the press is running. -->
                             <TextBlock HorizontalAlignment="Right"
-                                       FontSize="18" FontWeight="Bold">
+                                       FontFamily="{DynamicResource Font.Data}"
+                                       Language="en-US"
+                                       FontSize="36" FontWeight="Bold">
                                 <Run Text="{Binding PrintProgress, Mode=OneWay, StringFormat='{}{0:F0}'}"
-                                     Foreground="#0891B2"/>
-                                <Run Text="%" Foreground="#DDD9D3" FontSize="13"/>
+                                     Foreground="{DynamicResource Ink}"/>
+                                <Run Text="%" Foreground="{DynamicResource Muted}" FontSize="16"/>
                             </TextBlock>
                             <!-- Elapsed + ETA -->
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
