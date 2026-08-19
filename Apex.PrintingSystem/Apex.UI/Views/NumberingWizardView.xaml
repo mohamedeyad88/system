@@ -2278,21 +2278,23 @@
                                     VerticalAlignment="Center"
                                     Margin="20,0,20,0"
                                     HorizontalAlignment="Right">
-                            <!-- Percent — the hero number of the print run: big mono so it reads
-                                 from across the shop while the press is running. -->
-                            <TextBlock HorizontalAlignment="Right"
-                                       FontFamily="{DynamicResource Font.Data}"
-                                       Language="en-US"
-                                       FontSize="36" FontWeight="Bold">
-                                <Run Text="{Binding PrintProgress, Mode=OneWay, StringFormat='{}{0:F0}'}"
-                                     Foreground="{DynamicResource Ink}"/>
-                                <Run Text="%" Foreground="{DynamicResource Muted}" FontSize="16"/>
-                            </TextBlock>
-                            <!-- Elapsed + ETA -->
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <!-- Current serial — the hero readout: big mono, reads from across the
+                                 shop while the press runs. Percent / time / speed drop to a
+                                 secondary row underneath. -->
+                            <TextBlock Text="{Binding CurrentNumberDisplay}"
+                                       HorizontalAlignment="Right" TextAlignment="Right"
+                                       FontFamily="{DynamicResource Font.Data}" Language="en-US"
+                                       FontSize="48" FontWeight="Bold"
+                                       Foreground="{DynamicResource Ink}"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,2,0,0">
+                                <TextBlock FontSize="13" FontFamily="{DynamicResource Font.Data}"
+                                           Language="en-US" Margin="0,0,10,0">
+                                    <Run Text="{Binding PrintProgress, Mode=OneWay, StringFormat='{}{0:F0}'}"
+                                         Foreground="{DynamicResource Brand}" FontWeight="Bold"/>
+                                    <Run Text="%" Foreground="{DynamicResource Muted}"/>
+                                </TextBlock>
                                 <TextBlock Text="{Binding ElapsedTimeDisplay, Mode=OneWay}"
-                                           FontSize="11" Foreground="#6B6864"
-                                           Margin="0,0,10,0"/>
+                                           FontSize="11" Foreground="#6B6864" Margin="0,0,10,0"/>
                                 <TextBlock Text="{Binding PrintSpeedDisplay, Mode=OneWay}"
                                            FontSize="11" Foreground="#1B7F4C"/>
                             </StackPanel>

@@ -178,6 +178,12 @@ namespace Apex.UI.ViewModels
         [ObservableProperty]
         private double _printProgress = 0;
 
+        // The serial coming off the press right now — the hero readout during a run,
+        // fed live from ProgressInfo.LastNumber so an operator can glance from across
+        // the shop and know exactly where the job is.
+        [ObservableProperty]
+        private string _currentNumberDisplay = "";
+
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsPrepareMode))]
         [NotifyPropertyChangedFor(nameof(IsLayoutMode))]
@@ -748,6 +754,7 @@ namespace Apex.UI.ViewModels
 
             PrintStatus = L("Num_Printing");
             PrintProgress = 0;
+            CurrentNumberDisplay = Apex.NumberedBooksEngine.Core.NumberFormatter.Format(StartNumber, CurrentNumberFormat);
 
             try
             {
@@ -759,6 +766,7 @@ namespace Apex.UI.ViewModels
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         PrintProgress = info.Percent;
+                        CurrentNumberDisplay = Apex.NumberedBooksEngine.Core.NumberFormatter.Format(info.LastNumber, CurrentNumberFormat);
                         PrintStatus = Lf("Num_PrintingPct", info.Percent);
                     });
                 });
