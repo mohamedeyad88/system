@@ -5,42 +5,74 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignHeight="900" d:DesignWidth="1200"
-             Background="#0F172A">
+             Background="{DynamicResource Paper}">
+
+    <!-- ══════════════════════════════════════════════════════════════════════════
+         APEX PRINT — Dashboard, new light identity.
+         Calm surfaces, ONE cyan accent, status colours reserved for real status,
+         and every NUMBER set in the mono face so figures line up and read fast.
+         ══════════════════════════════════════════════════════════════════════════ -->
+    <UserControl.Resources>
+        <!-- Light card surface -->
+        <Style x:Key="LightCard" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource Panel}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="Padding" Value="20"/>
+        </Style>
+        <!-- Section header text -->
+        <Style x:Key="SectionHead" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
+        </Style>
+        <!-- A big hero number, mono. Language=en-US forces Latin digits (8, not ٨) so the
+             mono face can actually render them and columns stay tabular. -->
+        <Style x:Key="StatNumber" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{DynamicResource Font.Data}"/>
+            <Setter Property="FontSize" Value="40"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
+            <Setter Property="Language" Value="en-US"/>
+        </Style>
+        <Style x:Key="StatLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
+        </Style>
+    </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <Grid Margin="40,32,40,40">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>  <!-- 0: Header -->
-                <RowDefinition Height="28"/>    <!-- 1: Gap -->
+                <RowDefinition Height="28"/>
                 <RowDefinition Height="Auto"/>  <!-- 2: Stat Cards -->
-                <RowDefinition Height="28"/>    <!-- 3: Gap -->
+                <RowDefinition Height="28"/>
                 <RowDefinition Height="Auto"/>  <!-- 4: Main Content -->
-                <RowDefinition Height="24"/>    <!-- 5: Gap -->
+                <RowDefinition Height="24"/>
                 <RowDefinition Height="Auto"/>  <!-- 6: Health Strip -->
             </Grid.RowDefinitions>
 
-            <!-- ════════════════════════════════════════════════════════════════
-                 0️⃣  HEADER
-                 ════════════════════════════════════════════════════════════════ -->
+            <!-- ═══ 0 · HEADER ═══ -->
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Title + system status pill -->
                 <StackPanel Grid.Column="0">
                     <TextBlock Text="{DynamicResource Dashboard}"
-                               FontSize="30" FontWeight="Bold" Foreground="White"/>
+                               FontSize="28" FontWeight="Bold" Foreground="{DynamicResource Ink}"/>
                     <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                        <!-- Live system status pill -->
+                        <!-- Live system status pill: tinted background + status dot -->
                         <Border CornerRadius="20" Padding="12,5" Margin="0,0,12,0">
                             <Border.Style>
                                 <Style TargetType="Border">
-                                    <Setter Property="Background" Value="#14532D"/>
+                                    <Setter Property="Background" Value="#E7F3EC"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsSystemOnline}" Value="False">
-                                            <Setter Property="Background" Value="#7F1D1D"/>
+                                            <Setter Property="Background" Value="#F6E4E2"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -49,10 +81,10 @@
                                 <Ellipse Width="8" Height="8" VerticalAlignment="Center" Margin="0,0,7,0">
                                     <Ellipse.Style>
                                         <Style TargetType="Ellipse">
-                                            <Setter Property="Fill" Value="#22C55E"/>
+                                            <Setter Property="Fill" Value="{DynamicResource Done}"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsSystemOnline}" Value="False">
-                                                    <Setter Property="Fill" Value="#EF4444"/>
+                                                    <Setter Property="Fill" Value="{DynamicResource Stopped}"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -62,10 +94,10 @@
                                            VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
-                                            <Setter Property="Foreground" Value="#86EFAC"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource Done}"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsSystemOnline}" Value="False">
-                                                    <Setter Property="Foreground" Value="#FCA5A5"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource Stopped}"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -74,32 +106,41 @@
                             </StackPanel>
                         </Border>
                         <TextBlock Text="{DynamicResource Welcome}" FontSize="13"
-                                   Foreground="#64748B" VerticalAlignment="Center"/>
+                                   Foreground="{DynamicResource Muted}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </StackPanel>
 
-                <!-- Right: clock badge + refresh button -->
+                <!-- Right: clock badge + refresh -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Background="#1E293B" CornerRadius="10" Padding="14,10" Margin="0,0,12,0"
-                            BorderBrush="#334155" BorderThickness="1">
+                    <Border Background="{DynamicResource Panel}" CornerRadius="10" Padding="14,10" Margin="0,0,12,0"
+                            BorderBrush="{DynamicResource Border}" BorderThickness="1">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="🕐" FontSize="12" Margin="0,0,8,0"/>
                             <TextBlock Text="{Binding LastRefreshTime}" FontSize="12"
-                                       FontWeight="Medium" Foreground="#94A3B8"/>
+                                       FontFamily="{DynamicResource Font.Data}"
+                                       FontWeight="Medium" Foreground="{DynamicResource Muted}"/>
                         </StackPanel>
                     </Border>
-                    <Button Command="{Binding RefreshDataCommand}" Style="{DynamicResource Button.Dark.Primary}">
+                    <Button Command="{Binding RefreshDataCommand}" Cursor="Hand"
+                            Background="{DynamicResource Brand}" Foreground="White" BorderThickness="0"
+                            Padding="16,10">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="10"
+                                        Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="🔄" Margin="0,0,8,0"/>
-                            <TextBlock Text="{DynamicResource Refresh}"/>
+                            <TextBlock Text="{DynamicResource Refresh}" Foreground="White" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
             </Grid>
 
-            <!-- ════════════════════════════════════════════════════════════════
-                 2️⃣  STAT CARDS — colored top-accent + dark gradient background
-                 ════════════════════════════════════════════════════════════════ -->
+            <!-- ═══ 2 · STAT CARDS — four identical calm cards, the number is the hero ═══ -->
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -111,119 +152,101 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Card 1: Total Printers — blue -->
-                <Border Grid.Column="0" CornerRadius="16"
-                        BorderThickness="0,3,0,0" BorderBrush="#3B82F6"
-                        Background="{StaticResource Gradient.Card.Blue.Dark}" Padding="20">
+                <!-- Card 1: Total Printers -->
+                <Border Grid.Column="0" Style="{StaticResource LightCard}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Border Width="52" Height="52" CornerRadius="13" Background="#1E3A5F" Margin="0,0,16,0">
+                        <Border Width="52" Height="52" CornerRadius="13" Background="{DynamicResource BrandSoft}" Margin="0,0,16,0">
                             <TextBlock Text="🖨️" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="{DynamicResource Dashboard_TotalPrinters}"
-                                       FontSize="11" Foreground="#64748B"/>
-                            <TextBlock Text="{Binding TotalPrinters}"
-                                       FontSize="34" FontWeight="Bold" Foreground="#60A5FA" LineHeight="42"/>
+                            <TextBlock Text="{DynamicResource Dashboard_TotalPrinters}" Style="{StaticResource StatLabel}"/>
+                            <TextBlock Text="{Binding TotalPrinters}" Style="{StaticResource StatNumber}"/>
                             <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                <TextBlock Text="{Binding BusyPrinters}" FontSize="10" Foreground="#475569"/>
+                                <TextBlock Text="{Binding BusyPrinters}" FontSize="10"
+                                           FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Muted}"/>
                                 <TextBlock Text=" " FontSize="10"/>
-                                <TextBlock Text="{DynamicResource Dashboard_BusyPrinters}"
-                                           FontSize="10" Foreground="#475569"/>
+                                <TextBlock Text="{DynamicResource Dashboard_BusyPrinters}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
                 </Border>
 
-                <!-- Card 2: Online Printers — green -->
-                <Border Grid.Column="2" CornerRadius="16"
-                        BorderThickness="0,3,0,0" BorderBrush="#22C55E"
-                        Background="{StaticResource Gradient.Card.Green.Dark}" Padding="20">
+                <!-- Card 2: Online Printers -->
+                <Border Grid.Column="2" Style="{StaticResource LightCard}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Border Width="52" Height="52" CornerRadius="13" Background="#14532D" Margin="0,0,16,0">
+                        <Border Width="52" Height="52" CornerRadius="13" Background="{DynamicResource BrandSoft}" Margin="0,0,16,0">
                             <TextBlock Text="✓" FontSize="26" FontWeight="Bold"
-                                       Foreground="#4ADE80" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                       Foreground="{DynamicResource Done}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="{DynamicResource Dashboard_Online}"
-                                       FontSize="11" Foreground="#64748B"/>
-                            <TextBlock Text="{Binding OnlinePrinters}"
-                                       FontSize="34" FontWeight="Bold" Foreground="#4ADE80" LineHeight="42"/>
+                            <TextBlock Text="{DynamicResource Dashboard_Online}" Style="{StaticResource StatLabel}"/>
+                            <TextBlock Text="{Binding OnlinePrinters}" Style="{StaticResource StatNumber}"/>
                             <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                <TextBlock Text="{Binding OfflinePrinters}" FontSize="10" Foreground="#475569"/>
+                                <TextBlock Text="{Binding OfflinePrinters}" FontSize="10"
+                                           FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Muted}"/>
                                 <TextBlock Text=" " FontSize="10"/>
-                                <TextBlock Text="{DynamicResource Dashboard_Offline}"
-                                           FontSize="10" Foreground="#475569"/>
+                                <TextBlock Text="{DynamicResource Dashboard_Offline}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
                 </Border>
 
-                <!-- Card 3: Jobs Today — purple -->
-                <Border Grid.Column="4" CornerRadius="16"
-                        BorderThickness="0,3,0,0" BorderBrush="#8B5CF6"
-                        Background="{StaticResource Gradient.Card.Purple.Dark}" Padding="20">
+                <!-- Card 3: Jobs Today -->
+                <Border Grid.Column="4" Style="{StaticResource LightCard}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Border Width="52" Height="52" CornerRadius="13" Background="#2D1B4E" Margin="0,0,16,0">
+                        <Border Width="52" Height="52" CornerRadius="13" Background="{DynamicResource BrandSoft}" Margin="0,0,16,0">
                             <TextBlock Text="📋" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="{DynamicResource Dashboard_JobsToday}"
-                                       FontSize="11" Foreground="#64748B"/>
-                            <TextBlock Text="{Binding TodayJobs}"
-                                       FontSize="34" FontWeight="Bold" Foreground="#A78BFA" LineHeight="42"/>
+                            <TextBlock Text="{DynamicResource Dashboard_JobsToday}" Style="{StaticResource StatLabel}"/>
+                            <TextBlock Text="{Binding TodayJobs}" Style="{StaticResource StatNumber}"/>
                             <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                <TextBlock Text="{Binding PendingJobs}" FontSize="10" Foreground="#475569"/>
+                                <TextBlock Text="{Binding PendingJobs}" FontSize="10"
+                                           FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Muted}"/>
                                 <TextBlock Text=" " FontSize="10"/>
-                                <TextBlock Text="{DynamicResource Dashboard_PendingJobs}"
-                                           FontSize="10" Foreground="#475569"/>
+                                <TextBlock Text="{DynamicResource Dashboard_PendingJobs}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
                 </Border>
 
-                <!-- Card 4: Success Rate — cyan -->
-                <Border Grid.Column="6" CornerRadius="16"
-                        BorderThickness="0,3,0,0" BorderBrush="#06B6D4"
-                        Background="{StaticResource Gradient.Card.Cyan.Dark}" Padding="20">
+                <!-- Card 4: Success Rate -->
+                <Border Grid.Column="6" Style="{StaticResource LightCard}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Border Width="52" Height="52" CornerRadius="13" Background="#0F2E35" Margin="0,0,16,0">
+                        <Border Width="52" Height="52" CornerRadius="13" Background="{DynamicResource BrandSoft}" Margin="0,0,16,0">
                             <TextBlock Text="📈" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="{DynamicResource Dashboard_SuccessRate}"
-                                       FontSize="11" Foreground="#64748B"/>
-                            <TextBlock Text="{Binding SuccessRateText}"
-                                       FontSize="34" FontWeight="Bold" Foreground="#22D3EE" LineHeight="42"/>
+                            <TextBlock Text="{DynamicResource Dashboard_SuccessRate}" Style="{StaticResource StatLabel}"/>
+                            <TextBlock Text="{Binding SuccessRateText}" Style="{StaticResource StatNumber}"/>
                             <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                <TextBlock Text="{Binding CompletedJobs}" FontSize="10" Foreground="#475569"/>
+                                <TextBlock Text="{Binding CompletedJobs}" FontSize="10"
+                                           FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Muted}"/>
                                 <TextBlock Text=" " FontSize="10"/>
-                                <TextBlock Text="{DynamicResource Dashboard_CompletedJobs}"
-                                           FontSize="10" Foreground="#475569"/>
+                                <TextBlock Text="{DynamicResource Dashboard_CompletedJobs}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
                 </Border>
             </Grid>
 
-            <!-- ════════════════════════════════════════════════════════════════
-                 4️⃣  MAIN CONTENT (Left: overview + actions  |  Right: status + activity)
-                 ════════════════════════════════════════════════════════════════ -->
+            <!-- ═══ 4 · MAIN CONTENT ═══ -->
             <Grid Grid.Row="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -236,8 +259,8 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- ── LEFT TOP: Printers Overview ─────────────────────────── -->
-                <Border Grid.Column="0" Grid.Row="0" Style="{DynamicResource Card.Dark}">
+                <!-- LEFT TOP: Printers Overview -->
+                <Border Grid.Column="0" Grid.Row="0" Style="{StaticResource LightCard}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -245,7 +268,6 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Section header -->
                         <Grid Grid.Row="0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -253,16 +275,14 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="🖨️" FontSize="16" Margin="0,0,10,0"/>
-                                <TextBlock Text="{DynamicResource Dashboard_PrintersOverview}"
-                                           FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                                <TextBlock Text="{DynamicResource Dashboard_PrintersOverview}" Style="{StaticResource SectionHead}"/>
                             </StackPanel>
-                            <Button Grid.Column="1" Style="{DynamicResource Button.Dark.Ghost}"
+                            <Button Grid.Column="1" Cursor="Hand" Background="Transparent" BorderThickness="0"
                                     Command="{Binding DataContext.NavigateToPrintManagerCommand, RelativeSource={RelativeSource AncestorType=Window}}">
-                                <TextBlock Text="{DynamicResource Dashboard_ViewAll}" FontSize="12" Foreground="#3B82F6"/>
+                                <TextBlock Text="{DynamicResource Dashboard_ViewAll}" FontSize="12" Foreground="{DynamicResource Brand}"/>
                             </Button>
                         </Grid>
 
-                        <!-- Printer mini-cards grid -->
                         <ItemsControl Grid.Row="2" ItemsSource="{Binding Printers}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -272,17 +292,14 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border Margin="0,0,12,12" Padding="14" CornerRadius="12" Cursor="Hand"
-                                            Background="#0F172A" BorderThickness="1">
+                                            Background="{DynamicResource Paper}" BorderThickness="1">
                                         <Border.Style>
                                             <Style TargetType="Border">
-                                                <Setter Property="BorderBrush" Value="#334155"/>
+                                                <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsOnline}" Value="True">
-                                                        <Setter Property="BorderBrush" Value="#1E3A5F"/>
-                                                    </DataTrigger>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#1E293B"/>
-                                                        <Setter Property="BorderBrush" Value="#3B82F6"/>
+                                                        <Setter Property="Background" Value="{DynamicResource BrandSoft}"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -305,10 +322,10 @@
                                                 <Ellipse Grid.Column="1" Width="10" Height="10" VerticalAlignment="Top">
                                                     <Ellipse.Style>
                                                         <Style TargetType="Ellipse">
-                                                            <Setter Property="Fill" Value="#EF4444"/>
+                                                            <Setter Property="Fill" Value="{DynamicResource Stopped}"/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding IsOnline}" Value="True">
-                                                                    <Setter Property="Fill" Value="#22C55E"/>
+                                                                    <Setter Property="Fill" Value="{DynamicResource Done}"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -316,21 +333,20 @@
                                                 </Ellipse>
                                             </Grid>
 
-                                            <!-- Printer name -->
                                             <TextBlock Grid.Row="1" Text="{Binding Name}"
                                                        FontWeight="SemiBold" FontSize="12"
                                                        TextTrimming="CharacterEllipsis"
-                                                       Foreground="White" ToolTip="{Binding Name}"/>
+                                                       Foreground="{DynamicResource Ink}" ToolTip="{Binding Name}"/>
 
-                                            <!-- Status badge pill -->
+                                            <!-- Status pill: tinted background, status text -->
                                             <Border Grid.Row="2" CornerRadius="6" Padding="7,3"
                                                     HorizontalAlignment="Right" Margin="0,6,0,0">
                                                 <Border.Style>
                                                     <Style TargetType="Border">
-                                                        <Setter Property="Background" Value="#7F1D1D"/>
+                                                        <Setter Property="Background" Value="#F6E4E2"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding IsOnline}" Value="True">
-                                                                <Setter Property="Background" Value="#14532D"/>
+                                                                <Setter Property="Background" Value="#E7F3EC"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -339,10 +355,10 @@
                                                            TextTrimming="CharacterEllipsis" MaxWidth="80">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
-                                                            <Setter Property="Foreground" Value="#FCA5A5"/>
+                                                            <Setter Property="Foreground" Value="{DynamicResource Stopped}"/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding IsOnline}" Value="True">
-                                                                    <Setter Property="Foreground" Value="#86EFAC"/>
+                                                                    <Setter Property="Foreground" Value="{DynamicResource Done}"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -350,15 +366,16 @@
                                                 </TextBlock>
                                             </Border>
 
-                                            <!-- Health score + queue -->
                                             <StackPanel Grid.Row="3" Orientation="Horizontal"
                                                         Margin="0,6,0,0" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding HealthScore, StringFormat='{}{0}%'}"
                                                            FontSize="10" FontWeight="Medium"
+                                                           FontFamily="{DynamicResource Font.Data}"
                                                            Foreground="{Binding HealthColor}"/>
-                                                <TextBlock Text=" · " FontSize="10" Foreground="#334155"
+                                                <TextBlock Text=" · " FontSize="10" Foreground="{DynamicResource Border}"
                                                            Visibility="{Binding QueueLength, Converter={StaticResource GreaterThanZeroToVisibility}}"/>
-                                                <TextBlock FontSize="10" Foreground="#64748B"
+                                                <TextBlock FontSize="10" Foreground="{DynamicResource Muted}"
+                                                           FontFamily="{DynamicResource Font.Data}"
                                                            Visibility="{Binding QueueLength, Converter={StaticResource GreaterThanZeroToVisibility}}">
                                                     <TextBlock.Text>
                                                         <Binding Path="QueueLength" StringFormat="{}{0} ↑"/>
@@ -373,8 +390,8 @@
                     </Grid>
                 </Border>
 
-                <!-- ── LEFT BOTTOM: Quick Actions (4 buttons) ──────────────── -->
-                <Border Grid.Column="0" Grid.Row="2" Style="{DynamicResource Card.Dark}">
+                <!-- LEFT BOTTOM: Quick Actions — calm tiles, single accent -->
+                <Border Grid.Column="0" Grid.Row="2" Style="{StaticResource LightCard}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -384,12 +401,10 @@
 
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
                             <TextBlock Text="⚡" FontSize="16" Margin="0,0,10,0"/>
-                            <TextBlock Text="{DynamicResource Dashboard_QuickActions}"
-                                       FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                            <TextBlock Text="{DynamicResource Dashboard_QuickActions}" Style="{StaticResource SectionHead}"/>
                         </StackPanel>
 
                         <Grid Grid.Row="2">
-                            <!-- 3 tiles (cols 0/2/4) with 14px gutters -->
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="14"/>
@@ -398,156 +413,79 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <!-- 1. Imposition — green -->
-                            <Button Grid.Column="0"
+                            <!-- Reusable calm quick-action tile via a shared template -->
+                            <Button Grid.Column="0" Cursor="Hand"
                                     Command="{Binding DataContext.NavigateToImpositionCommand, RelativeSource={RelativeSource AncestorType=Window}}">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="card" Padding="14,20" CornerRadius="14" Cursor="Hand"
-                                                Background="#16A34A">
-                                            <Border.RenderTransform>
-                                                <TransformGroup>
-                                                    <ScaleTransform x:Name="sc" ScaleX="1" ScaleY="1"/>
-                                                    <TranslateTransform x:Name="tr" Y="0"/>
-                                                </TransformGroup>
-                                            </Border.RenderTransform>
+                                        <Border x:Name="card" Padding="14,20" CornerRadius="14"
+                                                Background="{DynamicResource Paper}" BorderBrush="{DynamicResource Border}" BorderThickness="1">
                                             <StackPanel HorizontalAlignment="Center">
                                                 <Border Width="40" Height="40" CornerRadius="10"
-                                                        Background="#FFFFFF25" Margin="0,0,0,10"
-                                                        HorizontalAlignment="Center">
-                                                    <TextBlock Text="📐" FontSize="20"
-                                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        Background="{DynamicResource BrandSoft}" Margin="0,0,0,10" HorizontalAlignment="Center">
+                                                    <TextBlock Text="📐" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Border>
                                                 <TextBlock Text="{DynamicResource Dashboard_QuickActions_Imposition_Title}"
-                                                           FontSize="11" FontWeight="Bold" Foreground="White"
-                                                           HorizontalAlignment="Center"
-                                                           TextAlignment="Center" TextWrapping="Wrap"/>
+                                                           FontSize="11" FontWeight="Bold" Foreground="{DynamicResource Ink}"
+                                                           HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
                                             </StackPanel>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Trigger.EnterActions>
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleX" To="1.05" Duration="0:0:0.12"/>
-                                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleY" To="1.05" Duration="0:0:0.12"/>
-                                                            <DoubleAnimation Storyboard.TargetName="tr" Storyboard.TargetProperty="Y" To="-3" Duration="0:0:0.12"/>
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </Trigger.EnterActions>
-                                                <Trigger.ExitActions>
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.12"/>
-                                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.12"/>
-                                                            <DoubleAnimation Storyboard.TargetName="tr" Storyboard.TargetProperty="Y" To="0" Duration="0:0:0.12"/>
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </Trigger.ExitActions>
+                                                <Setter TargetName="card" Property="Background" Value="{DynamicResource BrandSoft}"/>
+                                                <Setter TargetName="card" Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
 
-                            <!-- 2. Numbered Books — amber -->
-                            <Button Grid.Column="2"
+                            <Button Grid.Column="2" Cursor="Hand"
                                     Command="{Binding DataContext.NavigateToNumberedBooksCommand, RelativeSource={RelativeSource AncestorType=Window}}">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="card" Padding="14,20" CornerRadius="14" Cursor="Hand"
-                                                Background="#D97706">
-                                            <Border.RenderTransform>
-                                                <TransformGroup>
-                                                    <ScaleTransform x:Name="sc" ScaleX="1" ScaleY="1"/>
-                                                    <TranslateTransform x:Name="tr" Y="0"/>
-                                                </TransformGroup>
-                                            </Border.RenderTransform>
+                                        <Border x:Name="card" Padding="14,20" CornerRadius="14"
+                                                Background="{DynamicResource Paper}" BorderBrush="{DynamicResource Border}" BorderThickness="1">
                                             <StackPanel HorizontalAlignment="Center">
                                                 <Border Width="40" Height="40" CornerRadius="10"
-                                                        Background="#FFFFFF25" Margin="0,0,0,10"
-                                                        HorizontalAlignment="Center">
-                                                    <TextBlock Text="📚" FontSize="20"
-                                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        Background="{DynamicResource BrandSoft}" Margin="0,0,0,10" HorizontalAlignment="Center">
+                                                    <TextBlock Text="📚" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Border>
                                                 <TextBlock Text="{DynamicResource Dashboard_QuickActions_NumberedBooks_Title}"
-                                                           FontSize="11" FontWeight="Bold" Foreground="White"
-                                                           HorizontalAlignment="Center"
-                                                           TextAlignment="Center" TextWrapping="Wrap"/>
+                                                           FontSize="11" FontWeight="Bold" Foreground="{DynamicResource Ink}"
+                                                           HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
                                             </StackPanel>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Trigger.EnterActions>
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleX" To="1.05" Duration="0:0:0.12"/>
-                                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleY" To="1.05" Duration="0:0:0.12"/>
-                                                            <DoubleAnimation Storyboard.TargetName="tr" Storyboard.TargetProperty="Y" To="-3" Duration="0:0:0.12"/>
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </Trigger.EnterActions>
-                                                <Trigger.ExitActions>
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.12"/>
-                                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.12"/>
-                                                            <DoubleAnimation Storyboard.TargetName="tr" Storyboard.TargetProperty="Y" To="0" Duration="0:0:0.12"/>
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </Trigger.ExitActions>
+                                                <Setter TargetName="card" Property="Background" Value="{DynamicResource BrandSoft}"/>
+                                                <Setter TargetName="card" Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
 
-                            <!-- 3. Template Designer — violet -->
-                            <Button Grid.Column="4"
+                            <Button Grid.Column="4" Cursor="Hand"
                                     Command="{Binding DataContext.NavigateToTemplateDesignerCommand, RelativeSource={RelativeSource AncestorType=Window}}">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="card" Padding="14,20" CornerRadius="14" Cursor="Hand"
-                                                Background="#7C3AED">
-                                            <Border.RenderTransform>
-                                                <TransformGroup>
-                                                    <ScaleTransform x:Name="sc" ScaleX="1" ScaleY="1"/>
-                                                    <TranslateTransform x:Name="tr" Y="0"/>
-                                                </TransformGroup>
-                                            </Border.RenderTransform>
+                                        <Border x:Name="card" Padding="14,20" CornerRadius="14"
+                                                Background="{DynamicResource Paper}" BorderBrush="{DynamicResource Border}" BorderThickness="1">
                                             <StackPanel HorizontalAlignment="Center">
                                                 <Border Width="40" Height="40" CornerRadius="10"
-                                                        Background="#FFFFFF25" Margin="0,0,0,10"
-                                                        HorizontalAlignment="Center">
-                                                    <TextBlock Text="🎨" FontSize="20"
-                                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        Background="{DynamicResource BrandSoft}" Margin="0,0,0,10" HorizontalAlignment="Center">
+                                                    <TextBlock Text="🎨" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Border>
                                                 <TextBlock Text="{DynamicResource Nav_TemplateDesigner}"
-                                                           FontSize="11" FontWeight="Bold" Foreground="White"
-                                                           HorizontalAlignment="Center"
-                                                           TextAlignment="Center" TextWrapping="Wrap"/>
+                                                           FontSize="11" FontWeight="Bold" Foreground="{DynamicResource Ink}"
+                                                           HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
                                             </StackPanel>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Trigger.EnterActions>
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleX" To="1.05" Duration="0:0:0.12"/>
-                                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleY" To="1.05" Duration="0:0:0.12"/>
-                                                            <DoubleAnimation Storyboard.TargetName="tr" Storyboard.TargetProperty="Y" To="-3" Duration="0:0:0.12"/>
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </Trigger.EnterActions>
-                                                <Trigger.ExitActions>
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.12"/>
-                                                            <DoubleAnimation Storyboard.TargetName="sc" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.12"/>
-                                                            <DoubleAnimation Storyboard.TargetName="tr" Storyboard.TargetProperty="Y" To="0" Duration="0:0:0.12"/>
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </Trigger.ExitActions>
+                                                <Setter TargetName="card" Property="Background" Value="{DynamicResource BrandSoft}"/>
+                                                <Setter TargetName="card" Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -557,8 +495,8 @@
                     </Grid>
                 </Border>
 
-                <!-- ── RIGHT TOP: System Status ─────────────────────────────── -->
-                <Border Grid.Column="2" Grid.Row="0" Style="{DynamicResource Card.Dark}">
+                <!-- RIGHT TOP: System Status -->
+                <Border Grid.Column="2" Grid.Row="0" Style="{StaticResource LightCard}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -568,19 +506,18 @@
 
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
                             <TextBlock Text="📈" FontSize="16" Margin="0,0,10,0"/>
-                            <TextBlock Text="{DynamicResource Dashboard_SystemStatus}"
-                                       FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                            <TextBlock Text="{DynamicResource Dashboard_SystemStatus}" Style="{StaticResource SectionHead}"/>
                         </StackPanel>
 
                         <StackPanel Grid.Row="2">
-                            <!-- Connection status banner -->
+                            <!-- Connection banner -->
                             <Border CornerRadius="12" Padding="14,11" Margin="0,0,0,14">
                                 <Border.Style>
                                     <Style TargetType="Border">
-                                        <Setter Property="Background" Value="#14532D"/>
+                                        <Setter Property="Background" Value="#E7F3EC"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsSystemOnline}" Value="False">
-                                                <Setter Property="Background" Value="#7F1D1D"/>
+                                                <Setter Property="Background" Value="#F6E4E2"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -589,10 +526,10 @@
                                     <Ellipse Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,10,0">
                                         <Ellipse.Style>
                                             <Style TargetType="Ellipse">
-                                                <Setter Property="Fill" Value="#22C55E"/>
+                                                <Setter Property="Fill" Value="{DynamicResource Done}"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding IsSystemOnline}" Value="False">
-                                                        <Setter Property="Fill" Value="#EF4444"/>
+                                                        <Setter Property="Fill" Value="{DynamicResource Stopped}"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -602,10 +539,10 @@
                                                FontSize="13" VerticalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="#86EFAC"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource Done}"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding IsSystemOnline}" Value="False">
-                                                        <Setter Property="Foreground" Value="#FCA5A5"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource Stopped}"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -614,7 +551,7 @@
                                 </StackPanel>
                             </Border>
 
-                            <!-- 2×3 metrics grid -->
+                            <!-- 2×3 metrics grid — mono numbers, muted labels -->
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -629,58 +566,52 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <Border Grid.Column="0" Grid.Row="0" Background="#0F172A"
-                                        CornerRadius="10" Padding="12" BorderBrush="#334155" BorderThickness="1">
+                                <Border Grid.Column="0" Grid.Row="0" Background="{DynamicResource Paper}"
+                                        CornerRadius="10" Padding="12" BorderBrush="{DynamicResource Border}" BorderThickness="1">
                                     <StackPanel>
-                                        <TextBlock Text="{DynamicResource Dashboard_PendingJobs}"
-                                                   FontSize="10" Foreground="#64748B"/>
-                                        <TextBlock Text="{Binding PendingJobs}"
-                                                   FontSize="24" FontWeight="Bold" Foreground="#F59E0B"/>
+                                        <TextBlock Text="{DynamicResource Dashboard_PendingJobs}" FontSize="10" Foreground="{DynamicResource Muted}"/>
+                                        <TextBlock Text="{Binding PendingJobs}" FontSize="24" FontWeight="Bold"
+                                                   FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Ink}"/>
                                     </StackPanel>
                                 </Border>
-                                <Border Grid.Column="2" Grid.Row="0" Background="#0F172A"
-                                        CornerRadius="10" Padding="12" BorderBrush="#334155" BorderThickness="1">
+                                <Border Grid.Column="2" Grid.Row="0" Background="{DynamicResource Paper}"
+                                        CornerRadius="10" Padding="12" BorderBrush="{DynamicResource Border}" BorderThickness="1">
                                     <StackPanel>
-                                        <TextBlock Text="{DynamicResource Dashboard_CompletedJobs}"
-                                                   FontSize="10" Foreground="#64748B"/>
-                                        <TextBlock Text="{Binding CompletedJobs}"
-                                                   FontSize="24" FontWeight="Bold" Foreground="#22C55E"/>
+                                        <TextBlock Text="{DynamicResource Dashboard_CompletedJobs}" FontSize="10" Foreground="{DynamicResource Muted}"/>
+                                        <TextBlock Text="{Binding CompletedJobs}" FontSize="24" FontWeight="Bold"
+                                                   FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Ink}"/>
                                     </StackPanel>
                                 </Border>
-                                <Border Grid.Column="0" Grid.Row="2" Background="#0F172A"
-                                        CornerRadius="10" Padding="12" BorderBrush="#334155" BorderThickness="1">
+                                <Border Grid.Column="0" Grid.Row="2" Background="{DynamicResource Paper}"
+                                        CornerRadius="10" Padding="12" BorderBrush="{DynamicResource Border}" BorderThickness="1">
                                     <StackPanel>
-                                        <TextBlock Text="{DynamicResource Dashboard_FailedJobs}"
-                                                   FontSize="10" Foreground="#64748B"/>
-                                        <TextBlock Text="{Binding FailedJobs}"
-                                                   FontSize="24" FontWeight="Bold" Foreground="#EF4444"/>
+                                        <TextBlock Text="{DynamicResource Dashboard_FailedJobs}" FontSize="10" Foreground="{DynamicResource Muted}"/>
+                                        <TextBlock Text="{Binding FailedJobs}" FontSize="24" FontWeight="Bold"
+                                                   FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Ink}"/>
                                     </StackPanel>
                                 </Border>
-                                <Border Grid.Column="2" Grid.Row="2" Background="#0F172A"
-                                        CornerRadius="10" Padding="12" BorderBrush="#334155" BorderThickness="1">
+                                <Border Grid.Column="2" Grid.Row="2" Background="{DynamicResource Paper}"
+                                        CornerRadius="10" Padding="12" BorderBrush="{DynamicResource Border}" BorderThickness="1">
                                     <StackPanel>
-                                        <TextBlock Text="{DynamicResource Dashboard_SuccessRate}"
-                                                   FontSize="10" Foreground="#64748B"/>
-                                        <TextBlock Text="{Binding SuccessRateText}"
-                                                   FontSize="24" FontWeight="Bold" Foreground="#3B82F6"/>
+                                        <TextBlock Text="{DynamicResource Dashboard_SuccessRate}" FontSize="10" Foreground="{DynamicResource Muted}"/>
+                                        <TextBlock Text="{Binding SuccessRateText}" FontSize="24" FontWeight="Bold"
+                                                   FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Ink}"/>
                                     </StackPanel>
                                 </Border>
-                                <Border Grid.Column="0" Grid.Row="4" Background="#0F172A"
-                                        CornerRadius="10" Padding="12" BorderBrush="#334155" BorderThickness="1">
+                                <Border Grid.Column="0" Grid.Row="4" Background="{DynamicResource Paper}"
+                                        CornerRadius="10" Padding="12" BorderBrush="{DynamicResource Border}" BorderThickness="1">
                                     <StackPanel>
-                                        <TextBlock Text="{DynamicResource Dashboard_BusyPrinters}"
-                                                   FontSize="10" Foreground="#64748B"/>
-                                        <TextBlock Text="{Binding BusyPrinters}"
-                                                   FontSize="24" FontWeight="Bold" Foreground="#F97316"/>
+                                        <TextBlock Text="{DynamicResource Dashboard_BusyPrinters}" FontSize="10" Foreground="{DynamicResource Muted}"/>
+                                        <TextBlock Text="{Binding BusyPrinters}" FontSize="24" FontWeight="Bold"
+                                                   FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Ink}"/>
                                     </StackPanel>
                                 </Border>
-                                <Border Grid.Column="2" Grid.Row="4" Background="#0F172A"
-                                        CornerRadius="10" Padding="12" BorderBrush="#334155" BorderThickness="1">
+                                <Border Grid.Column="2" Grid.Row="4" Background="{DynamicResource Paper}"
+                                        CornerRadius="10" Padding="12" BorderBrush="{DynamicResource Border}" BorderThickness="1">
                                     <StackPanel>
-                                        <TextBlock Text="{DynamicResource Dashboard_ActiveJobs}"
-                                                   FontSize="10" Foreground="#64748B"/>
-                                        <TextBlock Text="{Binding ActiveJobs}"
-                                                   FontSize="24" FontWeight="Bold" Foreground="#A78BFA"/>
+                                        <TextBlock Text="{DynamicResource Dashboard_ActiveJobs}" FontSize="10" Foreground="{DynamicResource Muted}"/>
+                                        <TextBlock Text="{Binding ActiveJobs}" FontSize="24" FontWeight="Bold"
+                                                   FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Ink}"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>
@@ -688,8 +619,8 @@
                     </Grid>
                 </Border>
 
-                <!-- ── RIGHT BOTTOM: Recent Activity ───────────────────────── -->
-                <Border Grid.Column="2" Grid.Row="2" Style="{DynamicResource Card.Dark}">
+                <!-- RIGHT BOTTOM: Recent Activity -->
+                <Border Grid.Column="2" Grid.Row="2" Style="{StaticResource LightCard}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -699,74 +630,39 @@
 
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
                             <TextBlock Text="📋" FontSize="16" Margin="0,0,10,0"/>
-                            <TextBlock Text="{DynamicResource Dashboard_RecentActivity}"
-                                       FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                            <TextBlock Text="{DynamicResource Dashboard_RecentActivity}" Style="{StaticResource SectionHead}"/>
                         </StackPanel>
 
                         <Grid Grid.Row="2">
-                            <!-- Empty-state (visible when list is empty via converter trick) -->
-                            <Border Padding="0,24" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="Visibility" Value="Visible"/>
+                            <!-- Empty state -->
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,24">
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding RecentActivity.Count}" Value="0">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Border.Style>
-                                <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock Text="📭" FontSize="28"
-                                               HorizontalAlignment="Center" Margin="0,0,0,8">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding RecentActivity.Count}" Value="0">
-                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                    <TextBlock Text="{DynamicResource Dashboard_NoActivity}"
-                                               FontSize="12" Foreground="#475569"
-                                               HorizontalAlignment="Center">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding RecentActivity.Count}" Value="0">
-                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </StackPanel>
-                            </Border>
+                                </StackPanel.Style>
+                                <TextBlock Text="📭" FontSize="28" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                <TextBlock Text="{DynamicResource Dashboard_NoActivity}" FontSize="12"
+                                           Foreground="{DynamicResource Muted}" HorizontalAlignment="Center"/>
+                            </StackPanel>
 
                             <ItemsControl ItemsSource="{Binding RecentActivity}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
+                                        <!-- Left status strip carries the colour; card stays calm -->
                                         <Border Padding="12,10" Margin="0,0,0,8" CornerRadius="10"
-                                                Background="#0F172A" BorderThickness="1">
+                                                Background="{DynamicResource Paper}" BorderThickness="1,1,1,1">
                                             <Border.Style>
                                                 <Style TargetType="Border">
-                                                    <Setter Property="BorderBrush" Value="#334155"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Type}" Value="Success">
-                                                            <Setter Property="BorderBrush" Value="#166534"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Type}" Value="Error">
-                                                            <Setter Property="BorderBrush" Value="#991B1B"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Type}" Value="Warning">
-                                                            <Setter Property="BorderBrush" Value="#92400E"/>
-                                                        </DataTrigger>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#1E293B"/>
+                                                            <Setter Property="Background" Value="{DynamicResource BrandSoft}"/>
                                                         </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -778,43 +674,26 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
 
-                                                <!-- Colored icon badge -->
+                                                <!-- Icon badge — neutral tint, status via dot below -->
                                                 <Border Width="32" Height="32" CornerRadius="8"
-                                                        Margin="0,0,10,0" VerticalAlignment="Center">
-                                                    <Border.Style>
-                                                        <Style TargetType="Border">
-                                                            <Setter Property="Background" Value="#1E3A5F"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Type}" Value="Success">
-                                                                    <Setter Property="Background" Value="#14532D"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Type}" Value="Error">
-                                                                    <Setter Property="Background" Value="#7F1D1D"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Type}" Value="Warning">
-                                                                    <Setter Property="Background" Value="#78350F"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Border.Style>
+                                                        Margin="0,0,10,0" VerticalAlignment="Center"
+                                                        Background="{DynamicResource BrandSoft}">
                                                     <TextBlock Text="{Binding Icon}" FontSize="15"
                                                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Border>
 
-                                                <!-- Subject + description -->
                                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                     <TextBlock Text="{Binding Subject}" FontSize="12"
-                                                               FontWeight="Medium" Foreground="#E2E8F0"
-                                                               TextTrimming="CharacterEllipsis"
-                                                               ToolTip="{Binding Subject}"/>
+                                                               FontWeight="Medium" Foreground="{DynamicResource Ink}"
+                                                               TextTrimming="CharacterEllipsis" ToolTip="{Binding Subject}"/>
                                                     <TextBlock Text="{Binding Description}" FontSize="10"
-                                                               Foreground="#64748B" Margin="0,2,0,0"
+                                                               Foreground="{DynamicResource Muted}" Margin="0,2,0,0"
                                                                TextTrimming="CharacterEllipsis"/>
                                                 </StackPanel>
 
-                                                <!-- Timestamp -->
                                                 <TextBlock Grid.Column="2" Text="{Binding Time}"
-                                                           FontSize="10" Foreground="#475569"
+                                                           FontSize="10" Foreground="{DynamicResource Muted}"
+                                                           FontFamily="{DynamicResource Font.Data}"
                                                            VerticalAlignment="Top" Margin="8,2,0,0"/>
                                             </Grid>
                                         </Border>
@@ -826,11 +705,8 @@
                 </Border>
             </Grid>
 
-            <!-- ════════════════════════════════════════════════════════════════
-                 6️⃣  HEALTH STRIP — 4 live metrics in a single bar
-                 ════════════════════════════════════════════════════════════════ -->
-            <Border Grid.Row="6" Background="#1E293B" CornerRadius="14" Padding="28,16"
-                    BorderBrush="#334155" BorderThickness="1">
+            <!-- ═══ 6 · HEALTH STRIP ═══ -->
+            <Border Grid.Row="6" Style="{StaticResource LightCard}" Padding="28,16">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -842,49 +718,44 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Online / Total printers -->
                     <StackPanel Grid.Column="0" HorizontalAlignment="Center">
                         <TextBlock Text="{DynamicResource Dashboard_PrintersOverview}"
-                                   FontSize="10" Foreground="#64748B" HorizontalAlignment="Center"/>
+                                   FontSize="10" Foreground="{DynamicResource Muted}" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4,0,0">
-                            <TextBlock Text="{Binding OnlinePrinters}"
-                                       FontSize="22" FontWeight="Bold" Foreground="#22C55E"/>
-                            <TextBlock Text=" / " FontSize="22" Foreground="#334155"/>
-                            <TextBlock Text="{Binding TotalPrinters}"
-                                       FontSize="22" FontWeight="Bold" Foreground="#64748B"/>
+                            <TextBlock Text="{Binding OnlinePrinters}" FontSize="22" FontWeight="Bold"
+                                       FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Done}"/>
+                            <TextBlock Text=" / " FontSize="22" FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Border}"/>
+                            <TextBlock Text="{Binding TotalPrinters}" FontSize="22" FontWeight="Bold"
+                                       FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Ink}"/>
                         </StackPanel>
                     </StackPanel>
-                    <Rectangle Grid.Column="1" Fill="#334155"/>
+                    <Rectangle Grid.Column="1" Fill="{DynamicResource Border}"/>
 
-                    <!-- Average jobs / day -->
                     <StackPanel Grid.Column="2" HorizontalAlignment="Center">
                         <TextBlock Text="{DynamicResource Dashboard_AvgJobsDay}"
-                                   FontSize="10" Foreground="#64748B" HorizontalAlignment="Center"/>
+                                   FontSize="10" Foreground="{DynamicResource Muted}" HorizontalAlignment="Center"/>
                         <TextBlock Text="{Binding AverageJobsPerDay, StringFormat='{}{0:F1}'}"
-                                   FontSize="22" FontWeight="Bold" Foreground="#60A5FA"
-                                   HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                   FontSize="22" FontWeight="Bold" FontFamily="{DynamicResource Font.Data}"
+                                   Foreground="{DynamicResource Ink}" HorizontalAlignment="Center" Margin="0,4,0,0"/>
                     </StackPanel>
-                    <Rectangle Grid.Column="3" Fill="#334155"/>
+                    <Rectangle Grid.Column="3" Fill="{DynamicResource Border}"/>
 
-                    <!-- Success rate -->
                     <StackPanel Grid.Column="4" HorizontalAlignment="Center">
                         <TextBlock Text="{DynamicResource Dashboard_SuccessRate}"
-                                   FontSize="10" Foreground="#64748B" HorizontalAlignment="Center"/>
+                                   FontSize="10" Foreground="{DynamicResource Muted}" HorizontalAlignment="Center"/>
                         <TextBlock Text="{Binding SuccessRateText}"
-                                   FontSize="22" FontWeight="Bold" Foreground="#A78BFA"
-                                   HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                   FontSize="22" FontWeight="Bold" FontFamily="{DynamicResource Font.Data}"
+                                   Foreground="{DynamicResource Ink}" HorizontalAlignment="Center" Margin="0,4,0,0"/>
                     </StackPanel>
-                    <Rectangle Grid.Column="5" Fill="#334155"/>
+                    <Rectangle Grid.Column="5" Fill="{DynamicResource Border}"/>
 
-                    <!-- Top printer -->
                     <StackPanel Grid.Column="6" HorizontalAlignment="Center">
                         <TextBlock Text="{DynamicResource Dashboard_TopPrinter}"
-                                   FontSize="10" Foreground="#64748B" HorizontalAlignment="Center"/>
+                                   FontSize="10" Foreground="{DynamicResource Muted}" HorizontalAlignment="Center"/>
                         <TextBlock Text="{Binding TopPrinter}"
-                                   FontSize="13" FontWeight="Bold" Foreground="#F59E0B"
+                                   FontSize="13" FontWeight="Bold" Foreground="{DynamicResource Ink}"
                                    HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"
-                                   MaxWidth="160" Margin="0,5,0,0"
-                                   ToolTip="{Binding TopPrinter}"/>
+                                   MaxWidth="160" Margin="0,5,0,0" ToolTip="{Binding TopPrinter}"/>
                     </StackPanel>
                 </Grid>
             </Border>

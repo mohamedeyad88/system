@@ -97,12 +97,16 @@ namespace Apex.UI
                     {
                         var deviceId = LicenseManager.GetDeviceInfo().DeviceId;
                         using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(5));
-                        bool revoked = new Apex.UI.Services.LicenseRevocationService()
-                            .IsRevokedAsync(deviceId, cts.Token).GetAwaiter().GetResult();
+                        // Run off the UI thread: sync-over-async on the dispatcher would
+                        // deadlock if the awaited call captured the UI context.
+                        bool revoked = System.Threading.Tasks.Task.Run(
+                            () => new Apex.UI.Services.LicenseRevocationService()
+                                .IsRevokedAsync(deviceId, cts.Token)).GetAwaiter().GetResult();
                         if (revoked) LicenseManager.DeleteLicense();
                     }
                 }
                 catch { /* revocation must never block or crash startup */ }
+                Apex.Services.Logging.PrintLogger.Info("startup: 1 revocation checked");
 
                 // ── License / Trial check ──
                 var licenseResult = LicenseManager.Validate();
@@ -126,6 +130,7 @@ namespace Apex.UI
                 var services = new ServiceCollection();
                 services.AddApexServices();
                 _serviceProvider = services.BuildServiceProvider();
+                Apex.Services.Logging.PrintLogger.Info("startup: 2 DI built");
 
                 // Verify critical services
                 var scopeFactory = _serviceProvider.GetService<IServiceScopeFactory>()
@@ -135,14 +140,18 @@ namespace Apex.UI
                 using (var scope = scopeFactory.CreateScope())
                 {
                     var dbInitializer = scope.ServiceProvider.GetRequiredService<Apex.Data.DbInitializer>();
-                    dbInitializer.InitializeAsync().GetAwaiter().GetResult();
+                    System.Threading.Tasks.Task.Run(() => dbInitializer.InitializeAsync()).GetAwaiter().GetResult();
                 }
+                Apex.Services.Logging.PrintLogger.Info("startup: 3 db initialized");
 
                 // Create and show main window
                 var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
+                Apex.Services.Logging.PrintLogger.Info("startup: 4 main VM created");
                 var mainWindow = _serviceProvider.GetService<MainWindow>() ?? new MainWindow();
+                Apex.Services.Logging.PrintLogger.Info("startup: 5 main window constructed");
                 mainWindow.DataContext = mainViewModel;
                 mainWindow.Show();
+                Apex.Services.Logging.PrintLogger.Info("startup: 6 main window shown");
 
                 // Start print queue
                 try
@@ -155,7 +164,7 @@ namespace Apex.UI
                 try
                 {
                     var monitoringService = _serviceProvider.GetRequiredService<Apex.Services.PrinterMonitoringService>();
-                    monitoringService.StartAsync(System.Threading.CancellationToken.None).GetAwaiter().GetResult();
+                    System.Threading.Tasks.Task.Run(() => monitoringService.StartAsync(System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
                 }
                 catch { /* monitoring will degrade gracefully if WMI is unavailable */ }
             }

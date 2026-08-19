@@ -959,8 +959,10 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0"
-                                    Background="{TemplateBinding apexControls:NavAssist.IconBrush}">
+                            <!-- Icon tile stays neutral; the single cyan accent appears only on the
+                                 ACTIVE item (see IsActive trigger). No per-item colours. -->
+                            <Border x:Name="iconTile" Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0"
+                                    Background="Transparent">
                                 <TextBlock Text="{TemplateBinding apexControls:NavAssist.Icon}" FontSize="16"
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
@@ -969,7 +971,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#374151"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource BrandSoft}"/>
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
@@ -988,10 +990,11 @@
                             </Trigger.ExitActions>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#4B5563"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource BrandSoft}"/>
                         </Trigger>
                         <Trigger Property="apexControls:NavAssist.IsActive" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Primary}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource BrandSoft}"/>
+                            <Setter TargetName="iconTile" Property="Background" Value="{DynamicResource Brand}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

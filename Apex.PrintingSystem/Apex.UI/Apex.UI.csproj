@@ -83,6 +83,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Assets\AppIcon.ico" />
+    <!-- IBM Plex fonts — drop the .ttf files into Fonts\ and they embed automatically.
+         Empty until the files are added (glob matches nothing = harmless). -->
+    <Resource Include="Fonts\**\*.ttf" />
+    <Resource Include="Fonts\**\*.otf" />
   </ItemGroup>
 
   <ItemGroup>

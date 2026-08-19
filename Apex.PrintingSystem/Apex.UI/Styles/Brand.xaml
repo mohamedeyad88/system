@@ -1,0 +1,77 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ══════════════════════════════════════════════════════════════════════════
+         APEX PRINT — الهوية البصرية الجديدة (فاتحة، سماوي واحد)
+         Brand tokens per the identity document. ADDITIVE layer: introduces the new
+         light palette under semantic keys (Ink/Paper/Brand/status…) WITHOUT touching
+         the legacy Color.*/Brush.* keys, so screens migrate one by one, not all at once.
+         ══════════════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── الألوان الأساسية — Core ───────────────────────────────────────── -->
+    <Color x:Key="InkColor">#FF14181D</Color>      <!-- النص الأساسي، الأرقام الكبيرة، اللوجو -->
+    <Color x:Key="PaperColor">#FFFAF9F7</Color>    <!-- خلفية التطبيق (أوف-وايت) -->
+    <Color x:Key="PanelColor">#FFFFFFFF</Color>    <!-- البطاقات فوق الخلفية -->
+    <Color x:Key="BorderColor">#FFDDD9D3</Color>   <!-- الحدود والفواصل -->
+    <Color x:Key="MutedColor">#FF6B6864</Color>    <!-- النص الثانوي والتسميات -->
+
+    <!-- ── لون العلامة الوحيد — Brand (single accent) ────────────────────── -->
+    <Color x:Key="BrandColor">#FF0891B2</Color>     <!-- سماوي — أزرار، تحديد، روابط، الحالة النشطة -->
+    <Color x:Key="BrandDeepColor">#FF0E7490</Color> <!-- حالة الضغط (pressed) -->
+    <Color x:Key="BrandSoftColor">#FFE6F3F6</Color> <!-- خلفية خفيفة للتحديد/الإبراز -->
+
+    <!-- ── ألوان الحالة — Status (أهم ألوان في البرنامج) ─────────────────── -->
+    <Color x:Key="PrintingColor">#FFE08A00</Color> <!-- قيد الطباعة — شغّال دلوقتي -->
+    <Color x:Key="DoneColor">#FF1B7F4C</Color>     <!-- تم بنجاح -->
+    <Color x:Key="StoppedColor">#FFB42318</Color>  <!-- متوقف — تدخّل مطلوب (أحمر: للأخطاء فقط) -->
+    <Color x:Key="WaitingColor">#FF8A8783</Color>  <!-- في الانتظار / في الطابور -->
+
+    <!-- ══════════════════════════════════════════════════════════════════════════
+         الفرش — Brushes
+         ══════════════════════════════════════════════════════════════════════════ -->
+    <SolidColorBrush x:Key="Ink"        Color="{StaticResource InkColor}"/>
+    <SolidColorBrush x:Key="Paper"      Color="{StaticResource PaperColor}"/>
+    <SolidColorBrush x:Key="Panel"      Color="{StaticResource PanelColor}"/>
+    <SolidColorBrush x:Key="Border"     Color="{StaticResource BorderColor}"/>
+    <SolidColorBrush x:Key="Muted"      Color="{StaticResource MutedColor}"/>
+
+    <SolidColorBrush x:Key="Brand"      Color="{StaticResource BrandColor}"/>
+    <SolidColorBrush x:Key="BrandDeep"  Color="{StaticResource BrandDeepColor}"/>
+    <SolidColorBrush x:Key="BrandSoft"  Color="{StaticResource BrandSoftColor}"/>
+
+    <SolidColorBrush x:Key="Printing"   Color="{StaticResource PrintingColor}"/>
+    <SolidColorBrush x:Key="Done"       Color="{StaticResource DoneColor}"/>
+    <SolidColorBrush x:Key="Stopped"    Color="{StaticResource StoppedColor}"/>
+    <SolidColorBrush x:Key="Waiting"    Color="{StaticResource WaitingColor}"/>
+
+    <!-- نص على العلامة: أبيض تباينه ضعيف (~3.3:1) فوق السماوي؛ الحبر أوضح.
+         نستخدم الحبر كنص افتراضي على الأزرار السماوية، ونحتفظ بأبيض للحالات الغامقة. -->
+    <SolidColorBrush x:Key="OnBrand"       Color="{StaticResource InkColor}"/>
+    <SolidColorBrush x:Key="OnBrandInverse" Color="#FFFFFFFF"/>
+
+    <!-- خلفية مسار شريط التقدم -->
+    <SolidColorBrush x:Key="TrackColor" Color="#FFEDEAE5"/>
+
+    <!-- ══════════════════════════════════════════════════════════════════════════
+         الخطوط — Typography (IBM Plex)
+         ملاحظة: ملفات الخطوط لازم تتضاف في مجلد /Fonts كـ Resource (تعليمات منفصلة).
+         لحد ما تتضاف، WPF بيرجع تلقائياً للخط الاحتياطي (Segoe UI / Tahoma) من غير كسر.
+         ══════════════════════════════════════════════════════════════════════════ -->
+    <FontFamily x:Key="Font.Arabic">pack://application:,,,/Fonts/#IBM Plex Sans Arabic</FontFamily>
+    <!-- Plex Sans Arabic carries the full Latin set (same design as IBM Plex Sans),
+         so it serves the Latin wordmark too — no separate Latin file needed. -->
+    <FontFamily x:Key="Font.Latin">pack://application:,,,/Fonts/#IBM Plex Sans Arabic</FontFamily>
+    <!-- كل الأرقام والبيانات: Mono (لاتيني 0-9، خانات تتراص تحت بعض) -->
+    <FontFamily x:Key="Font.Data">pack://application:,,,/Fonts/#IBM Plex Mono</FontFamily>
+
+    <!-- ══════════════════════════════════════════════════════════════════════════
+         سلّم المقاسات — Type scale
+         ══════════════════════════════════════════════════════════════════════════ -->
+    <sys:Double x:Key="Size.Counter">48</sys:Double>  <!-- رقم الترقيم الحالي — يتقري من مترين -->
+    <sys:Double x:Key="Size.Title">24</sys:Double>    <!-- عنوان الشاشة -->
+    <sys:Double x:Key="Size.Section">18</sys:Double>  <!-- عنوان قسم -->
+    <sys:Double x:Key="Size.Body">14</sys:Double>     <!-- نص عادي / أرقام الجداول -->
+    <sys:Double x:Key="Size.Caption">12</sys:Double>  <!-- تسمية صغيرة -->
+
+</ResourceDictionary>

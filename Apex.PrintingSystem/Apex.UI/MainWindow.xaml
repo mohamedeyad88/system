@@ -15,7 +15,8 @@
         FlowDirection="{Binding Source={x:Static services:LocalizationService.Instance}, Path=FlowDirection, Mode=OneWay}"
         WindowStartupLocation="CenterScreen"
         WindowState="Normal"
-        Background="#0F172A">
+        FontFamily="{DynamicResource Font.Arabic}"
+        Background="{DynamicResource Paper}">
     <Window.Triggers>
         <EventTrigger RoutedEvent="Loaded">
             <BeginStoryboard>
@@ -38,7 +39,8 @@
         </Grid.ColumnDefinitions>
 
         <!-- Professional Sidebar -->
-        <Border Grid.Column="0" Background="{DynamicResource Gradient.Sidebar}">
+        <Border Grid.Column="0" Background="{DynamicResource Panel}"
+                BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -48,14 +50,14 @@
 
                 <!-- Logo Area -->
                 <StackPanel Grid.Row="0" Margin="24,32,24,32">
-                    <TextBlock Text="PRINT OS" 
-                               Foreground="{DynamicResource Brush.Text.OnDark}" 
-                               FontSize="24" 
-                               FontWeight="Bold" 
-                               FontFamily="Segoe UI"/>
-                    <TextBlock Text="{DynamicResource ProfessionalSuite}" 
-                               Foreground="{DynamicResource Brush.Sidebar.Text}" 
-                               FontSize="12" 
+                    <TextBlock Text="APEX PRINT"
+                               Foreground="{DynamicResource Ink}"
+                               FontSize="22"
+                               FontWeight="Bold"
+                               FontFamily="{DynamicResource Font.Latin}"/>
+                    <TextBlock Text="{DynamicResource ProfessionalSuite}"
+                               Foreground="{DynamicResource Muted}"
+                               FontSize="12"
                                Margin="0,4,0,0"/>
                 </StackPanel>
 
@@ -65,7 +67,7 @@
 
                         <!-- ══ Section: الرئيسية ══ -->
                         <TextBlock Text="{DynamicResource Nav_Section_Main}" FontSize="11" FontWeight="SemiBold"
-                                   Foreground="#6B7280" Margin="8,0,0,8"/>
+                                   Foreground="{DynamicResource Muted}" Margin="8,0,0,8"/>
 
                         <!-- 🏠 Dashboard -->
                         <Button Command="{Binding NavigateToDashboardCommand}" Style="{StaticResource NavItemButton}"
@@ -79,8 +81,8 @@
                             </controls:NavAssist.IconBrush>
                             <Button.Content>
                                 <StackPanel>
-                                    <TextBlock Text="{DynamicResource Nav_Dashboard}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                    <TextBlock Text="{DynamicResource Nav_Dashboard_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                    <TextBlock Text="{DynamicResource Nav_Dashboard}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
+                                    <TextBlock Text="{DynamicResource Nav_Dashboard_Desc}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                                 </StackPanel>
                             </Button.Content>
                         </Button>
@@ -88,7 +90,7 @@
                         <!-- ══ Section: Design ══ — reordered into production-flow order:
                              design → prepress → print (was Production/Design split). -->
                         <TextBlock Text="{DynamicResource Nav_Section_Design}" FontSize="11" FontWeight="SemiBold"
-                                   Foreground="#6B7280" Margin="8,16,0,8"/>
+                                   Foreground="{DynamicResource Muted}" Margin="8,16,0,8"/>
 
                         <!-- 📄 Template Designer -->
                         <Button Command="{Binding NavigateToTemplateDesignerCommand}" Style="{StaticResource NavItemButton}"
@@ -102,8 +104,8 @@
                             </controls:NavAssist.IconBrush>
                             <Button.Content>
                                 <StackPanel>
-                                    <TextBlock Text="{DynamicResource Nav_TemplateDesigner}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                    <TextBlock Text="{DynamicResource Nav_TemplateDesigner_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                    <TextBlock Text="{DynamicResource Nav_TemplateDesigner}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
+                                    <TextBlock Text="{DynamicResource Nav_TemplateDesigner_Desc}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                                 </StackPanel>
                             </Button.Content>
                         </Button>
@@ -120,15 +122,15 @@
                             </controls:NavAssist.IconBrush>
                             <Button.Content>
                                 <StackPanel>
-                                    <TextBlock Text="{DynamicResource Nav_NumberedBooks}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                    <TextBlock Text="{DynamicResource Nav_NumberedBooks_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                    <TextBlock Text="{DynamicResource Nav_NumberedBooks}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
+                                    <TextBlock Text="{DynamicResource Nav_NumberedBooks_Desc}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                                 </StackPanel>
                             </Button.Content>
                         </Button>
 
                         <!-- ══ Section: Prepress ══ -->
                         <TextBlock Text="{DynamicResource Nav_Section_Prepress}" FontSize="11" FontWeight="SemiBold"
-                                   Foreground="#6B7280" Margin="8,16,0,8"/>
+                                   Foreground="{DynamicResource Muted}" Margin="8,16,0,8"/>
 
                         <!-- 🧰 Page Tools -->
                         <Button Command="{Binding NavigateToPageToolsCommand}" Style="{StaticResource NavItemButton}"
@@ -142,8 +144,8 @@
                             </controls:NavAssist.IconBrush>
                             <Button.Content>
                                 <StackPanel>
-                                    <TextBlock Text="{DynamicResource Nav_PageTools}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                    <TextBlock Text="{DynamicResource Nav_PageTools_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                    <TextBlock Text="{DynamicResource Nav_PageTools}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
+                                    <TextBlock Text="{DynamicResource Nav_PageTools_Desc}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                                 </StackPanel>
                             </Button.Content>
                         </Button>
@@ -160,8 +162,8 @@
                             </controls:NavAssist.IconBrush>
                             <Button.Content>
                                 <StackPanel>
-                                    <TextBlock Text="{DynamicResource Nav_Imposition}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                    <TextBlock Text="{DynamicResource Nav_Imposition_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                    <TextBlock Text="{DynamicResource Nav_Imposition}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
+                                    <TextBlock Text="{DynamicResource Nav_Imposition_Desc}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                                 </StackPanel>
                             </Button.Content>
                         </Button>
@@ -178,15 +180,15 @@
                             </controls:NavAssist.IconBrush>
                             <Button.Content>
                                 <StackPanel>
-                                    <TextBlock Text="{DynamicResource Nav_ColorCalibration}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                    <TextBlock Text="{DynamicResource Nav_ColorCalibration_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                    <TextBlock Text="{DynamicResource Nav_ColorCalibration}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
+                                    <TextBlock Text="{DynamicResource Nav_ColorCalibration_Desc}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                                 </StackPanel>
                             </Button.Content>
                         </Button>
 
                         <!-- ══ Section: Printing ══ (the last stage) -->
                         <TextBlock Text="{DynamicResource Nav_Section_Daily}" FontSize="11" FontWeight="SemiBold"
-                                   Foreground="#6B7280" Margin="8,16,0,8"/>
+                                   Foreground="{DynamicResource Muted}" Margin="8,16,0,8"/>
 
                         <!-- 🖨️ Printing — one place for the whole job:
                              file queue + one or many printers + distribution mode. -->
@@ -201,15 +203,15 @@
                             </controls:NavAssist.IconBrush>
                             <Button.Content>
                                 <StackPanel>
-                                    <TextBlock Text="{DynamicResource Nav_Printing}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                    <TextBlock Text="{DynamicResource Nav_Printing_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                    <TextBlock Text="{DynamicResource Nav_Printing}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
+                                    <TextBlock Text="{DynamicResource Nav_Printing_Desc}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                                 </StackPanel>
                             </Button.Content>
                         </Button>
 
                         <!-- ══ Section: النظام ══ -->
                         <TextBlock Text="{DynamicResource Nav_Section_System}" FontSize="11" FontWeight="SemiBold"
-                                   Foreground="#6B7280" Margin="8,16,0,8"/>
+                                   Foreground="{DynamicResource Muted}" Margin="8,16,0,8"/>
 
                         <!-- 📊 Performance -->
                         <Button Command="{Binding NavigateToPerformanceCommand}" Style="{StaticResource NavItemButton}"
@@ -223,8 +225,8 @@
                             </controls:NavAssist.IconBrush>
                             <Button.Content>
                                 <StackPanel>
-                                    <TextBlock Text="{DynamicResource Nav_Performance}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                    <TextBlock Text="{DynamicResource Nav_Performance_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                    <TextBlock Text="{DynamicResource Nav_Performance}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
+                                    <TextBlock Text="{DynamicResource Nav_Performance_Desc}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                                 </StackPanel>
                             </Button.Content>
                         </Button>
@@ -241,8 +243,8 @@
                             </controls:NavAssist.IconBrush>
                             <Button.Content>
                                 <StackPanel>
-                                    <TextBlock Text="{DynamicResource Nav_Settings}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                    <TextBlock Text="{DynamicResource Nav_Settings_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                    <TextBlock Text="{DynamicResource Nav_Settings}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
+                                    <TextBlock Text="{DynamicResource Nav_Settings_Desc}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                                 </StackPanel>
                             </Button.Content>
                         </Button>
@@ -259,8 +261,8 @@
                             </controls:NavAssist.IconBrush>
                             <Button.Content>
                                 <StackPanel>
-                                    <TextBlock Text="{DynamicResource Nav_Licensing}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                    <TextBlock Text="{DynamicResource Nav_Licensing_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                    <TextBlock Text="{DynamicResource Nav_Licensing}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
+                                    <TextBlock Text="{DynamicResource Nav_Licensing_Desc}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                                 </StackPanel>
                             </Button.Content>
                         </Button>
@@ -278,24 +280,18 @@
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#6B7280" Offset="0"/>
-                                                        <GradientStop Color="#4B5563" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
+                                            <Border Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0" Background="Transparent">
                                                 <TextBlock Text="📝" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{DynamicResource Nav_SystemLogs}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
-                                                <TextBlock Text="{DynamicResource Nav_SystemLogs_Desc}" FontSize="10" Foreground="#9CA3AF"/>
+                                                <TextBlock Text="{DynamicResource Nav_SystemLogs}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
+                                                <TextBlock Text="{DynamicResource Nav_SystemLogs_Desc}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                                             </StackPanel>
                                         </Grid>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#374151"/>
+                                            <Setter TargetName="border" Property="Background" Value="{DynamicResource BrandSoft}"/>
                                             <Trigger.EnterActions>
                                                 <BeginStoryboard>
                                                     <Storyboard>
@@ -322,15 +318,15 @@
                 </ScrollViewer>
 
                 <!-- Bottom Language Switcher -->
-                <Border Grid.Row="2" 
-                        Background="#1F2937" 
+                <Border Grid.Row="2"
+                        Background="{DynamicResource Paper}"
                         Padding="16"
-                        BorderBrush="{DynamicResource Brush.Sidebar.Hover}"
+                        BorderBrush="{DynamicResource Border}"
                         BorderThickness="0,1,0,0">
                     <StackPanel>
-                        <TextBlock Text="{DynamicResource Language}" 
-                                   Foreground="{DynamicResource Brush.Sidebar.Text}" 
-                                   FontSize="11" 
+                        <TextBlock Text="{DynamicResource Language}"
+                                   Foreground="{DynamicResource Muted}"
+                                   FontSize="11"
                                    Margin="0,0,0,8"/>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -343,7 +339,7 @@
                                     Content="{DynamicResource English}"
                                     Command="{Binding SwitchLanguageCommand}"
                                     CommandParameter="en"
-                                    Foreground="{DynamicResource Brush.Sidebar.Text}"
+                                    Foreground="{DynamicResource Muted}"
                                     BorderThickness="0"
                                     Padding="8,6"
                                     FontSize="12"
@@ -351,17 +347,17 @@
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
                                         <Border x:Name="langBorder"
-                                                Background="{DynamicResource Brush.Sidebar.Hover}"
+                                                Background="{DynamicResource TrackColor}"
                                                 CornerRadius="4"
                                                 Padding="{TemplateBinding Padding}">
                                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="langBorder" Property="Background" Value="#475569"/>
+                                                <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource BrandSoft}"/>
                                             </Trigger>
                                             <DataTrigger Binding="{Binding Source={x:Static services:LocalizationService.Instance}, Path=IsEnglishActive}" Value="True">
-                                                <Setter TargetName="langBorder" Property="Background" Value="#2563EB"/>
+                                                <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource Brand}"/>
                                                 <Setter Property="Foreground" Value="White"/>
                                             </DataTrigger>
                                         </ControlTemplate.Triggers>
@@ -373,7 +369,7 @@
                                     Content="{DynamicResource Arabic}"
                                     Command="{Binding SwitchLanguageCommand}"
                                     CommandParameter="ar"
-                                    Foreground="{DynamicResource Brush.Sidebar.Text}"
+                                    Foreground="{DynamicResource Muted}"
                                     BorderThickness="0"
                                     Padding="8,6"
                                     FontSize="12"
@@ -381,17 +377,17 @@
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
                                         <Border x:Name="langBorder"
-                                                Background="{DynamicResource Brush.Sidebar.Hover}"
+                                                Background="{DynamicResource TrackColor}"
                                                 CornerRadius="4"
                                                 Padding="{TemplateBinding Padding}">
                                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="langBorder" Property="Background" Value="#475569"/>
+                                                <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource BrandSoft}"/>
                                             </Trigger>
                                             <DataTrigger Binding="{Binding Source={x:Static services:LocalizationService.Instance}, Path=IsArabicActive}" Value="True">
-                                                <Setter TargetName="langBorder" Property="Background" Value="#2563EB"/>
+                                                <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource Brand}"/>
                                                 <Setter Property="Foreground" Value="White"/>
                                             </DataTrigger>
                                         </ControlTemplate.Triggers>
@@ -413,7 +409,7 @@
             </Grid.RowDefinitions>
 
             <!-- Update-available notice (server-driven, dismissible) -->
-            <Border Grid.Row="0" Background="{DynamicResource Brush.Primary}" Padding="14,8"
+            <Border Grid.Row="0" Background="{DynamicResource Brand}" Padding="14,8"
                     Visibility="{Binding UpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Grid FlowDirection="RightToLeft">
                     <Grid.ColumnDefinitions>
@@ -426,7 +422,7 @@
                         <Run Text="{Binding UpdateVersion}" FontWeight="Bold"/>
                     </TextBlock>
                     <Button Grid.Column="1" Content="تحميل التحديث" Command="{Binding OpenUpdateLinkCommand}"
-                            Background="White" Foreground="{DynamicResource Brush.Primary}" BorderThickness="0"
+                            Background="White" Foreground="{DynamicResource BrandDeep}" BorderThickness="0"
                             Padding="14,5" FontSize="12" FontWeight="SemiBold" Cursor="Hand" Margin="0,0,8,0"/>
                     <Button Grid.Column="2" Content="✕" Command="{Binding DismissUpdateCommand}"
                             Background="Transparent" Foreground="White" BorderThickness="0"
@@ -439,7 +435,7 @@
             <!-- Persistent live print status — shown from EVERY section while a run is
                  active, so the operator can set up the next job and still watch the
                  press. Driven by the singleton BatchPrintJobManager via MainViewModel. -->
-            <Border Grid.Row="2" Background="#111827" BorderBrush="#334155" BorderThickness="0,1,0,0" Padding="16,8"
+            <Border Grid.Row="2" Background="{DynamicResource Panel}" BorderBrush="{DynamicResource Border}" BorderThickness="0,1,0,0" Padding="16,10"
                     Visibility="{Binding IsPrintingGlobally, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -448,10 +444,10 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="🖨️" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                    <ProgressBar Grid.Column="1" Value="{Binding PrintProgress}" Maximum="100" Height="8"
-                                 VerticalAlignment="Center" Foreground="#3B82F6" Background="#334155" BorderThickness="0"/>
-                    <TextBlock Grid.Column="2" Text="{Binding PrintStatusText}" Foreground="#E2E8F0" FontSize="12"
-                               FontWeight="SemiBold" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                    <ProgressBar Grid.Column="1" Value="{Binding PrintProgress}" Maximum="100" Height="12"
+                                 VerticalAlignment="Center" Foreground="{DynamicResource Brand}" Background="{DynamicResource TrackColor}" BorderThickness="0"/>
+                    <TextBlock Grid.Column="2" Text="{Binding PrintStatusText}" Foreground="{DynamicResource Ink}" FontSize="13"
+                               FontFamily="{DynamicResource Font.Data}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="12,0,0,0"/>
                 </Grid>
             </Border>
         </Grid>

@@ -37,10 +37,15 @@ namespace Apex.UI.Services
             {
                 var requestBody = JsonSerializer.Serialize(new { deviceId });
                 using var content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-                var resp = await Http.PostAsync($"{BaseUrl}/api/apex/status", content, ct);
+                // ConfigureAwait(false): this is called sync-over-async from App startup
+                // (GetAwaiter().GetResult() on the UI thread). Without it the continuation
+                // is posted back to the blocked UI dispatcher and the whole app deadlocks
+                // on the splash — the bounded timeout can't save it because the cancellation
+                // completion needs that same blocked thread.
+                var resp = await Http.PostAsync($"{BaseUrl}/api/apex/status", content, ct).ConfigureAwait(false);
                 if (!resp.IsSuccessStatusCode) return false;   // fail-open
 
-                var text = await resp.Content.ReadAsStringAsync(ct);
+                var text = await resp.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
                 var parsed = JsonSerializer.Deserialize<StatusResponse>(
                     text, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 return parsed?.Revoked == true;
