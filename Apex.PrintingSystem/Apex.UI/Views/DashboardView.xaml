@@ -13,13 +13,19 @@
          and every NUMBER set in the mono face so figures line up and read fast.
          ══════════════════════════════════════════════════════════════════════════ -->
     <UserControl.Resources>
-        <!-- Light card surface -->
+        <!-- Light card surface: a hair of depth lifts the card off the paper so the
+             screen reads layered, not flat — without adding any colour. -->
         <Style x:Key="LightCard" TargetType="Border">
             <Setter Property="Background" Value="{DynamicResource Panel}"/>
             <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="14"/>
             <Setter Property="Padding" Value="20"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#B7B2A8" Opacity="0.45" BlurRadius="16" ShadowDepth="3" Direction="270"/>
+                </Setter.Value>
+            </Setter>
         </Style>
         <!-- Section header text -->
         <Style x:Key="SectionHead" TargetType="TextBlock">

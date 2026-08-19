@@ -50,15 +50,24 @@
 
                 <!-- Logo Area -->
                 <StackPanel Grid.Row="0" Margin="24,32,24,32">
-                    <TextBlock Text="APEX PRINT"
-                               Foreground="{DynamicResource Ink}"
-                               FontSize="22"
-                               FontWeight="Bold"
-                               FontFamily="{DynamicResource Font.Latin}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <!-- Signature: a printer's registration / crop mark — the point where
+                             everything lines up. The brand element, in the one cyan accent. -->
+                        <Canvas Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,11,0">
+                            <Path Data="M 1,16 L 1,5 M 5,1 L 16,1"
+                                  Stroke="{DynamicResource Brand}" StrokeThickness="2"/>
+                        </Canvas>
+                        <TextBlock Text="APEX PRINT"
+                                   Foreground="{DynamicResource Ink}"
+                                   FontSize="22"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{DynamicResource Font.Latin}"/>
+                    </StackPanel>
                     <TextBlock Text="{DynamicResource ProfessionalSuite}"
                                Foreground="{DynamicResource Muted}"
                                FontSize="12"
-                               Margin="0,4,0,0"/>
+                               Margin="0,6,0,0"/>
                 </StackPanel>
 
                 <!-- Navigation with Modern Animated Buttons -->
