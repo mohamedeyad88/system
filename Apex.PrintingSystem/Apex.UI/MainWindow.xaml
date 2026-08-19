@@ -38,9 +38,14 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Professional Sidebar -->
+        <!-- Professional Sidebar. A soft even shadow lifts it above the content on every
+             screen — one edit that gives the whole app depth (works in LTR and RTL). -->
         <Border Grid.Column="0" Background="{DynamicResource Panel}"
-                BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0">
+                BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0"
+                Panel.ZIndex="1">
+            <Border.Effect>
+                <DropShadowEffect Color="#4A4438" Opacity="0.16" BlurRadius="20" ShadowDepth="0"/>
+            </Border.Effect>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
