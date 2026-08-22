@@ -12,44 +12,44 @@
     <Style x:Key="Text.PageTitle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="28"/>
         <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Foreground" Value="#F1F5F9"/>
+        <Setter Property="Foreground" Value="#14181D"/>
     </Style>
     
     <!-- ═══════════════════════════════════════════════════════════════════
          🎨 PRIMARY BRAND COLORS - الألوان الرئيسية للعلامة التجارية
          ═══════════════════════════════════════════════════════════════════ -->
-    <Color x:Key="Color.Primary">#2563EB</Color>
-    <Color x:Key="Color.Primary.Light">#3B82F6</Color>
-    <Color x:Key="Color.Primary.Lighter">#60A5FA</Color>
-    <Color x:Key="Color.Primary.Lightest">#DBEAFE</Color>
-    <Color x:Key="Color.Primary.Dark">#1D4ED8</Color>
-    <Color x:Key="Color.Primary.Darkest">#1E40AF</Color>
+    <Color x:Key="Color.Primary">#0891B2</Color>
+    <Color x:Key="Color.Primary.Light">#06B6D4</Color>
+    <Color x:Key="Color.Primary.Lighter">#22D3EE</Color>
+    <Color x:Key="Color.Primary.Lightest">#E6F3F6</Color>
+    <Color x:Key="Color.Primary.Dark">#0E7490</Color>
+    <Color x:Key="Color.Primary.Darkest">#0E7490</Color>
     
     <!-- ═══════════════════════════════════════════════════════════════════
          ✅ SUCCESS COLORS - ألوان النجاح
          ═══════════════════════════════════════════════════════════════════ -->
-    <Color x:Key="Color.Success">#10B981</Color>
-    <Color x:Key="Color.Success.Light">#34D399</Color>
-    <Color x:Key="Color.Success.Lighter">#D1FAE5</Color>
-    <Color x:Key="Color.Success.Dark">#059669</Color>
-    <Color x:Key="Color.Success.Darkest">#047857</Color>
+    <Color x:Key="Color.Success">#1B7F4C</Color>
+    <Color x:Key="Color.Success.Light">#1B7F4C</Color>
+    <Color x:Key="Color.Success.Lighter">#E7F3EC</Color>
+    <Color x:Key="Color.Success.Dark">#1B7F4C</Color>
+    <Color x:Key="Color.Success.Darkest">#0F5A34</Color>
     
     <!-- ═══════════════════════════════════════════════════════════════════
          ⚠️ WARNING COLORS - ألوان التحذير
          ═══════════════════════════════════════════════════════════════════ -->
-    <Color x:Key="Color.Warning">#F59E0B</Color>
-    <Color x:Key="Color.Warning.Light">#FBBF24</Color>
-    <Color x:Key="Color.Warning.Lighter">#FEF3C7</Color>
-    <Color x:Key="Color.Warning.Dark">#D97706</Color>
+    <Color x:Key="Color.Warning">#E08A00</Color>
+    <Color x:Key="Color.Warning.Light">#E08A00</Color>
+    <Color x:Key="Color.Warning.Lighter">#FDF1DC</Color>
+    <Color x:Key="Color.Warning.Dark">#C2410C</Color>
     <Color x:Key="Color.Warning.Darkest">#B45309</Color>
     
     <!-- ═══════════════════════════════════════════════════════════════════
          ❌ ERROR COLORS - ألوان الخطأ
          ═══════════════════════════════════════════════════════════════════ -->
-    <Color x:Key="Color.Error">#EF4444</Color>
-    <Color x:Key="Color.Error.Light">#F87171</Color>
-    <Color x:Key="Color.Error.Lighter">#FEE2E2</Color>
-    <Color x:Key="Color.Error.Dark">#DC2626</Color>
+    <Color x:Key="Color.Error">#B42318</Color>
+    <Color x:Key="Color.Error.Light">#B42318</Color>
+    <Color x:Key="Color.Error.Lighter">#F6E4E2</Color>
+    <Color x:Key="Color.Error.Dark">#B42318</Color>
     <Color x:Key="Color.Error.Darkest">#B91C1C</Color>
     
     <!-- ═══════════════════════════════════════════════════════════════════
@@ -82,23 +82,23 @@
          🎨 NEUTRAL / SLATE COLORS - الألوان المحايدة
          ═══════════════════════════════════════════════════════════════════ -->
     <Color x:Key="Color.Slate.50">#F8FAFC</Color>
-    <Color x:Key="Color.Slate.100">#F1F5F9</Color>
-    <Color x:Key="Color.Slate.200">#E2E8F0</Color>
-    <Color x:Key="Color.Slate.300">#CBD5E1</Color>
-    <Color x:Key="Color.Slate.400">#94A3B8</Color>
-    <Color x:Key="Color.Slate.500">#64748B</Color>
-    <Color x:Key="Color.Slate.600">#475569</Color>
-    <Color x:Key="Color.Slate.700">#334155</Color>
-    <Color x:Key="Color.Slate.800">#1E293B</Color>
-    <Color x:Key="Color.Slate.900">#0F172A</Color>
+    <Color x:Key="Color.Slate.100">#14181D</Color>
+    <Color x:Key="Color.Slate.200">#14181D</Color>
+    <Color x:Key="Color.Slate.300">#334155</Color>
+    <Color x:Key="Color.Slate.400">#6B6864</Color>
+    <Color x:Key="Color.Slate.500">#8A8783</Color>
+    <Color x:Key="Color.Slate.600">#B7B2A8</Color>
+    <Color x:Key="Color.Slate.700">#DDD9D3</Color>
+    <Color x:Key="Color.Slate.800">#FFFFFF</Color>
+    <Color x:Key="Color.Slate.900">#FAF9F7</Color>
     
     <!-- ═══════════════════════════════════════════════════════════════════
          📄 SURFACE COLORS - Dark Mode
          ═══════════════════════════════════════════════════════════════════ -->
-    <Color x:Key="Color.Background">#0F172A</Color>
-    <Color x:Key="Color.Surface">#1E293B</Color>
-    <Color x:Key="Color.Surface.Elevated">#334155</Color>
-    <Color x:Key="Color.Surface.Sunken">#0B1220</Color>
+    <Color x:Key="Color.Background">#FAF9F7</Color>
+    <Color x:Key="Color.Surface">#FFFFFF</Color>
+    <Color x:Key="Color.Surface.Elevated">#DDD9D3</Color>
+    <Color x:Key="Color.Surface.Sunken">#F4F2EF</Color>
     <!-- Semantic status SURFACES (dark banner backgrounds for success/error notices) -->
     <Color x:Key="Color.Success.Surface">#052E16</Color>
     <Color x:Key="Color.Error.Surface">#450A0A</Color>
@@ -107,52 +107,52 @@
     <!-- ═══════════════════════════════════════════════════════════════════
          🌙 DARK MODE COLORS - ألوان الوضع الداكن
          ═══════════════════════════════════════════════════════════════════ -->
-    <Color x:Key="Color.Dark.Background">#0F172A</Color>
-    <Color x:Key="Color.Dark.Surface">#1E293B</Color>
-    <Color x:Key="Color.Dark.Surface.Elevated">#334155</Color>
-    <Color x:Key="Color.Dark.Border">#334155</Color>
-    <Color x:Key="Color.Dark.Border.Light">#475569</Color>
+    <Color x:Key="Color.Dark.Background">#FAF9F7</Color>
+    <Color x:Key="Color.Dark.Surface">#FFFFFF</Color>
+    <Color x:Key="Color.Dark.Surface.Elevated">#DDD9D3</Color>
+    <Color x:Key="Color.Dark.Border">#DDD9D3</Color>
+    <Color x:Key="Color.Dark.Border.Light">#B7B2A8</Color>
     <Color x:Key="Color.Dark.Text.Primary">#FFFFFF</Color>
-    <Color x:Key="Color.Dark.Text.Secondary">#94A3B8</Color>
-    <Color x:Key="Color.Dark.Text.Muted">#64748B</Color>
+    <Color x:Key="Color.Dark.Text.Secondary">#6B6864</Color>
+    <Color x:Key="Color.Dark.Text.Muted">#8A8783</Color>
     
     <!-- ═══════════════════════════════════════════════════════════════════
          📝 TEXT COLORS - ألوان النص
          ═══════════════════════════════════════════════════════════════════ -->
-    <Color x:Key="Color.Text.Primary">#F1F5F9</Color>
-    <Color x:Key="Color.Text.Secondary">#94A3B8</Color>
-    <Color x:Key="Color.Text.Tertiary">#64748B</Color>
-    <Color x:Key="Color.Text.Disabled">#475569</Color>
+    <Color x:Key="Color.Text.Primary">#14181D</Color>
+    <Color x:Key="Color.Text.Secondary">#6B6864</Color>
+    <Color x:Key="Color.Text.Tertiary">#8A8783</Color>
+    <Color x:Key="Color.Text.Disabled">#B7B2A8</Color>
     <Color x:Key="Color.Text.OnPrimary">#FFFFFF</Color>
     <Color x:Key="Color.Text.OnDark">#F8FAFC</Color>
     
     <!-- ═══════════════════════════════════════════════════════════════════
          🔲 BORDER COLORS - ألوان الحدود
          ═══════════════════════════════════════════════════════════════════ -->
-    <Color x:Key="Color.Border.Light">#334155</Color>
-    <Color x:Key="Color.Border.Medium">#475569</Color>
-    <Color x:Key="Color.Border.Dark">#64748B</Color>
-    <Color x:Key="Color.Border.Focus">#2563EB</Color>
+    <Color x:Key="Color.Border.Light">#DDD9D3</Color>
+    <Color x:Key="Color.Border.Medium">#B7B2A8</Color>
+    <Color x:Key="Color.Border.Dark">#8A8783</Color>
+    <Color x:Key="Color.Border.Focus">#0891B2</Color>
     
     <!-- ═══════════════════════════════════════════════════════════════════
          📱 SIDEBAR COLORS - ألوان الشريط الجانبي
          ═══════════════════════════════════════════════════════════════════ -->
-    <Color x:Key="Color.Sidebar.Background">#1E293B</Color>
-    <Color x:Key="Color.Sidebar.Header">#0F172A</Color>
-    <Color x:Key="Color.Sidebar.Text">#94A3B8</Color>
+    <Color x:Key="Color.Sidebar.Background">#FFFFFF</Color>
+    <Color x:Key="Color.Sidebar.Header">#FAF9F7</Color>
+    <Color x:Key="Color.Sidebar.Text">#6B6864</Color>
     <Color x:Key="Color.Sidebar.Text.Active">#FFFFFF</Color>
-    <Color x:Key="Color.Sidebar.Hover">#334155</Color>
-    <Color x:Key="Color.Sidebar.Active">#2563EB</Color>
-    <Color x:Key="Color.Sidebar.Divider">#334155</Color>
+    <Color x:Key="Color.Sidebar.Hover">#DDD9D3</Color>
+    <Color x:Key="Color.Sidebar.Active">#0891B2</Color>
+    <Color x:Key="Color.Sidebar.Divider">#DDD9D3</Color>
     
     <!-- ═══════════════════════════════════════════════════════════════════
          🖱️ INTERACTION COLORS - ألوان التفاعل
          ═══════════════════════════════════════════════════════════════════ -->
-    <Color x:Key="Color.Hover">#334155</Color>
-    <Color x:Key="Color.Active">#475569</Color>
-    <Color x:Key="Color.Focus">#2563EB</Color>
-    <Color x:Key="Color.Disabled">#334155</Color>
-    <Color x:Key="Color.Divider">#334155</Color>
+    <Color x:Key="Color.Hover">#DDD9D3</Color>
+    <Color x:Key="Color.Active">#B7B2A8</Color>
+    <Color x:Key="Color.Focus">#0891B2</Color>
+    <Color x:Key="Color.Disabled">#DDD9D3</Color>
+    <Color x:Key="Color.Divider">#DDD9D3</Color>
     
     <!-- ══════════════════════════════════════════════════════════════════════════
          SOLID COLOR BRUSHES - الفرش الصلبة
@@ -231,11 +231,11 @@
     <!--
         A step you have not reached yet is NOT a disabled control — it is information
         about where the workflow goes next, and it has to be readable. Painted with
-        Text.Disabled (#475569) it measured 1.93:1 against the stepper background,
-        against the 4.5:1 that small text needs to be legible at all. #94A3B8 measures
+        Text.Disabled (#B7B2A8) it measured 1.93:1 against the stepper background,
+        against the 4.5:1 that small text needs to be legible at all. #6B6864 measures
         5.71:1 while still sitting clearly behind the active step.
     -->
-    <SolidColorBrush x:Key="Brush.Text.StepInactive" Color="#94A3B8"/>
+    <SolidColorBrush x:Key="Brush.Text.StepInactive" Color="#6B6864"/>
     <SolidColorBrush x:Key="Brush.Text.OnPrimary" Color="{StaticResource Color.Text.OnPrimary}"/>
     <SolidColorBrush x:Key="Brush.Text.OnDark" Color="{StaticResource Color.Text.OnDark}"/>
     
@@ -278,22 +278,22 @@
     <!-- ── Light-mode Card Gradients (legacy / light UI use) ──────────── -->
     <LinearGradientBrush x:Key="Gradient.Card.Blue" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="#EFF6FF" Offset="0"/>
-        <GradientStop Color="#DBEAFE" Offset="1"/>
+        <GradientStop Color="#E6F3F6" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Card.Green" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="#ECFDF5" Offset="0"/>
-        <GradientStop Color="#D1FAE5" Offset="1"/>
+        <GradientStop Color="#E7F3EC" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Card.Yellow" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="#FFFBEB" Offset="0"/>
-        <GradientStop Color="#FEF3C7" Offset="1"/>
+        <GradientStop Color="#FDF1DC" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Card.Red" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="#FEF2F2" Offset="0"/>
-        <GradientStop Color="#FEE2E2" Offset="1"/>
+        <GradientStop Color="#F6E4E2" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Card.Purple" StartPoint="0,0" EndPoint="1,1">
@@ -306,51 +306,51 @@
         <GradientStop Color="#CFFAFE" Offset="1"/>
     </LinearGradientBrush>
 
-    <!-- ── Dark-mode Card Gradients (for #0F172A background) ─────────── -->
+    <!-- ── Dark-mode Card Gradients (for #FAF9F7 background) ─────────── -->
     <LinearGradientBrush x:Key="Gradient.Card.Blue.Dark" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#1E293B" Offset="0"/>
-        <GradientStop Color="#1E3A5F" Offset="1"/>
+        <GradientStop Color="#FFFFFF" Offset="0"/>
+        <GradientStop Color="#E6F3F6" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Card.Green.Dark" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#1E293B" Offset="0"/>
+        <GradientStop Color="#FFFFFF" Offset="0"/>
         <GradientStop Color="#14342B" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Card.Red.Dark" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#1E293B" Offset="0"/>
+        <GradientStop Color="#FFFFFF" Offset="0"/>
         <GradientStop Color="#3B1A1A" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Card.Purple.Dark" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#1E293B" Offset="0"/>
+        <GradientStop Color="#FFFFFF" Offset="0"/>
         <GradientStop Color="#2D1B4E" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Card.Orange.Dark" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#1E293B" Offset="0"/>
+        <GradientStop Color="#FFFFFF" Offset="0"/>
         <GradientStop Color="#3B2210" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Card.Cyan.Dark" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#1E293B" Offset="0"/>
+        <GradientStop Color="#FFFFFF" Offset="0"/>
         <GradientStop Color="#0F2E35" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Card.Yellow.Dark" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#1E293B" Offset="0"/>
+        <GradientStop Color="#FFFFFF" Offset="0"/>
         <GradientStop Color="#2D2008" Offset="1"/>
     </LinearGradientBrush>
 
     <!-- ── Button Gradients ───────────────────────────────────────────── -->
     <LinearGradientBrush x:Key="Gradient.Button.Primary" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#3B82F6" Offset="0"/>
-        <GradientStop Color="#2563EB" Offset="1"/>
+        <GradientStop Color="#06B6D4" Offset="0"/>
+        <GradientStop Color="#0891B2" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Button.Success" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#34D399" Offset="0"/>
-        <GradientStop Color="#10B981" Offset="1"/>
+        <GradientStop Color="#1B7F4C" Offset="0"/>
+        <GradientStop Color="#1B7F4C" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Button.Purple" StartPoint="0,0" EndPoint="1,1">
@@ -364,8 +364,8 @@
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Button.Danger" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#F87171" Offset="0"/>
-        <GradientStop Color="#EF4444" Offset="1"/>
+        <GradientStop Color="#B42318" Offset="0"/>
+        <GradientStop Color="#B42318" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Button.Cyan" StartPoint="0,0" EndPoint="1,1">
@@ -375,28 +375,28 @@
 
     <!-- ── Header / Layout Gradients ─────────────────────────────────── -->
     <LinearGradientBrush x:Key="Gradient.Header.Dark" StartPoint="0,0" EndPoint="1,0">
-        <GradientStop Color="#1E293B" Offset="0"/>
-        <GradientStop Color="#334155" Offset="1"/>
+        <GradientStop Color="#FFFFFF" Offset="0"/>
+        <GradientStop Color="#DDD9D3" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Sidebar" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#1E293B" Offset="0"/>
-        <GradientStop Color="#0F172A" Offset="1"/>
+        <GradientStop Color="#FFFFFF" Offset="0"/>
+        <GradientStop Color="#FAF9F7" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Dashboard.Header" StartPoint="0,0" EndPoint="1,0">
-        <GradientStop Color="#1E293B" Offset="0"/>
-        <GradientStop Color="#0F172A" Offset="1"/>
+        <GradientStop Color="#FFFFFF" Offset="0"/>
+        <GradientStop Color="#FAF9F7" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Dashboard.Blue" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#1E3A5F" Offset="0"/>
-        <GradientStop Color="#1E293B" Offset="1"/>
+        <GradientStop Color="#E6F3F6" Offset="0"/>
+        <GradientStop Color="#FFFFFF" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="Gradient.Dashboard.Green" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="#14342B" Offset="0"/>
-        <GradientStop Color="#1E293B" Offset="1"/>
+        <GradientStop Color="#FFFFFF" Offset="1"/>
     </LinearGradientBrush>
     
 </ResourceDictionary>

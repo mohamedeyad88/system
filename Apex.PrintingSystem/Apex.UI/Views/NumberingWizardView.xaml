@@ -2410,10 +2410,10 @@
                         Padding="24">
                     <Border x:Name="CanvasContainer">
                         <Border Background="#FFFFFF"
-                                BorderBrush="#6B6864"
-                                BorderThickness="3">
+                                BorderBrush="#DDD9D3"
+                                BorderThickness="1">
                             <Border.Effect>
-                                <DropShadowEffect BlurRadius="24" ShadowDepth="6" Opacity="0.15" Color="#FFFFFF"/>
+                                <DropShadowEffect BlurRadius="22" ShadowDepth="4" Opacity="0.22" Color="#8A8783"/>
                             </Border.Effect>
                             <!-- Zoom via LayoutTransform (was RenderTransform + centre pivot).
                                  RenderTransform is visual-only: the ScrollViewer never saw the
@@ -2449,7 +2449,8 @@
                                        Visibility="{Binding LivePreviewImage, Converter={StaticResource NullToVisConverter}}"/>
 
                                 <!-- Generating Preview Spinner -->
-                                <Border Background="#B4231828"
+                                <Border Background="#F2FFFFFF"
+                                        BorderBrush="#DDD9D3" BorderThickness="1"
                                         CornerRadius="8"
                                         Padding="14,8"
                                         Canvas.Left="8"
@@ -2471,11 +2472,11 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Line X1="{Binding X1}" Y1="{Binding Y1}" 
+                                            <Line X1="{Binding X1}" Y1="{Binding Y1}"
                                                   X2="{Binding X2}" Y2="{Binding Y2}"
-                                                  Stroke="#14181D" 
+                                                  Stroke="#C9C4BB"
                                                   StrokeThickness="0.5"
-                                                  Opacity="0.6"/>
+                                                  Opacity="0.7"/>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>

@@ -652,8 +652,8 @@
         embed the same ControlTemplate for explicit coverage.
     -->
     <Style TargetType="ComboBoxItem">
-        <Setter Property="Background"                  Value="#1E293B"/>
-        <Setter Property="Foreground"                  Value="#E2E8F0"/>
+        <Setter Property="Background"                  Value="#FFFFFF"/>
+        <Setter Property="Foreground"                  Value="#14181D"/>
         <Setter Property="Padding"                     Value="10,6"/>
         <Setter Property="FontSize"                    Value="13"/>
         <Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
@@ -668,11 +668,11 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="#2563EB"/>
+                            <Setter TargetName="Bd" Property="Background" Value="#0891B2"/>
                             <Setter Property="Foreground" Value="White"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="#1D4ED8"/>
+                            <Setter TargetName="Bd" Property="Background" Value="#0E7490"/>
                             <Setter Property="Foreground" Value="White"/>
                         </Trigger>
                         <MultiTrigger>
@@ -684,7 +684,7 @@
                             <Setter Property="Foreground" Value="White"/>
                         </MultiTrigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Foreground" Value="#475569"/>
+                            <Setter Property="Foreground" Value="#6B6864"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -695,14 +695,14 @@
     <!-- ==================== COMBOBOX - قائمة منسدلة (dark popup) ==================== -->
     <!--
         Global implicit style — applies to every ComboBox in the app.
-        Provides a full dark ControlTemplate so the popup uses #1E293B instead of
+        Provides a full dark ControlTemplate so the popup uses #FFFFFF instead of
         the system window brush (white).  Views that need a keyed override (DarkCombo)
         can still do so; this style is the baseline.
     -->
     <Style TargetType="ComboBox">
-        <Setter Property="Background"        Value="#1E293B"/>
-        <Setter Property="Foreground"        Value="#E2E8F0"/>
-        <Setter Property="BorderBrush"       Value="#334155"/>
+        <Setter Property="Background"        Value="#FFFFFF"/>
+        <Setter Property="Foreground"        Value="#14181D"/>
+        <Setter Property="BorderBrush"       Value="#DDD9D3"/>
         <Setter Property="BorderThickness"   Value="1"/>
         <Setter Property="Height"            Value="34"/>
         <Setter Property="FontSize"          Value="13"/>
@@ -716,8 +716,8 @@
                      The only reliable fix is to supply our own template with a named Border
                      so our triggers can target it directly. -->
                 <Style TargetType="ComboBoxItem">
-                    <Setter Property="Background"                  Value="#1E293B"/>
-                    <Setter Property="Foreground"                  Value="#E2E8F0"/>
+                    <Setter Property="Background"                  Value="#FFFFFF"/>
+                    <Setter Property="Foreground"                  Value="#14181D"/>
                     <Setter Property="Padding"                     Value="10,6"/>
                     <Setter Property="FontSize"                    Value="13"/>
                     <Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
@@ -732,11 +732,11 @@
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsHighlighted" Value="True">
-                                        <Setter TargetName="Bd" Property="Background" Value="#2563EB"/>
+                                        <Setter TargetName="Bd" Property="Background" Value="#0891B2"/>
                                         <Setter Property="Foreground" Value="White"/>
                                     </Trigger>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="Bd" Property="Background" Value="#1D4ED8"/>
+                                        <Setter TargetName="Bd" Property="Background" Value="#0E7490"/>
                                         <Setter Property="Foreground" Value="White"/>
                                     </Trigger>
                                     <MultiTrigger>
@@ -748,7 +748,7 @@
                                         <Setter Property="Foreground" Value="White"/>
                                     </MultiTrigger>
                                     <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Foreground" Value="#475569"/>
+                                        <Setter Property="Foreground" Value="#6B6864"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -778,17 +778,17 @@
                                             CornerRadius="6">
                                         <DockPanel LastChildFill="False">
                                             <TextBlock DockPanel.Dock="Right" Text="▾"
-                                                       Foreground="#64748B" FontSize="11"
+                                                       Foreground="#6B6864" FontSize="11"
                                                        VerticalAlignment="Center"
                                                        Margin="0,0,10,0"/>
                                         </DockPanel>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="Bd" Property="BorderBrush" Value="#475569"/>
+                                            <Setter TargetName="Bd" Property="BorderBrush" Value="#6B6864"/>
                                         </Trigger>
                                         <Trigger Property="IsChecked" Value="True">
-                                            <Setter TargetName="Bd" Property="BorderBrush" Value="#3B82F6"/>
+                                            <Setter TargetName="Bd" Property="BorderBrush" Value="#0891B2"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -813,8 +813,8 @@
                                Focusable="False"
                                PopupAnimation="Slide">
                             <Border x:Name="DropBorder"
-                                    Background="#1E293B"
-                                    BorderBrush="#334155"
+                                    Background="#FFFFFF"
+                                    BorderBrush="#DDD9D3"
                                     BorderThickness="1"
                                     CornerRadius="6"
                                     MinWidth="{Binding ElementName=MainGrid, Path=ActualWidth}"
@@ -879,9 +879,9 @@
 
     <!-- Card.Dark - dark surface card used by views with hardcoded dark theme -->
     <Style x:Key="Card.Dark" TargetType="Border">
-        <Setter Property="Background" Value="#1E293B"/>
+        <Setter Property="Background" Value="#FFFFFF"/>
         <Setter Property="CornerRadius" Value="16"/>
-        <Setter Property="BorderBrush" Value="#334155"/>
+        <Setter Property="BorderBrush" Value="#DDD9D3"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="24"/>
         <Setter Property="Margin" Value="0,0,0,20"/>
@@ -889,7 +889,7 @@
 
     <!-- Button.Dark.Primary - blue button for dark-theme views -->
     <Style x:Key="Button.Dark.Primary" TargetType="Button">
-        <Setter Property="Background" Value="#3B82F6"/>
+        <Setter Property="Background" Value="#0891B2"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="500"/>
@@ -905,10 +905,10 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
+                            <Setter TargetName="border" Property="Background" Value="#0891B2"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#1D4ED8"/>
+                            <Setter TargetName="border" Property="Background" Value="#0E7490"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -919,7 +919,7 @@
     <!-- Button.Dark.Ghost - transparent button for dark backgrounds -->
     <Style x:Key="Button.Dark.Ghost" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="#94A3B8"/>
+        <Setter Property="Foreground" Value="#6B6864"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="Padding" Value="8,6"/>
         <Setter Property="BorderThickness" Value="0"/>
@@ -933,7 +933,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#334155"/>
+                            <Setter TargetName="border" Property="Background" Value="#DDD9D3"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

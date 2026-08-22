@@ -16,7 +16,7 @@
         <Setter Property="Padding" Value="20"/>
         <Setter Property="Effect">
             <Setter.Value>
-                <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.08" Color="#1E293B"/>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.08" Color="#FFFFFF"/>
             </Setter.Value>
         </Setter>
     </Style>
@@ -32,7 +32,7 @@
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Effect">
                     <Setter.Value>
-                        <DropShadowEffect BlurRadius="25" ShadowDepth="6" Opacity="0.12" Color="#1E293B"/>
+                        <DropShadowEffect BlurRadius="25" ShadowDepth="6" Opacity="0.12" Color="#FFFFFF"/>
                     </Setter.Value>
                 </Setter>
             </Trigger>
@@ -45,7 +45,7 @@
         <Setter Property="Padding" Value="20"/>
         <Setter Property="Effect">
             <Setter.Value>
-                <DropShadowEffect BlurRadius="15" ShadowDepth="3" Opacity="0.06" Color="#1E293B"/>
+                <DropShadowEffect BlurRadius="15" ShadowDepth="3" Opacity="0.06" Color="#FFFFFF"/>
             </Setter.Value>
         </Setter>
     </Style>
@@ -413,7 +413,7 @@
     
     <!-- Dark Button Primary -->
     <Style x:Key="Button.Dark.Primary" TargetType="Button">
-        <Setter Property="Background" Value="#3B82F6"/>
+        <Setter Property="Background" Value="#0891B2"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="FontSize" Value="14"/>
@@ -428,10 +428,10 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
+                            <Setter TargetName="border" Property="Background" Value="#0891B2"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="border" Property="Background" Value="#475569"/>
+                            <Setter TargetName="border" Property="Background" Value="#6B6864"/>
                             <Setter TargetName="border" Property="Opacity" Value="0.5"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -442,7 +442,7 @@
     
     <!-- Dark Button Success -->
     <Style x:Key="Button.Dark.Success" TargetType="Button">
-        <Setter Property="Background" Value="#22C55E"/>
+        <Setter Property="Background" Value="#1B7F4C"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="FontSize" Value="14"/>
@@ -457,10 +457,10 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#16A34A"/>
+                            <Setter TargetName="border" Property="Background" Value="#1B7F4C"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="border" Property="Background" Value="#475569"/>
+                            <Setter TargetName="border" Property="Background" Value="#6B6864"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -471,7 +471,7 @@
     <!-- Dark Ghost Button -->
     <Style x:Key="Button.Dark.Ghost" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="#94A3B8"/>
+        <Setter Property="Foreground" Value="#6B6864"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="BorderThickness" Value="0"/>
@@ -484,7 +484,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#334155"/>
+                            <Setter TargetName="border" Property="Background" Value="#DDD9D3"/>
                             <Setter Property="Foreground" Value="White"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -502,18 +502,18 @@
     
     <Style x:Key="Text.Dark.Subtitle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="14"/>
-        <Setter Property="Foreground" Value="#64748B"/>
+        <Setter Property="Foreground" Value="#6B6864"/>
     </Style>
     
     <Style x:Key="Text.Dark.Label" TargetType="TextBlock">
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontWeight" Value="Medium"/>
-        <Setter Property="Foreground" Value="#64748B"/>
+        <Setter Property="Foreground" Value="#6B6864"/>
     </Style>
     
     <Style x:Key="Text.Dark.Body" TargetType="TextBlock">
         <Setter Property="FontSize" Value="14"/>
-        <Setter Property="Foreground" Value="#94A3B8"/>
+        <Setter Property="Foreground" Value="#6B6864"/>
     </Style>
     
 </ResourceDictionary>
