@@ -47,7 +47,7 @@
         <ScrollViewer Grid.Row="1" Padding="20">
             <StackPanel>
                 <!-- Status Section -->
-                <Border Background="#F8FAFC" CornerRadius="8" Padding="16" Margin="0,0,0,20">
+                <Border Background="#FAF9F7" CornerRadius="8" Padding="16" Margin="0,0,0,20">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -133,8 +133,8 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Background="#14181D" CornerRadius="6" Padding="10,6" Margin="0,0,8,8">
-                                    <TextBlock Text="{Binding}" Foreground="#6B6864" FontSize="12"/>
+                                <Border Background="#F4F2EF" BorderBrush="#DDD9D3" BorderThickness="1" CornerRadius="6" Padding="10,6" Margin="0,0,8,8">
+                                    <TextBlock Text="{Binding}" Foreground="#14181D" FontSize="12"/>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -155,7 +155,7 @@
         </ScrollViewer>
 
         <!-- Actions -->
-        <Border Grid.Row="2" BorderBrush="#14181D" BorderThickness="0,1,0,0" Padding="20" Background="#F8FAFC">
+        <Border Grid.Row="2" BorderBrush="#14181D" BorderThickness="0,1,0,0" Padding="20" Background="#FAF9F7">
             <StackPanel>
                 <Button Content="🖨️ Print Test Page" 
                         Command="{Binding TestPrintCommand}" 

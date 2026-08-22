@@ -94,7 +94,7 @@
             <!-- Stats & Badges -->
             <StackPanel Grid.Row="1">
                 <!-- Queue Info -->
-                <Border Background="#F8FAFC" CornerRadius="8" Padding="12" Margin="0,0,0,10">
+                <Border Background="#FAF9F7" CornerRadius="8" Padding="12" Margin="0,0,0,10">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>

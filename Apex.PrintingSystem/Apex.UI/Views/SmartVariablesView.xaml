@@ -127,11 +127,11 @@
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="⚡" FontSize="20" Margin="0,0,8,0" VerticalAlignment="Center"/>
                     <TextBlock Text="المتغيرات الذكية — دمج البيانات"
-                               Foreground="#F8FAFC" FontSize="15" FontWeight="SemiBold"
+                               Foreground="#14181D" FontSize="15" FontWeight="SemiBold"
                                VerticalAlignment="Center"/>
 
                     <!-- Data summary badge -->
-                    <Border Background="#0F3460" CornerRadius="4" Padding="8,3" Margin="16,0,0,0"
+                    <Border Background="#E6F3F6" CornerRadius="4" Padding="8,3" Margin="16,0,0,0"
                             Visibility="{Binding HasPastedData, Converter={StaticResource BoolToVis}}">
                         <TextBlock Foreground="#0891B2" FontSize="11"
                                    Text="{Binding TotalRowCount, StringFormat='{}{0} سجل'}"/>
