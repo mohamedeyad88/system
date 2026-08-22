@@ -643,7 +643,7 @@
 
                 <TextBlock Grid.Column="6"
                            Text="{DynamicResource UPL_008}"
-                           FontSize="11" Foreground="#DDD9D3"
+                           FontSize="11" Foreground="#6B6864"
                            VerticalAlignment="Center"
                            Margin="8,0,0,0">
                     <TextBlock.Style>
@@ -769,7 +769,7 @@
                         <TextBlock VerticalAlignment="Center" FontSize="11">
                             <Run Text="{DynamicResource Upload_ListOfDocuments}"
                                  Foreground="#6B6864"/>
-                            <Run Text=" · " Foreground="#DDD9D3"/>
+                            <Run Text=" · " Foreground="#6B6864"/>
                             <Run Text="{Binding IngestedFiles.Count, Mode=OneWay}"
                                  Foreground="#0891B2" FontWeight="Bold"/>
                             <Run Text="{DynamicResource UPL_002}" Foreground="#6B6864"/>
@@ -1051,7 +1051,7 @@
                                    FontSize="18" FontWeight="SemiBold"
                                    Foreground="#0891B2" HorizontalAlignment="Center"/>
                         <TextBlock Text="{DynamicResource Upload_AddFromMenu}"
-                                   FontSize="13" Foreground="#DDD9D3"
+                                   FontSize="13" Foreground="#6B6864"
                                    HorizontalAlignment="Center" Margin="0,6,0,20"/>
                         <Border Background="#FFFFFF" CornerRadius="16"
                                 Padding="16,5" HorizontalAlignment="Center">

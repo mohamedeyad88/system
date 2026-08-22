@@ -1004,7 +1004,7 @@
                                                    TextTrimming="CharacterEllipsis"/>
                                         <!-- Meta row: category · pages · date -->
                                         <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                                            <Border Background="#1E3A8A" CornerRadius="3"
+                                            <Border Background="#E6F3F6" CornerRadius="3"
                                                     Padding="5,1">
                                                 <TextBlock Text="{Binding Category}"
                                                            Foreground="#0E7490" FontSize="9"/>
@@ -1013,7 +1013,7 @@
                                                        Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="9"
                                                        VerticalAlignment="Center"/>
                                             <TextBlock Text="{Binding ModifiedAt, StringFormat=' · {0:dd/MM/yy}'}"
-                                                       Foreground="#DDD9D3" FontSize="9"
+                                                       Foreground="#6B6864" FontSize="9"
                                                        VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </StackPanel>
@@ -1036,7 +1036,7 @@
                                                     <Setter TargetName="b" Property="Background" Value="{DynamicResource Brush.Surface.Elevated}"/>
                                                 </Trigger>
                                                 <Trigger Property="IsSelected" Value="True">
-                                                    <Setter TargetName="b" Property="Background" Value="#1E3A8A"/>
+                                                    <Setter TargetName="b" Property="Background" Value="#E6F3F6"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -1380,7 +1380,7 @@
                     <!-- Empty state -->
                     <TextBlock Text="{DynamicResource TD_064}"
                                FlowDirection="LeftToRight"
-                               Foreground="#DDD9D3" FontSize="15"
+                               Foreground="#6B6864" FontSize="15"
                                HorizontalAlignment="Center" VerticalAlignment="Center"
                                Margin="0,80,0,0">
                         <TextBlock.Style>
@@ -1509,7 +1509,7 @@
                                                             <TextBlock Grid.Column="1"
                                                                        Text="{Binding Label}"
                                                                        FontSize="8"
-                                                                       Foreground="#FFFFFF"
+                                                                       Foreground="#14181D"
                                                                        VerticalAlignment="Center"
                                                                        TextTrimming="CharacterEllipsis"/>
                                                         </Grid>
@@ -1666,7 +1666,7 @@
                     <!-- No template placeholder -->
                     <TextBlock Grid.Row="0"
                                Text="{DynamicResource TD_070}"
-                               Foreground="#DDD9D3" FontSize="13"
+                               Foreground="#6B6864" FontSize="13"
                                HorizontalAlignment="Center" VerticalAlignment="Center">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">

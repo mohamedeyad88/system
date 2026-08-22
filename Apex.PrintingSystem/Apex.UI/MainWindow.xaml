@@ -11,10 +11,11 @@
         xmlns:controls="clr-namespace:Apex.UI.Controls"
         mc:Ignorable="d"
         Title="{DynamicResource Welcome}" Height="800" Width="1200"
+        Icon="pack://application:,,,/Assets/AppIcon.ico"
         MinWidth="1200" MinHeight="800"
         FlowDirection="{Binding Source={x:Static services:LocalizationService.Instance}, Path=FlowDirection, Mode=OneWay}"
         WindowStartupLocation="CenterScreen"
-        WindowState="Normal"
+        WindowState="Maximized"
         FontFamily="{DynamicResource Font.Arabic}"
         Background="{DynamicResource Paper}">
     <Window.Triggers>

@@ -3101,7 +3101,7 @@
                 <!-- Footer hint -->
                 <TextBlock Grid.Row="2"
                            Text="{DynamicResource Numbering_NotesSavedAutomatically}"
-                           FontSize="10" Foreground="#DDD9D3"
+                           FontSize="10" Foreground="#6B6864"
                            TextWrapping="Wrap"
                            Padding="16,8,16,12"/>
             </Grid>
@@ -3203,7 +3203,7 @@
                                                 </TextBlock>
                                                 <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
                                                     <TextBlock Text="{Binding Printer}" FontSize="10" Foreground="#6B6864" TextTrimming="CharacterEllipsis" MaxWidth="140"/>
-                                                    <TextBlock Text=" · " FontSize="10" Foreground="#DDD9D3"/>
+                                                    <TextBlock Text=" · " FontSize="10" Foreground="#6B6864"/>
                                                     <TextBlock Text="{Binding PagesCount, StringFormat='{}{0:N0} صفحة'}" FontSize="10" Foreground="#6B6864"/>
                                                 </StackPanel>
                                             </StackPanel>
@@ -3211,7 +3211,7 @@
                                                 <TextBlock Text="{Binding Timestamp, StringFormat='{}{0:HH:mm}'}"
                                                            FontSize="11" Foreground="#6B6864" HorizontalAlignment="Right"/>
                                                 <TextBlock Text="{Binding Timestamp, StringFormat='{}{0:dd/MM}'}"
-                                                           FontSize="10" Foreground="#DDD9D3" HorizontalAlignment="Right"/>
+                                                           FontSize="10" Foreground="#6B6864" HorizontalAlignment="Right"/>
                                                 <!-- Status badge -->
                                                 <Border CornerRadius="3" Padding="5,1" Margin="0,3,0,0" HorizontalAlignment="Right">
                                                     <Border.Style>
@@ -3380,7 +3380,7 @@
                                                     </TextBlock.ToolTip>
                                                 </TextBlock>
                                             </StackPanel>
-                                            <TextBlock Text="{Binding}" FontSize="10" Foreground="#DDD9D3"
+                                            <TextBlock Text="{Binding}" FontSize="10" Foreground="#6B6864"
                                                        TextTrimming="CharacterEllipsis" Margin="21,3,0,0"/>
                                         </StackPanel>
                                     </Border>
