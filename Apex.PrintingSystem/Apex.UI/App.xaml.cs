@@ -119,10 +119,11 @@ namespace Apex.UI
                     return;
                 }
 
-                // Initialize default language
+                // Initialize default language — Arabic first (the audience is Arabic
+                // print shops; the whole UI, including Template Designer, is localised).
                 try
                 {
-                    Services.LocalizationService.Instance.SwitchLanguage("en");
+                    Services.LocalizationService.Instance.SwitchLanguage("ar");
                 }
                 catch { /* continue with default */ }
 
