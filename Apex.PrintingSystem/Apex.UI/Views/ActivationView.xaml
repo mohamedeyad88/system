@@ -78,12 +78,12 @@
              Header
              ══════════════════════════════════════════ -->
         <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,28">
-            <Border Background="#1E3A8A" Width="80" Height="80" CornerRadius="20"
+            <Border Background="#14181D" Width="80" Height="80" CornerRadius="20"
                     HorizontalAlignment="Center" Margin="0,0,0,16">
                 <TextBlock Text="🖨️" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
             <TextBlock Text="أبكس لحلول الطباعة المتكاملة"
-                       FontSize="22" FontWeight="Bold" Foreground="White"
+                       FontSize="22" FontWeight="Bold" Foreground="#14181D"
                        HorizontalAlignment="Center"/>
             <TextBlock Text="Apex Printing Solutions"
                        FontSize="13" Foreground="#6B6864"
@@ -96,7 +96,7 @@
         <Border Grid.Row="1" Style="{StaticResource Card}">
             <StackPanel>
                 <TextBlock Text="{Binding StatusMessage}"
-                           FontSize="18" FontWeight="SemiBold" Foreground="White"
+                           FontSize="18" FontWeight="SemiBold" Foreground="#14181D"
                            HorizontalAlignment="Center"/>
                 <TextBlock Text="{Binding StatusDetail}"
                            FontSize="13" Foreground="#6B6864"
@@ -121,7 +121,7 @@
             <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                     <TextBlock Text="💻" FontSize="16" Margin="0,0,10,0"/>
-                    <TextBlock Text="رقم تعريف الجهاز" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                    <TextBlock Text="رقم تعريف الجهاز" FontSize="14" FontWeight="SemiBold" Foreground="#14181D"/>
                 </StackPanel>
 
                 <TextBlock Text="يحتاج الموظف للتفعيل إلى رقم الجهاز هذا. انسخه وأرسله لطلب الترخيص."
@@ -162,8 +162,48 @@
         <Border Grid.Row="3" Style="{StaticResource Card}">
             <StackPanel>
                 <TextBlock Text="🔑 خيارات التفعيل"
-                           FontSize="14" FontWeight="SemiBold" Foreground="White"
+                           FontSize="14" FontWeight="SemiBold" Foreground="#14181D"
                            Margin="0,0,0,16"/>
+
+                <!-- Online activation (serial code) — the primary path -->
+                <TextBlock Text="فعّل بكود السيريال (أونلاين)"
+                           FontSize="13" FontWeight="SemiBold" Foreground="#14181D"
+                           Margin="0,0,0,8"/>
+                <TextBox Text="{Binding SerialKey, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{Binding IsNotActivating}"
+                         FontFamily="Consolas, Courier New" FontSize="15"
+                         Padding="12,10" Margin="0,0,0,10"
+                         Background="#FAF9F7" Foreground="#14181D"
+                         BorderBrush="#DDD9D3" BorderThickness="1"
+                         FlowDirection="LeftToRight"
+                         VerticalContentAlignment="Center"/>
+
+                <CheckBox IsChecked="{Binding IsEulaAccepted}"
+                          Foreground="#6B6864" Margin="0,0,0,12" VerticalContentAlignment="Center">
+                    <TextBlock TextWrapping="Wrap" Foreground="#6B6864" FontSize="12">
+                        <Run Text="أوافق على "/><Hyperlink Command="{Binding ShowEulaCommand}"
+                            Foreground="#0891B2"><Run Text="اتفاقية الترخيص"/></Hyperlink>
+                    </TextBlock>
+                </CheckBox>
+
+                <Button Command="{Binding ActivateOnlineCommand}"
+                        IsEnabled="{Binding CanActivate}"
+                        Style="{StaticResource BtnPrimary}" Margin="0,0,0,8">
+                    <TextBlock Text="تفعيل أونلاين" FontWeight="SemiBold" FontSize="14"/>
+                </Button>
+
+                <TextBlock Text="{Binding OnlineStatus}"
+                           Foreground="{Binding OnlineStatusColor}"
+                           FontSize="12" TextWrapping="Wrap" Margin="0,0,0,4"
+                           Visibility="{Binding OnlineStatus, Converter={StaticResource StringToVisibilityConverter}}"/>
+
+                <!-- Separator -->
+                <Grid Margin="0,8,0,12">
+                    <Rectangle Height="1" Fill="#DDD9D3" VerticalAlignment="Center"/>
+                    <Border Background="#FFFFFF" HorizontalAlignment="Center" Padding="12,0">
+                        <TextBlock Text="أو" FontSize="12" Foreground="#6B6864"/>
+                    </Border>
+                </Grid>
 
                 <!-- WhatsApp button -->
                 <Button Command="{Binding OpenWhatsAppCommand}"
