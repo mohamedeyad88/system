@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Apex.Services.Numbering;
+using Apex.Services.Printing;
 using Apex.NumberedBooksEngine.Models;
 using Apex.NumberedBooksEngine.Core;
 using Apex.Core.Enums;
@@ -47,6 +48,7 @@ namespace Apex.UI.ViewModels
     public partial class NumberingWizardViewModel : ViewModelBase
     {
         private readonly NumberingService _numberingService;
+        private readonly PrinterTrayDetectionService _trayDetector = new();
         private readonly CheckpointManager _checkpointManager = new();
         private CancellationTokenSource? _cts;
         private Task? _monitorTask;
@@ -80,6 +82,8 @@ namespace Apex.UI.ViewModels
 
         partial void OnSelectedPrinterChanged(string? value)
         {
+            // Refresh the tray choices to the newly selected printer's real trays.
+            InitializeTrayOptions();
         }
 
         [ObservableProperty]
@@ -691,6 +695,28 @@ namespace Apex.UI.ViewModels
             {
                 MessageBox.Show(L("Num_EnterValidCount"), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
+            }
+
+            // Pre-flight: every chosen tray must exist on THIS printer. With the tray
+            // options now read from the printer this is belt-and-braces (a loaded project
+            // could still carry a tray the current printer lacks), and it fails with a
+            // clear Arabic message instead of the engine's technical English one.
+            if (!string.IsNullOrWhiteSpace(SelectedPrinter))
+            {
+                var availableKinds = _trayDetector.GetAvailableTrays(SelectedPrinter)
+                    .Select(t => t.Kind).ToHashSet();
+                if (availableKinds.Count > 0)
+                {
+                    var chosen = new List<PaperSourceKind> { OriginalTray };
+                    if (UseCopy1 && Copy1Tray.HasValue) chosen.Add(Copy1Tray.Value);
+                    if (UseCopy2 && Copy2Tray.HasValue) chosen.Add(Copy2Tray.Value);
+                    if (UseCopy3 && Copy3Tray.HasValue) chosen.Add(Copy3Tray.Value);
+                    if (chosen.Any(k => !availableKinds.Contains(k)))
+                    {
+                        MessageBox.Show(L("Num_TrayMissing"), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                }
             }
 
             // Compliance gate: never reissue numbers that were already printed.
@@ -1520,11 +1546,51 @@ namespace Apex.UI.ViewModels
         {
             AvailableTrayOptions.Clear();
 
-            // User-friendly tray labels mapped to PaperSourceKind
-            AvailableTrayOptions.Add(new TrayOption("Tray 1", PaperSourceKind.Upper));
-            AvailableTrayOptions.Add(new TrayOption("Tray 2", PaperSourceKind.Lower));
-            AvailableTrayOptions.Add(new TrayOption("Tray 3", PaperSourceKind.Middle));
-            AvailableTrayOptions.Add(new TrayOption("Manual Feed", PaperSourceKind.Manual));
+            // Prefer the SELECTED printer's REAL trays, with the printer's own names
+            // ("Cassette 1", "Bypass Tray", "Tray 2", …). Generic "Tray 1/2/3" labels
+            // that don't match the hardware are the reported source of tray mix-ups:
+            // the operator couldn't tell which drawer held which paper, and could pick a
+            // tray the printer doesn't even have. Fall back to generic labels only when
+            // no printer is chosen yet or its trays can't be read.
+            List<PrinterTray> trays = new();
+            if (!string.IsNullOrWhiteSpace(SelectedPrinter))
+            {
+                try { trays = _trayDetector.GetAvailableTrays(SelectedPrinter!); }
+                catch { /* fall back to generic below */ }
+            }
+
+            if (trays.Count > 0)
+            {
+                foreach (var t in trays)
+                    AvailableTrayOptions.Add(new TrayOption(t.Name, t.Kind));
+            }
+            else
+            {
+                AvailableTrayOptions.Add(new TrayOption("Tray 1", PaperSourceKind.Upper));
+                AvailableTrayOptions.Add(new TrayOption("Tray 2", PaperSourceKind.Lower));
+                AvailableTrayOptions.Add(new TrayOption("Tray 3", PaperSourceKind.Middle));
+                AvailableTrayOptions.Add(new TrayOption("Manual Feed", PaperSourceKind.Manual));
+            }
+
+            ReconcileTraySelections();
+        }
+
+        /// <summary>
+        /// Keeps the per-copy tray selections valid after the option set changes (e.g.
+        /// the operator switched to a printer that lacks a previously-chosen tray): the
+        /// Original falls back to the first real tray, and any copy pointing at a tray
+        /// that no longer exists is cleared rather than silently printing on the default.
+        /// </summary>
+        private void ReconcileTraySelections()
+        {
+            var kinds = AvailableTrayOptions.Select(o => o.Value).ToHashSet();
+            if (kinds.Count == 0) return;
+
+            if (!kinds.Contains(OriginalTray))
+                OriginalTray = AvailableTrayOptions[0].Value;
+            if (Copy1Tray.HasValue && !kinds.Contains(Copy1Tray.Value)) Copy1Tray = null;
+            if (Copy2Tray.HasValue && !kinds.Contains(Copy2Tray.Value)) Copy2Tray = null;
+            if (Copy3Tray.HasValue && !kinds.Contains(Copy3Tray.Value)) Copy3Tray = null;
         }
 
         private void InitializeFonts()
