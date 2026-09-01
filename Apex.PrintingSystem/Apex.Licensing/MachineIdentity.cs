@@ -2,12 +2,19 @@ using System;
 using System.Management;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.Win32;
 
 namespace Apex.Licensing
 {
     /// <summary>
-    /// Builds a stable, hardware-bound device fingerprint using four independent sources.
+    /// Builds a stable, hardware-bound device fingerprint from three firmware/hardware
+    /// sources (motherboard UUID, CPU id, physical-disk serial). All three survive a
+    /// Windows reinstall / format on the SAME machine, so the DeviceId is unchanged
+    /// after a format and the license re-activates without support intervention.
+    ///
+    /// The Windows MachineGuid is deliberately NOT used: it is regenerated on every
+    /// Windows reinstall, which would change the fingerprint and lock out a customer
+    /// who merely formatted the same PC.
+    ///
     /// The final DeviceId is the first 32 hex chars of SHA-256( join('|', sources) ).
     /// </summary>
     public static class MachineIdentity
@@ -26,8 +33,7 @@ namespace Apex.Licensing
             {
                 GetMotherboardUUID(),
                 GetCpuId(),
-                GetDriveSerial(),
-                GetOsMachineGuid()
+                GetDriveSerial()
             };
 
             var raw = string.Join("|", parts);
@@ -99,18 +105,6 @@ namespace Apex.Licensing
                     if (!string.IsNullOrWhiteSpace(v))
                         return v;
                 }
-            }
-            catch { }
-            return "";
-        }
-
-        private static string GetOsMachineGuid()
-        {
-            try
-            {
-                using var key = Registry.LocalMachine.OpenSubKey(
-                    @"SOFTWARE\Microsoft\Cryptography", writable: false);
-                return key?.GetValue("MachineGuid")?.ToString() ?? "";
             }
             catch { }
             return "";
