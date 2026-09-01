@@ -29,6 +29,18 @@ namespace Apex.Services
         private readonly TimeSpan _interval = TimeSpan.FromSeconds(5);
         private readonly System.Collections.Concurrent.ConcurrentDictionary<string, PrinterStatusEventArgs> _currentStatuses = new();
 
+        // Queue-drain tracking for stall detection (all touched only on the monitor's
+        // single-threaded timer tick).
+        private readonly System.Collections.Concurrent.ConcurrentDictionary<string, int> _queuePrev = new();
+        private readonly System.Collections.Concurrent.ConcurrentDictionary<string, DateTime> _queueLastDrainUtc = new();
+
+        // A queue that never drains is the one unambiguous "printer stuck" signal — it is
+        // exactly what the operator sees. To never hold a station that is merely slow on a
+        // single big job, we require BOTH a real pile-up (several jobs) AND no drain for a
+        // generous window before flagging it.
+        private static readonly TimeSpan StallThreshold = TimeSpan.FromSeconds(120);
+        private const int StallMinJobs = 3;
+
         // Event for UI updates
         public event EventHandler<PrinterStatusEventArgs>? PrinterStatusChanged;
 
@@ -119,6 +131,17 @@ namespace Apex.Services
                     var condition = PrinterCondition.Ready;
                     bool isOffline = false;
 
+                    // Queue-drain stall detection (device-agnostic backstop). Some cheap
+                    // USB drivers never report Offline, so also watch whether the spooler
+                    // queue is actually draining: a pile-up that has not shrunk for a
+                    // sustained window means the device is stuck, whatever it claims.
+                    int queueLength = jobCounts.TryGetValue(name, out int cnt) ? cnt : 0;
+                    int prevLen = _queuePrev.TryGetValue(name, out int pl) ? pl : queueLength;
+                    DateTime? lastDrain = _queueLastDrainUtc.TryGetValue(name, out var d) ? d : null;
+                    bool stalled = EvaluateStall(queueLength, prevLen, lastDrain, DateTime.UtcNow, out var newDrain);
+                    _queueLastDrainUtc[name] = newDrain;
+                    _queuePrev[name] = queueLength;
+
                     // Offline detection. WorkOffline is the "Use printer offline"
                     // checkbox — often a stale false for a physically unplugged USB
                     // printer, which is exactly when jobs pile up in the spooler
@@ -168,6 +191,11 @@ namespace Apex.Services
                             condition = detected;
                     }
 
+                    // A stuck queue only escalates a station that otherwise looks fine — a
+                    // reported device fault is more specific and already handled above.
+                    if (condition == PrinterCondition.Ready && stalled)
+                        condition = PrinterCondition.Stuck;
+
                     string status = condition switch
                     {
                         PrinterCondition.Ready         => "Online",
@@ -180,10 +208,9 @@ namespace Apex.Services
                         PrinterCondition.OutputBinFull => "Output Bin Full",
                         PrinterCondition.PaperProblem  => "Paper Problem",
                         PrinterCondition.Offline       => "Offline",
+                        PrinterCondition.Stuck         => "Queue Stuck",
                         _                              => "Needs Attention"
                     };
-
-                    int queueLength = jobCounts.TryGetValue(name, out int cnt) ? cnt : 0;
 
                     var args = new PrinterStatusEventArgs(
                         name, condition, status, isOffline,
@@ -207,6 +234,21 @@ namespace Apex.Services
             {
                 _logger.Log(LogLevel.Warning, "Failed to query Win32_Printer", "PrinterMonitoringService", "UpdatePrinterStatuses", ex);
             }
+        }
+
+        /// <summary>
+        /// Pure stall decision, extracted so the heuristic can be unit-tested. A queue is
+        /// "stuck" only when it is a real pile-up (>= <see cref="StallMinJobs"/>) that has
+        /// not drained for <see cref="StallThreshold"/>. An empty or shrinking queue is
+        /// healthy and resets the clock via <paramref name="newLastDrainUtc"/>.
+        /// </summary>
+        public static bool EvaluateStall(
+            int queueLength, int prevLen, DateTime? lastDrainUtc, DateTime nowUtc, out DateTime newLastDrainUtc)
+        {
+            newLastDrainUtc = (queueLength == 0 || queueLength < prevLen)
+                ? nowUtc                    // empty or shrinking → healthy, reset the clock
+                : (lastDrainUtc ?? nowUtc); // holding/growing → keep clock (start it on first sight)
+            return queueLength >= StallMinJobs && (nowUtc - newLastDrainUtc) > StallThreshold;
         }
 
         public PrinterStatusEventArgs? GetCurrentStatus(string printerName)
@@ -254,7 +296,8 @@ namespace Apex.Services
         OutputBinFull,
         PaperProblem,
         NeedsAttention,
-        Offline
+        Offline,
+        Stuck
     }
 
     public class PrinterStatusEventArgs : EventArgs
@@ -281,7 +324,8 @@ namespace Apex.Services
             PrinterCondition.OutputBinFull or
             PrinterCondition.PaperProblem or
             PrinterCondition.NeedsAttention or
-            PrinterCondition.Offline;
+            PrinterCondition.Offline or
+            PrinterCondition.Stuck;
 
         public PrinterStatusEventArgs(
             string printerName, PrinterCondition condition, string status,
