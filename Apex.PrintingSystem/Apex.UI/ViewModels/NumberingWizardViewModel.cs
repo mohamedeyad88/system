@@ -87,6 +87,9 @@ namespace Apex.UI.ViewModels
 
         partial void OnStartNumberChanged(long value)
         {
+            // Moving the start shifts the range, so the derived count changes too.
+            SyncTotalFromRange();
+
             // Update PreviewNumber for all slots when StartNumber changes
             // For preview, show different numbers for each slot based on numbering mode
             for (int i = 0; i < Slots.Count; i++)
@@ -96,11 +99,52 @@ namespace Apex.UI.ViewModels
             SchedulePreviewUpdate();
         }
 
+        // The operator enters a RANGE — "from StartNumber to EndNumber" — the way a
+        // press quotes a job ("من ٥٠٠ إلى ٦٠٠"). TotalNumbers (the count the engine
+        // actually consumes) is DERIVED, never typed. This box used to be bound to
+        // TotalNumbers while labelled "إلى", so "من ٥٠٠ إلى ٦٠٠" silently produced 600
+        // numbers (500..1099) instead of 101 — the reported source of user errors.
+        [ObservableProperty]
+        private long _endNumber = 100;
+
+        partial void OnEndNumberChanged(long value)
+        {
+            SyncTotalFromRange();
+            SchedulePreviewUpdate();
+        }
+
+        /// <summary>True when EndNumber &lt; StartNumber — an impossible range; blocks printing.</summary>
+        [ObservableProperty]
+        private bool _rangeInvalid;
+
+        private bool _syncingRange;
+
+        /// <summary>Derives TotalNumbers (the count) from the [Start, End] range.</summary>
+        private void SyncTotalFromRange()
+        {
+            if (_syncingRange) return;
+            _syncingRange = true;
+            long count = EndNumber - StartNumber + 1;
+            RangeInvalid = count < 1;
+            TotalNumbers = count < 1 ? 1 : count; // keep the engine safe; UI blocks an invalid range
+            _syncingRange = false;
+        }
+
         [ObservableProperty]
         private long _totalNumbers = 100;
 
         partial void OnTotalNumbersChanged(long value)
         {
+            // TotalNumbers set programmatically (loading a saved project/preset) → keep
+            // the End box in step so the range shown matches the loaded count.
+            if (!_syncingRange)
+            {
+                _syncingRange = true;
+                EndNumber = StartNumber + (value < 1 ? 1 : value) - 1;
+                RangeInvalid = false;
+                _syncingRange = false;
+            }
+
             // Refresh preview numbers when TotalNumbers changes (affects Imposed mode calculation)
             RefreshAllPreviewNumbers();
 
@@ -634,6 +678,12 @@ namespace Apex.UI.ViewModels
             if (string.IsNullOrEmpty(SelectedPrinter))
             {
                 MessageBox.Show(L("Num_SelectPrinter"), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (RangeInvalid)
+            {
+                MessageBox.Show(L("Num_RangeInvalid"), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 

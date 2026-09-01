@@ -558,7 +558,7 @@
                                     </StackPanel>
                                     <StackPanel Grid.Column="2">
                                         <TextBlock Text="{DynamicResource Numbering_To}" FontSize="10" Foreground="#6B6864" Margin="0,0,0,4"/>
-                                        <TextBox Text="{Binding TotalNumbers, Converter={StaticResource LongToStringConverter}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                                        <TextBox Text="{Binding EndNumber, Converter={StaticResource LongToStringConverter}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                                                  Width="110"
                                                  Height="32"
                                                  FontSize="13"
@@ -594,9 +594,13 @@
                                         </TextBox>
                                     </StackPanel>
                                 </Grid>
+                                <TextBlock Text="{DynamicResource Num_RangeInvalid}"
+                                           Foreground="#B42318" FontSize="10" Margin="0,6,0,0"
+                                           TextWrapping="Wrap" MaxWidth="228"
+                                           Visibility="{Binding RangeInvalid, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                             </StackPanel>
                         </Border>
-                        
+
                         <!-- Copies Group -->
                         <Border BorderBrush="#DDD9D3" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,0">
                             <StackPanel>

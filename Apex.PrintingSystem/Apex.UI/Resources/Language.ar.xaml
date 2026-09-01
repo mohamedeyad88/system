@@ -214,6 +214,7 @@
     <sys:String x:Key="PrinterCard_QueueLength">طول قائمة الانتظار</sys:String>
     <sys:String x:Key="Distribution_Failed">فشل</sys:String>
     <sys:String x:Key="Num_EnterValidCount">يرجى إدخال عدد صحيح من الأرقام</sys:String>
+    <sys:String x:Key="Num_RangeInvalid">رقم النهاية لازم يكون أكبر من أو يساوي رقم البداية</sys:String>
     <sys:String x:Key="TD_015">تصدير</sys:String>
     <sys:String x:Key="Imp_ImportSettings">⬇ استيراد</sys:String>
     <sys:String x:Key="SV_045">💡 الحقول تظهر [غير مربوط] — اضغط 'ربط تلقائي' لملء القالب بالبيانات الحقيقية</sys:String>

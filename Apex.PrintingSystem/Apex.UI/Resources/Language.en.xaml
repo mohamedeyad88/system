@@ -706,6 +706,7 @@
     <sys:String x:Key="Num_EtaMin">~{0}m left</sys:String>
     <sys:String x:Key="PT_027">Width</sys:String>
     <sys:String x:Key="Num_EnterValidCount">Please enter a valid number count</sys:String>
+    <sys:String x:Key="Num_RangeInvalid">The end number must be greater than or equal to the start number</sys:String>
     <sys:String x:Key="PC_008">utilization</sys:String>
     <sys:String x:Key="Num_ErrorColon">Error: {0}</sys:String>
     <sys:String x:Key="Numbering_ResumeCheckpointToolTip">Resume from last checkpoint</sys:String>
