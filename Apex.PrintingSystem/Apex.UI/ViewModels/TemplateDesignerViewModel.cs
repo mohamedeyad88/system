@@ -908,8 +908,11 @@ namespace Apex.UI.ViewModels
         [RelayCommand]
         private void ZoomIn() { ZoomBoost = Math.Min(3.0, Math.Round(ZoomBoost + 0.25, 2)); }
 
+        /// <summary>Lowest zoom — 10% so a large sheet (A3/dobra) can be fully framed.</summary>
+        public const double MinZoom = 0.1;
+
         [RelayCommand]
-        private void ZoomOut() { ZoomBoost = Math.Max(0.25, Math.Round(ZoomBoost - 0.25, 2)); }
+        private void ZoomOut() { ZoomBoost = Math.Max(MinZoom, Math.Round(ZoomBoost - 0.25, 2)); }
 
         [RelayCommand]
         private void FitToWindow() { ZoomBoost = 1.0; }
@@ -1440,6 +1443,54 @@ namespace Apex.UI.ViewModels
             SelectedCanvasSlot = CanvasSlots.LastOrDefault();
             IsDirty = true;
             SetSuccess(Lf("Des_Added", label));
+        }
+
+        /// <summary>
+        /// One-click ready fields for the shop's everyday needs — a named, pre-styled
+        /// slot instead of a generic "Text" the operator must rename and restyle. The
+        /// Arabic variable name (الاسم/التاريخ/المبلغ/الرقم) also auto-maps to the
+        /// matching Excel column with no manual mapping.
+        /// </summary>
+        [RelayCommand]
+        private void AddQuickField(string kind)
+        {
+            if (CurrentPage == null) return;
+            PushUndo();
+            CurrentPage.Slots ??= new List<TemplateSlotDefinition>();
+            int n = CurrentPage.Slots.Count + 1;
+
+            (string name, SlotDataType type, double w, double h, int font, bool bold, string? fmt) spec = kind switch
+            {
+                "Name"   => (L("Des_QF_Name"),   SlotDataType.Text,   90, 12, 12, false, null),
+                "Date"   => (L("Des_QF_Date"),   SlotDataType.Date,   60, 10, 12, false, "dd/MM/yyyy"),
+                "Amount" => (L("Des_QF_Amount"), SlotDataType.Number, 60, 12, 12, false, null),
+                "Number" => (L("Des_QF_Number"), SlotDataType.Number, 45, 14, 16, true,  null),
+                _        => (Lf("Des_FieldN", n), SlotDataType.Text,  80, 15, 12, false, null),
+            };
+
+            var slot = new TemplateSlotDefinition
+            {
+                Name = spec.name,
+                VariableName = spec.name,
+                X = 10,
+                Y = 10 + (n - 1) * 18,
+                Width = spec.w,
+                Height = spec.h,
+                FontFamily = "Tahoma",
+                FontSize = spec.font,
+                Bold = spec.bold,
+                DataType = spec.type,
+                FormatString = spec.fmt,
+                IsRtl = true,
+                TextAlign = HorizontalAlign.Right,
+                TextColor = "#000000",
+            };
+
+            CurrentPage.Slots.Add(slot);
+            RebuildCanvasSlots();
+            SelectedCanvasSlot = CanvasSlots.LastOrDefault();
+            IsDirty = true;
+            SetSuccess(Lf("Des_Added", spec.name));
         }
 
         // ── Open / close (for legacy button + keyboard shortcut) ─────────────

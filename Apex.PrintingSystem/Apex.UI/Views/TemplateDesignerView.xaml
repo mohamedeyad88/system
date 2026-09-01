@@ -1251,6 +1251,26 @@
                         <Border Width="1" Height="20" Background="{DynamicResource Brush.Surface.Elevated}"
                                 VerticalAlignment="Center" Margin="6,0"/>
 
+                        <!-- ── Ready (semantic) quick fields — pre-named, pre-styled, auto-map to Excel ── -->
+                        <TextBlock Text="{DynamicResource Des_QuickFields}" Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="11"
+                                   VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <Button Command="{Binding AddQuickFieldCommand}" CommandParameter="Name" Style="{StaticResource FieldTypeBtn}">
+                            <TextBlock Text="{DynamicResource Des_QF_Name}" Style="{StaticResource BtnLabel}"/>
+                        </Button>
+                        <Button Command="{Binding AddQuickFieldCommand}" CommandParameter="Date" Style="{StaticResource FieldTypeBtn}">
+                            <TextBlock Text="{DynamicResource Des_QF_Date}" Style="{StaticResource BtnLabel}"/>
+                        </Button>
+                        <Button Command="{Binding AddQuickFieldCommand}" CommandParameter="Amount" Style="{StaticResource FieldTypeBtn}">
+                            <TextBlock Text="{DynamicResource Des_QF_Amount}" Style="{StaticResource BtnLabel}"/>
+                        </Button>
+                        <Button Command="{Binding AddQuickFieldCommand}" CommandParameter="Number" Style="{StaticResource FieldTypeBtn}">
+                            <TextBlock Text="{DynamicResource Des_QF_Number}" Style="{StaticResource BtnLabel}"/>
+                        </Button>
+
+                        <!-- Separator -->
+                        <Border Width="1" Height="20" Background="{DynamicResource Brush.Surface.Elevated}"
+                                VerticalAlignment="Center" Margin="6,0"/>
+
                         <!-- ── Zoom controls ──────────────────────────────────── -->
                         <TextBlock Text="{DynamicResource TD_045}" Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="11"
                                    VerticalAlignment="Center" Margin="4,0,6,0"/>

@@ -149,7 +149,7 @@ namespace Apex.UI.Views
             // fixed. ZoomBoost drives a LayoutTransform, so the ScrollViewer's extent
             // grows with it and the scroll offset can hold the anchor in place.
             double oldZoom = vm.ZoomBoost;
-            double newZoom = Math.Clamp(Math.Round(oldZoom + (e.Delta > 0 ? 0.25 : -0.25), 2), 0.25, 3.0);
+            double newZoom = Math.Clamp(Math.Round(oldZoom + (e.Delta > 0 ? 0.25 : -0.25), 2), TemplateDesignerViewModel.MinZoom, 3.0);
             if (newZoom == oldZoom) return;
 
             var mouse = e.GetPosition(CanvasScrollViewer);
@@ -194,7 +194,7 @@ namespace Apex.UI.Views
 
             // Stay inside the same range the zoom buttons use, and round to their
             // step so the percentage readout matches what the buttons produce.
-            fit = Math.Clamp(fit, 0.25, 3.0);
+            fit = Math.Clamp(fit, TemplateDesignerViewModel.MinZoom, 3.0);
             vm.ZoomBoost = Math.Round(fit, 2);
         }
 
