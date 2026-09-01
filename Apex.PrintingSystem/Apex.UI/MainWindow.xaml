@@ -183,23 +183,9 @@
                             </Button.Content>
                         </Button>
 
-                        <!-- 🎨 Color Calibration -->
-                        <Button Command="{Binding NavigateToColorCalibrationCommand}" Style="{StaticResource NavItemButton}"
-                                controls:NavAssist.Icon="🎨"
-                                controls:NavAssist.IsActive="{Binding IsColorCalibrationActive}">
-                            <controls:NavAssist.IconBrush>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="#EC4899" Offset="0"/>
-                                    <GradientStop Color="#BE185D" Offset="1"/>
-                                </LinearGradientBrush>
-                            </controls:NavAssist.IconBrush>
-                            <Button.Content>
-                                <StackPanel>
-                                    <TextBlock Text="{DynamicResource Nav_ColorCalibration}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
-                                    <TextBlock Text="{DynamicResource Nav_ColorCalibration_Desc}" FontSize="10" Foreground="{DynamicResource Muted}"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
+                        <!-- Color Calibration nav removed: the tool's adjustments were never applied
+                             by the print pipeline (field report: no real use). Engine code kept but
+                             unreferenced; can be purged fully later. -->
 
                         <!-- ══ Section: Printing ══ (the last stage) -->
                         <TextBlock Text="{DynamicResource Nav_Section_Daily}" FontSize="11" FontWeight="SemiBold"
