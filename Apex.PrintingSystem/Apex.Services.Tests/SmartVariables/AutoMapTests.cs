@@ -88,6 +88,22 @@ public class AutoMapTests
     }
 
     [Fact]
+    public void TheSameVariableInTwoSlotsSharesTheColumn()
+    {
+        // A repeated placeholder — the customer name in both the header and the footer —
+        // is two SLOTS carrying the SAME variable key. Both must resolve to the column;
+        // blanking one was the reported "the variable works in one place but not the
+        // other" bug. This is distinct from TwoFieldsNeverShareOneColumn, where the two
+        // fields are DIFFERENT variables.
+        var slot1 = new SmartTemplateField { Id = "slot1", Label = "الاسم", VariableKey = "الاسم", FieldType = SmartFieldType.TextVariable };
+        var slot2 = new SmartTemplateField { Id = "slot2", Label = "الاسم", VariableKey = "الاسم", FieldType = SmartFieldType.TextVariable };
+
+        var result = Service.BuildMappings(new[] { slot1, slot2 }, new[] { "الاسم" });
+
+        Assert.Equal(2, result.Count(m => m.ColumnName == "الاسم"));
+    }
+
+    [Fact]
     public void EveryFieldGetsARowEvenWhenUnmatched()
     {
         // The mapping grid has to show unmapped fields, otherwise the operator cannot

@@ -119,7 +119,7 @@ namespace Apex.Services.SmartVariables
             var usedColumns = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             // First pass: find High-confidence matches
-            var candidates = new List<(VariableMapping mapping, MappingConfidence conf, string col)>();
+            var candidates = new List<(VariableMapping mapping, MappingConfidence conf, string col, string key)>();
 
             foreach (var field in fields)
             {
@@ -166,7 +166,7 @@ namespace Apex.Services.SmartVariables
                 mapping.Confidence = bestConf;
 
                 mappings.Add(mapping);
-                candidates.Add((mapping, bestConf, bestCol ?? ""));
+                candidates.Add((mapping, bestConf, bestCol ?? "", field.VariableKey ?? ""));
             }
 
             // Second pass: resolve conflicts (two fields → same column)
@@ -180,9 +180,18 @@ namespace Apex.Services.SmartVariables
             {
                 // Best first — and "best" is the SMALLEST enum value.
                 var sorted = group.OrderBy(c => c.conf).ToList();
-                // Keep the best, clear the rest
+                var winnerKey = sorted[0].key;
+                // Keep the best; clear the rest — EXCEPT fields that are the SAME
+                // variable as the winner. A repeated placeholder (e.g. the customer
+                // name in both the header and the footer) is several slots sharing one
+                // variable key, and every one of them must resolve to that column.
+                // Blanking all but one was the reported "the variable works in one place
+                // but not the other" bug. Only a DIFFERENT variable that collided on the
+                // same column gives way.
                 for (int i = 1; i < sorted.Count; i++)
                 {
+                    if (NormalizeKey(sorted[i].key) == NormalizeKey(winnerKey))
+                        continue;
                     sorted[i].mapping.ColumnName = null;
                     sorted[i].mapping.Confidence = MappingConfidence.None;
                 }
