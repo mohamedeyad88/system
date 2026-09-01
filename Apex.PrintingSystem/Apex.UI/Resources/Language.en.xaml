@@ -98,6 +98,10 @@
     <sys:String x:Key="PM_ReportHeldCopies">{0} copy/copies waiting — these printers need attention:</sys:String>
     <sys:String x:Key="PM_HeldBannerTitle">Waiting for you</sys:String>
     <sys:String x:Key="PM_HeldSkip">Skip this printer</sys:String>
+    <sys:String x:Key="PM_HeldPurge">Clear queue</sys:String>
+    <sys:String x:Key="PM_PurgeTitle">Clear print queue</sys:String>
+    <sys:String x:Key="PM_PurgeConfirm">Cancel all stuck jobs in the queue for: {0}? This cannot be undone.</sys:String>
+    <sys:String x:Key="PM_FaultQueueStuck">queue stuck</sys:String>
     <sys:String x:Key="PM_FaultOutOfPaper">out of paper</sys:String>
     <sys:String x:Key="PM_FaultOutOfToner">out of toner</sys:String>
     <sys:String x:Key="PM_FaultDoorOpen">door open</sys:String>

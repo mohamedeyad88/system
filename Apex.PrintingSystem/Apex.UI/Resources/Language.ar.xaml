@@ -879,6 +879,10 @@
     <sys:String x:Key="PM_ReportHeldCopies">{0} نسخة بانتظار التدخّل — هذه الطابعات تحتاج إليك:</sys:String>
     <sys:String x:Key="PM_HeldBannerTitle">بانتظارك</sys:String>
     <sys:String x:Key="PM_HeldSkip">تخطَّ هذه الطابعة</sys:String>
+    <sys:String x:Key="PM_HeldPurge">تفريغ الطابور</sys:String>
+    <sys:String x:Key="PM_PurgeTitle">تفريغ طابور الطباعة</sys:String>
+    <sys:String x:Key="PM_PurgeConfirm">هل تريد إلغاء كل الأوامر العالقة في طابور: {0}؟ لا يمكن التراجع.</sys:String>
+    <sys:String x:Key="PM_FaultQueueStuck">الطابور متوقف</sys:String>
     <sys:String x:Key="PM_FaultOutOfPaper">نفد الورق</sys:String>
     <sys:String x:Key="PM_FaultOutOfToner">نفد الحبر</sys:String>
     <sys:String x:Key="PM_FaultDoorOpen">الباب مفتوح</sys:String>

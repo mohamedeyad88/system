@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Windows;
 using Apex.Services.Printing;
+using System.Printing;
 using Microsoft.Win32;
 using System.IO;
 using Apex.Core.Interfaces;
@@ -373,6 +374,7 @@ namespace Apex.UI.ViewModels
             "Output Bin Full" => L("PM_FaultBinFull"),
             "Paper Problem"   => L("PM_FaultPaperProblem"),
             "Offline"         => L("PM_FaultOffline"),
+            "Queue Stuck"     => L("PM_FaultQueueStuck"),
             _                 => L("PM_FaultNeedsAttention")
         };
 
@@ -382,6 +384,42 @@ namespace Apex.UI.ViewModels
         {
             foreach (var printer in _heldPrinters.Keys.ToList())
                 _batchPrintJobManager.AbandonPrinter(printer);
+
+            _heldPrinters.Clear();
+            RebuildAlert();
+        }
+
+        /// <summary>
+        /// Clears the Windows spooler queue for every held printer — the explicit way
+        /// out of a pile-up (e.g. a stack of jobs stuck on an unplugged/absent printer,
+        /// the reported "83 jobs that never printed"). Cancels those jobs after a
+        /// confirmation and stops waiting on the station. This is a deliberate operator
+        /// action on stuck work, not the silent skipping the shop's policy forbids.
+        /// </summary>
+        [RelayCommand]
+        private void PurgeHeldPrinters()
+        {
+            var printers = _heldPrinters.Keys.ToList();
+            if (printers.Count == 0) return;
+
+            if (System.Windows.MessageBox.Show(
+                    Lf("PM_PurgeConfirm", string.Join("، ", printers)),
+                    L("PM_PurgeTitle"),
+                    System.Windows.MessageBoxButton.YesNo,
+                    System.Windows.MessageBoxImage.Warning) != System.Windows.MessageBoxResult.Yes)
+                return;
+
+            foreach (var printer in printers)
+            {
+                try
+                {
+                    using var server = new LocalPrintServer();
+                    using var queue = server.GetPrintQueue(printer);
+                    queue.Purge();
+                }
+                catch { /* best-effort: a queue we can't open is one we can't clear */ }
+                _batchPrintJobManager.AbandonPrinter(printer);
+            }
 
             _heldPrinters.Clear();
             RebuildAlert();

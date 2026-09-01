@@ -692,13 +692,18 @@
                                TextWrapping="Wrap"/>
                 </StackPanel>
 
-                <Button Grid.Column="2"
-                        Content="{DynamicResource PM_HeldSkip}"
-                        Command="{Binding AbandonHeldPrintersCommand}"
-                        Padding="12,5" FontSize="11"
-                        Background="#FDF1DC" Foreground="#8A5A00"
-                        BorderBrush="#E08A00" BorderThickness="1"
-                        VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="{DynamicResource PM_HeldPurge}"
+                            Command="{Binding PurgeHeldPrintersCommand}"
+                            Padding="12,5" FontSize="11" Margin="0,0,6,0"
+                            Background="#FBE3E1" Foreground="#8A2018"
+                            BorderBrush="#B42318" BorderThickness="1"/>
+                    <Button Content="{DynamicResource PM_HeldSkip}"
+                            Command="{Binding AbandonHeldPrintersCommand}"
+                            Padding="12,5" FontSize="11"
+                            Background="#FDF1DC" Foreground="#8A5A00"
+                            BorderBrush="#E08A00" BorderThickness="1"/>
+                </StackPanel>
             </Grid>
         </Border>
 
