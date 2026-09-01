@@ -119,8 +119,18 @@ namespace Apex.Services
                     var condition = PrinterCondition.Ready;
                     bool isOffline = false;
 
-                    // Check WorkOffline
-                    if (bool.TryParse(printer["WorkOffline"]?.ToString(), out bool offline) && offline)
+                    // Offline detection. WorkOffline is the "Use printer offline"
+                    // checkbox — often a stale false for a physically unplugged USB
+                    // printer, which is exactly when jobs pile up in the spooler
+                    // unprinted. So also honour the driver-reported status codes:
+                    // Win32_Printer.PrinterStatus / ExtendedPrinterStatus == 7 both mean
+                    // "Offline". Any of the three marks the station offline, so the print
+                    // path HOLDS its work (RequiresIntervention includes Offline) instead
+                    // of dumping it into a queue that will never drain.
+                    bool workOffline = bool.TryParse(printer["WorkOffline"]?.ToString(), out bool wo) && wo;
+                    int printerStatus = int.TryParse(printer["PrinterStatus"]?.ToString(), out int ps) ? ps : 0;
+                    int extPrinterStatus = int.TryParse(printer["ExtendedPrinterStatus"]?.ToString(), out int eps) ? eps : 0;
+                    if (workOffline || printerStatus == 7 || extPrinterStatus == 7)
                     {
                         condition = PrinterCondition.Offline;
                         isOffline = true;
