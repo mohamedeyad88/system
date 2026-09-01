@@ -107,7 +107,9 @@ namespace Apex.UI.Views
 
                 case Key.D0 when ctrl:
                 case Key.NumPad0 when ctrl:
-                    vm.FitToWindowCommand.Execute(null);
+                    // Real fit-to-window (measures the viewport), same as the toolbar Fit
+                    // button. The VM's FitToWindow command only sets 100%, which is not a fit.
+                    FitCanvasToViewport();
                     e.Handled = true;
                     break;
 
