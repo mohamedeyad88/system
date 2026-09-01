@@ -279,6 +279,12 @@
                 <StackPanel Grid.Column="1" Orientation="Horizontal"
                             FlowDirection="LeftToRight"
                             VerticalAlignment="Center" Margin="0,0,0,0">
+                    <!-- Easy front door: start a template from the customer's existing paper -->
+                    <Button x:Name="BtnFromPaper" Height="34" Padding="14,0" Margin="0,0,6,0"
+                            Cursor="Hand" Template="{StaticResource BlueBtnTpl}">
+                        <TextBlock Text="{DynamicResource Des_NewFromPaper}" Foreground="White" FontSize="12"
+                                   FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </Button>
                     <Button x:Name="BtnImport" Height="34" Padding="12,0" Margin="0,0,6,0"
                             Cursor="Hand" Template="{StaticResource GhostBtnTpl}">
                         <TextBlock Text="{DynamicResource TD_003}" Foreground="{DynamicResource Brush.Slate.300}" FontSize="12"

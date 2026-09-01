@@ -19,6 +19,18 @@ namespace Apex.Services.Imposition
     {
         private const double MmToPt = 72.0 / 25.4;
 
+        /// <summary>
+        /// Real size (mm) of a PDF page. Used to size a design canvas to match the
+        /// customer's artwork so numbering / variable fields land 1:1 on top of it.
+        /// </summary>
+        public (double WidthMm, double HeightMm) GetPageSizeMm(byte[] pdf, int pageIndex = 0)
+        {
+            using var src = OpenImport(pdf);
+            int i = Math.Clamp(pageIndex, 0, Math.Max(0, src.Pages.Count - 1));
+            var p = src.Pages[i];
+            return (p.Width.Point / MmToPt, p.Height.Point / MmToPt);
+        }
+
         // ── Reverse ───────────────────────────────────────────────────────────────
         /// <summary>Returns the PDF with pages in reverse order.</summary>
         public byte[] ReversePages(byte[] pdf)

@@ -1283,6 +1283,10 @@
     <sys:String x:Key="Des_General">عام</sys:String>
     <sys:String x:Key="Des_EmptyTemplate">قالب فارغ</sys:String>
     <sys:String x:Key="Des_NewCreated">✅ تم إنشاء قالب جديد</sys:String>
+    <sys:String x:Key="Des_NewFromPaper">صمّم فوق ورقتك</sys:String>
+    <sys:String x:Key="Des_NewFromPaperName">تصميم فوق ورقة</sys:String>
+    <sys:String x:Key="Des_NewFromPaperDesc">قالب مبني فوق ورقة العميل الحالية</sys:String>
+    <sys:String x:Key="Des_NewFromPaperReady">✅ تم تحميل ورقتك بالمقاس الصحيح — حُطّ الترقيم والحقول فوقها</sys:String>
     <sys:String x:Key="Des_FileMissing">الملف غير موجود</sys:String>
     <sys:String x:Key="Des_Imported">✅ تم استيراد: {0}</sys:String>
     <sys:String x:Key="Des_InvalidApext">الملف المختار ليس قالب Apex صالحاً — تأكد من اختيار ملف بامتداد .apext</sys:String>

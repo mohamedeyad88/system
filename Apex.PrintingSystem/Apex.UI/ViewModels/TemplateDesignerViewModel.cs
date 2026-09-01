@@ -616,6 +616,61 @@ namespace Apex.UI.ViewModels
             SetSuccess(Lf("Des_PageSizeSet", SelectedPageSize, w, h));
         }
 
+        // Called from code-behind (file dialog). The EASY front door: start a template
+        // FROM the customer's existing paper — their invoice/booklet/receipt (image or
+        // PDF) becomes the background at its real physical size, so all they do is drop
+        // the numbering and variable fields on top instead of building a layout from a
+        // blank canvas. This is what "designing was not easy" was about.
+        [RelayCommand]
+        private void NewFromArtwork(string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+            { SetError(L("Des_FileMissing")); return; }
+
+            try
+            {
+                // Real physical size of the artwork so the placed fields align 1:1 with it.
+                double wMm, hMm;
+                byte[] raw = File.ReadAllBytes(filePath);
+                if (string.Equals(Path.GetExtension(filePath), ".pdf", StringComparison.OrdinalIgnoreCase))
+                {
+                    (wMm, hMm) = new Apex.Services.Imposition.PdfPageToolsService().GetPageSizeMm(raw, 0);
+                }
+                else
+                {
+                    using var img = System.Drawing.Image.FromStream(new MemoryStream(raw));
+                    double dpiX = img.HorizontalResolution > 1 ? img.HorizontalResolution : 96.0;
+                    double dpiY = img.VerticalResolution   > 1 ? img.VerticalResolution   : 96.0;
+                    wMm = img.Width  / dpiX * 25.4;
+                    hMm = img.Height / dpiY * 25.4;
+                }
+                wMm = Math.Clamp(wMm, MinPageMm, MaxPageMm);
+                hMm = Math.Clamp(hMm, MinPageMm, MaxPageMm);
+
+                // Fresh template, sized to the artwork.
+                AddNewTemplate();
+                if (CurrentTemplate != null)
+                {
+                    CurrentTemplate.Name = L("Des_NewFromPaperName");
+                    CurrentTemplate.Description = L("Des_NewFromPaperDesc");
+                    EditTemplateName = CurrentTemplate.Name;
+                }
+                if (CurrentPage != null)
+                {
+                    CurrentPage.WidthMm = wMm;
+                    CurrentPage.HeightMm = hMm;
+                    CurrentPage.Orientation = wMm > hMm ? PageOrientation.Landscape : PageOrientation.Portrait;
+                    RefreshCanvas();
+                }
+
+                // Drop the artwork in as the background (handles PDF rasterisation, asset
+                // storage and the on-canvas preview).
+                SetBackground(filePath);
+                SetSuccess(L("Des_NewFromPaperReady"));
+            }
+            catch (Exception ex) { SetError(Lf("Des_ImgLoadFailed", ex.Message)); }
+        }
+
         // Called from code-behind (file dialog)
         [RelayCommand]
         private void SetBackground(string filePath)

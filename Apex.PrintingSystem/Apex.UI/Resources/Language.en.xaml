@@ -1276,6 +1276,10 @@
     <sys:String x:Key="Des_General">General</sys:String>
     <sys:String x:Key="Des_EmptyTemplate">Empty template</sys:String>
     <sys:String x:Key="Des_NewCreated">✅ New template created</sys:String>
+    <sys:String x:Key="Des_NewFromPaper">Design over your paper</sys:String>
+    <sys:String x:Key="Des_NewFromPaperName">Design over paper</sys:String>
+    <sys:String x:Key="Des_NewFromPaperDesc">A template built over the customer's existing paper</sys:String>
+    <sys:String x:Key="Des_NewFromPaperReady">✅ Your paper is loaded at its real size — drop the numbering and fields on top</sys:String>
     <sys:String x:Key="Des_FileMissing">The file does not exist</sys:String>
     <sys:String x:Key="Des_Imported">✅ Imported: {0}</sys:String>
     <sys:String x:Key="Des_InvalidApext">The selected file is not a valid Apex template — make sure it has an .apext extension</sys:String>

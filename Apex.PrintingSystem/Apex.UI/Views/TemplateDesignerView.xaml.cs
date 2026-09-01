@@ -37,6 +37,7 @@ namespace Apex.UI.Views
         {
             InitializeComponent();
 
+            BtnFromPaper.Click += BtnFromPaper_Click;
             BtnImport.Click  += BtnImport_Click;
             BtnUploadBg.Click += BtnUploadBg_Click;
 
@@ -198,6 +199,22 @@ namespace Apex.UI.Views
         private void BtnFit_Click(object sender, RoutedEventArgs e) => FitCanvasToViewport();
 
         // ── File dialogs ──────────────────────────────────────────────────────
+
+        private void BtnFromPaper_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new OpenFileDialog
+            {
+                Title = "اختر ورقتك الحالية (صورة أو PDF) لتصميم فوقها",
+                Filter = "صور و PDF|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tiff;*.pdf|"
+                       + "PDF|*.pdf|"
+                       + "صور|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tiff|"
+                       + "كل الملفات|*.*",
+                Multiselect = false
+            };
+            if (dlg.ShowDialog() != true) return;
+            if (DataContext is TemplateDesignerViewModel vm)
+                vm.NewFromArtworkCommand.Execute(dlg.FileName);
+        }
 
         private void BtnImport_Click(object sender, RoutedEventArgs e)
         {
