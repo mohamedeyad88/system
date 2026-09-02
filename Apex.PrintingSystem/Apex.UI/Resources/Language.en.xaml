@@ -1489,6 +1489,15 @@
     <sys:String x:Key="Tpl_CatCards">Cards</sys:String>
     <sys:String x:Key="Tpl_CatInvoices">Invoices</sys:String>
     <sys:String x:Key="Tpl_CatLabels">Labels</sys:String>
+    <sys:String x:Key="Tpl_CatReceipts">Receipts</sys:String>
+    <sys:String x:Key="Tpl_InvName">Sales invoice</sys:String>
+    <sys:String x:Key="Tpl_InvDesc">A5 invoice with customer, items and total</sys:String>
+    <sys:String x:Key="Tpl_ReceiptName">Numbered receipt</sys:String>
+    <sys:String x:Key="Tpl_ReceiptDesc">Receipt with automatic numbering — original + copy</sys:String>
+    <sys:String x:Key="Tpl_FieldItem">Item</sys:String>
+    <sys:String x:Key="Tpl_FieldTotal">Total</sys:String>
+    <sys:String x:Key="Tpl_FieldFrom">Received from</sys:String>
+    <sys:String x:Key="Tpl_FieldAmount">Amount</sys:String>
     <sys:String x:Key="Tpl_CertName">Certificate of Appreciation</sys:String>
     <sys:String x:Key="Tpl_CertDesc">Standard certificate of appreciation template</sys:String>
     <sys:String x:Key="Tpl_TagCert">certificate</sys:String>

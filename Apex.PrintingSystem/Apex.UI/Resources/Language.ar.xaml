@@ -1496,6 +1496,15 @@
     <sys:String x:Key="Tpl_CatCards">بطاقات</sys:String>
     <sys:String x:Key="Tpl_CatInvoices">فواتير</sys:String>
     <sys:String x:Key="Tpl_CatLabels">ملصقات</sys:String>
+    <sys:String x:Key="Tpl_CatReceipts">سندات</sys:String>
+    <sys:String x:Key="Tpl_InvName">فاتورة مبيعات</sys:String>
+    <sys:String x:Key="Tpl_InvDesc">فاتورة A5 بحقول العميل والبيان والإجمالي</sys:String>
+    <sys:String x:Key="Tpl_ReceiptName">سند قبض مرقّم</sys:String>
+    <sys:String x:Key="Tpl_ReceiptDesc">سند قبض بترقيم تلقائي — أصل وصورة</sys:String>
+    <sys:String x:Key="Tpl_FieldItem">البيان</sys:String>
+    <sys:String x:Key="Tpl_FieldTotal">الإجمالي</sys:String>
+    <sys:String x:Key="Tpl_FieldFrom">استلمت من</sys:String>
+    <sys:String x:Key="Tpl_FieldAmount">المبلغ</sys:String>
     <sys:String x:Key="Tpl_CertName">شهادة تقدير</sys:String>
     <sys:String x:Key="Tpl_CertDesc">قالب شهادة تقدير قياسي</sys:String>
     <sys:String x:Key="Tpl_TagCert">شهادة</sys:String>

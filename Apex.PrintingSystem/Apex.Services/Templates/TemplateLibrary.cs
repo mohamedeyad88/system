@@ -447,6 +447,97 @@ namespace Apex.Services.Templates
                 }
             };
             Add(addressLabel);
+
+            // 4. فاتورة مبيعات — Sales invoice (A5), the print-shop staple.
+            ApextTemplate invoice = ApextFileFormat.CreateNew(AppLocalizer.L("Tpl_InvName"), AppLocalizer.L("Tpl_CatInvoices"));
+            invoice.Description = AppLocalizer.L("Tpl_InvDesc");
+            invoice.Author = "Apex PrintingSystem";
+            invoice.Tags = new List<string> { AppLocalizer.L("Tpl_CatInvoices"), AppLocalizer.L("Tpl_TagOfficial") };
+            TemplatePageDefinition invPage = invoice.Pages[0];
+            invPage.WidthMm = 148; invPage.HeightMm = 210; invPage.Orientation = PageOrientation.Portrait;
+            invPage.Slots = new List<TemplateSlotDefinition>
+            {
+                new()
+                {
+                    Name = AppLocalizer.L("Tpl_FieldSerial"), VariableName = "Number",
+                    DataType = SlotDataType.Counter, X = 15, Y = 15, Width = 48, Height = 11,
+                    FontFamily = "Tahoma", FontSize = 13, Bold = true,
+                    FormatString = "000000", DefaultValue = "000001",
+                    TextAlign = HorizontalAlign.Left, VerticalAlign = VerticalAlign.Middle, IsRtl = false
+                },
+                new()
+                {
+                    Name = AppLocalizer.L("Tpl_FieldDate"), VariableName = "التاريخ",
+                    DataType = SlotDataType.Date, X = 95, Y = 15, Width = 40, Height = 10,
+                    FontFamily = "Tahoma", FontSize = 11, FormatString = "dd/MM/yyyy",
+                    DefaultValue = DateTime.Today.ToString("dd/MM/yyyy"),
+                    TextAlign = HorizontalAlign.Right, VerticalAlign = VerticalAlign.Middle, IsRtl = true
+                },
+                new()
+                {
+                    Name = AppLocalizer.L("Tpl_FieldName"), VariableName = "الاسم",
+                    DataType = SlotDataType.Text, X = 15, Y = 38, Width = 120, Height = 10,
+                    FontFamily = "Tahoma", FontSize = 12, IsRtl = true,
+                    TextAlign = HorizontalAlign.Right, VerticalAlign = VerticalAlign.Middle
+                },
+                new()
+                {
+                    Name = AppLocalizer.L("Tpl_FieldItem"), VariableName = "البيان",
+                    DataType = SlotDataType.Text, X = 15, Y = 58, Width = 120, Height = 95,
+                    FontFamily = "Tahoma", FontSize = 11, IsRtl = true,
+                    TextAlign = HorizontalAlign.Right, VerticalAlign = VerticalAlign.Top
+                },
+                new()
+                {
+                    Name = AppLocalizer.L("Tpl_FieldTotal"), VariableName = "الإجمالي",
+                    DataType = SlotDataType.Number, X = 15, Y = 178, Width = 120, Height = 13,
+                    FontFamily = "Tahoma", FontSize = 15, Bold = true,
+                    TextAlign = HorizontalAlign.Left, VerticalAlign = VerticalAlign.Middle, IsRtl = false
+                }
+            };
+            Add(invoice);
+
+            // 5. سند قبض مرقّم — Numbered receipt (half A5). The flagship numbering use-case.
+            ApextTemplate receipt = ApextFileFormat.CreateNew(AppLocalizer.L("Tpl_ReceiptName"), AppLocalizer.L("Tpl_CatReceipts"));
+            receipt.Description = AppLocalizer.L("Tpl_ReceiptDesc");
+            receipt.Author = "Apex PrintingSystem";
+            receipt.Tags = new List<string> { AppLocalizer.L("Tpl_CatReceipts"), AppLocalizer.L("Tpl_TagOfficial") };
+            TemplatePageDefinition rcPage = receipt.Pages[0];
+            rcPage.WidthMm = 148; rcPage.HeightMm = 105; rcPage.Orientation = PageOrientation.Landscape;
+            rcPage.Slots = new List<TemplateSlotDefinition>
+            {
+                new()
+                {
+                    Name = AppLocalizer.L("Tpl_FieldSerial"), VariableName = "Number",
+                    DataType = SlotDataType.Counter, X = 98, Y = 12, Width = 42, Height = 14,
+                    FontFamily = "Tahoma", FontSize = 18, Bold = true,
+                    FormatString = "000000", DefaultValue = "000001",
+                    TextAlign = HorizontalAlign.Left, VerticalAlign = VerticalAlign.Middle, IsRtl = false
+                },
+                new()
+                {
+                    Name = AppLocalizer.L("Tpl_FieldDate"), VariableName = "التاريخ",
+                    DataType = SlotDataType.Date, X = 10, Y = 12, Width = 45, Height = 10,
+                    FontFamily = "Tahoma", FontSize = 11, FormatString = "dd/MM/yyyy",
+                    DefaultValue = DateTime.Today.ToString("dd/MM/yyyy"),
+                    TextAlign = HorizontalAlign.Right, VerticalAlign = VerticalAlign.Middle, IsRtl = true
+                },
+                new()
+                {
+                    Name = AppLocalizer.L("Tpl_FieldFrom"), VariableName = "استلمت_من",
+                    DataType = SlotDataType.Text, X = 10, Y = 42, Width = 130, Height = 11,
+                    FontFamily = "Tahoma", FontSize = 12, IsRtl = true,
+                    TextAlign = HorizontalAlign.Right, VerticalAlign = VerticalAlign.Middle
+                },
+                new()
+                {
+                    Name = AppLocalizer.L("Tpl_FieldAmount"), VariableName = "المبلغ",
+                    DataType = SlotDataType.Number, X = 10, Y = 68, Width = 130, Height = 13,
+                    FontFamily = "Tahoma", FontSize = 15, Bold = true, IsRtl = true,
+                    TextAlign = HorizontalAlign.Right, VerticalAlign = VerticalAlign.Middle
+                }
+            };
+            Add(receipt);
         }
 
         // ── Private helpers ───────────────────────────────────────────────────────
