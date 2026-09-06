@@ -914,6 +914,14 @@ namespace Apex.UI.ViewModels
                 StatusMessage = Lf("PM_ReportAllOk", r.Succeeded);
                 MessageBox.Show(StatusMessage, L("Dlg_Success"),
                     MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // The run is finished and every copy came out, so the queue is spent —
+                // empty it so the operator starts the next job on a clean list instead of
+                // clearing it by hand (and risks reprinting yesterday's files). Deliberately
+                // ONLY on a fully successful run: anything cancelled, failed or held keeps
+                // its files so the operator can retry them. This clears the program's list;
+                // it never touches the files on disk.
+                ClearList();
                 return;
             }
 
