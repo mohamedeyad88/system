@@ -635,201 +635,14 @@
                         </Border>
                         
                         <!-- Numbering Mode Group (ترقيم القص وترقيم الشرشرة) -->
-                        <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource Numbering_NumberingType}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
-                                <StackPanel Orientation="Vertical">
-                                    <RadioButton Content="{DynamicResource Numbering_LinearMode}"
-                                                 IsChecked="{Binding IsLinearMode}"
-                                                 GroupName="NumberingMode"
-                                                 Margin="0,0,0,6"
-                                                 VerticalAlignment="Center"/>
-                                    <RadioButton Content="{DynamicResource Numbering_ImposedMode}"
-                                                 IsChecked="{Binding IsImposedMode}"
-                                                 GroupName="NumberingMode"
-                                                 VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
 
                         <!-- Digit Style Group (أرقام عربية / غربية) -->
-                        <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource Numbering_DigitStyle}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
-                                <StackPanel Orientation="Vertical">
-                                    <!-- The "(0123)" in this label is a SAMPLE of what will be
-                                         printed, so it has to render as Latin digits. Under the
-                                         Arabic UI, WPF was substituting them, and both options
-                                         read "(٠١٢٣)" — leaving the operator no way to see the
-                                         difference before committing a run. -->
-                                    <RadioButton Content="{DynamicResource Numbering_DigitWestern}"
-                                                 NumberSubstitution.Substitution="European"
-                                                 IsChecked="{Binding UseWesternDigits}"
-                                                 GroupName="DigitStyle"
-                                                 Margin="0,0,0,6"
-                                                 VerticalAlignment="Center"/>
-                                    <RadioButton Content="{DynamicResource Numbering_DigitArabic}"
-                                                 IsChecked="{Binding UseArabicDigits}"
-                                                 GroupName="DigitStyle"
-                                                 VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
                         
                         <!-- Number format: digits + series prefix/suffix (INV-000123/2026) -->
-                        <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource Numbering_NumberFormat}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
-                                <StackPanel Orientation="Horizontal">
-                                    <StackPanel Margin="0,0,8,0">
-                                        <TextBlock Text="{DynamicResource Numbering_Prefix}" FontSize="10" Foreground="{DynamicResource Muted}"/>
-                                        <TextBox Text="{Binding NumberPrefix, UpdateSourceTrigger=PropertyChanged}"
-                                                 Width="70" Padding="6,4" Background="#FAF9F7" Foreground="#14181D"
-                                                 BorderBrush="{DynamicResource Border}" BorderThickness="1" CaretBrush="#14181D"/>
-                                    </StackPanel>
-                                    <StackPanel Margin="0,0,8,0">
-                                        <TextBlock Text="{DynamicResource Numbering_Digits}" FontSize="10" Foreground="{DynamicResource Muted}"/>
-                                        <TextBox Text="{Binding NumberPadDigits, UpdateSourceTrigger=PropertyChanged}"
-                                                 Width="48" Padding="6,4" Background="#FAF9F7" Foreground="#14181D"
-                                                 BorderBrush="{DynamicResource Border}" BorderThickness="1" CaretBrush="#14181D"/>
-                                    </StackPanel>
-                                    <StackPanel>
-                                        <TextBlock Text="{DynamicResource Numbering_Suffix}" FontSize="10" Foreground="{DynamicResource Muted}"/>
-                                        <TextBox Text="{Binding NumberSuffix, UpdateSourceTrigger=PropertyChanged}"
-                                                 Width="70" Padding="6,4" Background="#FAF9F7" Foreground="#14181D"
-                                                 BorderBrush="{DynamicResource Border}" BorderThickness="1" CaretBrush="#14181D"/>
-                                    </StackPanel>
-                                </StackPanel>
-                                <!-- Live example of what will actually print -->
-                                <TextBlock Margin="0,8,0,0" FontFamily="Consolas" FontSize="13" FontWeight="Bold"
-                                           Foreground="#1B7F4C" Text="{Binding NumberFormatPreview}"/>
-                            </StackPanel>
-                        </Border>
 
                         <!-- Issued-numbers register: what was printed, and any gaps -->
-                        <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
-                            <StackPanel MinWidth="220">
-                                <DockPanel Margin="0,0,0,8" LastChildFill="False">
-                                    <TextBlock Text="{DynamicResource Num_RegistryTitle}" FontSize="11"
-                                               Foreground="{DynamicResource Muted}" DockPanel.Dock="Left" VerticalAlignment="Center"/>
-                                    <Button Content="{DynamicResource Num_RegistryRefresh}"
-                                            Command="{Binding RefreshRegistryCommand}"
-                                            DockPanel.Dock="Right" Cursor="Hand"
-                                            FontSize="10" Padding="6,2" Margin="8,0,0,0"
-                                            Background="#FFFFFF" Foreground="#0891B2"
-                                            BorderBrush="{DynamicResource Border}" BorderThickness="1"/>
-                                </DockPanel>
-
-                                <TextBlock Text="{Binding RegistrySummary}" FontSize="11"
-                                           Foreground="{DynamicResource Muted}" TextWrapping="Wrap" Margin="0,0,0,6"/>
-
-                                <ItemsControl ItemsSource="{Binding IssuedRanges}" MaxHeight="90">
-                                    <ItemsControl.Template>
-                                        <ControlTemplate TargetType="ItemsControl">
-                                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                                <ItemsPresenter/>
-                                            </ScrollViewer>
-                                        </ControlTemplate>
-                                    </ItemsControl.Template>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="10"
-                                                       Foreground="#14181D" Margin="0,0,0,2"/>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-
-                                <!-- Gaps are what an auditor asks about first -->
-                                <StackPanel Margin="0,6,0,0"
-                                            Visibility="{Binding HasRegistryEntries, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <TextBlock Text="{DynamicResource Num_RegistryGaps}" FontSize="10" Foreground="#E08A00"/>
-                                    <ItemsControl ItemsSource="{Binding NumberGaps}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="10"
-                                                           Foreground="#E08A00"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
 
                         <!-- ════ MEDIUM ① — معاينة متعددة الصفحات ════ -->
-                        <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource Numbering_Preview_Label}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
-                                <StackPanel Orientation="Horizontal">
-                                    <!-- 4-page preview button -->
-                                    <Button Command="{Binding ShowMultiPreviewCommand}"
-                                            ToolTip="{DynamicResource Numbering_Preview4PagesToolTip}"
-                                            Padding="12,8" Margin="0,0,6,0"
-                                            Background="#FAF9F7" Foreground="{DynamicResource Muted}"
-                                            BorderThickness="1" BorderBrush="#6B6864"
-                                            FontSize="13" Cursor="Hand">
-                                        <Button.Style>
-                                            <Style TargetType="Button">
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="Button">
-                                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                                                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
-                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="#E6F3F6"/></Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="🔍" FontSize="14" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                            <TextBlock Text="{DynamicResource Numbering_FourPages}" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                    </Button>
-                                    <!-- Auto-preview toggle -->
-                                    <ToggleButton IsChecked="{Binding AutoPreviewEnabled}"
-                                                  ToolTip="{DynamicResource Numbering_AutoPreviewTooltip}"
-                                                  Padding="10,8"
-                                                  FontSize="12" Cursor="Hand">
-                                        <ToggleButton.Style>
-                                            <Style TargetType="ToggleButton">
-                                                <Setter Property="Background" Value="#FAF9F7"/>
-                                                <Setter Property="Foreground" Value="#6B6864"/>
-                                                <Setter Property="BorderBrush" Value="#6B6864"/>
-                                                <Setter Property="BorderThickness" Value="1"/>
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="ToggleButton">
-                                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                                                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
-                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsChecked" Value="True">
-                                                        <Setter Property="Background" Value="#E6F3F6"/>
-                                                        <Setter Property="Foreground" Value="#0891B2"/>
-                                                        <Setter Property="BorderBrush" Value="#0891B2"/>
-                                                    </Trigger>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#FFFFFF"/>
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ToggleButton.Style>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="⚡" FontSize="12" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                            <TextBlock Text="{DynamicResource Numbering_Automatic}" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                    </ToggleButton>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
 
                         <!-- ════ MEDIUM ② — إحصائيات الطباعة ════ -->
                         <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
@@ -889,33 +702,6 @@
                         </Border>
 
                         <!-- Print Mode Group -->
-                        <Border Padding="0,0,16,0" Margin="0,0,16,0">
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource Numbering_ModeLabel}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
-                                <StackPanel Orientation="Horizontal">
-                                    <RadioButton Content="{DynamicResource Numbering_TraditionalPrint}" 
-                                                 IsChecked="{Binding UseSmartTrayPrinting, Converter={StaticResource InverseBoolConverter}}"
-                                                 GroupName="PrintMode"
-                                                 Margin="0,0,12,0"
-                                                 VerticalAlignment="Center"/>
-                                    <RadioButton Content="{DynamicResource Numbering_SmartPrint}" 
-                                                 IsChecked="{Binding UseSmartTrayPrinting}"
-                                                 GroupName="PrintMode"
-                                                 VerticalAlignment="Center"/>
-                                </StackPanel>
-                                <!-- Behavioral Description -->
-                                <StackPanel Margin="0,8,0,0" Orientation="Vertical">
-                                    <TextBlock Text="{DynamicResource Numbering_SmartPrint_Description}" 
-                                               FontSize="11" Foreground="{DynamicResource Muted}" 
-                                               TextWrapping="Wrap" 
-                                               Visibility="{Binding UseSmartTrayPrinting, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                    <TextBlock Text="{DynamicResource Numbering_TraditionalPrint_Description}" 
-                                               FontSize="11" Foreground="{DynamicResource Muted}" 
-                                               TextWrapping="Wrap"
-                                               Visibility="{Binding UseSmartTrayPrinting, Converter={StaticResource InverseBoolConverter}}"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
 
                         <!-- ════ SAVE / LOAD PROJECT GROUP ════ -->
                         <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
@@ -1118,6 +904,73 @@
                                     </Style.Triggers>
                                 </Style>
                             </StackPanel.Style>
+                        <!-- Moved off the Home ribbon: how the number LOOKS belongs with the design, not with each job. -->
+                        <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Numbering_NumberingType}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
+                                <StackPanel Orientation="Vertical">
+                                    <RadioButton Content="{DynamicResource Numbering_LinearMode}"
+                                                 IsChecked="{Binding IsLinearMode}"
+                                                 GroupName="NumberingMode"
+                                                 Margin="0,0,0,6"
+                                                 VerticalAlignment="Center"/>
+                                    <RadioButton Content="{DynamicResource Numbering_ImposedMode}"
+                                                 IsChecked="{Binding IsImposedMode}"
+                                                 GroupName="NumberingMode"
+                                                 VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Numbering_DigitStyle}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
+                                <StackPanel Orientation="Vertical">
+                                    <!-- The "(0123)" in this label is a SAMPLE of what will be
+                                         printed, so it has to render as Latin digits. Under the
+                                         Arabic UI, WPF was substituting them, and both options
+                                         read "(٠١٢٣)" — leaving the operator no way to see the
+                                         difference before committing a run. -->
+                                    <RadioButton Content="{DynamicResource Numbering_DigitWestern}"
+                                                 NumberSubstitution.Substitution="European"
+                                                 IsChecked="{Binding UseWesternDigits}"
+                                                 GroupName="DigitStyle"
+                                                 Margin="0,0,0,6"
+                                                 VerticalAlignment="Center"/>
+                                    <RadioButton Content="{DynamicResource Numbering_DigitArabic}"
+                                                 IsChecked="{Binding UseArabicDigits}"
+                                                 GroupName="DigitStyle"
+                                                 VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Numbering_NumberFormat}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel Margin="0,0,8,0">
+                                        <TextBlock Text="{DynamicResource Numbering_Prefix}" FontSize="10" Foreground="{DynamicResource Muted}"/>
+                                        <TextBox Text="{Binding NumberPrefix, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="70" Padding="6,4" Background="#FAF9F7" Foreground="#14181D"
+                                                 BorderBrush="{DynamicResource Border}" BorderThickness="1" CaretBrush="#14181D"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,8,0">
+                                        <TextBlock Text="{DynamicResource Numbering_Digits}" FontSize="10" Foreground="{DynamicResource Muted}"/>
+                                        <TextBox Text="{Binding NumberPadDigits, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="48" Padding="6,4" Background="#FAF9F7" Foreground="#14181D"
+                                                 BorderBrush="{DynamicResource Border}" BorderThickness="1" CaretBrush="#14181D"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource Numbering_Suffix}" FontSize="10" Foreground="{DynamicResource Muted}"/>
+                                        <TextBox Text="{Binding NumberSuffix, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="70" Padding="6,4" Background="#FAF9F7" Foreground="#14181D"
+                                                 BorderBrush="{DynamicResource Border}" BorderThickness="1" CaretBrush="#14181D"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <!-- Live example of what will actually print -->
+                                <TextBlock Margin="0,8,0,0" FontFamily="Consolas" FontSize="13" FontWeight="Bold"
+                                           Foreground="#1B7F4C" Text="{Binding NumberFormatPreview}"/>
+                            </StackPanel>
+                        </Border>
                         <!-- Zoom Group -->
                         <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
                             <StackPanel>
@@ -1384,7 +1237,7 @@
                         <!-- Slot Actions Group -->
                         <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
                             <StackPanel>
-                                <TextBlock Text="{DynamicResource Numbering_Numbering}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
+                                <TextBlock Text="{DynamicResource Numbering_NumberFields}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
                                 <StackPanel Orientation="Horizontal">
                                     <Button Content="➕" 
                                             Command="{Binding AddSlotCommand}" 
@@ -1392,9 +1245,9 @@
                                             Height="36" 
                                             Margin="0,0,6,0" 
                                             ToolTip="Add Slot"
-                                            Background="#1B7F4C"
-                                            Foreground="White"
-                                            BorderThickness="0"
+                                            Background="{DynamicResource Panel}"
+                                            Foreground="{DynamicResource Ink}"
+                                            BorderThickness="1" BorderBrush="{DynamicResource Border}"
                                             FontSize="16"
                                             FontWeight="Bold"
                                             Cursor="Hand">
@@ -1508,8 +1361,8 @@
                                     <!-- ════ LOW ① — Duplicate Slot (Ctrl+D) ════ -->
                                     <Button Command="{Binding DuplicateSlotCommand}"
                                             Width="38" Height="36" Margin="6,0,0,0"
-                                            Background="#0891B2" Foreground="White"
-                                            BorderThickness="0" FontSize="15"
+                                            Background="{DynamicResource Panel}" Foreground="{DynamicResource Ink}"
+                                            BorderThickness="1" BorderBrush="{DynamicResource Border}" FontSize="15"
                                             Cursor="Hand"
                                             IsEnabled="{Binding SelectedSlot, Converter={StaticResource NullToBoolConverter}}"
                                             ToolTip="{DynamicResource Numbering_DuplicateFieldToolTip}">
@@ -1937,6 +1790,108 @@
                                             <TextBlock Text="{DynamicResource Numbering_RecentButton}" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                         <!-- Moved off the Home ribbon: decisions taken at print time. -->
+                        <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Numbering_Preview_Label}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <!-- 4-page preview button -->
+                                    <Button Command="{Binding ShowMultiPreviewCommand}"
+                                            ToolTip="{DynamicResource Numbering_Preview4PagesToolTip}"
+                                            Padding="12,8" Margin="0,0,6,0"
+                                            Background="#FAF9F7" Foreground="{DynamicResource Muted}"
+                                            BorderThickness="1" BorderBrush="#6B6864"
+                                            FontSize="13" Cursor="Hand">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                                                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="#E6F3F6"/></Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="🔍" FontSize="14" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{DynamicResource Numbering_FourPages}" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <!-- Auto-preview toggle -->
+                                    <ToggleButton IsChecked="{Binding AutoPreviewEnabled}"
+                                                  ToolTip="{DynamicResource Numbering_AutoPreviewTooltip}"
+                                                  Padding="10,8"
+                                                  FontSize="12" Cursor="Hand">
+                                        <ToggleButton.Style>
+                                            <Style TargetType="ToggleButton">
+                                                <Setter Property="Background" Value="#FAF9F7"/>
+                                                <Setter Property="Foreground" Value="#6B6864"/>
+                                                <Setter Property="BorderBrush" Value="#6B6864"/>
+                                                <Setter Property="BorderThickness" Value="1"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="ToggleButton">
+                                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                                                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter Property="Background" Value="#E6F3F6"/>
+                                                        <Setter Property="Foreground" Value="#0891B2"/>
+                                                        <Setter Property="BorderBrush" Value="#0891B2"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#FFFFFF"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ToggleButton.Style>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="⚡" FontSize="12" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{DynamicResource Numbering_Automatic}" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </ToggleButton>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <Border Padding="0,0,16,0" Margin="0,0,16,0">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Numbering_ModeLabel}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton Content="{DynamicResource Numbering_TraditionalPrint}" 
+                                                 IsChecked="{Binding UseSmartTrayPrinting, Converter={StaticResource InverseBoolConverter}}"
+                                                 GroupName="PrintMode"
+                                                 Margin="0,0,12,0"
+                                                 VerticalAlignment="Center"/>
+                                    <RadioButton Content="{DynamicResource Numbering_SmartPrint}" 
+                                                 IsChecked="{Binding UseSmartTrayPrinting}"
+                                                 GroupName="PrintMode"
+                                                 VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <!-- Behavioral Description -->
+                                <StackPanel Margin="0,8,0,0" Orientation="Vertical">
+                                    <TextBlock Text="{DynamicResource Numbering_SmartPrint_Description}" 
+                                               FontSize="11" Foreground="{DynamicResource Muted}" 
+                                               TextWrapping="Wrap" 
+                                               Visibility="{Binding UseSmartTrayPrinting, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    <TextBlock Text="{DynamicResource Numbering_TraditionalPrint_Description}" 
+                                               FontSize="11" Foreground="{DynamicResource Muted}" 
+                                               TextWrapping="Wrap"
+                                               Visibility="{Binding UseSmartTrayPrinting, Converter={StaticResource InverseBoolConverter}}"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>

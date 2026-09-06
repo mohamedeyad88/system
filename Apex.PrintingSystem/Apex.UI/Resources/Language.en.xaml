@@ -689,6 +689,7 @@
     <sys:String x:Key="Distribution_StartPrinting">Start Printing</sys:String>
     <sys:String x:Key="Quotation_Total">Total</sys:String>
     <sys:String x:Key="Numbering_Copies">Copies</sys:String>
+    <sys:String x:Key="Numbering_NumberFields">Number fields</sys:String>
     <sys:String x:Key="Common_No">No</sys:String>
     <sys:String x:Key="Num_AboutHoursMinutes">~{0} hour(s) {1} minute(s)</sys:String>
     <sys:String x:Key="Num_ExportError">Error exporting: {0}</sys:String>

@@ -498,6 +498,7 @@
     <sys:String x:Key="Num_PrintDoneStatus">اكتملت الطباعة بنجاح</sys:String>
     <sys:String x:Key="TD_039">QR كود</sys:String>
     <sys:String x:Key="Numbering_Copies">النسخ</sys:String>
+    <sys:String x:Key="Numbering_NumberFields">حقول الأرقام</sys:String>
     <sys:String x:Key="Imp_ResizeAspect">الحفاظ على النسبة (بلا تشويه)</sys:String>
     <sys:String x:Key="Upload_DropFiles">اسحب ملفاتك هنا</sys:String>
     <sys:String x:Key="PaperCutting_Unit">وحدة القياس</sys:String>
