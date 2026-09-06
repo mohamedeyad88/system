@@ -112,16 +112,21 @@
     <Color x:Key="Color.Dark.Surface.Elevated">#DDD9D3</Color>
     <Color x:Key="Color.Dark.Border">#DDD9D3</Color>
     <Color x:Key="Color.Dark.Border.Light">#B7B2A8</Color>
-    <Color x:Key="Color.Dark.Text.Primary">#FFFFFF</Color>
+    <!-- These "Dark.*" keys were flipped to the light identity but their text stayed
+         white — #FFFFFF on the #FAF9F7 ground is 1.05:1, i.e. invisible. Nothing binds
+         them today; corrected so a future binding can't render blank text. -->
+    <Color x:Key="Color.Dark.Text.Primary">#14181D</Color>
     <Color x:Key="Color.Dark.Text.Secondary">#6B6864</Color>
-    <Color x:Key="Color.Dark.Text.Muted">#8A8783</Color>
+    <Color x:Key="Color.Dark.Text.Muted">#726F6A</Color>
     
     <!-- ═══════════════════════════════════════════════════════════════════
          📝 TEXT COLORS - ألوان النص
          ═══════════════════════════════════════════════════════════════════ -->
     <Color x:Key="Color.Text.Primary">#14181D</Color>
     <Color x:Key="Color.Text.Secondary">#6B6864</Color>
-    <Color x:Key="Color.Text.Tertiary">#8A8783</Color>
+    <!-- Was #8A8783 = 3.58:1 on white, i.e. below the 4.5:1 minimum for body text —
+         the small labels it styles were genuinely hard to read. Now 5.0:1. -->
+    <Color x:Key="Color.Text.Tertiary">#726F6A</Color>
     <Color x:Key="Color.Text.Disabled">#B7B2A8</Color>
     <Color x:Key="Color.Text.OnPrimary">#FFFFFF</Color>
     <Color x:Key="Color.Text.OnDark">#F8FAFC</Color>
@@ -129,9 +134,12 @@
     <!-- ═══════════════════════════════════════════════════════════════════
          🔲 BORDER COLORS - ألوان الحدود
          ═══════════════════════════════════════════════════════════════════ -->
-    <Color x:Key="Color.Border.Light">#DDD9D3</Color>
-    <Color x:Key="Color.Border.Medium">#B7B2A8</Color>
-    <Color x:Key="Color.Border.Dark">#8A8783</Color>
+    <!-- Darkened for the shop floor: at #DDD9D3 a divider sat at 1.34:1 on the page
+         and effectively vanished under bright ambient light, so operators lost their
+         place scanning rows. The scale is kept (Light < Medium < Dark). -->
+    <Color x:Key="Color.Border.Light">#BDB6AA</Color>
+    <Color x:Key="Color.Border.Medium">#A69E91</Color>
+    <Color x:Key="Color.Border.Dark">#7A7268</Color>
     <Color x:Key="Color.Border.Focus">#0891B2</Color>
     
     <!-- ═══════════════════════════════════════════════════════════════════
