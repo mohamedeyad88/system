@@ -58,10 +58,16 @@
          ملاحظة: ملفات الخطوط لازم تتضاف في مجلد /Fonts كـ Resource (تعليمات منفصلة).
          لحد ما تتضاف، WPF بيرجع تلقائياً للخط الاحتياطي (Segoe UI / Tahoma) من غير كسر.
          ══════════════════════════════════════════════════════════════════════════ -->
-    <FontFamily x:Key="Font.Arabic">pack://application:,,,/Fonts/#IBM Plex Sans Arabic</FontFamily>
-    <!-- Plex Sans Arabic carries the full Latin set (same design as IBM Plex Sans),
-         so it serves the Latin wordmark too — no separate Latin file needed. -->
-    <FontFamily x:Key="Font.Latin">pack://application:,,,/Fonts/#IBM Plex Sans Arabic</FontFamily>
+    <!-- Cairo, in four real weights (400/500/600/700).
+         Operators reported the type read "thin" and took effort. The cause was not
+         only the face: the UI asks for SemiBold in 127 places and Bold in 93, while
+         only Regular + SemiBold files were embedded — so Bold was faked and Medium
+         fell back to Regular. Cairo ships Regular/Medium/SemiBold/Bold, all sharing
+         the typographic family "Cairo", so every requested weight now resolves to a
+         real cut. Cairo is also a sturdier Arabic screen face at small sizes. -->
+    <FontFamily x:Key="Font.Arabic">pack://application:,,,/Fonts/#Cairo</FontFamily>
+    <!-- Cairo carries the full Latin set too, so it serves the Latin wordmark. -->
+    <FontFamily x:Key="Font.Latin">pack://application:,,,/Fonts/#Cairo</FontFamily>
     <!-- كل الأرقام والبيانات: Mono (لاتيني 0-9، خانات تتراص تحت بعض) -->
     <FontFamily x:Key="Font.Data">pack://application:,,,/Fonts/#IBM Plex Mono</FontFamily>
 
