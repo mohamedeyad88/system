@@ -137,9 +137,9 @@
     <!-- Darkened for the shop floor: at #DDD9D3 a divider sat at 1.34:1 on the page
          and effectively vanished under bright ambient light, so operators lost their
          place scanning rows. The scale is kept (Light < Medium < Dark). -->
-    <Color x:Key="Color.Border.Light">#BDB6AA</Color>
-    <Color x:Key="Color.Border.Medium">#A69E91</Color>
-    <Color x:Key="Color.Border.Dark">#7A7268</Color>
+    <Color x:Key="Color.Border.Light">#A69E91</Color>
+    <Color x:Key="Color.Border.Medium">#8F887A</Color>
+    <Color x:Key="Color.Border.Dark">#6E675C</Color>
     <Color x:Key="Color.Border.Focus">#0891B2</Color>
     
     <!-- ═══════════════════════════════════════════════════════════════════
