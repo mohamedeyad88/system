@@ -13,8 +13,13 @@
     <Color x:Key="InkColor">#FF14181D</Color>      <!-- النص الأساسي، الأرقام الكبيرة، اللوجو -->
     <Color x:Key="PaperColor">#FFFAF9F7</Color>    <!-- خلفية التطبيق (أوف-وايت) -->
     <Color x:Key="PanelColor">#FFFFFFFF</Color>    <!-- البطاقات فوق الخلفية -->
-    <Color x:Key="BorderColor">#FFDDD9D3</Color>   <!-- الحدود والفواصل -->
-    <Color x:Key="MutedColor">#FF6B6864</Color>    <!-- النص الثانوي والتسميات -->
+    <!-- Darkened DDD9D3 -> A69E91 (1.34:1 -> 2.52:1 on the page ground). At 1.34 the
+         group separators on the numbering bar were invisible, so its 18 groups blurred
+         into one another and the toolbar read as unorganised. -->
+    <Color x:Key="BorderColor">#FFA69E91</Color>   <!-- الحدود والفواصل -->
+    <!-- Darkened 6B6864 -> 57534E (5.54:1 -> 7.63:1 on white). At the 10-11px sizes
+         this UI uses for secondary text, 5.54 read as washed-out to operators. -->
+    <Color x:Key="MutedColor">#FF57534E</Color>    <!-- النص الثانوي والتسميات -->
 
     <!-- ── لون العلامة الوحيد — Brand (single accent) ────────────────────── -->
     <Color x:Key="BrandColor">#FF0891B2</Color>     <!-- سماوي — أزرار، تحديد، روابط، الحالة النشطة -->

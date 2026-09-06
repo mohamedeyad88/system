@@ -500,6 +500,13 @@ namespace Apex.UI.ViewModels
         [ObservableProperty]
         private CyclePrintState? _selectedPendingState;
 
+        /// <summary>
+        /// True when a stopped run can actually be resumed. The "استمرار من إيقاف" group
+        /// is hidden otherwise: it used to occupy a full slot on the toolbar permanently
+        /// just to say "no checkpoints", which is the dead space operators read as clutter.
+        /// </summary>
+        public bool HasCheckpoints => PendingStates.Count > 0;
+
         [ObservableProperty]
         private ObservableCollection<NumberSlot> _slots = new();
 
@@ -1298,6 +1305,7 @@ namespace Apex.UI.ViewModels
                 {
                     PendingStates.Add(state);
                 }
+                OnPropertyChanged(nameof(HasCheckpoints));
             }
             catch (Exception ex)
             {
