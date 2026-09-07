@@ -260,6 +260,75 @@ namespace Apex.NumberedBooksEngine.Core
             return new PageOverlayData(overlays);
         }
 
+        /// <summary>
+        /// Describes one page as text to be drawn straight onto the press, or returns null
+        /// when this page has to go through the raster composer instead.
+        ///
+        /// <para>Null is returned — deliberately, not as a failure — when a slot carries a
+        /// barcode or QR code (those are images by definition), or when the text contains
+        /// Arabic letters. Arabic letters need contextual shaping and drag the whole string
+        /// through the bidi algorithm, which reorders an adjacent number: "1001 / صورة"
+        /// comes back as 2001. <see cref="PatchGenerator"/> already solves that by shaping
+        /// letter runs and digit runs separately, so anything with letters in it keeps using
+        /// that path. Plain numbers — the overwhelming majority of real jobs — take the fast,
+        /// sharp route.</para>
+        /// </summary>
+        public IReadOnlyList<TextOverlay>? TryBuildTextOverlays(
+            PageAssignment assignment,
+            IReadOnlyList<SlotSpec> slots,
+            CopyType copyType)
+        {
+            var overlays = new List<TextOverlay>();
+
+            foreach (var slotAssignment in assignment.SlotNumbers)
+            {
+                var slot = FindSlotById(slots, slotAssignment.SlotId);
+                if (slot == null) continue;
+
+                if (slot.Kind != SlotKind.Text) return null;
+
+                CopyStyle? style = GetCopyStyleForType(slot, copyType);
+                string displayText = FormatNumberWithLabel(slotAssignment.Number, style);
+
+                if (ContainsArabicLetter(displayText)) return null;
+
+                overlays.Add(new TextOverlay(
+                    Text: displayText,
+                    X: slot.X,
+                    Y: slot.Y,
+                    Width: slot.Width,
+                    Height: slot.Height,
+                    FontFamily: slot.FontFamily,
+                    FontSize: slot.FontSize,
+                    ColorHex: style?.ColorHex ?? slot.FontColorHex,
+                    Opacity: style?.Opacity ?? 1f,
+                    Align: slot.Align,
+                    Rotation: slot.Rotation));
+            }
+
+            return overlays.Count > 0 ? overlays : null;
+        }
+
+        /// <summary>
+        /// True when the text carries Arabic LETTERS. Arabic-Indic digits (U+0660–U+0669)
+        /// are excluded on purpose: they are numerals, they need no shaping, and they must
+        /// never push a page onto the slow path.
+        /// </summary>
+        private static bool ContainsArabicLetter(string text)
+        {
+            foreach (char c in text)
+            {
+                if ((c >= 'ؠ' && c <= 'ٟ') ||
+                    (c >= 'ٰ' && c <= 'ۿ' && !(c >= '٠' && c <= '٩')) ||
+                    (c >= 'ﭐ' && c <= '﷿') ||
+                    (c >= 'ﹰ' && c <= '﻿'))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private static SlotSpec? FindSlotById(IReadOnlyList<SlotSpec> slots, string slotId)
         {
             foreach (var slot in slots)

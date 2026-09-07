@@ -107,9 +107,25 @@ namespace Apex.NumberedBooksEngine.Core
         // Each entry stores (Image, CopyIndex) to ensure correct tray selection
         // PrintDocument.Print() will process all pages from the queue
         // ═══════════════════════════════════════════════════════════════════
-        private readonly ConcurrentQueue<(SKImage Image, int CopyIndex)> _pageQueue = new();
+        private readonly ConcurrentQueue<PageQueueEntry> _pageQueue = new();
         private readonly SemaphoreSlim _pageQueueSemaphore = new(0);
-        private SKImage? _currentPage;
+        private PageQueueEntry? _currentPage;
+
+        // The sheet artwork, prepared ONCE per job. Overlay pages reuse it instead of each
+        // building — and PNG round-tripping — a full-page composite of their own.
+        private Bitmap? _sharedBackground;
+
+        /// <summary>
+        /// One page waiting to print: either a fully composed raster (the original path,
+        /// still used for barcodes and Arabic labels) or the shared artwork plus the text
+        /// to draw over it.
+        /// </summary>
+        private sealed class PageQueueEntry
+        {
+            public SKImage? Image;
+            public IReadOnlyList<TextOverlay>? Overlays;
+            public int CopyIndex;
+        }
         private int _currentPageCopyIndex = 0; // Copy index for the currently processing page
         private TaskCompletionSource<bool>? _pageCompletionSource;
         private readonly Stopwatch _stopwatch = new();
@@ -148,6 +164,10 @@ namespace Apex.NumberedBooksEngine.Core
             _printException = null;
             _currentPage = null;
             _pageCompletionSource = null;
+
+            _sharedBackground?.Dispose();
+            _sharedBackground = null;
+            _loggedRenderPath = false;
 
             // Reset pause event to allow printing
             _pauseEvent.Set();
@@ -247,7 +267,76 @@ namespace Apex.NumberedBooksEngine.Core
             _currentCopyIndex = copyIndex;
         }
 
-        public async Task PrintPageAsync(SKImage page)
+        /// <summary>
+        /// Prepares the sheet artwork once for the whole job, so overlay pages can be queued
+        /// as a handful of numbers instead of a full-page bitmap each. Safe to call with the
+        /// same template repeatedly; the previous copy is released.
+        /// </summary>
+        public void SetSharedBackground(SKImage template)
+        {
+            if (template == null) throw new ArgumentNullException(nameof(template));
+
+            _sharedBackground?.Dispose();
+            _sharedBackground = null;
+
+            try
+            {
+                using var data = template.Encode(SKEncodedImageFormat.Png, 100);
+                if (data == null) return;
+                using var stream = new MemoryStream();
+                data.SaveTo(stream);
+                stream.Position = 0;
+                _sharedBackground = new Bitmap(stream);
+                LogTray($"Shared background prepared: {_sharedBackground.Width}x{_sharedBackground.Height}");
+            }
+            catch (Exception ex)
+            {
+                // Not fatal: without a shared background every page simply takes the
+                // original composed-raster path, which is slower but still correct.
+                _sharedBackground = null;
+                LogTray($"⚠️ SetSharedBackground failed, falling back to composed pages: {ex.Message}");
+            }
+        }
+
+        /// <summary>True when <see cref="PrintPageAsync(IReadOnlyList{TextOverlay})"/> can be used.</summary>
+        public bool HasSharedBackground => _sharedBackground != null;
+
+        /// <summary>
+        /// Queues a page as the shared artwork plus live text. No per-page surface, no
+        /// per-page PNG round-trip, and the number is drawn by the printer at its own
+        /// resolution rather than as 300-dpi pixels.
+        /// </summary>
+        public Task PrintPageAsync(IReadOnlyList<TextOverlay> overlays)
+        {
+            if (overlays == null) throw new ArgumentNullException(nameof(overlays));
+            if (_sharedBackground == null)
+                throw new InvalidOperationException("SetSharedBackground must be called before queueing overlay pages.");
+
+            // Say once, in the log, which way this job is actually drawing. A silent
+            // fallback to the slow path is exactly the kind of thing that hides for months.
+            if (!_loggedRenderPath)
+            {
+                _loggedRenderPath = true;
+                LogTray("Render path: DEVICE TEXT over shared sheet");
+            }
+
+            return EnqueueAsync(new PageQueueEntry { Overlays = overlays, CopyIndex = _currentCopyIndex });
+        }
+
+        public Task PrintPageAsync(SKImage page)
+        {
+            if (!_loggedRenderPath)
+            {
+                _loggedRenderPath = true;
+                LogTray("Render path: COMPOSED RASTER per page");
+            }
+
+            return EnqueueAsync(new PageQueueEntry { Image = page, CopyIndex = _currentCopyIndex });
+        }
+
+        private bool _loggedRenderPath;
+
+        private async Task EnqueueAsync(PageQueueEntry entry)
         {
             if (_ct.IsCancellationRequested || Status.IsCancelled)
             {
@@ -261,7 +350,7 @@ namespace Apex.NumberedBooksEngine.Core
             // CRITICAL FIX: Queue the page WITH its copy index
             // This ensures correct tray selection when the page is actually printed
             // ═══════════════════════════════════════════════════════════════════
-            _pageQueue.Enqueue((page, _currentCopyIndex));
+            _pageQueue.Enqueue(entry);
             Interlocked.Increment(ref _totalPagesQueued);
 
             // #region agent log
@@ -365,15 +454,15 @@ namespace Apex.NumberedBooksEngine.Core
                 int waitAttempts = 0;
                 const int maxWaitAttempts = 3000;
 
-                (SKImage Image, int CopyIndex) pageEntry = default;
+                PageQueueEntry? pageEntry = null;
                 while (!_pageQueue.TryDequeue(out pageEntry) && !_jobEnded && waitAttempts < maxWaitAttempts)
                 {
                     Thread.Sleep(10);
                     waitAttempts++;
                 }
 
-                _currentPage = pageEntry.Image;
-                _currentPageCopyIndex = pageEntry.CopyIndex;
+                _currentPage = pageEntry;
+                _currentPageCopyIndex = pageEntry?.CopyIndex ?? 0;
 
                 if (_currentPage != null)
                 {
@@ -571,13 +660,32 @@ namespace Apex.NumberedBooksEngine.Core
                 System.Diagnostics.Debug.WriteLine($"[WindowsPrintSpoolerService.PrintPage] Processing page {_pagesProcessed + 1}. Remaining in queue: {_pageQueue.Count}");
                 // #endregion
 
-                // Convert SKImage to System.Drawing.Bitmap
-                using var data = _currentPage.Encode(SKEncodedImageFormat.Png, 100);
-                using var stream = new MemoryStream();
-                data.SaveTo(stream);
-                stream.Position = 0;
+                // An overlay page reuses the job's shared artwork; a composed page carries
+                // its own raster and is converted here. `ownsBitmap` decides which one gets
+                // released at the end — releasing the shared one would kill the whole job.
+                Bitmap bitmap;
+                bool ownsBitmap;
 
-                using var bitmap = new Bitmap(stream);
+                if (_currentPage.Overlays != null && _sharedBackground != null)
+                {
+                    bitmap = _sharedBackground;
+                    ownsBitmap = false;
+                }
+                else if (_currentPage.Image != null)
+                {
+                    using var data = _currentPage.Image.Encode(SKEncodedImageFormat.Png, 100);
+                    using var stream = new MemoryStream();
+                    data.SaveTo(stream);
+                    stream.Position = 0;
+                    bitmap = new Bitmap(stream);
+                    ownsBitmap = true;
+                }
+                else
+                {
+                    LogTray("❌ Page entry carries neither a composed image nor overlays");
+                    e.HasMorePages = false;
+                    return;
+                }
 
                 // ═══════════════════════════════════════════════════════════════════
                 // DEFINITIVE FIX: 1:1 Physical Size Printing
@@ -657,6 +765,15 @@ namespace Apex.NumberedBooksEngine.Core
                     GraphicsUnit.Pixel  // Source unit is pixels
                 );
 
+                // Numbers last, drawn as real type on the device rather than baked pixels.
+                if (_currentPage.Overlays != null)
+                {
+                    DrawTextOverlays(e.Graphics, _currentPage.Overlays,
+                                     imageSize.Width, imageWidthInches, imageHeightInches);
+                }
+
+                if (ownsBitmap) bitmap.Dispose();
+
                 // Update page count
                 _pagesProcessed++;
                 Status.CurrentPage = _pagesProcessed;
@@ -698,9 +815,10 @@ namespace Apex.NumberedBooksEngine.Core
 
                 // ═══════════════════════════════════════════════════════════════════
                 // CRITICAL: Dispose page after printing to prevent memory leaks
-                // The page was created in GdiSpoolPrinter and passed here for printing
+                // The page was created in GdiSpoolPrinter and passed here for printing.
+                // Overlay pages own nothing — their artwork is the job-wide background.
                 // ═══════════════════════════════════════════════════════════════════
-                _currentPage?.Dispose();
+                _currentPage?.Image?.Dispose();
                 _currentPage = null;
             }
             catch (Exception ex)
@@ -708,7 +826,7 @@ namespace Apex.NumberedBooksEngine.Core
                 // ═══════════════════════════════════════════════════════════════════
                 // Dispose page on error as well
                 // ═══════════════════════════════════════════════════════════════════
-                _currentPage?.Dispose();
+                _currentPage?.Image?.Dispose();
                 _currentPage = null;
                 _printException = ex;
                 Status.Error = ex.Message;
@@ -722,6 +840,121 @@ namespace Apex.NumberedBooksEngine.Core
 
                 e.HasMorePages = false;
             }
+        }
+
+        /// <summary>
+        /// Draws each number onto the page with the printer's own text engine.
+        ///
+        /// <para>The Graphics is already in inches, so everything here is converted into
+        /// inches and the driver renders at whatever resolution the press actually has —
+        /// 600 or 1200&#160;dpi on a laser — instead of being resampled up from a 300&#160;dpi
+        /// bitmap. That is the whole point: it is what stops the digits looking jagged
+        /// beside the artwork.</para>
+        ///
+        /// <para>Sizing has to agree exactly with <c>Composer.ComputeDpiScale</c> and with
+        /// the designer's SlotFontScaleConverter, or a job would print at a different size
+        /// than the operator laid out. FontSize is in 96-dpi design units; multiply by the
+        /// template's resolution scale to get template pixels, then divide by the template's
+        /// dpi to get inches on paper.</para>
+        /// </summary>
+        private static void DrawTextOverlays(
+            Graphics g,
+            IReadOnlyList<TextOverlay> overlays,
+            int backgroundWidthPx,
+            float pageWidthInches,
+            float pageHeightInches)
+        {
+            const float a4WidthInches = 8.27f;
+            const float designDpi = 96f;
+
+            if (backgroundWidthPx <= 0 || pageWidthInches <= 0) return;
+
+            float dpiScale = Math.Clamp(backgroundWidthPx / (a4WidthInches * designDpi), 1f, 5f);
+            float inchesPerTemplatePixel = pageWidthInches / backgroundWidthPx;
+
+            foreach (var overlay in overlays)
+            {
+                if (string.IsNullOrEmpty(overlay.Text)) continue;
+
+                float emInches = overlay.FontSize * dpiScale * inchesPerTemplatePixel;
+                if (emInches <= 0) continue;
+
+                Font? font = null;
+                try
+                {
+                    try
+                    {
+                        font = new Font(overlay.FontFamily, emInches, FontStyle.Regular, GraphicsUnit.Inch);
+                    }
+                    catch
+                    {
+                        // A design may name a font this machine does not have; the sheet
+                        // must still carry its number.
+                        font = new Font(FontFamily.GenericSansSerif, emInches, FontStyle.Regular, GraphicsUnit.Inch);
+                    }
+
+                    var color = ParseColor(overlay.ColorHex, overlay.Opacity);
+                    using var brush = new SolidBrush(color);
+
+                    float x = overlay.X * pageWidthInches;
+                    float y = overlay.Y * pageHeightInches;
+                    float boxWidth = overlay.Width * pageWidthInches;
+                    float boxHeight = overlay.Height * pageHeightInches;
+                    if (boxWidth <= 0) boxWidth = pageWidthInches - x;
+                    if (boxHeight <= 0) boxHeight = emInches * 2f;
+
+                    using var format = new StringFormat(StringFormat.GenericTypographic)
+                    {
+                        // Top-anchored, matching the composer (which pins the patch's top
+                        // edge to the slot) and the designer canvas.
+                        LineAlignment = StringAlignment.Near,
+                        Alignment = overlay.Align switch
+                        {
+                            Models.TextAlign.Center => StringAlignment.Center,
+                            Models.TextAlign.Right => StringAlignment.Far,
+                            _ => StringAlignment.Near
+                        },
+                        FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip
+                    };
+
+                    var state = g.Save();
+                    try
+                    {
+                        if (Math.Abs(overlay.Rotation) > 0.01f)
+                        {
+                            float cx = x + boxWidth / 2f;
+                            float cy = y + boxHeight / 2f;
+                            g.TranslateTransform(cx, cy);
+                            g.RotateTransform(overlay.Rotation);
+                            g.TranslateTransform(-cx, -cy);
+                        }
+
+                        g.DrawString(overlay.Text, font, brush,
+                                     new RectangleF(x, y, boxWidth, boxHeight), format);
+                    }
+                    finally
+                    {
+                        g.Restore(state);
+                    }
+                }
+                finally
+                {
+                    font?.Dispose();
+                }
+            }
+        }
+
+        private static Color ParseColor(string? hex, float opacity)
+        {
+            var baseColor = Color.Black;
+            if (!string.IsNullOrWhiteSpace(hex))
+            {
+                try { baseColor = ColorTranslator.FromHtml(hex); }
+                catch { baseColor = Color.Black; }
+            }
+
+            int alpha = (int)Math.Round(Math.Clamp(opacity <= 0 ? 1f : opacity, 0f, 1f) * 255);
+            return Color.FromArgb(alpha, baseColor);
         }
 
         public async Task EndJobAsync()
@@ -836,6 +1069,12 @@ namespace Apex.NumberedBooksEngine.Core
             Status.Status = "Cancelled";
             _pauseEvent.Set(); // Release any waiting
             _pageCompletionSource?.TrySetCanceled();
+
+            // The shared sheet is a full-page bitmap; a cancelled job should not leave one
+            // resident until the next job happens to reset the state.
+            _sharedBackground?.Dispose();
+            _sharedBackground = null;
+
             OnStatusChanged();
         }
 

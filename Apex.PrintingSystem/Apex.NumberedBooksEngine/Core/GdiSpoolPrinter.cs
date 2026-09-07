@@ -14,10 +14,25 @@ namespace Apex.NumberedBooksEngine.Core
     public class GdiSpoolPrinter : IDisposable
     {
         private readonly WindowsPrintSpoolerService _spoolerService;
+
+        // One composer for the whole job. It used to be constructed per page — a fresh
+        // TemplateLoader and PatchGenerator for every sheet — and, worse, with default
+        // number formatting, so the prefix, suffix and digit count the operator chose were
+        // silently dropped at print time. ConfigureNumberFormat sets it once per job.
+        private readonly Composer _composer = new();
         private SKImage? _cachedTemplate;
         private SKBitmap? _cachedTemplateBitmap; // Guaranteed raster copy for reliable pixel access
         private int _currentCopyIndex = 0;
         private bool _templateReady = false;
+
+        /// <summary>
+        /// Escape hatch back to composing a full-page raster per sheet. Printing is the one
+        /// thing in this program that must never be a coin toss, so if some driver in the
+        /// field mishandles device text there is a way to put a shop back on the old path
+        /// without shipping a new build: set APEX_LEGACY_PAGE_RENDER=1.
+        /// </summary>
+        private static bool LegacyPageRender =>
+            Environment.GetEnvironmentVariable("APEX_LEGACY_PAGE_RENDER") == "1";
 
         public GdiSpoolPrinter()
         {
@@ -89,6 +104,10 @@ namespace Apex.NumberedBooksEngine.Core
                     throw new InvalidOperationException("Failed to cache template: could not create SKImage from bitmap.");
                 }
 
+                // Hand the same artwork to the spooler once, so pages that are just numbers
+                // over this sheet can be queued as text instead of a full-page raster each.
+                _spoolerService.SetSharedBackground(_cachedTemplate);
+
                 _templateReady = true;
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] ✅ Template cached successfully - Size: {_cachedTemplate.Width}x{_cachedTemplate.Height}");
             }
@@ -117,28 +136,31 @@ namespace Apex.NumberedBooksEngine.Core
         /// <summary>
         /// Starts a print job with the given settings.
         /// </summary>
-        public Task StartJobAsync(PrintJobSettings settings, CancellationToken ct)
+        public async Task StartJobAsync(PrintJobSettings settings, CancellationToken ct)
         {
-            return _spoolerService.StartJobAsync(settings, ct);
+            await _spoolerService.StartJobAsync(settings, ct);
+
+            // StartJobAsync wipes the spooler's per-job state, and the shared sheet is part
+            // of it — so it has to be handed over again AFTER the job opens, not before.
+            // Setting it only in SetCachedTemplate left it null by the time pages arrived
+            // and every sheet quietly fell back to composing its own full-page raster.
+            if (_templateReady && _cachedTemplate != null)
+            {
+                _spoolerService.SetSharedBackground(_cachedTemplate);
+            }
         }
 
         /// <summary>
-        /// Prints a page with overlays (numbers) on top of the cached template.
+        /// Sets the number formatting for this job: digit count, prefix, suffix and whether
+        /// to print Arabic-Indic numerals. Call once before the first page.
         /// </summary>
-        public async Task PrintPageWithOverlaysAsync(PagePrintCommand command)
+        public void ConfigureNumberFormat(NumberFormatOptions? format, bool useArabicDigits)
         {
-            if (_cachedTemplate == null)
-                throw new InvalidOperationException("Template not set. Call SetCachedTemplate first.");
-
-            // Convert PagePrintCommand to GdiPagePrintCommand
-            var gdiCommand = new GdiPagePrintCommand
+            _composer.UseArabicDigits = useArabicDigits;
+            _composer.NumberFormat = (format ?? NumberFormatOptions.Default) with
             {
-                PageNumbers = ExtractPageNumbers(command),
-                Slots = ExtractSlots(command),
-                CopyType = Models.CopyType.Original // Default, can be enhanced later
+                UseArabicDigits = useArabicDigits
             };
-
-            await PrintPageWithOverlaysAsync(gdiCommand);
         }
 
         /// <summary>
@@ -156,8 +178,7 @@ namespace Apex.NumberedBooksEngine.Core
                     "فشل في تحضير القالب للطباعة. يرجى التأكد من صحة ملف القالب وإعادة المحاولة.");
             }
 
-            // Compose the page with overlays
-            var composer = new Composer();
+            var composer = _composer;
 
             // Create page assignment from command - FRESH for each page
             var slotAssignments = new List<SlotAssignment>();
@@ -167,6 +188,25 @@ namespace Apex.NumberedBooksEngine.Core
             }
 
             var pageAssignment = new PageAssignment(0, slotAssignments);
+
+            // ═══════════════════════════════════════════════════════════════════
+            // FAST PATH: the sheet is already with the spooler, so send only the
+            // numbers and let the press draw them as type at its own resolution.
+            // Composing a full-page raster per sheet is what made a 100,000-number
+            // run in two copies crawl — 200,000 surfaces of ~35 MB, each PNG-encoded
+            // and decoded again — and what left the digits pixelated on a 600 dpi
+            // machine. Pages the press cannot draw as plain text (barcodes, QR, or
+            // Arabic labels that need shaping) fall through to the composer below.
+            // ═══════════════════════════════════════════════════════════════════
+            if (_spoolerService.HasSharedBackground && !LegacyPageRender)
+            {
+                var overlays = composer.TryBuildTextOverlays(pageAssignment, command.Slots, command.CopyType);
+                if (overlays != null)
+                {
+                    await _spoolerService.PrintPageAsync(overlays);
+                    return;
+                }
+            }
 
             System.Diagnostics.Debug.WriteLine($"[NUMBERING] Composing page - Numbers: [{string.Join(", ", command.PageNumbers)}], CopyType: {command.CopyType}");
 
@@ -206,32 +246,15 @@ namespace Apex.NumberedBooksEngine.Core
             return _spoolerService.EndJobAsync();
         }
 
-        private long[] ExtractPageNumbers(PagePrintCommand command)
-        {
-            // Extract page numbers from slot overlays
-            // This is a simplified extraction - may need enhancement based on actual usage
-            return command.Slots.Select(s => long.TryParse(s.Text, out var num) ? num : -1)
-                .Where(n => n >= 0)
-                .ToArray();
-        }
-
-        private IReadOnlyList<Models.SlotSpec> ExtractSlots(PagePrintCommand command)
-        {
-            // Convert SlotOverlayCommand to SlotSpec
-            return command.Slots.Select(s => new Models.SlotSpec(
-                Id: s.SlotId,
-                X: s.NormalizedX,
-                Y: s.NormalizedY,
-                Width: 0.1f, // Default width
-                Height: 0.05f, // Default height
-                FontFamily: s.FontFamily,
-                FontSize: s.FontSize,
-                FontColorHex: s.ColorHex,
-                Align: Models.TextAlign.Left,
-                Rotation: 0,
-                CopyStyles: null
-            )).ToList();
-        }
+        // ExtractPageNumbers / ExtractSlots used to live here, rebuilding a page from a
+        // PagePrintCommand that no longer carried enough to rebuild it: slot width and
+        // height were replaced with 0.1 x 0.05 defaults, alignment forced to Left, rotation
+        // dropped to 0, copy styles thrown away and CopyType hard-coded to Original — so
+        // every copy printed like the original, and any rotated or right-aligned field
+        // printed somewhere other than where it was placed. Worse, the number came back
+        // through long.TryParse on already-formatted text, so a series prefix such as
+        // "INV-000123" parsed as nothing and the slot was dropped from the sheet entirely.
+        // The orchestrator now passes the real slots and copy type straight through.
 
         public void Dispose()
         {

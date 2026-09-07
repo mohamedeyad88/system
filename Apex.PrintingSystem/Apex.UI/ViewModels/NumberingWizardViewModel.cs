@@ -1478,20 +1478,18 @@ namespace Apex.UI.ViewModels
         }
 
         /// <summary>
-        /// Default type size for a freshly added field, in canvas pixels.
+        /// Default type size for a freshly added field.
         ///
-        /// FontSize is measured in the design's OWN pixel space, so a fixed 24 meant one
-        /// thing on a 72&#160;dpi web JPEG and something else entirely on a 300&#160;dpi scan,
-        /// where it is barely 2&#160;mm tall — too small to see on screen and too small to
-        /// read on the printed sheet. Sizing it off the canvas keeps a new field legible
-        /// whatever resolution the operator's design happens to be.
+        /// This is NOT canvas pixels. FontSize is stored in 96-dpi design units — the print
+        /// engine multiplies it by the template's own resolution — and every saved project
+        /// and .apext file already on a customer's machine was written against that. So the
+        /// default stays 24, which lands at roughly 6&#160;mm of printed type on a 300&#160;dpi
+        /// A4: a normal numbering stamp. Sizing it off the canvas instead (an earlier attempt
+        /// at the "my field does not show up" report) would have been scaled a second time by
+        /// the engine and printed the number three times too large. The real cause of that
+        /// report was the DESIGNER under-drawing the number — see SlotFontScaleConverter.
         /// </summary>
-        private float DefaultSlotFontSize(float slotHeight)
-        {
-            if (CanvasHeight <= 0) return 24f;
-            var fit = CanvasHeight * slotHeight * 0.7; // fill ~70% of the field's box
-            return (float)Math.Clamp(fit, 12, 400);
-        }
+        private float DefaultSlotFontSize(float slotHeight) => 24f;
 
         [RelayCommand]
         private void RemoveSlot(NumberSlot? slot)

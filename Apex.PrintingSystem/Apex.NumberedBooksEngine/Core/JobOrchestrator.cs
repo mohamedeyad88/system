@@ -129,6 +129,10 @@ namespace Apex.NumberedBooksEngine.Core
                 // ═══════════════════════════════════════════════════════════════════
                 printer.ResetForNewJob();
 
+                // The printer formats the numbers it draws, so it needs the same digit
+                // count, prefix and suffix as everything else in this job.
+                printer.ConfigureNumberFormat(options.NumberFormat, options.UseArabicDigits);
+
                 // Set cached template with validation
                 printer.SetCachedTemplate(templateImage);
 
@@ -254,16 +258,16 @@ namespace Apex.NumberedBooksEngine.Core
                             // Set current copy index for tray routing BEFORE printing
                             printer.SetCurrentCopyIndex(copyIndex);
 
-                            // Build overlay command with copy-specific styling
-                            var command = _commandBuilder.BuildGdiCommandWithCopyStyle(
-                                checksum,
-                                pageNumbers,
-                                options.Slots,
-                                options.Dpi,
-                                copyType);
-
-                            // Print using cached template + overlay
-                            await printer.PrintPageWithOverlaysAsync(command);
+                            // Hand the printer the REAL slots and copy type. This used to
+                            // go through a PagePrintCommand that could not carry slot size,
+                            // alignment, rotation or copy styling, so the printer rebuilt
+                            // them from defaults and every copy printed like the original.
+                            await printer.PrintPageWithOverlaysAsync(new GdiPagePrintCommand
+                            {
+                                PageNumbers = pageNumbers,
+                                Slots = options.Slots,
+                                CopyType = copyType
+                            });
 
                             pagesGenerated++;
                             copyIndex++;
@@ -332,16 +336,16 @@ namespace Apex.NumberedBooksEngine.Core
                                 System.Diagnostics.Debug.WriteLine($"[NUMBERING]   Page {pageIndex + 1}: Numbers [{string.Join(", ", pageNumbers)}]");
                             }
 
-                            // Build overlay command with copy-specific styling
-                            var command = _commandBuilder.BuildGdiCommandWithCopyStyle(
-                                checksum,
-                                pageNumbers,
-                                options.Slots,
-                                options.Dpi,
-                                copyType);
-
-                            // Print using cached template + overlay
-                            await printer.PrintPageWithOverlaysAsync(command);
+                            // Hand the printer the REAL slots and copy type. This used to
+                            // go through a PagePrintCommand that could not carry slot size,
+                            // alignment, rotation or copy styling, so the printer rebuilt
+                            // them from defaults and every copy printed like the original.
+                            await printer.PrintPageWithOverlaysAsync(new GdiPagePrintCommand
+                            {
+                                PageNumbers = pageNumbers,
+                                Slots = options.Slots,
+                                CopyType = copyType
+                            });
 
                             pagesGenerated++;
                             pageIndex++;

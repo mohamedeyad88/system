@@ -26,6 +26,7 @@
         <converters:NormalizedToPixelConverter x:Key="NormalizedToPixelConverter"/>
         <converters:ZoomInvariantThicknessConverter x:Key="ZoomInvariantThicknessConverter"/>
         <converters:PageIndexToLabelConverter x:Key="PageIndexToLabelConverter"/>
+        <converters:SlotFontScaleConverter x:Key="SlotFontScaleConverter"/>
         <converters:BooleanToColorConverter x:Key="BooleanToColorConverter"/>
         <converters:InverseBoolToColorConverter x:Key="InverseBoolToColorConverter"/>
         <converters:PercentToOpacityConverter x:Key="PercentToOpacityConverter"/>
@@ -2580,14 +2581,25 @@
                                                     <Binding Path="DataContext.CanvasHeight" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
                                                 </MultiBinding>
                                             </Border.Height>
-                                            <TextBlock Text="{Binding PreviewNumber}" 
+                                            <!-- FontSize goes through SlotFontScaleConverter: the stored value is
+                                                 in 96-dpi design units and the print engine scales it by the
+                                                 template's resolution, so binding it raw drew the number at a
+                                                 third of its printed size on a 300-dpi design. Vertical
+                                                 alignment is Top to match the engine, which anchors the number
+                                                 at the slot's top-left and only adjusts X for alignment. -->
+                                            <TextBlock Text="{Binding PreviewNumber}"
                                                        Foreground="{Binding FontColor, FallbackValue=Black, TargetNullValue=Black}"
                                                        FontFamily="{Binding FontFamily}"
-                                                       FontSize="{Binding FontSize}"
                                                        FontWeight="{Binding IsBold, Converter={StaticResource BoolToFontWeightConverter}}"
-                                                       HorizontalAlignment="Center" 
-                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Top"
                                                        RenderTransformOrigin="0.5,0.5">
+                                                <TextBlock.FontSize>
+                                                    <MultiBinding Converter="{StaticResource SlotFontScaleConverter}">
+                                                        <Binding Path="FontSize"/>
+                                                        <Binding Path="DataContext.CanvasWidth" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                                    </MultiBinding>
+                                                </TextBlock.FontSize>
                                                 <TextBlock.RenderTransform>
                                                     <RotateTransform Angle="{Binding Rotation}"/>
                                                 </TextBlock.RenderTransform>
