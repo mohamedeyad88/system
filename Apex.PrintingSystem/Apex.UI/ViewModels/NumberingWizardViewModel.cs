@@ -2400,10 +2400,53 @@ namespace Apex.UI.ViewModels
                 RecentProjects.Clear();
                 foreach (var p in list) RecentProjects.Add(p);
 
-                Directory.CreateDirectory(Path.GetDirectoryName(RecentProjectsPath)!);
-                File.WriteAllText(RecentProjectsPath, JsonSerializer.Serialize(list));
+                SaveRecentProjects();
             }
             catch (System.Exception ex) { Apex.Core.Diagnostics.AppDiagnostics.LogWarning("Numbering.AddRecentProject", ex); }
+        }
+
+        /// <summary>
+        /// Takes one design off the recent list. The list stores nothing but a path, so
+        /// this removes the app's only reference to it — the operator's own file on disk is
+        /// deliberately left alone.
+        ///
+        /// A shop reported putting an invoice design into the program and then being unable
+        /// to get rid of it: the panel could open a project but never forget one, so the only
+        /// way out was to delete the file in Windows and restart. That is not something a
+        /// press operator should have to work out.
+        /// </summary>
+        [RelayCommand]
+        private void RemoveRecentProject(string? path)
+        {
+            if (string.IsNullOrEmpty(path)) return;
+
+            RecentProjects.Remove(path);
+            SaveRecentProjects();
+        }
+
+        /// <summary>Empties the recent list. Confirmed, because it is not undoable.</summary>
+        [RelayCommand]
+        private void ClearRecentProjects()
+        {
+            if (RecentProjects.Count == 0) return;
+
+            var answer = MessageBox.Show(
+                L("Num_ConfirmClearRecent"), L("Dlg_Confirm"),
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (answer != MessageBoxResult.Yes) return;
+
+            RecentProjects.Clear();
+            SaveRecentProjects();
+        }
+
+        private void SaveRecentProjects()
+        {
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(RecentProjectsPath)!);
+                File.WriteAllText(RecentProjectsPath, JsonSerializer.Serialize(RecentProjects.ToList()));
+            }
+            catch (System.Exception ex) { Apex.Core.Diagnostics.AppDiagnostics.LogWarning("Numbering.SaveRecentProjects", ex); }
         }
 
         [RelayCommand]

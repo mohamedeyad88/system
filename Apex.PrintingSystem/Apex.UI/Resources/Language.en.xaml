@@ -212,6 +212,11 @@
     <sys:String x:Key="PaperCutting_Calculate">✂ Calculate</sys:String>
     <sys:String x:Key="Monitor_Queue">Queue</sys:String>
     <sys:String x:Key="Numbering_RecentProjects">Recent Projects</sys:String>
+    <sys:String x:Key="Numbering_ClearRecent">Clear all</sys:String>
+    <sys:String x:Key="Numbering_ClearRecent_Tip">Empty the recent projects list. The files themselves stay on your computer.</sys:String>
+    <sys:String x:Key="Numbering_RemoveRecent_Tip">Remove from this list. The file itself stays on your computer.</sys:String>
+    <sys:String x:Key="Num_ConfirmClearRecent">Empty the recent projects list?&#x0a;&#x0a;The files themselves will not be deleted from your computer.</sys:String>
+    <sys:String x:Key="Dlg_Confirm">Confirm</sys:String>
     <sys:String x:Key="Numbering_PauseButton">Pause</sys:String>
     <sys:String x:Key="PrintExecution_AllPages">All Pages</sys:String>
     <sys:String x:Key="CC_023">Black (K)</sys:String>

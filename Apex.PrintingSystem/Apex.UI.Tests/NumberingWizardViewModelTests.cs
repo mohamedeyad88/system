@@ -81,4 +81,49 @@ public class NumberingWizardViewModelTests
         Assert.Equal(1, vm.StartNumber);
         Assert.Equal(100, vm.TotalNumbers);
     }
+
+    // ── Recent projects: a shop put an invoice design into the program and could not
+    // get it out again. The list could open a project but never forget one, so the only
+    // way was to delete the file in Windows and restart. These lock the way out.
+
+    [Fact]
+    public void RemoveRecentProject_TakesOnlyThatEntryOffTheList()
+    {
+        var vm = NewVm();
+        vm.RecentProjects.Clear();
+        vm.RecentProjects.Add(@"C:\jobs\invoice.apexnum");
+        vm.RecentProjects.Add(@"C:\jobs\receipts.apexnum");
+
+        vm.RemoveRecentProjectCommand.Execute(@"C:\jobs\invoice.apexnum");
+
+        Assert.Equal(new[] { @"C:\jobs\receipts.apexnum" }, vm.RecentProjects);
+    }
+
+    [Fact]
+    public void RemoveRecentProject_IgnoresNullAndEmpty()
+    {
+        var vm = NewVm();
+        vm.RecentProjects.Clear();
+        vm.RecentProjects.Add(@"C:\jobs\invoice.apexnum");
+
+        vm.RemoveRecentProjectCommand.Execute(null);
+        vm.RemoveRecentProjectCommand.Execute(string.Empty);
+
+        Assert.Single(vm.RecentProjects);
+    }
+
+    /// <summary>
+    /// Clearing an empty list must not raise the confirmation prompt — this test would
+    /// hang on a modal dialog if it did, which is exactly the guard being locked in.
+    /// </summary>
+    [Fact]
+    public void ClearRecentProjects_OnEmptyList_DoesNothingAndDoesNotPrompt()
+    {
+        var vm = NewVm();
+        vm.RecentProjects.Clear();
+
+        vm.ClearRecentProjectsCommand.Execute(null);
+
+        Assert.Empty(vm.RecentProjects);
+    }
 }
