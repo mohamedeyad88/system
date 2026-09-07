@@ -12,6 +12,12 @@
       "runtimeExecutable": "dotnet",
       "runtimeArgs": ["run", "--project", "D:\\Apex\\system\\Apex.PrintingSystem\\Apex.UI\\Apex.UI.csproj", "-c", "Debug"],
       "port": 0
+    },
+    {
+      "name": "apexprint-web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "D:\\Apex\\websits", "run", "dev"],
+      "port": 3000
     }
   ]
 }

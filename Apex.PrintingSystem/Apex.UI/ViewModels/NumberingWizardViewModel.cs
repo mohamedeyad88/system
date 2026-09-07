@@ -1417,11 +1417,22 @@ namespace Apex.UI.ViewModels
                 return;
             }
 
+            // The canvas is sized by the design image, so with no design loaded a new
+            // field is added to a zero-sized surface and simply never appears — the
+            // operator clicks "+" and nothing happens. Say why instead of failing mute.
+            if (TemplateImage == null && string.IsNullOrWhiteSpace(TemplatePath))
+            {
+                MessageBox.Show(L("Num_InsertDesignFirst"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             SaveUndoState(); // snapshot before adding
             _slotCounter++;
 
             // Position each new slot slightly offset from the previous
             float yOffset = 0.1f + ((_slotCounter - 1) * 0.08f) % 0.6f;
+
+            const float slotHeight = 0.08f;
 
             var newSlot = new NumberSlot
             {
@@ -1429,9 +1440,9 @@ namespace Apex.UI.ViewModels
                 X = 0.1f,
                 Y = yOffset,
                 Width = 0.3f,  // Increased width for better visibility
-                Height = 0.08f,  // Increased height for better visibility
+                Height = slotHeight,  // Increased height for better visibility
                 FontFamily = "Arial",
-                FontSize = 24,
+                FontSize = DefaultSlotFontSize(slotHeight),
                 FontColor = "#000000",
                 PreviewNumber = CalculatePreviewNumber(StartNumber, Slots?.Count ?? 0),  // Use actual slot index (after adding this slot)
                 IsSelected = true,  // Select new slot by default so it's visible
@@ -1464,6 +1475,22 @@ namespace Apex.UI.ViewModels
             {
                 OnPropertyChanged(nameof(Slots));
             }), System.Windows.Threading.DispatcherPriority.Loaded);
+        }
+
+        /// <summary>
+        /// Default type size for a freshly added field, in canvas pixels.
+        ///
+        /// FontSize is measured in the design's OWN pixel space, so a fixed 24 meant one
+        /// thing on a 72&#160;dpi web JPEG and something else entirely on a 300&#160;dpi scan,
+        /// where it is barely 2&#160;mm tall — too small to see on screen and too small to
+        /// read on the printed sheet. Sizing it off the canvas keeps a new field legible
+        /// whatever resolution the operator's design happens to be.
+        /// </summary>
+        private float DefaultSlotFontSize(float slotHeight)
+        {
+            if (CanvasHeight <= 0) return 24f;
+            var fit = CanvasHeight * slotHeight * 0.7; // fill ~70% of the field's box
+            return (float)Math.Clamp(fit, 12, 400);
         }
 
         [RelayCommand]

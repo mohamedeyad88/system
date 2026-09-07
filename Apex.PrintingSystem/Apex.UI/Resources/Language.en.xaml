@@ -1086,6 +1086,7 @@
     <sys:String x:Key="Num_Preparing">Preparing...</sys:String>
     <sys:String x:Key="ACT_005">Device ID</sys:String>
     <sys:String x:Key="Num_SwitchDesignMode">Please switch to design mode first</sys:String>
+    <sys:String x:Key="Num_InsertDesignFirst">Insert the design first, then add numbering fields on top of it.</sys:String>
     <sys:String x:Key="PrintExecution_StartPrinting">START PRINTING</sys:String>
     <sys:String x:Key="PrinterProps_GeneralInfo">General Information</sys:String>
     <sys:String x:Key="TD_091">Format string (e.g. dd/MM/yyyy)</sys:String>

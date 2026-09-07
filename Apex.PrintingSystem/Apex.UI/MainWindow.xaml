@@ -82,9 +82,32 @@
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="12,0,12,16">
 
+                        <!-- ══ Section: Printing ══ (now first: the daily job) -->
+                        <TextBlock Text="{DynamicResource Nav_Section_Daily}" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Muted}" Margin="8,0,0,8"/>
+
+                        <!-- 🖨️ Printing — one place for the whole job:
+                             file queue + one or many printers + distribution mode. -->
+                        <Button Command="{Binding NavigateToPrintManagerCommand}" Style="{StaticResource NavItemButton}"
+                                controls:NavAssist.Icon="🖨️"
+                                controls:NavAssist.IsActive="{Binding IsPrintManagerActive}">
+                            <controls:NavAssist.IconBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#22C55E" Offset="0"/>
+                                    <GradientStop Color="#16A34A" Offset="1"/>
+                                </LinearGradientBrush>
+                            </controls:NavAssist.IconBrush>
+                            <Button.Content>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Nav_Printing}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource Ink}"/>
+                                    <TextBlock Text="{DynamicResource Nav_Printing_Desc}" FontSize="11" FontWeight="Medium" Foreground="{DynamicResource Muted}"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+
                         <!-- ══ Section: الرئيسية ══ -->
                         <TextBlock Text="{DynamicResource Nav_Section_Main}" FontSize="11" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource Muted}" Margin="8,0,0,8"/>
+                                   Foreground="{DynamicResource Muted}" Margin="8,16,0,8"/>
 
                         <!-- 🏠 Dashboard -->
                         <Button Command="{Binding NavigateToDashboardCommand}" Style="{StaticResource NavItemButton}"
@@ -188,29 +211,6 @@
                         <!-- Color Calibration nav removed: the tool's adjustments were never applied
                              by the print pipeline (field report: no real use). Engine code kept but
                              unreferenced; can be purged fully later. -->
-
-                        <!-- ══ Section: Printing ══ (the last stage) -->
-                        <TextBlock Text="{DynamicResource Nav_Section_Daily}" FontSize="11" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource Muted}" Margin="8,16,0,8"/>
-
-                        <!-- 🖨️ Printing — one place for the whole job:
-                             file queue + one or many printers + distribution mode. -->
-                        <Button Command="{Binding NavigateToPrintManagerCommand}" Style="{StaticResource NavItemButton}"
-                                controls:NavAssist.Icon="🖨️"
-                                controls:NavAssist.IsActive="{Binding IsPrintManagerActive}">
-                            <controls:NavAssist.IconBrush>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="#22C55E" Offset="0"/>
-                                    <GradientStop Color="#16A34A" Offset="1"/>
-                                </LinearGradientBrush>
-                            </controls:NavAssist.IconBrush>
-                            <Button.Content>
-                                <StackPanel>
-                                    <TextBlock Text="{DynamicResource Nav_Printing}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource Ink}"/>
-                                    <TextBlock Text="{DynamicResource Nav_Printing_Desc}" FontSize="11" FontWeight="Medium" Foreground="{DynamicResource Muted}"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
 
                         <!-- ══ Section: النظام ══ -->
                         <TextBlock Text="{DynamicResource Nav_Section_System}" FontSize="11" FontWeight="SemiBold"

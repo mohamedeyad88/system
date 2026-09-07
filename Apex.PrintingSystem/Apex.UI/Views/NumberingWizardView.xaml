@@ -24,6 +24,7 @@
         <converters:InverseCountToVisibilityConverter x:Key="CountToHiddenConverter"/>
         <converters:FileNameOnlyConverter x:Key="FileNameOnlyConverter"/>
         <converters:NormalizedToPixelConverter x:Key="NormalizedToPixelConverter"/>
+        <converters:ZoomInvariantThicknessConverter x:Key="ZoomInvariantThicknessConverter"/>
         <converters:BooleanToColorConverter x:Key="BooleanToColorConverter"/>
         <converters:InverseBoolToColorConverter x:Key="InverseBoolToColorConverter"/>
         <converters:PercentToOpacityConverter x:Key="PercentToOpacityConverter"/>
@@ -2530,14 +2531,32 @@
                                     </ItemsControl.ItemContainerStyle>
                                     <ItemsControl.ItemTemplate>
                                     <DataTemplate>
+                                        <!-- A slot used to be an invisible box: transparent fill, zero-width
+                                             border, and nothing drawn but the preview number at its stored
+                                             FontSize. The canvas is laid out at the design's OWN pixel size
+                                             (a 300dpi A4 scan is ~2480x3508) and zoomed to fit, so that
+                                             number can land at a handful of device pixels — which is how an
+                                             operator ends up reporting that adding a field does nothing.
+                                             The field now carries a tint and an outline that stay visible at
+                                             any zoom, and it turns solid when it is the selected one. -->
                                         <Border Tag="{Binding}"
-                                                BorderBrush="Transparent"
-                                                BorderThickness="0"
-                                                Background="Transparent"
+                                                BorderThickness="{Binding DataContext.ZoomLevel, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource ZoomInvariantThicknessConverter}, ConverterParameter=1.5}"
                                                 Cursor="Hand"
                                                 MouseLeftButtonDown="Slot_MouseLeftButtonDown"
                                                 Opacity="1.0"
                                                 Visibility="Visible">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#1F0891B2"/>
+                                                    <Setter Property="BorderBrush" Value="#800891B2"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                            <Setter Property="Background" Value="#380891B2"/>
+                                                            <Setter Property="BorderBrush" Value="#FF0891B2"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
                                             <Border.Width>
                                                 <MultiBinding Converter="{StaticResource NormalizedToPixelConverter}">
                                                     <Binding Path="Width"/>

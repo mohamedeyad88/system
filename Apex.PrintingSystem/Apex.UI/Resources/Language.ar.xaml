@@ -533,6 +533,7 @@
     <sys:String x:Key="Upload_ListOfDocuments">قائمة المستندات</sys:String>
     <sys:String x:Key="PrintExecution_DeselectAll">إلغاء التحديد</sys:String>
     <sys:String x:Key="Num_SwitchDesignMode">يرجى الانتقال إلى وضع التصميم أولاً</sys:String>
+    <sys:String x:Key="Num_InsertDesignFirst">أدرج التصميم الأول، وبعدين ضيف حقول الترقيم فوقه.</sys:String>
     <sys:String x:Key="TD_021">الارتفاع (مم)</sys:String>
     <sys:String x:Key="Numbering_ExportPreviewToolTip">تصدير المعاينة الحالية كـ PNG أو JPG</sys:String>
     <sys:String x:Key="Num_ProjectCorrupt">ملف المشروع تالف أو فارغ</sys:String>
