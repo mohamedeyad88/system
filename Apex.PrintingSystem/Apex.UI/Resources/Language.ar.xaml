@@ -1218,6 +1218,7 @@
     <sys:String x:Key="Common_Delete">حذف</sys:String>
     <sys:String x:Key="CPW_001">اختر اللون</sys:String>
     <sys:String x:Key="Numbering_GeneratingPreview">جارٍ توليد المعاينة...</sys:String>
+    <sys:String x:Key="Num_PreviewPageLabel">صفحة {0}</sys:String>
     <sys:String x:Key="CC_010">الطابعة:</sys:String>
     <sys:String x:Key="Nav_PrintOps">عمليات الطباعة</sys:String>
     <sys:String x:Key="Numbering_PrintNow">طباعة الآن</sys:String>
@@ -1253,7 +1254,6 @@
     <sys:String x:Key="Numbering_TotalNumbers">إجمالي الأرقام</sys:String>
     <sys:String x:Key="Common_Yes">نعم</sys:String>
     <sys:String x:Key="PrintExecution_Tooltip">كل طابعة تُعتبر عملية طباعة مستقلة</sys:String>
-    <sys:String x:Key="Num_InsertDesignFirst">يرجى إدراج التصميم أولاً</sys:String>
     <sys:String x:Key="UPL_008">لا توجد قوالب محفوظة</sys:String>
     <sys:String x:Key="TD_016">📚 المكتبة</sys:String>
     <sys:String x:Key="Numbering_CopiesTooltip">عدد النسخ (1-3)</sys:String>

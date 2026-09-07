@@ -25,6 +25,7 @@
         <converters:FileNameOnlyConverter x:Key="FileNameOnlyConverter"/>
         <converters:NormalizedToPixelConverter x:Key="NormalizedToPixelConverter"/>
         <converters:ZoomInvariantThicknessConverter x:Key="ZoomInvariantThicknessConverter"/>
+        <converters:PageIndexToLabelConverter x:Key="PageIndexToLabelConverter"/>
         <converters:BooleanToColorConverter x:Key="BooleanToColorConverter"/>
         <converters:InverseBoolToColorConverter x:Key="InverseBoolToColorConverter"/>
         <converters:PercentToOpacityConverter x:Key="PercentToOpacityConverter"/>
@@ -2389,10 +2390,20 @@
                                                 ScaleY="{Binding ZoomLevel}"/>
                             </Border.LayoutTransform>
 
-                            <Canvas x:Name="TemplateCanvas" 
-                                    Width="{Binding CanvasWidth}" 
-                                    Height="{Binding CanvasHeight}" 
-                                    Background="#FFFFFF" 
+                            <!-- FlowDirection is pinned LeftToRight even though the whole app is
+                                 Arabic/RTL. This canvas is not text: it is a map of the sheet, and
+                                 a slot's X is stored as a fraction measured from the sheet's LEFT
+                                 edge — that is what the print engine renders from. Inheriting the
+                                 window's RTL flow made Canvas.Left count from the RIGHT instead,
+                                 so a field placed at 10% appeared at 10% from the right on screen
+                                 and printed at 10% from the left: the designer showed a perfect
+                                 mirror image of the sheet the operator got back. Dragging was
+                                 mirrored with it. -->
+                            <Canvas x:Name="TemplateCanvas"
+                                    FlowDirection="LeftToRight"
+                                    Width="{Binding CanvasWidth}"
+                                    Height="{Binding CanvasHeight}"
+                                    Background="#FFFFFF"
                                     ClipToBounds="True"
                                     MouseLeftButtonDown="Canvas_MouseLeftButtonDown"
                                     MouseMove="Canvas_MouseMove"
@@ -2938,7 +2949,7 @@
                         </StackPanel>
 
                         <!-- 4 Page thumbnails -->
-                        <ItemsControl ItemsSource="{Binding MultiPreviewPages}">
+                        <ItemsControl ItemsSource="{Binding MultiPreviewPages}" AlternationCount="4">
                             <ItemsControl.Style>
                                 <Style TargetType="ItemsControl">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -2960,7 +2971,7 @@
                                             CornerRadius="6" Margin="6" Padding="4">
                                         <StackPanel>
                                             <Image Source="{Binding}" Stretch="Uniform" MaxHeight="480"/>
-                                            <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                            <TextBlock Text="{Binding (ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ContentPresenter}, Converter={StaticResource PageIndexToLabelConverter}}"
                                                        FontSize="11" Foreground="{DynamicResource Muted}"
                                                        HorizontalAlignment="Center" Margin="0,4,0,0"/>
                                         </StackPanel>

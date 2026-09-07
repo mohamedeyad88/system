@@ -184,7 +184,6 @@
     <sys:String x:Key="PrintExecution_Ready">Ready</sys:String>
     <sys:String x:Key="Imp_Scheme">Imposition type</sys:String>
     <sys:String x:Key="Log_Search">Search:</sys:String>
-    <sys:String x:Key="Num_InsertDesignFirst">Please insert the design first</sys:String>
     <sys:String x:Key="PaperCutting_ProductName">Product name (optional)</sys:String>
     <sys:String x:Key="Quotation_PrintButton">🖨️ Print</sys:String>
     <sys:String x:Key="Num_DoneWithErrorsStatus">Completed with errors: {0} failed cycle(s)</sys:String>
@@ -910,6 +909,7 @@
     <sys:String x:Key="SV_036">Matching method:</sys:String>
     <sys:String x:Key="Num_NoPreviewExport">No preview to export — load a template first</sys:String>
     <sys:String x:Key="Numbering_GeneratingPreview">Generating preview...</sys:String>
+    <sys:String x:Key="Num_PreviewPageLabel">Page {0}</sys:String>
     <sys:String x:Key="Imp_EnterTemplateName">Enter a template name first.</sys:String>
     <sys:String x:Key="Distribution_Success">SUCCESS</sys:String>
     <sys:String x:Key="ACT_006">This device ID is needed for activation. Copy it and send it to request your license.</sys:String>

@@ -7,12 +7,23 @@ namespace Apex.NumberedBooksEngine.Core
 {
     public class TemplateLoader : IDisposable
     {
-        private SKImage? _cachedImage;
-
+        /// <summary>
+        /// Decodes a template into a fresh <see cref="SKImage"/>. The caller owns the
+        /// result and must dispose it.
+        ///
+        /// This used to cache the decoded image in a field and hand the SAME instance to
+        /// every caller — while all three call sites wrap it in `using`. So the first
+        /// caller freed the shared image and the cache went on serving that dangling
+        /// handle: the next call touched freed native memory and SkiaSharp took the whole
+        /// process down with an AccessViolationException, which .NET cannot catch. In
+        /// practice that meant generating a live preview and then a multi-page preview
+        /// (or printing after any preview) killed the app with the operator's job open.
+        /// The cache also never keyed on WHICH template was asked for, so loading a
+        /// second design would have silently re-rendered the first. It saved nothing —
+        /// every call site loads once per job — so it is gone.
+        /// </summary>
         public SKImage LoadTemplate(Stream templateStream, TemplateFormat format)
         {
-            if (_cachedImage != null) return _cachedImage;
-
             // Reset stream position if possible
             if (templateStream.CanSeek) templateStream.Position = 0;
 
@@ -28,8 +39,7 @@ namespace Apex.NumberedBooksEngine.Core
                 throw new InvalidOperationException("Failed to decode template image (bitmap is null).");
             }
 
-            _cachedImage = SKImage.FromBitmap(bitmap) ?? throw new InvalidOperationException("Failed to create SKImage from decoded template bitmap.");
-            return _cachedImage;
+            return SKImage.FromBitmap(bitmap) ?? throw new InvalidOperationException("Failed to create SKImage from decoded template bitmap.");
         }
 
         private SKImage LoadPdfTemplate(Stream pdfStream)
@@ -50,8 +60,7 @@ namespace Apex.NumberedBooksEngine.Core
                 if (skBitmap == null)
                     throw new InvalidOperationException("Failed to decode PDF render to bitmap (skBitmap is null).");
 
-                _cachedImage = SKImage.FromBitmap(skBitmap) ?? throw new InvalidOperationException("Failed to create SKImage from PDF bitmap.");
-                return _cachedImage;
+                return SKImage.FromBitmap(skBitmap) ?? throw new InvalidOperationException("Failed to create SKImage from PDF bitmap.");
             }
             catch (Exception ex)
             {
@@ -59,9 +68,12 @@ namespace Apex.NumberedBooksEngine.Core
             }
         }
 
+        /// <summary>
+        /// Nothing to release: every decoded image belongs to whoever asked for it.
+        /// Kept so existing `using` blocks around the loader keep compiling.
+        /// </summary>
         public void Dispose()
         {
-            _cachedImage?.Dispose();
         }
     }
 }

@@ -82,9 +82,32 @@
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="12,0,12,16">
 
-                        <!-- ══ Section: Printing ══ (now first: the daily job) -->
-                        <TextBlock Text="{DynamicResource Nav_Section_Daily}" FontSize="11" FontWeight="SemiBold"
+                        <!-- ══ Section: الرئيسية ══ -->
+                        <TextBlock Text="{DynamicResource Nav_Section_Main}" FontSize="11" FontWeight="SemiBold"
                                    Foreground="{DynamicResource Muted}" Margin="8,0,0,8"/>
+
+                        <!-- 🏠 Dashboard -->
+                        <Button Command="{Binding NavigateToDashboardCommand}" Style="{StaticResource NavItemButton}"
+                                controls:NavAssist.Icon="🏠"
+                                controls:NavAssist.IsActive="{Binding IsDashboardActive}">
+                            <controls:NavAssist.IconBrush>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#3B82F6" Offset="0"/>
+                                    <GradientStop Color="#1D4ED8" Offset="1"/>
+                                </LinearGradientBrush>
+                            </controls:NavAssist.IconBrush>
+                            <Button.Content>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Nav_Dashboard}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource Ink}"/>
+                                    <TextBlock Text="{DynamicResource Nav_Dashboard_Desc}" FontSize="11" FontWeight="Medium" Foreground="{DynamicResource Muted}"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+
+                        <!-- ══ Section: Printing ══ — sits directly under the dashboard:
+                             the daily job, reached before any of the preparation tools. -->
+                        <TextBlock Text="{DynamicResource Nav_Section_Daily}" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Muted}" Margin="8,16,0,8"/>
 
                         <!-- 🖨️ Printing — one place for the whole job:
                              file queue + one or many printers + distribution mode. -->
@@ -101,28 +124,6 @@
                                 <StackPanel>
                                     <TextBlock Text="{DynamicResource Nav_Printing}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource Ink}"/>
                                     <TextBlock Text="{DynamicResource Nav_Printing_Desc}" FontSize="11" FontWeight="Medium" Foreground="{DynamicResource Muted}"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-
-                        <!-- ══ Section: الرئيسية ══ -->
-                        <TextBlock Text="{DynamicResource Nav_Section_Main}" FontSize="11" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource Muted}" Margin="8,16,0,8"/>
-
-                        <!-- 🏠 Dashboard -->
-                        <Button Command="{Binding NavigateToDashboardCommand}" Style="{StaticResource NavItemButton}"
-                                controls:NavAssist.Icon="🏠"
-                                controls:NavAssist.IsActive="{Binding IsDashboardActive}">
-                            <controls:NavAssist.IconBrush>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="#3B82F6" Offset="0"/>
-                                    <GradientStop Color="#1D4ED8" Offset="1"/>
-                                </LinearGradientBrush>
-                            </controls:NavAssist.IconBrush>
-                            <Button.Content>
-                                <StackPanel>
-                                    <TextBlock Text="{DynamicResource Nav_Dashboard}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource Ink}"/>
-                                    <TextBlock Text="{DynamicResource Nav_Dashboard_Desc}" FontSize="11" FontWeight="Medium" Foreground="{DynamicResource Muted}"/>
                                 </StackPanel>
                             </Button.Content>
                         </Button>
