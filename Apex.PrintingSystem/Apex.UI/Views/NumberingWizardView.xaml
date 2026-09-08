@@ -498,9 +498,25 @@
                                         <TextBlock Text="{DynamicResource Numbering_InsertDesign}" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
+
+                                <!-- Sits under Insert and appears only once a design is on the
+                                     canvas. Loading a different design over the top used to be
+                                     the only way out, which left whatever was opened last
+                                     sitting on screen — customer paperwork included. -->
+                                <Button Command="{Binding ClearTemplateCommand}"
+                                        ToolTip="{DynamicResource Numbering_ClearDesign_Tip}"
+                                        Content="{DynamicResource Numbering_ClearDesign}"
+                                        Foreground="#B42318"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Padding="4,6,4,0"
+                                        FontSize="11"
+                                        Cursor="Hand"
+                                        HorizontalAlignment="Center"
+                                        Visibility="{Binding HasTemplate, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                             </StackPanel>
                         </Border>
-                        
+
                         <!-- Numbering Group -->
                         <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
                             <StackPanel>

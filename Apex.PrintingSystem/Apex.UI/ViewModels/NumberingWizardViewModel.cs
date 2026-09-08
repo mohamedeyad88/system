@@ -627,6 +627,16 @@ namespace Apex.UI.ViewModels
                     CanvasWidth = bitmap.PixelWidth;
                     CanvasHeight = bitmap.PixelHeight;
 
+                    // Fit the sheet to the window the moment it loads.
+                    //
+                    // The canvas is laid out at the design's OWN pixel size, and zoom was
+                    // left at whatever it happened to be — 1.0 on a fresh start. A 300 dpi
+                    // A4 scan is 2480x3508, so it opened at 2480 screen pixels inside a
+                    // viewport a few hundred wide: the operator saw a corner of the sheet
+                    // blown up and reported "the design opens far too big". Nothing was
+                    // wrong with the design; it simply was never fitted to the window.
+                    FitToScreen();
+
                     // Reset live preview so template shows fresh
                     LivePreviewImage = null;
                     SchedulePreviewUpdate();
@@ -643,6 +653,46 @@ namespace Apex.UI.ViewModels
                 LivePreviewImage = null;
             }
         }
+
+        /// <summary>
+        /// Takes the loaded design off the canvas and clears the fields placed on it.
+        ///
+        /// Until now the only way to get a design out of the numbering screen was to load
+        /// a different one over it — so whatever was last opened stayed on screen
+        /// indefinitely. That matters beyond tidiness: shops scan customer paperwork, and
+        /// a document nobody meant to leave up sat there for anyone at the machine to see.
+        /// The numbering fields go with it because their positions are relative to the
+        /// sheet they were placed on, and the confirmation says so before anything is lost.
+        /// </summary>
+        [RelayCommand]
+        private void ClearTemplate()
+        {
+            if (TemplateImage == null && string.IsNullOrWhiteSpace(TemplatePath) && Slots.Count == 0)
+                return;
+
+            var answer = MessageBox.Show(
+                L("Num_ConfirmClearDesign"), L("Dlg_Confirm"),
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (answer != MessageBoxResult.Yes) return;
+
+            TemplatePath = null;   // clears TemplateImage and the live preview
+            CanvasWidth = 0;
+            CanvasHeight = 0;
+
+            Slots.Clear();
+            SelectedSlot = null;
+            _slotCounter = 0;
+            _undoStack.Clear();
+            _redoStack.Clear();
+
+            WorkflowMode = WorkflowMode.Prepare;
+            PrintStatus = L("Num_DesignCleared");
+        }
+
+        /// <summary>True when there is a design on the canvas to remove.</summary>
+        public bool HasTemplate => TemplateImage != null || !string.IsNullOrWhiteSpace(TemplatePath);
+
+        partial void OnTemplateImageChanged(BitmapSource? value) => OnPropertyChanged(nameof(HasTemplate));
 
         private void UpdateComputedValues()
         {

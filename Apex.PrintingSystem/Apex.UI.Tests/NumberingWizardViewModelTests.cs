@@ -126,4 +126,27 @@ public class NumberingWizardViewModelTests
 
         Assert.Empty(vm.RecentProjects);
     }
+
+    [Fact]
+    public void HasTemplate_IsFalseUntilADesignIsLoaded()
+    {
+        var vm = NewVm();
+        Assert.False(vm.HasTemplate);
+    }
+
+    /// <summary>
+    /// With nothing on the canvas there is nothing to confirm, so the command must return
+    /// before the prompt. Were the guard removed this test would hang on a modal dialog.
+    /// </summary>
+    [Fact]
+    public void ClearTemplate_WithNothingLoaded_DoesNotPrompt()
+    {
+        var vm = NewVm();
+        vm.Slots.Clear();
+
+        vm.ClearTemplateCommand.Execute(null);
+
+        Assert.False(vm.HasTemplate);
+        Assert.Empty(vm.Slots);
+    }
 }
