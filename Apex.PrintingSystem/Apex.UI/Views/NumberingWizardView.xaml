@@ -8,8 +8,9 @@
              xmlns:models="clr-namespace:Apex.UI.Models"
              xmlns:converters="clr-namespace:Apex.UI.Converters"
              xmlns:vm="clr-namespace:Apex.UI.ViewModels"
-             mc:Ignorable="d" d:DesignHeight="900" d:DesignWidth="1600">
-    
+             mc:Ignorable="d" d:DesignHeight="900" d:DesignWidth="1600"
+             PreviewKeyDown="NumberingView_PreviewKeyDown">
+
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <converters:GuideLineX1Converter x:Key="GuideLineX1Converter"/>
@@ -1537,7 +1538,11 @@
                                     <StackPanel.Resources>
                                         <Style x:Key="DarkTrayCombo" TargetType="ComboBox"
                                                BasedOn="{StaticResource {x:Type ComboBox}}">
-                                            <Setter Property="Width"           Value="120"/>
+                                            <!-- 120 cut real tray names off mid-word
+                                                 ("تغذية خلفية للورق" showed as "…للورر").
+                                                 Now the printer's own labels fit, and the
+                                                 tooltip carries the full name regardless. -->
+                                            <Setter Property="Width"           Value="165"/>
                                             <Setter Property="Height"          Value="32"/>
                                             <Setter Property="FontSize"        Value="12"/>
                                             <Setter Property="Padding"         Value="8,0"/>
@@ -1568,29 +1573,32 @@
 
                                     <!-- Original -->
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                                        <TextBlock Text="{DynamicResource Numbering_Original}" Width="70" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource Muted}"/>
+                                        <TextBlock Text="{DynamicResource Numbering_Original}" Width="58" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource Muted}"/>
                                         <ComboBox ItemsSource="{Binding AvailableTrayOptions}"
                                                   DisplayMemberPath="DisplayName"
                                                   SelectedValuePath="Value"
                                                   SelectedValue="{Binding OriginalTray}"
+                                                  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem.DisplayName}"
                                                   Style="{StaticResource DarkTrayCombo}"/>
                                     </StackPanel>
                                     <!-- Copy 1 -->
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,6" Visibility="{Binding UseCopy1, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <TextBlock Text="{DynamicResource Numbering_Copy1Label}" Width="70" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource Muted}"/>
+                                        <TextBlock Text="{DynamicResource Numbering_Copy1Label}" Width="58" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource Muted}"/>
                                         <ComboBox ItemsSource="{Binding AvailableTrayOptions}"
                                                   DisplayMemberPath="DisplayName"
                                                   SelectedValuePath="Value"
                                                   SelectedValue="{Binding Copy1Tray}"
+                                                  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem.DisplayName}"
                                                   Style="{StaticResource DarkTrayCombo}"/>
                                     </StackPanel>
                                     <!-- Copy 2 -->
                                     <StackPanel Orientation="Horizontal" Visibility="{Binding UseCopy2, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <TextBlock Text="{DynamicResource Numbering_Copy2Label}" Width="70" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource Muted}"/>
+                                        <TextBlock Text="{DynamicResource Numbering_Copy2Label}" Width="58" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource Muted}"/>
                                         <ComboBox ItemsSource="{Binding AvailableTrayOptions}"
                                                   DisplayMemberPath="DisplayName"
                                                   SelectedValuePath="Value"
                                                   SelectedValue="{Binding Copy2Tray}"
+                                                  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem.DisplayName}"
                                                   Style="{StaticResource DarkTrayCombo}"/>
                                     </StackPanel>
 
@@ -1607,7 +1615,9 @@
                         
                         <!-- Detailed Summary Info -->
                         <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
-                            <StackPanel>
+                            <!-- Capped, or the mode sentence below stretches the group as
+                                 wide as it is long — see the note on the Mode group. -->
+                            <StackPanel MaxWidth="290">
                                 <TextBlock Text="{DynamicResource Numbering_PrintSummary}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8" FontWeight="SemiBold"/>
                                 <StackPanel>
                                     <TextBlock Margin="0,0,0,4">
@@ -1630,115 +1640,60 @@
                                         <Run Text="{DynamicResource Numbering_TotalPagesLabel}" Foreground="{DynamicResource Muted}"/>
                                         <Run Text="{Binding TotalPagesComputed, Mode=OneWay, StringFormat='{}{0:N0}'}" FontWeight="Bold" Foreground="#0891B2"/>
                                     </TextBlock>
-                                    <!-- Printing Mode Name -->
-                                    <TextBlock Margin="0,8,0,4">
-                                        <Run Text="{DynamicResource Numbering_ModeLabel}" Foreground="{DynamicResource Muted}"/>
-                                        <Run Text="{Binding PrintingModeName, Mode=OneWay}" FontWeight="SemiBold">
-                                            <Run.Style>
-                                                <Style TargetType="Run">
-                                                    <Setter Property="Foreground" Value="#1B7F4C"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding UseSmartTrayPrinting}" Value="False">
-                                                            <Setter Property="Foreground" Value="#6B6864"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Run.Style>
-                                        </Run>
-                                    </TextBlock>
-                                    
-                                    <!-- Printing Mode Description -->
-                                    <Border Background="#FAF9F7" 
-                                            BorderBrush="{DynamicResource Border}" 
-                                            BorderThickness="1" 
-                                            CornerRadius="4" 
-                                            Padding="12,10" 
-                                            Margin="0,4,0,0">
-                                        <TextBlock Text="{Binding PrintingModeDescription, Mode=OneWay}" 
-                                                   FontSize="11" 
-                                                   Foreground="{DynamicResource Muted}" 
-                                                   TextWrapping="Wrap" 
-                                                   LineHeight="18"/>
-                                    </Border>
+                                    <!-- The mode and its explanation used to be repeated here,
+                                         a full sentence wide, even though the Mode group at
+                                         the end of the ribbon is where the operator actually
+                                         chooses it. Saying it twice cost enough width to push
+                                         that group onto a line of its own. The explanation now
+                                         lives next to the control it explains. -->
                                 </StackPanel>
                             </StackPanel>
                         </Border>
                         
-                        <!-- Print Progress Indicator -->
-                        <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top"
-                                Visibility="{Binding IsPrinting, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <!-- The ribbon's "print status" group stood here: a second, smaller
+                             copy of the progress panel that already sits under the ribbon with
+                             the live number, the page count, the time remaining and the
+                             pause/cancel buttons. Two progress bars for one job is confusing by
+                             itself, and because this one appeared only while printing it
+                             re-flowed the entire ribbon the moment a job started — every group
+                             shifted under the operator's hand. The panel below is the one that
+                             stays. -->
+
+                        <!-- Print Scale Options.
+                             Was a bare StackPanel anchored to the BOTTOM of the ribbon with
+                             its own 14px heading and a 20px bottom margin, so it hung below
+                             the other groups and stretched the whole row to its height —
+                             the empty band the operator was looking at. It is a ribbon
+                             group like every other one now. -->
+                        <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
                             <StackPanel>
-                                <TextBlock Text="{DynamicResource Numbering_PrintStatus}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8" FontWeight="SemiBold"/>
-                                <StackPanel>
-                                    <TextBlock Text="{Binding PrintStatus}" 
-                                               FontSize="12" 
-                                               FontWeight="SemiBold" 
-                                               Foreground="#0891B2"
-                                               Margin="0,0,0,6"/>
-                                    <ProgressBar Value="{Binding PrintProgress}" 
-                                                 Maximum="100" 
-                                                 Height="8" 
-                                                 Margin="0,0,0,4">
-                                        <ProgressBar.Style>
-                                            <Style TargetType="ProgressBar">
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="ProgressBar">
-                                                            <!-- PART_Track/PART_Indicator: WPF sizes the fill to Value/Maximum
-                                                                 against the track's actual width. (The old converter capped
-                                                                 the fill at a fixed 100px regardless of the bar's real width.) -->
-                                                            <Border x:Name="PART_Track"
-                                                                    Background="#DDD9D3"
-                                                                    CornerRadius="4"
-                                                                    BorderThickness="0">
-                                                                <Border x:Name="PART_Indicator"
-                                                                        Background="#0891B2"
-                                                                        CornerRadius="4"
-                                                                        HorizontalAlignment="Left"/>
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </Style>
-                                        </ProgressBar.Style>
-                                    </ProgressBar>
-                                    <TextBlock Text="{Binding PrintProgress, StringFormat='{}{0:F0}%'}" 
-                                               FontSize="10" 
-                                               Foreground="{DynamicResource Muted}"
-                                               HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                        
-                        <!-- Print Scale Options -->
-                        <StackPanel VerticalAlignment="Bottom" Margin="16,0,0,20">
-                            <TextBlock Text="{DynamicResource Numbering_ScalingOptions}" 
-                                       FontSize="14" 
-                                       FontWeight="SemiBold" 
+                            <TextBlock Text="{DynamicResource Numbering_ScalingOptions}"
+                                       FontSize="11"
                                        Foreground="{DynamicResource Muted}"
-                                       Margin="0,0,0,12"/>
-                            
+                                       Margin="0,0,0,8"/>
+
                             <StackPanel>
                                 <!-- Actual Size (100%) -->
-                                <RadioButton Content="{DynamicResource Numbering_ActualSize}" 
+                                <RadioButton Content="{DynamicResource Numbering_ActualSize}"
                                              IsChecked="{Binding PrintScaleMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=ActualSize}"
                                              GroupName="PrintScale"
-                                             Margin="0,0,0,8"
-                                             FontSize="13"
+                                             Margin="0,0,0,6"
+                                             FontSize="12"
                                              Foreground="#14181D"
                                              Cursor="Hand"
                                              Checked="PrintScaleMode_Checked"/>
-                                
+
                                 <!-- Fit to Page -->
-                                <RadioButton Content="{DynamicResource Numbering_FitToPage}" 
+                                <RadioButton Content="{DynamicResource Numbering_FitToPage}"
                                              IsChecked="{Binding PrintScaleMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=FitToPage}"
                                              GroupName="PrintScale"
-                                             FontSize="13"
+                                             FontSize="12"
                                              Foreground="#14181D"
                                              Cursor="Hand"
                                              Checked="PrintScaleMode_Checked"/>
                             </StackPanel>
-                        </StackPanel>
+                            </StackPanel>
+                        </Border>
 
                         <!-- ════ LOW ② — سجل الطباعة + المشاريع الأخيرة ════
                              This group is a WrapPanel item like the others; it used to
@@ -1747,7 +1702,7 @@
                              operator saw its buttons clipped/overlapping. Keeping it
                              inside the WrapPanel lets it wrap to a new line like every
                              other group instead of overlapping them. -->
-                        <Border Padding="0,0,0,0" Margin="16,0,0,0">
+                        <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
                             <StackPanel>
                                 <TextBlock Text="{DynamicResource Numbering_HistoryLabel}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
                                 <StackPanel Orientation="Horizontal">
@@ -1895,31 +1850,34 @@
                                 </StackPanel>
                             </StackPanel>
                         </Border>
-                        <Border Padding="0,0,16,0" Margin="0,0,16,0">
-                            <StackPanel>
+                        <!-- A WrapPanel measures its children with unlimited width, so
+                             TextWrapping on its own never wraps here — it just made this
+                             group as wide as the sentence, which pushed it onto a line of
+                             its own and left the row above half empty. MaxWidth is what
+                             actually makes the text wrap. -->
+                        <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="0,0,16,0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
+                            <StackPanel MaxWidth="250">
                                 <TextBlock Text="{DynamicResource Numbering_ModeLabel}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <RadioButton Content="{DynamicResource Numbering_TraditionalPrint}" 
+                                    <RadioButton Content="{DynamicResource Numbering_TraditionalPrint}"
                                                  IsChecked="{Binding UseSmartTrayPrinting, Converter={StaticResource InverseBoolConverter}}"
                                                  GroupName="PrintMode"
                                                  Margin="0,0,12,0"
+                                                 FontSize="12"
                                                  VerticalAlignment="Center"/>
-                                    <RadioButton Content="{DynamicResource Numbering_SmartPrint}" 
+                                    <RadioButton Content="{DynamicResource Numbering_SmartPrint}"
                                                  IsChecked="{Binding UseSmartTrayPrinting}"
                                                  GroupName="PrintMode"
+                                                 FontSize="12"
                                                  VerticalAlignment="Center"/>
                                 </StackPanel>
-                                <!-- Behavioral Description -->
-                                <StackPanel Margin="0,8,0,0" Orientation="Vertical">
-                                    <TextBlock Text="{DynamicResource Numbering_SmartPrint_Description}" 
-                                               FontSize="11" Foreground="{DynamicResource Muted}" 
-                                               TextWrapping="Wrap" 
-                                               Visibility="{Binding UseSmartTrayPrinting, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                    <TextBlock Text="{DynamicResource Numbering_TraditionalPrint_Description}" 
-                                               FontSize="11" Foreground="{DynamicResource Muted}" 
-                                               TextWrapping="Wrap"
-                                               Visibility="{Binding UseSmartTrayPrinting, Converter={StaticResource InverseBoolConverter}}"/>
-                                </StackPanel>
+                                <!-- The full explanation of the selected mode, moved down from
+                                     the summary so it sits with the radio buttons it describes
+                                     instead of being said twice on one screen. -->
+                                <TextBlock Text="{Binding PrintingModeDescription, Mode=OneWay}"
+                                           FontSize="11" Foreground="{DynamicResource Muted}"
+                                           TextWrapping="Wrap" MaxWidth="250" LineHeight="16"
+                                           Margin="0,8,0,0"/>
                             </StackPanel>
                         </Border>
                     </WrapPanel>

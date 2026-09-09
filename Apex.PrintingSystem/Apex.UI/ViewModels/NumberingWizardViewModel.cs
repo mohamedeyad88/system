@@ -753,6 +753,20 @@ namespace Apex.UI.ViewModels
                 return;
             }
 
+            // Checked at the moment the job is sent, not on the way to this screen. Without
+            // these the press would have run the whole job on blank sheets.
+            if (string.IsNullOrWhiteSpace(TemplatePath))
+            {
+                MessageBox.Show(L("Num_SelectTemplatePathFirst"), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (Slots == null || Slots.Count == 0)
+            {
+                MessageBox.Show(L("Num_AddOneSlot"), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             if (RangeInvalid)
             {
                 MessageBox.Show(L("Num_RangeInvalid"), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -1379,32 +1393,19 @@ namespace Apex.UI.ViewModels
 
         }
 
+        /// <summary>
+        /// Opens the print stage. Looking at the print settings is not the same as printing,
+        /// so nothing is demanded here.
+        ///
+        /// <para>This used to refuse to open at all without a printer, a design AND at least
+        /// one numbering field, which is how an operator got told to "add at least one field"
+        /// while still on the way to the stage where fields are placed. Those conditions
+        /// matter when the job is actually sent, and that is where they are checked now —
+        /// see <see cref="StartPrint"/>.</para>
+        /// </summary>
         [RelayCommand]
         private void NavigateToExecute()
         {
-
-            // Check printer first (most important)
-            if (string.IsNullOrEmpty(SelectedPrinter))
-            {
-                MessageBox.Show(L("Num_SelectPrinter"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            if (string.IsNullOrEmpty(TemplatePath))
-            {
-                MessageBox.Show(L("Num_SelectTemplatePathFirst"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            if (Slots == null || Slots.Count == 0)
-            {
-                MessageBox.Show(L("Num_AddOneSlot"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            // ═══════════════════════════════════════════════════════════════════
-            // CRITICAL FIX: Save current mode to navigation history for back button
-            // ═══════════════════════════════════════════════════════════════════
             _navigationHistory.Push(WorkflowMode);
             WorkflowMode = WorkflowMode.Print;
         }
@@ -1657,6 +1658,16 @@ namespace Apex.UI.ViewModels
             if (Copy3Tray.HasValue && !kinds.Contains(Copy3Tray.Value)) Copy3Tray = null;
 
             AssignDefaultCopyTrays();
+
+            // Re-announce the selections after the option list has been rebuilt. Clearing
+            // an ObservableCollection under a bound ComboBox drops its SelectedItem, and the
+            // control does not pick the value up again on its own once the items return —
+            // the tray box sat empty even though a tray was selected.
+            OnPropertyChanged(nameof(OriginalTray));
+            OnPropertyChanged(nameof(Copy1Tray));
+            OnPropertyChanged(nameof(Copy2Tray));
+            OnPropertyChanged(nameof(Copy3Tray));
+            OnPropertyChanged(nameof(TraySeparationUnavailable));
         }
 
         /// <summary>

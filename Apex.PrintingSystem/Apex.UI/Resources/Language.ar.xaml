@@ -310,7 +310,7 @@
     <sys:String x:Key="Upload_Description">طباعة عدة ملفات على طابعة واحدة أو عدة طابعات</sys:String>
     <sys:String x:Key="Num_ExportDesignSettings">تصدير إعدادات التصميم</sys:String>
     <sys:String x:Key="TD_032">رقم</sys:String>
-    <sys:String x:Key="Num_AddOneSlot">يرجى إضافة slot واحد على الأقل</sys:String>
+    <sys:String x:Key="Num_AddOneSlot">مفيش حقول ترقيم على التصميم.&#x0a;ارجع لتبويب «التصميم» وضيف حقل واحد على الأقل قبل الطباعة.</sys:String>
     <sys:String x:Key="Num_ResumingFromSaved">جاري الاستئناف من الحالة المحفوظة...</sys:String>
     <sys:String x:Key="Monitor_Online">متصل</sys:String>
     <sys:String x:Key="Common_Cancel">إلغاء</sys:String>

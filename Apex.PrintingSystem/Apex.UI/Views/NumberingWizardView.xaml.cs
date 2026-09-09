@@ -77,6 +77,29 @@ namespace Apex.UI.Views
             CanvasScrollViewer.ScrollToVerticalOffset(anchorY * factor - mouse.Y);
         }
 
+        /// <summary>
+        /// Enter inside a numbering field commits what was typed and stops there.
+        ///
+        /// <para>Reported from the floor as the screen "moving to the next stage on its own
+        /// while working". It was not spontaneous: the stage buttons — "بدء التصميم",
+        /// "متابعة إلى الطباعة" — are ordinary buttons, and one of them holds keyboard focus
+        /// on this screen. An operator who typed a count and pressed Enter, as anyone does,
+        /// sent that Enter straight to the focused button and was moved a stage on.</para>
+        ///
+        /// <para>Committing the binding here also means the value the operator just typed is
+        /// the value the job uses, rather than waiting for focus to leave the box.</para>
+        /// </summary>
+        private void NumberingView_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter && e.Key != Key.Return) return;
+
+            if (Keyboard.FocusedElement is TextBox box && !box.AcceptsReturn)
+            {
+                box.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+                e.Handled = true;
+            }
+        }
+
         private void StartLayoutButton_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             e.Handled = false;
