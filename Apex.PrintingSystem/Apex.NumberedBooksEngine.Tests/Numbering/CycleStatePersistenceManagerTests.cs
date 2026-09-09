@@ -50,10 +50,10 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
             var startNumber = 1L;
             var totalNumbers = 10L;
             var copiesPerPage = 2;
-            var trayMapping = new Dictionary<int, PaperSourceKind>
+            var trayMapping = new Dictionary<int, int>
             {
-                { 0, PaperSourceKind.Upper },
-                { 1, PaperSourceKind.Lower }
+                { 0, (int)PaperSourceKind.Upper },
+                { 1, (int)PaperSourceKind.Lower }
             };
             var dpi = 300;
             var cycles = CreateTestCycles(3);
@@ -82,10 +82,10 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
             var startNumber = 1L;
             var totalNumbers = 10L;
             var copiesPerPage = 2;
-            var trayMapping = new Dictionary<int, PaperSourceKind>
+            var trayMapping = new Dictionary<int, int>
             {
-                { 0, PaperSourceKind.Upper },
-                { 1, PaperSourceKind.Lower }
+                { 0, (int)PaperSourceKind.Upper },
+                { 1, (int)PaperSourceKind.Lower }
             };
             var dpi = 300;
             var cycles = CreateTestCycles(3);
@@ -153,7 +153,7 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
             {
                 new SlotSpec("slot1", 0.1f, 0.1f, 0.2f, 0.1f, "Arial", 12f, "#000000", TextAlign.Center, 0f, null)
             };
-            var trayMapping = new Dictionary<int, PaperSourceKind> { { 0, PaperSourceKind.Upper } };
+            var trayMapping = new Dictionary<int, int> { { 0, (int)PaperSourceKind.Upper } };
 
             await _manager.SaveStateAsync(
                 jobId1, "Printer1", "template1.pdf", slots, 1L, 10L, 1, trayMapping, 300, CreateTestCycles(2));
@@ -188,7 +188,7 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
             {
                 new SlotSpec("slot1", 0.1f, 0.1f, 0.2f, 0.1f, "Arial", 12f, "#000000", TextAlign.Center, 0f, null)
             };
-            var trayMapping = new Dictionary<int, PaperSourceKind> { { 0, PaperSourceKind.Upper } };
+            var trayMapping = new Dictionary<int, int> { { 0, (int)PaperSourceKind.Upper } };
 
             // Act
             await _manager.SaveStateAsync(
@@ -218,7 +218,7 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
             {
                 new SlotSpec("slot1", 0.1f, 0.1f, 0.2f, 0.1f, "Arial", 12f, "#000000", TextAlign.Center, 0f, null)
             };
-            var trayMapping = new Dictionary<int, PaperSourceKind> { { 0, PaperSourceKind.Upper } };
+            var trayMapping = new Dictionary<int, int> { { 0, (int)PaperSourceKind.Upper } };
 
             // Act
             await _manager.SaveStateAsync(
@@ -248,7 +248,7 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
             {
                 new SlotSpec("slot1", 0.1f, 0.1f, 0.2f, 0.1f, "Arial", 12f, "#000000", TextAlign.Center, 0f, null)
             };
-            var trayMapping = new Dictionary<int, PaperSourceKind> { { 0, PaperSourceKind.Upper } };
+            var trayMapping = new Dictionary<int, int> { { 0, (int)PaperSourceKind.Upper } };
 
             // Act
             await _manager.SaveStateAsync(
@@ -278,7 +278,7 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
             {
                 new SlotSpec("slot1", 0.1f, 0.1f, 0.2f, 0.1f, "Arial", 12f, "#000000", TextAlign.Center, 0f, null)
             };
-            var trayMapping = new Dictionary<int, PaperSourceKind> { { 0, PaperSourceKind.Upper } };
+            var trayMapping = new Dictionary<int, int> { { 0, (int)PaperSourceKind.Upper } };
 
             // Act
             await _manager.SaveStateAsync(
@@ -314,7 +314,7 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
                 StartNumber = number,
                 EndNumber = number,
                 CopiesPerPage = 1,
-                TrayMapping = new Dictionary<int, PaperSourceKind> { { 0, PaperSourceKind.Upper } },
+                TrayMapping = new Dictionary<int, int> { { 0, (int)PaperSourceKind.Upper } },
                 DependsOnJobId = dependsOn,
                 Status = status,
                 ErrorMessage = errorMessage,
@@ -324,7 +324,7 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
                     {
                         Number = number,
                         Type = CopyType.Original,
-                        Tray = PaperSourceKind.Upper,
+                        Tray = (int)PaperSourceKind.Upper,
                         PageIndex = 0,
                         Slots = new List<SlotSpec>
                         {

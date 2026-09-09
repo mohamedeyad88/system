@@ -15,6 +15,19 @@ namespace Apex.Services.Printing
         public PaperSourceKind Kind { get; set; }
         public bool IsAvailable { get; set; }
         public int Index { get; set; }
+
+        /// <summary>
+        /// The printer's own id for this drawer (DEVMODE dmDefaultSource) — the ONLY thing
+        /// that actually tells two drawers apart.
+        ///
+        /// <para><see cref="Kind"/> is far too coarse: Windows maps a handful of standard
+        /// bins to named values and reports everything else as <c>Custom</c>. A real machine
+        /// shows why — an EPSON WF-C5210 reports "درج الورق 1" and "تغذية خلفية للورق" as
+        /// Custom and Custom, while their RawKinds are 258 and 261. Keyed by Kind the two
+        /// drawers are indistinguishable, so every copy was routed to whichever one came
+        /// first, and printing each copy from its own tray could never work.</para>
+        /// </summary>
+        public int RawKind { get; set; }
     }
 
     /// <summary>
@@ -110,8 +123,16 @@ namespace Apex.Services.Printing
                     var source = paperSources[i];
                     var tray = new PrinterTray
                     {
-                        Name = GetTrayDisplayName(source.Kind),
+                        // The printer's own label first. It is what is written on the
+                        // machine and what the operator is looking at — "درج الورق 1",
+                        // "Bypass Tray", "Cassette 2". Deriving the name from Kind instead
+                        // labelled every vendor drawer "Tray (Custom)", so a shop with two
+                        // drawers saw two identical entries and could not tell them apart.
+                        Name = string.IsNullOrWhiteSpace(source.SourceName)
+                            ? GetTrayDisplayName(source.Kind)
+                            : source.SourceName,
                         Kind = source.Kind,
+                        RawKind = source.RawKind,
                         IsAvailable = IsTrayAvailable(source.Kind),
                         Index = i
                     };
@@ -121,29 +142,26 @@ namespace Apex.Services.Printing
                 // If no trays detected, add default
                 if (trays.Count == 0)
                 {
-                    trays.Add(new PrinterTray
-                    {
-                        Name = "Default Tray",
-                        Kind = PaperSourceKind.AutomaticFeed,
-                        IsAvailable = true,
-                        Index = 0
-                    });
+                    trays.Add(DefaultTray());
                 }
             }
             catch (Exception)
             {
                 // If detection fails, return default tray
-                trays.Add(new PrinterTray
-                {
-                    Name = "Default Tray",
-                    Kind = PaperSourceKind.AutomaticFeed,
-                    IsAvailable = true,
-                    Index = 0
-                });
+                trays.Add(DefaultTray());
             }
 
             return trays;
         }
+
+        private static PrinterTray DefaultTray() => new()
+        {
+            Name = "Default Tray",
+            Kind = PaperSourceKind.AutomaticFeed,
+            RawKind = (int)PaperSourceKind.AutomaticFeed,
+            IsAvailable = true,
+            Index = 0
+        };
 
         private string GetTrayDisplayName(PaperSourceKind kind)
         {

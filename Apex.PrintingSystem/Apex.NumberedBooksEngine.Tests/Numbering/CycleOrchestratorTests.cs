@@ -15,7 +15,7 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
     /// </summary>
     internal sealed class AlwaysOkTrayVerifier : ITrayVerificationService
     {
-        public TrayVerificationResult Verify(string printerName, Dictionary<int, PaperSourceKind> trayMapping)
+        public TrayVerificationResult Verify(string printerName, Dictionary<int, int> trayMapping)
             => TrayVerificationResult.Ok();
     }
 
@@ -50,10 +50,10 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
             {
                 new SlotSpec("slot1", 0.1f, 0.1f, 0.2f, 0.1f, "Arial", 12f, "#000000", TextAlign.Center, 0f, null)
             };
-            var trayMapping = new Dictionary<int, PaperSourceKind>
+            var trayMapping = new Dictionary<int, int>
             {
-                { 0, PaperSourceKind.Upper },
-                { 1, PaperSourceKind.Lower }
+                { 0, (int)PaperSourceKind.Upper },
+                { 1, (int)PaperSourceKind.Lower }
             };
 
             // Act
@@ -78,9 +78,9 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
             {
                 new SlotSpec("slot1", 0.1f, 0.1f, 0.2f, 0.1f, "Arial", 12f, "#000000", TextAlign.Center, 0f, null)
             };
-            var trayMapping = new Dictionary<int, PaperSourceKind>
+            var trayMapping = new Dictionary<int, int>
             {
-                { 0, PaperSourceKind.Upper }
+                { 0, (int)PaperSourceKind.Upper }
             };
 
             // Act
@@ -111,9 +111,9 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
             {
                 new SlotSpec("slot1", 0.1f, 0.1f, 0.2f, 0.1f, "Arial", 12f, "#000000", TextAlign.Center, 0f, null)
             };
-            var trayMapping = new Dictionary<int, PaperSourceKind>
+            var trayMapping = new Dictionary<int, int>
             {
-                { 0, PaperSourceKind.Upper }
+                { 0, (int)PaperSourceKind.Upper }
             };
 
             // Act
@@ -145,11 +145,11 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
             {
                 new SlotSpec("slot1", 0.1f, 0.1f, 0.2f, 0.1f, "Arial", 12f, "#000000", TextAlign.Center, 0f, null)
             };
-            var trayMapping = new Dictionary<int, PaperSourceKind>
+            var trayMapping = new Dictionary<int, int>
             {
-                { 0, PaperSourceKind.Upper },
-                { 1, PaperSourceKind.Lower },
-                { 2, PaperSourceKind.Middle }
+                { 0, (int)PaperSourceKind.Upper },
+                { 1, (int)PaperSourceKind.Lower },
+                { 2, (int)PaperSourceKind.Middle }
             };
 
             // Act
@@ -178,9 +178,9 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
             {
                 new SlotSpec("slot1", 0.1f, 0.1f, 0.2f, 0.1f, "Arial", 12f, "#000000", TextAlign.Center, 0f, null)
             };
-            var trayMapping = new Dictionary<int, PaperSourceKind>
+            var trayMapping = new Dictionary<int, int>
             {
-                { 0, PaperSourceKind.Upper }
+                { 0, (int)PaperSourceKind.Upper }
             };
 
             // Act
@@ -208,9 +208,9 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
             {
                 new SlotSpec("slot1", 0.1f, 0.1f, 0.2f, 0.1f, "Arial", 12f, "#000000", TextAlign.Center, 0f, null)
             };
-            var trayMapping = new Dictionary<int, PaperSourceKind>
+            var trayMapping = new Dictionary<int, int>
             {
-                { 0, PaperSourceKind.Upper }
+                { 0, (int)PaperSourceKind.Upper }
             };
 
             // Act
@@ -236,9 +236,9 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
             {
                 new SlotSpec("slot1", 0.1f, 0.1f, 0.2f, 0.1f, "Arial", 12f, "#000000", TextAlign.Center, 0f, null)
             };
-            var trayMapping = new Dictionary<int, PaperSourceKind>
+            var trayMapping = new Dictionary<int, int>
             {
-                { 0, PaperSourceKind.Upper }
+                { 0, (int)PaperSourceKind.Upper }
             };
 
             // Act

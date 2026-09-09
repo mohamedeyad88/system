@@ -48,7 +48,7 @@ namespace Apex.Services.Numbering
             long startNumber,
             long totalNumbers,
             int copiesPerPage,
-            Dictionary<int, PaperSourceKind>? copyTrayMapping = null,
+            Dictionary<int, int>? copyTrayMapping = null,
             PrintScaleMode scaleMode = PrintScaleMode.ActualSize,
             IProgress<ProgressInfo>? progress = null,
             CancellationToken ct = default,
@@ -63,7 +63,7 @@ namespace Apex.Services.Numbering
                 copyTypes.Add((CopyType)i);
             }
 
-            var copyTrayMappingDict = copyTrayMapping ?? new Dictionary<int, PaperSourceKind>();
+            var copyTrayMappingDict = copyTrayMapping ?? new Dictionary<int, int>();
 
             // Determine NumberingMode from parameter or default to Auto
             var mode = numberingMode ?? NumberingMode.Auto;
@@ -102,7 +102,7 @@ namespace Apex.Services.Numbering
             long startNumber,
             long totalNumbers,
             int copiesPerPage,
-            Dictionary<int, PaperSourceKind> trayMapping,
+            Dictionary<int, int> trayMapping,
             int dpi = 300,
             CancellationToken ct = default)
         {

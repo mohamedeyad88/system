@@ -302,7 +302,7 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
                 StartNumber = number,
                 EndNumber = number,
                 CopiesPerPage = 1,
-                TrayMapping = new Dictionary<int, PaperSourceKind> { { 0, PaperSourceKind.Upper } },
+                TrayMapping = new Dictionary<int, int> { { 0, (int)PaperSourceKind.Upper } },
                 DependsOnJobId = dependsOn,
                 Status = CycleStatus.Pending,
                 Pages = new List<CyclePage>
@@ -311,7 +311,7 @@ namespace Apex.NumberedBooksEngine.Tests.Numbering
                     {
                         Number = number,
                         Type = CopyType.Original,
-                        Tray = PaperSourceKind.Upper,
+                        Tray = (int)PaperSourceKind.Upper,
                         PageIndex = 0,
                         Slots = new List<SlotSpec>
                         {

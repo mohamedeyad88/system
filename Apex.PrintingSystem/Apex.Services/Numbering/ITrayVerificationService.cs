@@ -9,6 +9,6 @@ namespace Apex.Services.Numbering
     /// </summary>
     public interface ITrayVerificationService
     {
-        TrayVerificationResult Verify(string printerName, Dictionary<int, PaperSourceKind> trayMapping);
+        TrayVerificationResult Verify(string printerName, Dictionary<int, int> trayMapping);
     }
 }

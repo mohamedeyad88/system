@@ -38,7 +38,7 @@ namespace Apex.Services.Numbering
             long totalNumbers,
             int copiesPerPage,
             IReadOnlyList<SlotSpec> slots,
-            Dictionary<int, PaperSourceKind> trayMapping)
+            Dictionary<int, int> trayMapping)
         {
             var verification = _trayVerifier.Verify(printerName, trayMapping);
             if (!verification.Success)
@@ -58,7 +58,7 @@ namespace Apex.Services.Numbering
                     StartNumber = number,
                     EndNumber = number,
                     CopiesPerPage = copiesPerPage,
-                    TrayMapping = new Dictionary<int, PaperSourceKind>(trayMapping),
+                    TrayMapping = new Dictionary<int, int>(trayMapping),
                     DependsOnJobId = previous?.JobId,
                     BatchId = $"batch-{i / _batchSize}"
                 };
@@ -77,7 +77,7 @@ namespace Apex.Services.Numbering
                             3 => CopyType.Copy3,
                             _ => CopyType.Original
                         },
-                        Tray = trayMapping.TryGetValue(copyIndex, out var trayKind) ? trayKind : PaperSourceKind.AutomaticFeed,
+                        Tray = trayMapping.TryGetValue(copyIndex, out var trayRawKind) ? trayRawKind : (int)PaperSourceKind.AutomaticFeed,
                         PageIndex = copyIndex,
                         Slots = new List<SlotSpec>(slots)
                     });

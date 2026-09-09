@@ -493,120 +493,54 @@ namespace Apex.NumberedBooksEngine.Core
                 // Log all tray mappings
                 foreach (var mapping in _settings.CopyTrayMapping)
                 {
-                    LogTray($"  TrayMapping[{mapping.Key}] = {mapping.Value} ({(int)mapping.Value})");
+                    LogTray($"  TrayMapping[copy {mapping.Key}] = RawKind {mapping.Value}");
                 }
             }
 
             if (_settings.CopyTrayMapping != null &&
-                _settings.CopyTrayMapping.TryGetValue(_currentPageCopyIndex, out var trayKind))
+                _settings.CopyTrayMapping.TryGetValue(_currentPageCopyIndex, out var trayRawKind))
             {
                 try
                 {
-                    // Find the matching paper source
                     var paperSources = _printDocument?.PrinterSettings.PaperSources;
                     if (paperSources != null && paperSources.Count > 0)
                     {
-                        LogTray($"QueryPageSettings: Looking for TrayKind={trayKind} ({(int)trayKind}) among {paperSources.Count} sources");
-
-                        // Log all available sources first
+                        LogTray($"QueryPageSettings: Looking for RawKind={trayRawKind} among {paperSources.Count} sources");
                         for (int i = 0; i < paperSources.Count; i++)
                         {
-                            LogTray($"  Printer Source[{i}]: Kind={paperSources[i].Kind} ({(int)paperSources[i].Kind}), RawKind={paperSources[i].RawKind}, Name='{paperSources[i].SourceName}'");
+                            LogTray($"  Printer Source[{i}]: RawKind={paperSources[i].RawKind}, Kind={paperSources[i].Kind}, Name='{paperSources[i].SourceName}'");
                         }
 
-                        bool trayFound = false;
-
-                        // ═══════════════════════════════════════════════════════════════════
-                        // STRATEGY 1: Try to match by PaperSourceKind
-                        // ═══════════════════════════════════════════════════════════════════
+                        // Exact match on the printer's own source id.
+                        //
+                        // This replaces three stacked guessing strategies — match by Kind,
+                        // then classify drawers by scanning their names for "tray"/"درج"/
+                        // "manual", then fall back to using the enum's numeric value as an
+                        // index. They existed because the mapping carried a PaperSourceKind,
+                        // and Windows reports most vendor drawers as Custom: every drawer
+                        // looked alike, so the first one won and every copy came off the
+                        // same paper. RawKind identifies a drawer exactly, so there is
+                        // nothing left to guess at.
+                        PaperSource? chosen = null;
                         for (int i = 0; i < paperSources.Count; i++)
                         {
-                            if (paperSources[i].Kind == trayKind)
+                            if (paperSources[i].RawKind == trayRawKind)
                             {
-                                e.PageSettings.PaperSource = paperSources[i];
-                                trayFound = true;
-                                LogTray($"✅ TRAY SELECTED BY KIND: '{paperSources[i].SourceName}' for CopyIndex={_currentPageCopyIndex}");
+                                chosen = paperSources[i];
                                 break;
                             }
                         }
 
-                        // ═══════════════════════════════════════════════════════════════════
-                        // STRATEGY 2: For printers using Custom kind, use logical mapping:
-                        // Upper (Tray 1) → First non-auto tray (usually index 1 or 2)
-                        // Lower (Tray 2) → Second non-auto tray
-                        // Manual → Look for manual/hand feed source
-                        // ═══════════════════════════════════════════════════════════════════
-                        if (!trayFound)
+                        if (chosen != null)
                         {
-                            LogTray($"⚠️ TrayKind {trayKind} ({(int)trayKind}) NOT FOUND by Kind! Trying logical mapping...");
-
-                            // Build list of non-auto trays
-                            var manualTrays = new List<int>();
-                            var casseteTrays = new List<int>();
-
-                            for (int i = 0; i < paperSources.Count; i++)
-                            {
-                                var srcName = paperSources[i].SourceName.ToLower();
-                                var rawKind = paperSources[i].RawKind;
-
-                                // Detect manual feed trays (common patterns)
-                                if (srcName.Contains("manual") || srcName.Contains("hand") ||
-                                    srcName.Contains("يدو") || // Arabic "manual"
-                                    rawKind == 4 || // Manual
-                                    rawKind == 261 || rawKind == 262) // Common manual raw kinds
-                                {
-                                    manualTrays.Add(i);
-                                }
-                                // Detect cassette/regular trays
-                                else if (srcName.Contains("tray") || srcName.Contains("cassette") ||
-                                         srcName.Contains("درج") || // Arabic "tray"
-                                         (paperSources[i].Kind == PaperSourceKind.Custom &&
-                                          paperSources[i].Kind != PaperSourceKind.AutomaticFeed))
-                                {
-                                    casseteTrays.Add(i);
-                                }
-                            }
-
-                            LogTray($"  Found manual trays: [{string.Join(",", manualTrays)}], cassette trays: [{string.Join(",", casseteTrays)}]");
-
-                            int selectedIndex = -1;
-
-                            switch (trayKind)
-                            {
-                                case PaperSourceKind.Upper: // Tray 1
-                                    selectedIndex = casseteTrays.Count > 0 ? casseteTrays[0] : -1;
-                                    break;
-                                case PaperSourceKind.Lower: // Tray 2
-                                    selectedIndex = casseteTrays.Count > 1 ? casseteTrays[1] : -1;
-                                    break;
-                                case PaperSourceKind.Middle: // Tray 3
-                                    selectedIndex = casseteTrays.Count > 2 ? casseteTrays[2] : -1;
-                                    break;
-                                case PaperSourceKind.Manual: // Manual Feed
-                                    selectedIndex = manualTrays.Count > 0 ? manualTrays[0] : -1;
-                                    break;
-                                default:
-                                    // Try by index directly as last resort
-                                    // Upper=1, Lower=2, Middle=3, Manual=4
-                                    int kindValue = (int)trayKind;
-                                    if (kindValue > 0 && kindValue < paperSources.Count)
-                                    {
-                                        selectedIndex = kindValue;
-                                    }
-                                    break;
-                            }
-
-                            if (selectedIndex >= 0 && selectedIndex < paperSources.Count)
-                            {
-                                e.PageSettings.PaperSource = paperSources[selectedIndex];
-                                trayFound = true;
-                                LogTray($"✅ TRAY SELECTED BY MAPPING: [{selectedIndex}] '{paperSources[selectedIndex].SourceName}' for CopyIndex={_currentPageCopyIndex}");
-                            }
+                            e.PageSettings.PaperSource = chosen;
+                            LogTray($"✅ TRAY SELECTED: '{chosen.SourceName}' (RawKind={chosen.RawKind}) for CopyIndex={_currentPageCopyIndex}");
                         }
-
-                        if (!trayFound)
+                        else
                         {
-                            LogTray($"❌ TRAY NOT FOUND - using printer default");
+                            // The saved job names a drawer this printer does not have —
+                            // say which, rather than silently printing on the default.
+                            LogTray($"❌ TRAY NOT FOUND: no source with RawKind={trayRawKind} on '{_settings.PrinterName}' - using printer default");
                         }
                     }
                     else

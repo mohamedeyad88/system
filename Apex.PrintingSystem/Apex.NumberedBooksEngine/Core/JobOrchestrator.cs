@@ -27,7 +27,9 @@ namespace Apex.NumberedBooksEngine.Core
         bool LowResourceMode,
         int CheckpointEvery,
         IReadOnlyList<CopyType>? CopyTypes = null,
-        Dictionary<int, System.Drawing.Printing.PaperSourceKind>? CopyTrayMapping = null,
+        // copy index → the printer's own source id (PaperSource.RawKind), not a
+        // PaperSourceKind: see PrintJobSettings.CopyTrayMapping.
+        Dictionary<int, int>? CopyTrayMapping = null,
         PrintScaleMode? ScaleMode = null,
         NumberingMode? NumberingMode = null,
         bool UseSmartPrinting = true,

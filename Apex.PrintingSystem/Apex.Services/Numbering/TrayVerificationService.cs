@@ -26,18 +26,23 @@ namespace Apex.Services.Numbering
         /// Verify that all trays in mapping exist for the given printer.
         /// (Paper level availability is not exposed by the current APIs).
         /// </summary>
-        public TrayVerificationResult Verify(string printerName, Dictionary<int, PaperSourceKind> trayMapping)
+        public TrayVerificationResult Verify(string printerName, Dictionary<int, int> trayMapping)
         {
             var errors = new List<string>();
 
             var available = _trayDetector.GetAvailableTrays(printerName);
-            var availableKinds = available.Select(t => t.Kind).ToHashSet();
+
+            // Checked against the printer's own source ids. Verifying by PaperSourceKind
+            // passed anything as long as SOME drawer shared the kind — and since Windows
+            // reports most vendor drawers as Custom, a mapping naming a tray the machine
+            // does not have sailed through and then printed on the default one.
+            var availableRawKinds = available.Select(t => t.RawKind).ToHashSet();
 
             foreach (var kvp in trayMapping)
             {
-                if (!availableKinds.Contains(kvp.Value))
+                if (!availableRawKinds.Contains(kvp.Value))
                 {
-                    errors.Add($"Tray for copy index {kvp.Key} (kind {kvp.Value}) not found on printer '{printerName}'.");
+                    errors.Add($"Tray for copy index {kvp.Key} (source id {kvp.Value}) not found on printer '{printerName}'.");
                 }
             }
 

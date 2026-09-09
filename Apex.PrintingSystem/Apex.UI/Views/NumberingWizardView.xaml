@@ -1593,6 +1593,14 @@
                                                   SelectedValue="{Binding Copy2Tray}"
                                                   Style="{StaticResource DarkTrayCombo}"/>
                                     </StackPanel>
+
+                                    <!-- Say it out loud when the hardware cannot do what was
+                                         asked. Copies quietly coming off one drawer is what
+                                         "multi-tray printing does not work" turned out to be. -->
+                                    <TextBlock Text="{DynamicResource Numbering_TraySeparationUnavailable}"
+                                               Visibility="{Binding TraySeparationUnavailable, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                               Foreground="#B42318" FontSize="11" TextWrapping="Wrap"
+                                               MaxWidth="230" Margin="0,8,0,0"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>

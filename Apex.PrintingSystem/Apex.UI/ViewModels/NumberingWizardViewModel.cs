@@ -283,22 +283,29 @@ namespace Apex.UI.ViewModels
         [ObservableProperty]
         private ObservableCollection<string> _availablePrinters = new();
 
-        public record TrayOption(string DisplayName, PaperSourceKind Value);
+        /// <summary>
+        /// One drawer the operator can choose. <c>Value</c> is the printer's own source id
+        /// (<c>PaperSource.RawKind</c>): Windows reports most vendor drawers as
+        /// <c>PaperSourceKind.Custom</c>, so keying the picker by kind gave a two-drawer
+        /// machine two entries with the same name and the same value — nothing to choose
+        /// between, and every copy ended up on the first drawer.
+        /// </summary>
+        public record TrayOption(string DisplayName, int Value);
 
         [ObservableProperty]
         private ObservableCollection<TrayOption> _availableTrayOptions = new();
 
         [ObservableProperty]
-        private PaperSourceKind? _copy1Tray;
+        private int? _copy1Tray;
 
         [ObservableProperty]
-        private PaperSourceKind? _copy2Tray;
+        private int? _copy2Tray;
 
         [ObservableProperty]
-        private PaperSourceKind? _copy3Tray;
+        private int? _copy3Tray;
 
         [ObservableProperty]
-        private PaperSourceKind _originalTray = PaperSourceKind.Upper;  // Tray for Original (Copy 0)
+        private int _originalTray = (int)PaperSourceKind.Upper;  // Tray for Original (Copy 0)
 
         [ObservableProperty]
         private int _copiesCount = 1;
@@ -560,7 +567,7 @@ namespace Apex.UI.ViewModels
             InitializeTrayOptions();
 
             // Set default tray for Original
-            OriginalTray = PaperSourceKind.Upper;
+            OriginalTray = (int)PaperSourceKind.Upper;
 
             // Load recent projects list
             LoadRecentProjects();
@@ -718,6 +725,10 @@ namespace Apex.UI.ViewModels
             TotalPagesComputed = pagesPerCopy * CopiesCount;
 
             OnPropertyChanged(nameof(HasMultipleCopies));
+
+            // Asking for a second copy is the moment it needs a drawer of its own.
+            AssignDefaultCopyTrays();
+            OnPropertyChanged(nameof(TraySeparationUnavailable));
         }
 
         partial void OnNumberOfCopiesChanged(int value)
@@ -760,15 +771,15 @@ namespace Apex.UI.ViewModels
             // clear Arabic message instead of the engine's technical English one.
             if (!string.IsNullOrWhiteSpace(SelectedPrinter))
             {
-                var availableKinds = _trayDetector.GetAvailableTrays(SelectedPrinter)
-                    .Select(t => t.Kind).ToHashSet();
-                if (availableKinds.Count > 0)
+                var availableTrays = _trayDetector.GetAvailableTrays(SelectedPrinter)
+                    .Select(t => t.RawKind).ToHashSet();
+                if (availableTrays.Count > 0)
                 {
-                    var chosen = new List<PaperSourceKind> { OriginalTray };
+                    var chosen = new List<int> { OriginalTray };
                     if (UseCopy1 && Copy1Tray.HasValue) chosen.Add(Copy1Tray.Value);
                     if (UseCopy2 && Copy2Tray.HasValue) chosen.Add(Copy2Tray.Value);
                     if (UseCopy3 && Copy3Tray.HasValue) chosen.Add(Copy3Tray.Value);
-                    if (chosen.Any(k => !availableKinds.Contains(k)))
+                    if (chosen.Any(k => !availableTrays.Contains(k)))
                     {
                         MessageBox.Show(L("Num_TrayMissing"), L("Dlg_Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
@@ -904,29 +915,7 @@ namespace Apex.UI.ViewModels
                     });
                 });
 
-                // Build tray mapping for traditional printing
-                var trayMapping = new Dictionary<int, PaperSourceKind>();
-
-                // Original (Copy 0) - allow user to select tray
-                trayMapping[0] = OriginalTray;
-
-                // Copy 1 (الصورة 1)
-                if (UseCopy1 && Copy1Tray.HasValue)
-                {
-                    trayMapping[1] = Copy1Tray.Value;
-                }
-
-                // Copy 2 (الصورة 2)
-                if (UseCopy2 && Copy2Tray.HasValue)
-                {
-                    trayMapping[2] = Copy2Tray.Value;
-                }
-
-                // Copy 3 (not used, but keep for compatibility)
-                if (UseCopy3 && Copy3Tray.HasValue)
-                {
-                    trayMapping[3] = Copy3Tray.Value;
-                }
+                var trayMapping = BuildTrayMapping();
 
                 // Determine NumberingMode based on IsLinearMode/IsImposedMode
                 NumberingMode numberingMode = NumberingMode.Auto;
@@ -995,26 +984,7 @@ namespace Apex.UI.ViewModels
             _cts = new CancellationTokenSource();
             var ct = _cts.Token;
 
-            // Build tray mapping
-            var trayMapping = new Dictionary<int, PaperSourceKind>();
-
-            // Original (Copy 0) - allow user to select tray
-            trayMapping[0] = OriginalTray;
-
-            if (UseCopy1 && Copy1Tray.HasValue)
-            {
-                trayMapping[1] = Copy1Tray.Value;
-            }
-
-            if (UseCopy2 && Copy2Tray.HasValue)
-            {
-                trayMapping[2] = Copy2Tray.Value;
-            }
-
-            if (UseCopy3 && Copy3Tray.HasValue)
-            {
-                trayMapping[3] = Copy3Tray.Value;
-            }
+            var trayMapping = BuildTrayMapping();
 
             // Get slots from UI
             var slots = Slots.Select(s => s.ToSlotSpec()).ToList();
@@ -1645,14 +1615,14 @@ namespace Apex.UI.ViewModels
             if (trays.Count > 0)
             {
                 foreach (var t in trays)
-                    AvailableTrayOptions.Add(new TrayOption(t.Name, t.Kind));
+                    AvailableTrayOptions.Add(new TrayOption(t.Name, t.RawKind));
             }
             else
             {
-                AvailableTrayOptions.Add(new TrayOption("Tray 1", PaperSourceKind.Upper));
-                AvailableTrayOptions.Add(new TrayOption("Tray 2", PaperSourceKind.Lower));
-                AvailableTrayOptions.Add(new TrayOption("Tray 3", PaperSourceKind.Middle));
-                AvailableTrayOptions.Add(new TrayOption("Manual Feed", PaperSourceKind.Manual));
+                AvailableTrayOptions.Add(new TrayOption("Tray 1", (int)PaperSourceKind.Upper));
+                AvailableTrayOptions.Add(new TrayOption("Tray 2", (int)PaperSourceKind.Lower));
+                AvailableTrayOptions.Add(new TrayOption("Tray 3", (int)PaperSourceKind.Middle));
+                AvailableTrayOptions.Add(new TrayOption("Manual Feed", (int)PaperSourceKind.Manual));
             }
 
             ReconcileTraySelections();
@@ -1674,6 +1644,110 @@ namespace Apex.UI.ViewModels
             if (Copy1Tray.HasValue && !kinds.Contains(Copy1Tray.Value)) Copy1Tray = null;
             if (Copy2Tray.HasValue && !kinds.Contains(Copy2Tray.Value)) Copy2Tray = null;
             if (Copy3Tray.HasValue && !kinds.Contains(Copy3Tray.Value)) Copy3Tray = null;
+
+            AssignDefaultCopyTrays();
+        }
+
+        /// <summary>
+        /// Gives each copy its own drawer when the operator has asked for more than one.
+        ///
+        /// <para>Reported from the floor as "multi-tray printing does not work". It never
+        /// could: the per-copy tray started as null and only the Original was ever put in
+        /// the mapping, so unless the operator found and set every copy dropdown by hand,
+        /// the copies went out with no paper source at all and the printer pulled them from
+        /// its default drawer — the same one as the original. Asking for two copies and
+        /// getting two identical sheets from one tray looks exactly like a broken feature.</para>
+        ///
+        /// <para>The Original is also pulled off "Auto Select" here. Auto lets the printer
+        /// choose the drawer, which defeats the entire point of separating copies — and it
+        /// is the first source most printers report, so it is what the Original was being
+        /// reconciled onto.</para>
+        ///
+        /// <para>Only ever fills in blanks: a tray the operator picked is never overwritten.</para>
+        /// </summary>
+        private void AssignDefaultCopyTrays()
+        {
+            if (NumberOfCopies < 2) return;
+
+            // "Auto" is not a drawer, so it cannot take part in separating copies.
+            var drawers = AvailableTrayOptions
+                .Where(o => o.Value != (int)PaperSourceKind.AutomaticFeed)
+                .Select(o => o.Value)
+                .Distinct()
+                .ToList();
+
+            if (drawers.Count == 0) return;
+
+            // Copies the operator has already assigned are claimed first, so filling in the
+            // blanks never lands the Original on a drawer a copy is using.
+            var taken = new HashSet<int>();
+            if (Copy1Tray.HasValue) taken.Add(Copy1Tray.Value);
+            if (Copy2Tray.HasValue) taken.Add(Copy2Tray.Value);
+
+            if (OriginalTray == (int)PaperSourceKind.AutomaticFeed)
+            {
+                var freeForOriginal = drawers.Where(d => !taken.Contains(d)).ToList();
+                if (freeForOriginal.Count > 0) OriginalTray = freeForOriginal[0];
+            }
+
+            taken.Add(OriginalTray);
+
+            if (NumberOfCopies >= 2 && !Copy1Tray.HasValue)
+            {
+                var free = drawers.Where(d => !taken.Contains(d)).ToList();
+                if (free.Count > 0)
+                {
+                    Copy1Tray = free[0];
+                    taken.Add(free[0]);
+                }
+            }
+
+            if (NumberOfCopies >= 3 && !Copy2Tray.HasValue)
+            {
+                var free = drawers.Where(d => !taken.Contains(d)).ToList();
+                if (free.Count > 0)
+                {
+                    Copy2Tray = free[0];
+                    taken.Add(free[0]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// True when copies were requested but the printer does not report enough separate
+        /// drawers to give each one its own — the copies will come off the same paper. Said
+        /// out loud in the UI, because silently printing them all from one tray is what the
+        /// "multi-tray does not work" report was about.
+        /// </summary>
+        public bool TraySeparationUnavailable
+        {
+            get
+            {
+                if (NumberOfCopies < 2) return false;
+                int drawers = AvailableTrayOptions
+                    .Where(o => o.Value != (int)PaperSourceKind.AutomaticFeed)
+                    .Select(o => o.Value)
+                    .Distinct()
+                    .Count();
+                return drawers < NumberOfCopies;
+            }
+        }
+
+        /// <summary>
+        /// The copy-to-tray map handed to the print engine.
+        ///
+        /// This used to be written out inline in both print paths — two copies of the same
+        /// logic to keep in step, which is how one of them ends up wrong.
+        /// </summary>
+        private Dictionary<int, int> BuildTrayMapping()
+        {
+            var mapping = new Dictionary<int, int> { [0] = OriginalTray };
+
+            if (UseCopy1 && Copy1Tray.HasValue) mapping[1] = Copy1Tray.Value;
+            if (UseCopy2 && Copy2Tray.HasValue) mapping[2] = Copy2Tray.Value;
+            if (UseCopy3 && Copy3Tray.HasValue) mapping[3] = Copy3Tray.Value;
+
+            return mapping;
         }
 
         private void InitializeFonts()

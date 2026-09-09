@@ -29,7 +29,8 @@ namespace Apex.Core.Models
         public List<CyclePage> Pages { get; set; } = new();
 
         /// <summary>Tray mapping per copy index (0=Original,1=Copy1,...).</summary>
-        public Dictionary<int, PaperSourceKind> TrayMapping { get; set; } = new();
+        // copy index → the printer's own source id (PaperSource.RawKind).
+        public Dictionary<int, int> TrayMapping { get; set; } = new();
 
         /// <summary>Dependency on previous cycle job (JobId).</summary>
         public string? DependsOnJobId { get; set; }

@@ -21,7 +21,7 @@ namespace Apex.Services.Numbering
         long StartNumber,
         long TotalNumbers,
         int CopiesPerPage,
-        Dictionary<int, System.Drawing.Printing.PaperSourceKind> TrayMapping,
+        Dictionary<int, int> TrayMapping,
         int Dpi,
         DateTime CreatedAtUtc,
         DateTime? PausedAtUtc,
@@ -72,7 +72,7 @@ namespace Apex.Services.Numbering
             long startNumber,
             long totalNumbers,
             int copiesPerPage,
-            Dictionary<int, System.Drawing.Printing.PaperSourceKind> trayMapping,
+            Dictionary<int, int> trayMapping,
             int dpi,
             IEnumerable<CycleJob> cycles,
             string? lastError = null)

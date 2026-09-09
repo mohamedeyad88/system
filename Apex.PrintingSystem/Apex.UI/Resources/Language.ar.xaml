@@ -495,6 +495,7 @@
     <sys:String x:Key="SV_ParseError">خطأ في التحليل: {0}</sys:String>
     <sys:String x:Key="PrintOps_Refresh">تحديث</sys:String>
     <sys:String x:Key="Numbering_RecentProjects">المشاريع الأخيرة</sys:String>
+    <sys:String x:Key="Numbering_TraySeparationUnavailable">⚠ الطابعة دي مفيهاش أدراج كافية لفصل كل نسخة في درج. النسخ هتطبع من نفس الورق.</sys:String>
     <sys:String x:Key="Numbering_ClearDesign">✕ إزالة التصميم</sys:String>
     <sys:String x:Key="Numbering_ClearDesign_Tip">إزالة التصميم المعروض وحقول الترقيم اللي عليه. الملف نفسه يفضل على الجهاز.</sys:String>
     <sys:String x:Key="Num_ConfirmClearDesign">هل تريد إزالة التصميم المعروض؟&#x0a;&#x0a;حقول الترقيم اللي عليه هتتشال معاه، لأن أماكنها محسوبة على التصميم ده.&#x0a;الملف نفسه لن يُحذف من الجهاز.</sys:String>

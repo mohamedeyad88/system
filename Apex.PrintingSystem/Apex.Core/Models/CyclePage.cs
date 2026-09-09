@@ -19,9 +19,11 @@ namespace Apex.Core.Models
         public Apex.NumberedBooksEngine.Models.CopyType Type { get; set; }
 
         /// <summary>
-        /// Tray/PaperSource to use for this page.
+        /// Tray to use for this page, as the printer's own source id
+        /// (<c>PaperSource.RawKind</c>) — a PaperSourceKind cannot tell two vendor drawers
+        /// apart, since Windows reports both as Custom.
         /// </summary>
-        public PaperSourceKind Tray { get; set; }
+        public int Tray { get; set; }
 
         /// <summary>
         /// Page index within the cycle (0 = Original, 1 = Copy1, 2 = Copy2, etc.).

@@ -18,8 +18,14 @@ namespace Apex.NumberedBooksEngine.Core
         /// <summary>
         /// Tray selection for each copy (index 0 = Original, 1 = Copy 1, 2 = Copy 2, etc.)
         /// If null or empty, uses default tray.
+        ///
+        /// <para>The value is the printer's own source id — <c>PaperSource.RawKind</c> — not
+        /// a <c>PaperSourceKind</c>. Windows reports most vendor drawers as <c>Custom</c>,
+        /// so keying by kind made every drawer on a machine look like the same drawer and
+        /// each copy was routed to whichever one happened to come first. RawKind is exact:
+        /// on an EPSON WF-C5210 the paper tray is 258 and the rear feed is 261.</para>
         /// </summary>
-        public Dictionary<int, System.Drawing.Printing.PaperSourceKind>? CopyTrayMapping { get; set; }
+        public Dictionary<int, int>? CopyTrayMapping { get; set; }
 
         /// <summary>
         /// Fit to page - scales the content to fit the printable area of the page.

@@ -212,6 +212,7 @@
     <sys:String x:Key="PaperCutting_Calculate">✂ Calculate</sys:String>
     <sys:String x:Key="Monitor_Queue">Queue</sys:String>
     <sys:String x:Key="Numbering_RecentProjects">Recent Projects</sys:String>
+    <sys:String x:Key="Numbering_TraySeparationUnavailable">⚠ This printer does not have enough trays to give each copy its own. The copies will print on the same paper.</sys:String>
     <sys:String x:Key="Numbering_ClearDesign">✕ Remove design</sys:String>
     <sys:String x:Key="Numbering_ClearDesign_Tip">Take the design off the canvas along with the numbering fields on it. The file itself stays on your computer.</sys:String>
     <sys:String x:Key="Num_ConfirmClearDesign">Remove the design from the canvas?&#x0a;&#x0a;The numbering fields on it are removed too, because their positions are relative to this design.&#x0a;The file itself will not be deleted from your computer.</sys:String>

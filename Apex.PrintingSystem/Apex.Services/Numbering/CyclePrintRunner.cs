@@ -49,7 +49,7 @@ namespace Apex.Services.Numbering
             long startNumber,
             long totalNumbers,
             int copiesPerPage,
-            Dictionary<int, PaperSourceKind> trayMapping,
+            Dictionary<int, int> trayMapping,
             int dpi,
             CancellationToken ct,
             string? jobId = null)
@@ -197,7 +197,7 @@ namespace Apex.Services.Numbering
                     CompletedAtUtc = cycleState.CompletedAtUtc,
                     ErrorMessage = cycleState.ErrorMessage,
                     CopiesPerPage = state.CopiesPerPage,
-                    TrayMapping = new Dictionary<int, System.Drawing.Printing.PaperSourceKind>(state.TrayMapping)
+                    TrayMapping = new Dictionary<int, int>(state.TrayMapping)
                 };
 
                 // Rebuild pages
@@ -218,7 +218,7 @@ namespace Apex.Services.Numbering
                             },
                             Tray = state.TrayMapping.TryGetValue(copyIndex, out var trayKind)
                                 ? trayKind
-                                : System.Drawing.Printing.PaperSourceKind.Upper,
+                                : (int)System.Drawing.Printing.PaperSourceKind.Upper,
                             PageIndex = copyIndex,
                             Slots = new List<Apex.NumberedBooksEngine.Models.SlotSpec> { slot }
                         });
@@ -259,7 +259,7 @@ namespace Apex.Services.Numbering
             long startNumber,
             long totalNumbers,
             int copiesPerPage,
-            Dictionary<int, System.Drawing.Printing.PaperSourceKind> trayMapping,
+            Dictionary<int, int> trayMapping,
             int dpi,
             string? lastError)
         {
