@@ -1452,24 +1452,35 @@ namespace Apex.UI.ViewModels
             // Position each new slot slightly offset from the previous
             float yOffset = 0.1f + ((_slotCounter - 1) * 0.08f) % 0.6f;
 
-            const float slotHeight = 0.08f;
+            const float defaultHeight = 0.08f;
+
+            // A new field copies the look of the one before it.
+            //
+            // Every field on a sheet is the same number in the same type — that is what a
+            // numbered book IS. Starting each one at Arial 24 black meant the operator set
+            // the colour and size, added the second field, and had to set them all over
+            // again, for every field on the sheet. Only the position differs, so only the
+            // position is new here. With nothing to copy from, the old defaults still apply.
+            var style = SelectedSlot ?? Slots?.LastOrDefault();
 
             var newSlot = new NumberSlot
             {
                 Id = $"Slot {_slotCounter}",
-                X = 0.1f,
+                X = style?.X ?? 0.1f,
                 Y = yOffset,
-                Width = 0.3f,  // Increased width for better visibility
-                Height = slotHeight,  // Increased height for better visibility
-                FontFamily = "Arial",
-                FontSize = DefaultSlotFontSize(slotHeight),
-                FontColor = "#000000",
+                Width = style?.Width ?? 0.3f,
+                Height = style?.Height ?? defaultHeight,
+                FontFamily = style?.FontFamily ?? "Arial",
+                FontSize = style?.FontSize ?? DefaultSlotFontSize(defaultHeight),
+                FontColor = style?.FontColor ?? "#000000",
                 PreviewNumber = CalculatePreviewNumber(StartNumber, Slots?.Count ?? 0),  // Use actual slot index (after adding this slot)
                 IsSelected = true,  // Select new slot by default so it's visible
-                IsBold = false,
-                Rotation = 0,
-                Opacity = 1.0,
-                Alignment = "Center"
+                IsBold = style?.IsBold ?? false,
+                Rotation = style?.Rotation ?? 0,
+                Opacity = style?.Opacity ?? 1.0,
+                Alignment = style?.Alignment ?? "Center",
+                SlotKind = style?.SlotKind ?? "Text",
+                BarcodeType = style?.BarcodeType ?? "CODE128"
             };
 
             if (Slots == null)

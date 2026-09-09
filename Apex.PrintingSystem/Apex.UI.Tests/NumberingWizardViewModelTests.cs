@@ -208,6 +208,73 @@ public class NumberingWizardViewModelTests
         Assert.True(vm.TraySeparationUnavailable);
     }
 
+    // ── Adding a field used to reset it to Arial 24 black, so an operator who set the
+    // colour and size then added a second field had to set them again — for every field
+    // on the sheet. Every field in a numbered book carries the same number in the same
+    // type; only the position differs.
+
+    /// <summary>
+    /// Puts the ViewModel where AddSlot will run: design mode with a template path set.
+    /// The file need not exist — AddSlot only refuses when no design has been chosen at
+    /// all, and a missing path leaves TemplateImage null without raising a dialog.
+    /// </summary>
+    private static NumberingWizardViewModel VmReadyToPlaceFields()
+    {
+        var vm = NewVm();
+        vm.WorkflowMode = WorkflowMode.Design;
+        vm.TemplatePath = @"C:\designs\not-on-disk.png";
+        vm.Slots.Clear();
+        return vm;
+    }
+
+    [Fact]
+    public void ASecondField_InheritsTheFormattingOfTheFirst()
+    {
+        var vm = VmReadyToPlaceFields();
+
+        vm.AddSlotCommand.Execute(null);
+        var first = vm.Slots.Single();
+        first.FontColor = "#B42318";
+        first.FontSize = 48;
+        first.FontFamily = "Tahoma";
+        first.IsBold = true;
+        first.Alignment = "Right";
+
+        vm.AddSlotCommand.Execute(null);
+
+        var second = vm.Slots.Last();
+        Assert.Equal("#B42318", second.FontColor);
+        Assert.Equal(48, second.FontSize);
+        Assert.Equal("Tahoma", second.FontFamily);
+        Assert.True(second.IsBold);
+        Assert.Equal("Right", second.Alignment);
+    }
+
+    [Fact]
+    public void ASecondField_StillLandsSomewhereElseOnTheSheet()
+    {
+        var vm = VmReadyToPlaceFields();
+
+        vm.AddSlotCommand.Execute(null);
+        vm.AddSlotCommand.Execute(null);
+
+        Assert.Equal(2, vm.Slots.Count);
+        Assert.NotEqual(vm.Slots[0].Y, vm.Slots[1].Y);
+    }
+
+    [Fact]
+    public void TheFirstField_UsesTheDefaultsWhenThereIsNothingToCopy()
+    {
+        var vm = VmReadyToPlaceFields();
+
+        vm.AddSlotCommand.Execute(null);
+
+        var only = vm.Slots.Single();
+        Assert.Equal("Arial", only.FontFamily);
+        Assert.Equal(24, only.FontSize);
+        Assert.Equal("#000000", only.FontColor);
+    }
+
     [Fact]
     public void HasTemplate_IsFalseUntilADesignIsLoaded()
     {
