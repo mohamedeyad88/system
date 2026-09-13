@@ -20,6 +20,7 @@
         <converters:WorkflowModeToBoolConverter x:Key="WorkflowModeToBoolConverter"/>
         <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
         <converters:NullToVisibilityConverter x:Key="NullToVisConverter"/>
+        <converters:NullToVisibleConverter x:Key="NullToVisibleConverter"/>
         <converters:NullToBoolConverter x:Key="NullToBoolConverter"/>
         <converters:GreaterThanZeroToVisibilityConverter x:Key="CountToVisibilityConverter"/>
         <converters:InverseCountToVisibilityConverter x:Key="CountToHiddenConverter"/>
@@ -2568,7 +2569,14 @@
                                                  third of its printed size on a 300-dpi design. Vertical
                                                  alignment is Top to match the engine, which anchors the number
                                                  at the slot's top-left and only adjusts X for alignment. -->
+                                            <!-- Drawn only while there is no rendered sheet underneath.
+                                                 Both layers used to draw the number at once, and WPF and
+                                                 the print renderer never place a glyph on exactly the same
+                                                 pixel, so at rest every number showed twice, a hair apart.
+                                                 The rendered sheet is what prints, so it wins; this text is
+                                                 the stand-in while dragging and before the render lands. -->
                                             <TextBlock Text="{Binding PreviewNumber}"
+                                                       Visibility="{Binding DataContext.LivePreviewImage, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource NullToVisibleConverter}}"
                                                        Foreground="{Binding FontColor, FallbackValue=Black, TargetNullValue=Black}"
                                                        FontFamily="{Binding FontFamily}"
                                                        FontWeight="{Binding IsBold, Converter={StaticResource BoolToFontWeightConverter}}"
