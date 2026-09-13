@@ -108,14 +108,14 @@ namespace Apex.UI.ViewModels
             if (!IsEulaAccepted)
             {
                 OnlineStatus = L("Eula_MustAccept");
-                OnlineStatusColor = "#EF4444";
+                OnlineStatusColor = StatusPalette.Error;
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(SerialKey))
             {
                 OnlineStatus = L("Act_EnterSerial");
-                OnlineStatusColor = "#EF4444";
+                OnlineStatusColor = StatusPalette.Error;
                 return;
             }
 
@@ -129,7 +129,7 @@ namespace Apex.UI.ViewModels
                 {
                     LicenseInstalled = true;
                     OnlineStatus = L("Act_ActivatedRestart");
-                    OnlineStatusColor = "#22C55E";
+                    OnlineStatusColor = StatusPalette.Done;
                     MessageBox.Show(
                         Lf("Lic_ActivatedMsg", outcome.Result?.Type,
                             outcome.Result?.ExpiresUtc?.Year == 9999 ? L("Lic_Permanent") : outcome.Result?.ExpiresUtc?.ToString("yyyy-MM-dd")),
@@ -139,13 +139,13 @@ namespace Apex.UI.ViewModels
                 else
                 {
                     OnlineStatus = $"❌ {outcome.Message}";
-                    OnlineStatusColor = "#EF4444";
+                    OnlineStatusColor = StatusPalette.Error;
                 }
             }
             catch (Exception ex)
             {
                 OnlineStatus = Lf("Act_UnexpectedError", ex.Message);
-                OnlineStatusColor = "#EF4444";
+                OnlineStatusColor = StatusPalette.Error;
             }
             finally
             {

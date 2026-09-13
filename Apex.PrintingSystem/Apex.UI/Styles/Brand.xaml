@@ -66,6 +66,23 @@
     <SolidColorBrush x:Key="ActionHover" Color="{StaticResource ActionHoverColor}"/>
     <SolidColorBrush x:Key="OnAction"    Color="#FFFFFFFF"/>
 
+    <!-- ── Surfaces and status tints — replace the hard-coded values screens used ──
+         Every screen that wrote its own hex never saw a token change, which is why earlier
+         contrast fixes barely showed. These give those values a name, each checked with the
+         text that sits on it. -->
+    <Color x:Key="HoverColor">#FFDDD9D3</Color>        <!-- hover / pressed surface. Muted on it 5.43:1 -->
+    <Color x:Key="PanelSunkColor">#FFF4F2EF</Color>    <!-- inset panel. Muted on it 6.83:1 -->
+    <Color x:Key="DoneSoftColor">#FFE7F3EC</Color>     <!-- "done" chip. Done on it 5.74:1 -->
+    <Color x:Key="StoppedSoftColor">#FFF6E4E2</Color>  <!-- error chip. Stopped on it 5.36:1 -->
+    <!-- FDF1DC -> FEF6EA: printing text on the old tint was 4.49:1, just under the line. -->
+    <Color x:Key="PrintingSoftColor">#FFFEF6EA</Color> <!-- printing chip. Printing on it 4.68:1 -->
+
+    <SolidColorBrush x:Key="Hover"        Color="{StaticResource HoverColor}"/>
+    <SolidColorBrush x:Key="PanelSunk"    Color="{StaticResource PanelSunkColor}"/>
+    <SolidColorBrush x:Key="DoneSoft"     Color="{StaticResource DoneSoftColor}"/>
+    <SolidColorBrush x:Key="StoppedSoft"  Color="{StaticResource StoppedSoftColor}"/>
+    <SolidColorBrush x:Key="PrintingSoft" Color="{StaticResource PrintingSoftColor}"/>
+
     <!-- نص على العلامة: أبيض تباينه ضعيف (~3.3:1) فوق السماوي؛ الحبر أوضح.
          نستخدم الحبر كنص افتراضي على الأزرار السماوية، ونحتفظ بأبيض للحالات الغامقة. -->
     <SolidColorBrush x:Key="OnBrand"       Color="{StaticResource InkColor}"/>

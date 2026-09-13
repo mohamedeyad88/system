@@ -40,7 +40,7 @@
         <ControlTemplate x:Key="DarkComboToggle" TargetType="ToggleButton">
             <Border x:Name="bg"
                     Background="{TemplateBinding Background}"
-                    BorderBrush="#8F887A" BorderThickness="1"
+                    BorderBrush="{DynamicResource Border}" BorderThickness="1"
                     CornerRadius="7">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -51,26 +51,26 @@
                                       VerticalAlignment="Center" HorizontalAlignment="Left"/>
                     <Path Grid.Column="1" x:Name="arrow"
                           Data="M 0 0 L 4 4 L 8 0"
-                          Stroke="#6B6864" StrokeThickness="1.5"
+                          Stroke="{DynamicResource Muted}" StrokeThickness="1.5"
                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
             </Border>
             <ControlTemplate.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="bg" Property="BorderBrush" Value="#6B6864"/>
+                    <Setter TargetName="bg" Property="BorderBrush" Value="{DynamicResource Muted}"/>
                 </Trigger>
                 <Trigger Property="IsChecked" Value="True">
-                    <Setter TargetName="bg" Property="BorderBrush" Value="#0891B2"/>
-                    <Setter TargetName="arrow" Property="Stroke"   Value="#0891B2"/>
+                    <Setter TargetName="bg" Property="BorderBrush" Value="{DynamicResource Brand}"/>
+                    <Setter TargetName="arrow" Property="Stroke"   Value="{DynamicResource Brand}"/>
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
 
         <!-- ── ComboBox dark style ───────────────────────────────────── -->
         <Style TargetType="ComboBox">
-            <Setter Property="Background"              Value="#FAF9F7"/>
-            <Setter Property="Foreground"              Value="#14181D"/>
-            <Setter Property="BorderBrush"             Value="#8F887A"/>
+            <Setter Property="Background"              Value="{DynamicResource Paper}"/>
+            <Setter Property="Foreground"              Value="{DynamicResource Ink}"/>
+            <Setter Property="BorderBrush"             Value="{DynamicResource Border}"/>
             <Setter Property="BorderThickness"         Value="1"/>
             <Setter Property="FontSize"                Value="12"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -97,8 +97,8 @@
                                    AllowsTransparency="True" Focusable="False"
                                    PopupAnimation="Slide">
                                 <Border x:Name="DropDown"
-                                        Background="#FFFFFF"
-                                        BorderBrush="#8F887A" BorderThickness="1"
+                                        Background="{DynamicResource Panel}"
+                                        BorderBrush="{DynamicResource Border}" BorderThickness="1"
                                         CornerRadius="8"
                                         MinWidth="{TemplateBinding ActualWidth}"
                                         MaxHeight="220" SnapsToDevicePixels="True">
@@ -125,7 +125,7 @@
 
         <Style TargetType="ComboBoxItem">
             <Setter Property="Background"                 Value="Transparent"/>
-            <Setter Property="Foreground"                 Value="#14181D"/>
+            <Setter Property="Foreground"                 Value="{DynamicResource Ink}"/>
             <Setter Property="FontSize"                   Value="12"/>
             <Setter Property="Padding"                    Value="12,7"/>
             <Setter Property="BorderThickness"            Value="0"/>
@@ -141,11 +141,11 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bg" Property="Background" Value="#E6F3F6"/>
+                                <Setter TargetName="bg" Property="Background" Value="{DynamicResource BrandSoft}"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="bg" Property="Background" Value="#E6F3F6"/>
-                                <Setter Property="Foreground" Value="#0891B2"/>
+                                <Setter TargetName="bg" Property="Background" Value="{DynamicResource BrandSoft}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Action}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -155,9 +155,9 @@
 
         <!-- ── TextBox dark style (editable DataGrid cells) ─────────── -->
         <Style x:Key="CellEditBox" TargetType="TextBox">
-            <Setter Property="Background"   Value="#FAF9F7"/>
-            <Setter Property="Foreground"   Value="#14181D"/>
-            <Setter Property="BorderBrush"  Value="#0891B2"/>
+            <Setter Property="Background"   Value="{DynamicResource Paper}"/>
+            <Setter Property="Foreground"   Value="{DynamicResource Ink}"/>
+            <Setter Property="BorderBrush"  Value="{DynamicResource Brand}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding"      Value="4,2"/>
             <Setter Property="FontSize"     Value="12"/>
@@ -166,25 +166,25 @@
 
         <!-- ── DataGrid column header ────────────────────────────────── -->
         <Style TargetType="DataGridColumnHeader">
-            <Setter Property="Background"      Value="#FFFFFF"/>
-            <Setter Property="Foreground"      Value="#6B6864"/>
+            <Setter Property="Background"      Value="{DynamicResource Panel}"/>
+            <Setter Property="Foreground"      Value="{DynamicResource Muted}"/>
             <Setter Property="FontSize"        Value="11"/>
             <Setter Property="FontWeight"      Value="SemiBold"/>
             <Setter Property="Padding"         Value="10,10"/>
-            <Setter Property="BorderBrush"     Value="#FFFFFF"/>
+            <Setter Property="BorderBrush"     Value="{DynamicResource Panel}"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
         </Style>
 
         <Style TargetType="DataGridRow">
             <Setter Property="Background"      Value="Transparent"/>
-            <Setter Property="BorderBrush"     Value="#FFFFFF"/>
+            <Setter Property="BorderBrush"     Value="{DynamicResource Panel}"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
             <Style.Triggers>
                 <Trigger Property="IsSelected"  Value="True">
-                    <Setter Property="Background" Value="#E6F3F6"/>
+                    <Setter Property="Background" Value="{DynamicResource BrandSoft}"/>
                 </Trigger>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#E6F3F6"/>
+                    <Setter Property="Background" Value="{DynamicResource BrandSoft}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -200,7 +200,7 @@
             </Border>
             <ControlTemplate.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="BorderBrush" Value="#0891B2"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
@@ -208,7 +208,7 @@
         <!-- Field caption in the settings rail -->
         <Style x:Key="RailLabel" TargetType="TextBlock">
             <Setter Property="FontSize"   Value="10"/>
-            <Setter Property="Foreground" Value="#6B6864"/>
+            <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
             <Setter Property="Margin"     Value="0,14,0,5"/>
         </Style>
 
@@ -219,7 +219,7 @@
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="Foreground" Value="#14181D"/>
+                    <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -251,8 +251,8 @@
              ①  TOP: Printer selector + Start Printing
              ══════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="0" Grid.ColumnSpan="2"
-                Background="#FFFFFF"
-                BorderBrush="#8F887A" BorderThickness="0,0,0,1"
+                Background="{DynamicResource Panel}"
+                BorderBrush="{DynamicResource Border}" BorderThickness="0,0,0,1"
                 Padding="20,12">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -264,19 +264,19 @@
                 <!-- Title -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal"
                             VerticalAlignment="Center" Margin="0,0,24,0">
-                    <Border Background="#0E7490" CornerRadius="9"
+                    <Border Background="{DynamicResource Action}" CornerRadius="9"
                             Width="36" Height="36" Margin="0,0,10,0">
                         <TextBlock Text="⚡" FontSize="17"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{DynamicResource Upload_Title}"
-                                   FontSize="15" FontWeight="Bold" Foreground="#14181D"/>
+                                   FontSize="15" FontWeight="Bold" Foreground="{DynamicResource Ink}"/>
                         <TextBlock Text="{DynamicResource Upload_Description}"
-                                   FontSize="10" Foreground="#6B6864"/>
+                                   FontSize="10" Foreground="{DynamicResource Muted}"/>
                         <!-- What this run will actually do, before it starts -->
                         <TextBlock Text="{Binding RoutingSummary}"
-                                   FontSize="10" FontWeight="Medium" Foreground="#0891B2"
+                                   FontSize="10" FontWeight="Medium" Foreground="{DynamicResource Action}"
                                    Margin="0,2,0,0"/>
                     </StackPanel>
                 </StackPanel>
@@ -293,7 +293,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Column="0" Background="#FAF9F7"
+                    <Border Grid.Column="0" Background="{DynamicResource Paper}"
                             CornerRadius="9" Width="36" Height="36" Margin="0,0,10,0">
                         <TextBlock Text="🖨️" FontSize="17"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -306,7 +306,7 @@
 
                     <Button Grid.Column="2"
                             Command="{Binding OpenPrinterPropertiesCommand}"
-                            Background="#DDD9D3" Width="36" Height="36"
+                            Background="{DynamicResource Hover}" Width="36" Height="36"
                             Margin="8,0,0,0" Cursor="Hand" Tag="9"
                             ToolTip="{DynamicResource Upload_PrinterProperties}"
                             Template="{StaticResource FlatBtn}">
@@ -319,7 +319,7 @@
                      once — either spread across them, or the same files on each. -->
                 <CheckBox IsChecked="{Binding IsMultiPrinterMode}"
                           Content="{DynamicResource PM_MultiPrinter}"
-                          Foreground="#14181D" FontSize="12" Margin="0,10,0,0"/>
+                          Foreground="{DynamicResource Ink}" FontSize="12" Margin="0,10,0,0"/>
 
                 <!-- Printer picker. The header must not grow with the printer count:
                      a shop with 50 devices would push the queue toolbar off screen,
@@ -340,14 +340,14 @@
                     <ToggleButton x:Name="PrinterPickerButton" Grid.Column="0"
                                   IsChecked="{Binding IsPrinterPickerOpen, Mode=TwoWay}"
                                   Height="32" Cursor="Hand"
-                                  Background="#FAF9F7" BorderBrush="#8F887A" BorderThickness="1"
+                                  Background="{DynamicResource Paper}" BorderBrush="{DynamicResource Border}" BorderThickness="1"
                                   Template="{StaticResource PickerToggle}">
                         <Grid>
                             <TextBlock Text="{Binding SelectedPrintersSummary}"
-                                       Foreground="#14181D" FontSize="12"
+                                       Foreground="{DynamicResource Ink}" FontSize="12"
                                        VerticalAlignment="Center" Margin="12,0,26,0"
                                        TextTrimming="CharacterEllipsis"/>
-                            <TextBlock Text="▾" Foreground="#6B6864" FontSize="11"
+                            <TextBlock Text="▾" Foreground="{DynamicResource Muted}" FontSize="11"
                                        HorizontalAlignment="Right" VerticalAlignment="Center"
                                        Margin="0,0,10,0"/>
                         </Grid>
@@ -357,7 +357,7 @@
                            PlacementTarget="{Binding ElementName=PrinterPickerButton}"
                            Placement="Bottom" StaysOpen="False"
                            AllowsTransparency="True" PopupAnimation="Fade">
-                        <Border Background="#FFFFFF" BorderBrush="#8F887A" BorderThickness="1"
+                        <Border Background="{DynamicResource Panel}" BorderBrush="{DynamicResource Border}" BorderThickness="1"
                                 CornerRadius="8" Padding="10"
                                 Width="{Binding ActualWidth, ElementName=PrinterPickerButton}">
                             <Border.Effect>
@@ -366,15 +366,15 @@
                             </Border.Effect>
                             <StackPanel>
                                 <!-- Search: the only way 50 printers stay navigable -->
-                                <Border Background="#FAF9F7" BorderBrush="#8F887A"
+                                <Border Background="{DynamicResource Paper}" BorderBrush="{DynamicResource Border}"
                                         BorderThickness="1" CornerRadius="6" Height="30">
                                     <Grid>
                                         <TextBox Background="Transparent" BorderThickness="0"
-                                                 Foreground="#14181D" FontSize="12" Padding="8,0"
+                                                 Foreground="{DynamicResource Ink}" FontSize="12" Padding="8,0"
                                                  VerticalContentAlignment="Center"
                                                  Text="{Binding PrinterFilter, UpdateSourceTrigger=PropertyChanged}"/>
                                         <TextBlock Text="{DynamicResource PM_SearchPrinter}"
-                                                   Foreground="#6B6864" FontSize="12"
+                                                   Foreground="{DynamicResource Muted}" FontSize="12"
                                                    IsHitTestVisible="False"
                                                    Margin="9,0,0,0" VerticalAlignment="Center"
                                                    Visibility="{Binding PrinterFilter,
@@ -390,7 +390,7 @@
                                             <DataTemplate>
                                                 <CheckBox IsChecked="{Binding IsSelected}"
                                                           Content="{Binding Name}"
-                                                          Foreground="#14181D" FontSize="12"
+                                                          Foreground="{DynamicResource Ink}" FontSize="12"
                                                           Margin="0,0,0,6"/>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
@@ -398,27 +398,27 @@
                                 </ScrollViewer>
 
                                 <TextBlock Text="{DynamicResource PM_NoPrinterMatch}"
-                                           Foreground="#6B6864" FontSize="11"
+                                           Foreground="{DynamicResource Muted}" FontSize="11"
                                            Margin="2,6,0,0"
                                            Visibility="{Binding HasNoPrinterMatches,
                                                         Converter={StaticResource BoolToVisibility}}"/>
 
-                                <Border Height="1" Background="#DDD9D3" Margin="0,8"/>
+                                <Border Height="1" Background="{DynamicResource Hover}" Margin="0,8"/>
 
                                 <StackPanel Orientation="Horizontal">
                                     <Button Command="{Binding SelectAllPrintersCommand}"
-                                            Background="#0E7490" Tag="5"
+                                            Background="{DynamicResource Action}" Tag="5"
                                             Padding="10,4" Cursor="Hand" Margin="0,0,6,0"
                                             Template="{StaticResource FlatBtn}">
                                         <TextBlock Text="{DynamicResource PM_SelectAllShown}"
-                                                   FontSize="11" Foreground="White"/>
+                                                   FontSize="11" Foreground="{DynamicResource OnAction}"/>
                                     </Button>
                                     <Button Command="{Binding ClearPrinterSelectionCommand}"
-                                            Background="#DDD9D3" Tag="5"
+                                            Background="{DynamicResource Hover}" Tag="5"
                                             Padding="10,4" Cursor="Hand"
                                             Template="{StaticResource FlatBtn}">
                                         <TextBlock Text="{DynamicResource PM_ClearSelection}"
-                                                   FontSize="11" Foreground="#14181D"/>
+                                                   FontSize="11" Foreground="{DynamicResource Ink}"/>
                                     </Button>
                                 </StackPanel>
                             </StackPanel>
@@ -440,21 +440,21 @@
                     <Button Command="{Binding StopPrintingCommand}"
                             Visibility="{Binding IsPrinting,
                                          Converter={StaticResource BoolToVisibility}}"
-                            Background="#F6E4E2" Tag="10"
+                            Background="{DynamicResource StoppedSoft}" Tag="10"
                             Padding="14,0" Height="36" Margin="0,0,8,0"
                             Cursor="Hand" Template="{StaticResource FlatBtn}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="■" FontSize="12" Foreground="#B42318"
+                            <TextBlock Text="■" FontSize="12" Foreground="{DynamicResource Stopped}"
                                        Margin="0,0,6,0" VerticalAlignment="Center"/>
                             <TextBlock Text="{DynamicResource UPL_001}" FontSize="13" FontWeight="Bold"
-                                       Foreground="#B42318"/>
+                                       Foreground="{DynamicResource Stopped}"/>
                         </StackPanel>
                     </Button>
 
                     <!-- Start -->
                     <Button Command="{Binding CreateJobsCommand}"
                             IsEnabled="{Binding CanStartPrinting}"
-                            Background="#0E7490" Tag="10"
+                            Background="{DynamicResource Action}" Tag="10"
                             Padding="20,0" Height="36" Cursor="Hand"
                             Template="{StaticResource FlatBtn}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -462,8 +462,8 @@
                                        VerticalAlignment="Center"/>
                             <StackPanel VerticalAlignment="Center">
                                 <TextBlock Text="{DynamicResource Distribution_StartPrinting}"
-                                           FontSize="13" FontWeight="Bold" Foreground="White"/>
-                                <TextBlock FontSize="9" Foreground="#0E7490">
+                                           FontSize="13" FontWeight="Bold" Foreground="{DynamicResource OnAction}"/>
+                                <TextBlock FontSize="9" Foreground="{DynamicResource Action}">
                                     <Run Text="{Binding IngestedFiles.Count, Mode=OneWay}"/>
                                     <Run Text="{DynamicResource UPL_002}"/>
                                 </TextBlock>
@@ -478,8 +478,8 @@
              ②  QUEUE TOOLBAR — things you do TO the list, not print settings
              ══════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="1" Grid.Column="0"
-                Background="#FFFFFF"
-                BorderBrush="#FFFFFF" BorderThickness="0,0,0,1"
+                Background="{DynamicResource Panel}"
+                BorderBrush="{DynamicResource Panel}" BorderThickness="0,0,0,1"
                 Padding="20,9">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -495,35 +495,35 @@
                 <!-- Add Files -->
                 <Button Grid.Column="0"
                         Command="{Binding BrowseFilesCommand}"
-                        Background="#0E7490" Tag="7"
+                        Background="{DynamicResource Action}" Tag="7"
                         Padding="12,6" Cursor="Hand"
                         Template="{StaticResource FlatBtn}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="＋" FontSize="13" Foreground="White"
+                        <TextBlock Text="＋" FontSize="13" Foreground="{DynamicResource OnAction}"
                                    Margin="0,0,4,0" VerticalAlignment="Center"/>
                         <TextBlock Text="{DynamicResource Upload_AddFiles}"
-                                   FontSize="12" FontWeight="SemiBold" Foreground="White"/>
+                                   FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource OnAction}"/>
                     </StackPanel>
                 </Button>
 
                 <!-- Add Folder -->
                 <Button Grid.Column="2"
                         Command="{Binding BrowseFolderCommand}"
-                        Background="#DDD9D3" Tag="7"
+                        Background="{DynamicResource Hover}" Tag="7"
                         Padding="10,6" Cursor="Hand"
                         Template="{StaticResource FlatBtn}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="📁" FontSize="12" Margin="0,0,4,0"
                                    VerticalAlignment="Center"/>
                         <TextBlock Text="{DynamicResource Upload_AddFolder}"
-                                   FontSize="12" FontWeight="Medium" Foreground="#14181D"/>
+                                   FontSize="12" FontWeight="Medium" Foreground="{DynamicResource Ink}"/>
                     </StackPanel>
                 </Button>
 
                 <!-- Preset toggle -->
                 <Button Grid.Column="4"
                         Command="{Binding TogglePresetPanelCommand}"
-                        Background="#E6F3F6" Tag="7"
+                        Background="{DynamicResource BrandSoft}" Tag="7"
                         Padding="10,6" Cursor="Hand"
                         ToolTip="{DynamicResource UPL_003}"
                         Template="{StaticResource FlatBtn}">
@@ -531,14 +531,14 @@
                         <TextBlock Text="📋" FontSize="12" Margin="0,0,4,0"
                                    VerticalAlignment="Center"/>
                         <TextBlock Text="{DynamicResource UPL_004}" FontSize="12" FontWeight="Medium"
-                                   Foreground="#0E7490" VerticalAlignment="Center"/>
+                                   Foreground="{DynamicResource Action}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
                 <!-- Refresh / Clear -->
                 <StackPanel Grid.Column="6" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Command="{Binding RefreshCommand}"
-                            Background="#DDD9D3" Tag="6"
+                            Background="{DynamicResource Hover}" Tag="6"
                             Width="30" Height="30" Cursor="Hand"
                             ToolTip="{DynamicResource CC_002}" Margin="0,0,6,0"
                             Template="{StaticResource FlatBtn}">
@@ -546,7 +546,7 @@
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
                     <Button Command="{Binding ClearListCommand}"
-                            Background="#DDD9D3" Tag="6"
+                            Background="{DynamicResource Hover}" Tag="6"
                             Width="30" Height="30" Cursor="Hand"
                             ToolTip="{DynamicResource UPL_005}"
                             Template="{StaticResource FlatBtn}">
@@ -561,8 +561,8 @@
              ③  PRESETS BAR (collapsed by default)
              ══════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="2" Grid.Column="0"
-                Background="#FAF9F7"
-                BorderBrush="#8F887A" BorderThickness="0,0,0,1"
+                Background="{DynamicResource Paper}"
+                BorderBrush="{DynamicResource Border}" BorderThickness="0,0,0,1"
                 Padding="20,10"
                 Visibility="{Binding IsPresetPanelOpen,
                              Converter={StaticResource BoolToVisibility}}">
@@ -578,15 +578,15 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0" Text="{DynamicResource UPL_006}"
-                           FontSize="12" Foreground="#6B6864"
+                           FontSize="12" Foreground="{DynamicResource Muted}"
                            VerticalAlignment="Center" Margin="0,0,10,0"/>
 
                 <!-- Preset name input -->
                 <Border Grid.Column="1"
-                        Background="#FAF9F7" BorderBrush="#8F887A"
+                        Background="{DynamicResource Paper}" BorderBrush="{DynamicResource Border}"
                         BorderThickness="1" CornerRadius="6" Height="30">
                     <TextBox Background="Transparent"
-                             Foreground="#14181D" BorderThickness="0"
+                             Foreground="{DynamicResource Ink}" BorderThickness="0"
                              FontSize="12" Padding="8,0"
                              VerticalContentAlignment="Center"
                              Text="{Binding NewPresetName, UpdateSourceTrigger=PropertyChanged}"/>
@@ -594,15 +594,15 @@
 
                 <Button Grid.Column="3"
                         Command="{Binding SavePresetCommand}"
-                        Background="#0E7490" Tag="6"
+                        Background="{DynamicResource Action}" Tag="6"
                         Padding="12,5" Cursor="Hand" Height="30"
                         Template="{StaticResource FlatBtn}">
                     <TextBlock Text="{DynamicResource UPL_007}" FontSize="12" FontWeight="SemiBold"
-                               Foreground="White"/>
+                               Foreground="{DynamicResource OnAction}"/>
                 </Button>
 
                 <!-- Separator -->
-                <Border Grid.Column="4" Width="1" Background="#E6F3F6" Margin="0,3"/>
+                <Border Grid.Column="4" Width="1" Background="{DynamicResource BrandSoft}" Margin="0,3"/>
 
                 <!-- Saved presets list -->
                 <ItemsControl Grid.Column="5"
@@ -615,7 +615,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type vm:PrintPreset}">
-                            <Border Background="#FFFFFF" CornerRadius="5"
+                            <Border Background="{DynamicResource Panel}" CornerRadius="5"
                                     Margin="0,0,6,0">
                                 <StackPanel Orientation="Horizontal">
                                     <Button Command="{Binding DataContext.ApplyPresetCommand,
@@ -625,7 +625,7 @@
                                             Padding="10,5" Cursor="Hand" Height="28"
                                             Template="{StaticResource FlatBtn}">
                                         <TextBlock Text="{Binding Name}"
-                                                   FontSize="12" Foreground="#0E7490"/>
+                                                   FontSize="12" Foreground="{DynamicResource Action}"/>
                                     </Button>
                                     <Button Command="{Binding DataContext.DeletePresetCommand,
                                                      RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -633,7 +633,7 @@
                                             Background="Transparent" Tag="5"
                                             Width="22" Height="28" Cursor="Hand"
                                             Template="{StaticResource FlatBtn}">
-                                        <TextBlock Text="✕" FontSize="10" Foreground="#6B6864"/>
+                                        <TextBlock Text="✕" FontSize="10" Foreground="{DynamicResource Muted}"/>
                                     </Button>
                                 </StackPanel>
                             </Border>
@@ -643,7 +643,7 @@
 
                 <TextBlock Grid.Column="6"
                            Text="{DynamicResource UPL_008}"
-                           FontSize="11" Foreground="#6B6864"
+                           FontSize="11" Foreground="{DynamicResource Muted}"
                            VerticalAlignment="Center"
                            Margin="8,0,0,0">
                     <TextBlock.Style>
@@ -669,8 +669,8 @@
              it is paused until a tray is filled or a cover closed.
              ══════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="3" Grid.Column="0"
-                Background="#FDF1DC"
-                BorderBrush="#B45309" BorderThickness="0,0,0,2"
+                Background="{DynamicResource PrintingSoft}"
+                BorderBrush="{DynamicResource Printing}" BorderThickness="0,0,0,2"
                 Padding="20,10"
                 Visibility="{Binding HasAlert, Converter={StaticResource BoolToVisibility}}">
             <Grid>
@@ -681,14 +681,14 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0" Text="⚠" FontSize="18"
-                           Foreground="#B45309" VerticalAlignment="Center"
+                           Foreground="{DynamicResource Printing}" VerticalAlignment="Center"
                            Margin="0,0,12,0"/>
 
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                     <TextBlock Text="{DynamicResource PM_HeldBannerTitle}"
-                               FontSize="11" FontWeight="Bold" Foreground="#B45309"/>
+                               FontSize="11" FontWeight="Bold" Foreground="{DynamicResource Printing}"/>
                     <TextBlock Text="{Binding AlertMessage, Mode=OneWay}"
-                               FontSize="12" Foreground="#8A5A00"
+                               FontSize="12" Foreground="{DynamicResource Printing}"
                                TextWrapping="Wrap"/>
                 </StackPanel>
 
@@ -696,13 +696,13 @@
                     <Button Content="{DynamicResource PM_HeldPurge}"
                             Command="{Binding PurgeHeldPrintersCommand}"
                             Padding="12,5" FontSize="11" Margin="0,0,6,0"
-                            Background="#FBE3E1" Foreground="#8A2018"
-                            BorderBrush="#B42318" BorderThickness="1"/>
+                            Background="{DynamicResource StoppedSoft}" Foreground="{DynamicResource Stopped}"
+                            BorderBrush="{DynamicResource Stopped}" BorderThickness="1"/>
                     <Button Content="{DynamicResource PM_HeldSkip}"
                             Command="{Binding AbandonHeldPrintersCommand}"
                             Padding="12,5" FontSize="11"
-                            Background="#FDF1DC" Foreground="#8A5A00"
-                            BorderBrush="#B45309" BorderThickness="1"/>
+                            Background="{DynamicResource PrintingSoft}" Foreground="{DynamicResource Printing}"
+                            BorderBrush="{DynamicResource Printing}" BorderThickness="1"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -711,8 +711,8 @@
              ⑤  PROGRESS BAR (visible when printing)
              ══════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="4" Grid.Column="0"
-                Background="#FAF9F7"
-                BorderBrush="#8F887A" BorderThickness="0,0,0,1"
+                Background="{DynamicResource Paper}"
+                BorderBrush="{DynamicResource Border}" BorderThickness="0,0,0,1"
                 Padding="20,8"
                 Visibility="{Binding IsPrinting,
                              Converter={StaticResource BoolToVisibility}}">
@@ -726,24 +726,24 @@
                 <StackPanel Grid.Column="0">
                     <!-- File name -->
                     <TextBlock Margin="0,0,0,4" FontSize="11">
-                        <Run Text="🖨️ " Foreground="#0891B2"/>
+                        <Run Text="🖨️ " Foreground="{DynamicResource Action}"/>
                         <Run Text="{Binding CurrentPrintingFile, Mode=OneWay}"
-                             Foreground="#14181D"/>
+                             Foreground="{DynamicResource Ink}"/>
                     </TextBlock>
 
                     <!-- Progress track -->
                     <ProgressBar Height="6"
                                  Value="{Binding ProgressValue, Mode=OneWay}"
                                  Minimum="0" Maximum="100"
-                                 Background="#FFFFFF"
-                                 Foreground="#0891B2"
+                                 Background="{DynamicResource Panel}"
+                                 Foreground="{DynamicResource Action}"
                                  BorderThickness="0"/>
                 </StackPanel>
 
                 <!-- Percent -->
                 <TextBlock Grid.Column="1"
                            Margin="16,0,12,0" FontSize="13" FontWeight="Bold"
-                           Foreground="#0891B2" VerticalAlignment="Center">
+                           Foreground="{DynamicResource Action}" VerticalAlignment="Center">
                     <Run Text="{Binding ProgressValue, Mode=OneWay}"/>
                     <Run Text="%"/>
                 </TextBlock>
@@ -751,7 +751,7 @@
                 <!-- Status -->
                 <TextBlock Grid.Column="2"
                            Text="{Binding StatusMessage, Mode=OneWay}"
-                           FontSize="11" Foreground="#6B6864"
+                           FontSize="11" Foreground="{DynamicResource Muted}"
                            VerticalAlignment="Center" MaxWidth="200"
                            TextTrimming="CharacterEllipsis"/>
             </Grid>
@@ -760,7 +760,7 @@
         <!-- ══════════════════════════════════════════════════════════════
              ⑥  FILE LIST  — full height
              ══════════════════════════════════════════════════════════════ -->
-        <Border Grid.Row="5" Grid.Column="0" Background="#FAF9F7"
+        <Border Grid.Row="5" Grid.Column="0" Background="{DynamicResource Paper}"
                 AllowDrop="True" Drop="Border_Drop">
             <Grid>
                 <Grid.RowDefinitions>
@@ -769,18 +769,18 @@
                 </Grid.RowDefinitions>
 
                 <!-- Status bar -->
-                <Border Grid.Row="0" Background="#FFFFFF" Padding="16,6">
+                <Border Grid.Row="0" Background="{DynamicResource Panel}" Padding="16,6">
                     <Grid>
                         <TextBlock VerticalAlignment="Center" FontSize="11">
                             <Run Text="{DynamicResource Upload_ListOfDocuments}"
-                                 Foreground="#6B6864"/>
-                            <Run Text=" · " Foreground="#6B6864"/>
+                                 Foreground="{DynamicResource Muted}"/>
+                            <Run Text=" · " Foreground="{DynamicResource Muted}"/>
                             <Run Text="{Binding IngestedFiles.Count, Mode=OneWay}"
-                                 Foreground="#0891B2" FontWeight="Bold"/>
-                            <Run Text="{DynamicResource UPL_002}" Foreground="#6B6864"/>
+                                 Foreground="{DynamicResource Action}" FontWeight="Bold"/>
+                            <Run Text="{DynamicResource UPL_002}" Foreground="{DynamicResource Muted}"/>
                         </TextBlock>
                         <TextBlock HorizontalAlignment="Right"
-                                   FontSize="11" Foreground="#6B6864"
+                                   FontSize="11" Foreground="{DynamicResource Muted}"
                                    VerticalAlignment="Center"
                                    Text="{Binding StatusMessage}"/>
                     </Grid>
@@ -793,7 +793,7 @@
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
                           BorderThickness="0"
-                          Background="#FAF9F7"
+                          Background="{DynamicResource Paper}"
                           GridLinesVisibility="Horizontal"
                           HeadersVisibility="Column"
                           RowHeight="40"
@@ -832,7 +832,7 @@
                             </DataGridTextColumn.HeaderTemplate>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground"        Value="#14181D"/>
+                                    <Setter Property="Foreground"        Value="{DynamicResource Ink}"/>
                                     <Setter Property="FontWeight"        Value="Medium"/>
                                     <Setter Property="Margin"            Value="10,0"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
@@ -854,7 +854,7 @@
                                 <DataTemplate>
                                     <Border CornerRadius="4" Padding="7,2" Margin="6,0"
                                             HorizontalAlignment="Left" VerticalAlignment="Center"
-                                            Background="#FFFFFF"
+                                            Background="{DynamicResource Panel}"
                                             BorderBrush="{Binding TargetPrinterColor}"
                                             BorderThickness="0,0,3,0"
                                             Visibility="{Binding HasTargetPrinter,
@@ -878,7 +878,7 @@
                             </DataGridTextColumn.HeaderTemplate>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground"        Value="#6B6864"/>
+                                    <Setter Property="Foreground"        Value="{DynamicResource Muted}"/>
                                     <Setter Property="FontSize"          Value="11"/>
                                     <Setter Property="Margin"            Value="6,0"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
@@ -896,7 +896,7 @@
                             </DataGridTextColumn.HeaderTemplate>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground"        Value="#6B6864"/>
+                                    <Setter Property="Foreground"        Value="{DynamicResource Muted}"/>
                                     <Setter Property="Margin"            Value="6,0"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
                                 </Style>
@@ -913,7 +913,7 @@
                             </DataGridTextColumn.HeaderTemplate>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground"          Value="#0891B2"/>
+                                    <Setter Property="Foreground"          Value="{DynamicResource Action}"/>
                                     <Setter Property="FontWeight"          Value="Bold"/>
                                     <Setter Property="HorizontalAlignment" Value="Center"/>
                                     <Setter Property="VerticalAlignment"   Value="Center"/>
@@ -936,7 +936,7 @@
                             </DataGridTextColumn.HeaderTemplate>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground"          Value="#6B6864"/>
+                                    <Setter Property="Foreground"          Value="{DynamicResource Muted}"/>
                                     <Setter Property="FontSize"            Value="11"/>
                                     <Setter Property="HorizontalAlignment" Value="Center"/>
                                     <Setter Property="VerticalAlignment"   Value="Center"/>
@@ -965,7 +965,7 @@
                                                 Width="26" Height="26" Cursor="Hand"
                                                 ToolTip="{DynamicResource UPL_014}" Margin="0,0,2,0"
                                                 Template="{StaticResource FlatBtn}">
-                                            <TextBlock Text="↑" FontSize="13" Foreground="#6B6864"/>
+                                            <TextBlock Text="↑" FontSize="13" Foreground="{DynamicResource Muted}"/>
                                         </Button>
 
                                         <!-- Move Down -->
@@ -976,7 +976,7 @@
                                                 Width="26" Height="26" Cursor="Hand"
                                                 ToolTip="{DynamicResource UPL_015}" Margin="0,0,2,0"
                                                 Template="{StaticResource FlatBtn}">
-                                            <TextBlock Text="↓" FontSize="13" Foreground="#6B6864"/>
+                                            <TextBlock Text="↓" FontSize="13" Foreground="{DynamicResource Muted}"/>
                                         </Button>
 
                                         <!-- Preview -->
@@ -998,7 +998,7 @@
                                                 Width="26" Height="26" Cursor="Hand"
                                                 ToolTip="{DynamicResource UPL_017}"
                                                 Template="{StaticResource FlatBtn}">
-                                            <TextBlock Text="✕" FontSize="11" Foreground="#B42318"/>
+                                            <TextBlock Text="✕" FontSize="11" Foreground="{DynamicResource Stopped}"/>
                                         </Button>
                                     </StackPanel>
                                 </DataTemplate>
@@ -1009,29 +1009,29 @@
 
                     <!-- Right-click context menu -->
                     <DataGrid.ContextMenu>
-                        <ContextMenu Background="#FFFFFF" BorderBrush="#8F887A">
+                        <ContextMenu Background="{DynamicResource Panel}" BorderBrush="{DynamicResource Border}">
                             <MenuItem Header="{DynamicResource UPL_018}"
                                       Command="{Binding PreviewFileCommand}"
                                       CommandParameter="{Binding PlacementTarget.SelectedItem,
                                                          RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                      Foreground="#14181D" Background="Transparent"/>
-                            <Separator Background="#DDD9D3"/>
+                                      Foreground="{DynamicResource Ink}" Background="Transparent"/>
+                            <Separator Background="{DynamicResource Hover}"/>
                             <MenuItem Header="{DynamicResource UPL_019}"
                                       Command="{Binding MoveUpCommand}"
                                       CommandParameter="{Binding PlacementTarget.SelectedItem,
                                                          RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                      Foreground="#14181D" Background="Transparent"/>
+                                      Foreground="{DynamicResource Ink}" Background="Transparent"/>
                             <MenuItem Header="{DynamicResource UPL_020}"
                                       Command="{Binding MoveDownCommand}"
                                       CommandParameter="{Binding PlacementTarget.SelectedItem,
                                                          RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                      Foreground="#14181D" Background="Transparent"/>
-                            <Separator Background="#DDD9D3"/>
+                                      Foreground="{DynamicResource Ink}" Background="Transparent"/>
+                            <Separator Background="{DynamicResource Hover}"/>
                             <MenuItem Header="{DynamicResource UPL_021}"
                                       Command="{Binding RemoveItemCommand}"
                                       CommandParameter="{Binding PlacementTarget.SelectedItem,
                                                          RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                      Foreground="#B42318" Background="Transparent"/>
+                                      Foreground="{DynamicResource Stopped}" Background="Transparent"/>
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                 </DataGrid>
@@ -1046,7 +1046,7 @@
                                       Command="{Binding BrowseFilesCommand}"/>
                     </Border.InputBindings>
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Border Background="#FFFFFF" CornerRadius="36"
+                        <Border Background="{DynamicResource Panel}" CornerRadius="36"
                                 Width="72" Height="72"
                                 HorizontalAlignment="Center" Margin="0,0,0,20">
                             <TextBlock Text="📂" FontSize="32"
@@ -1054,14 +1054,14 @@
                         </Border>
                         <TextBlock Text="{DynamicResource Upload_DropFiles}"
                                    FontSize="18" FontWeight="SemiBold"
-                                   Foreground="#0891B2" HorizontalAlignment="Center"/>
+                                   Foreground="{DynamicResource Action}" HorizontalAlignment="Center"/>
                         <TextBlock Text="{DynamicResource Upload_AddFromMenu}"
-                                   FontSize="13" Foreground="#6B6864"
+                                   FontSize="13" Foreground="{DynamicResource Muted}"
                                    HorizontalAlignment="Center" Margin="0,6,0,20"/>
-                        <Border Background="#FFFFFF" CornerRadius="16"
+                        <Border Background="{DynamicResource Panel}" CornerRadius="16"
                                 Padding="16,5" HorizontalAlignment="Center">
                             <TextBlock Text="PDF · DOCX · XLSX · Images"
-                                       FontSize="11" Foreground="#6B6864"/>
+                                       FontSize="11" Foreground="{DynamicResource Muted}"/>
                         </Border>
                     </StackPanel>
                 </Border>
@@ -1074,18 +1074,18 @@
              ══════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="1" Grid.RowSpan="5" Grid.Column="1"
                 Width="230"
-                Background="#FFFFFF"
-                BorderBrush="#FFFFFF" BorderThickness="1,0,0,0">
+                Background="{DynamicResource Panel}"
+                BorderBrush="{DynamicResource Panel}" BorderThickness="1,0,0,0">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="16,14,16,20">
 
                     <TextBlock Text="{DynamicResource PM_PrintSettings}"
-                               FontSize="12" FontWeight="Bold" Foreground="#6B6864"
+                               FontSize="12" FontWeight="Bold" Foreground="{DynamicResource Muted}"
                                Margin="0,0,0,14"/>
 
                     <!-- Copies -->
                     <TextBlock Text="{DynamicResource PM_LblCopies}" Style="{StaticResource RailLabel}"/>
-                    <Border Background="#FAF9F7" CornerRadius="7" Height="32">
+                    <Border Background="{DynamicResource Paper}" CornerRadius="7" Height="32">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="34"/>
@@ -1094,22 +1094,22 @@
                             </Grid.ColumnDefinitions>
                             <Button Grid.Column="0" Command="{Binding DecreaseCopiesCommand}"
                                     Background="Transparent" Tag="7" Cursor="Hand"
-                                    Foreground="#6B6864" FontSize="16" FontWeight="Bold"
+                                    Foreground="{DynamicResource Muted}" FontSize="16" FontWeight="Bold"
                                     Content="−" Template="{StaticResource FlatBtn}"/>
                             <TextBlock Grid.Column="1"
                                        Text="{Binding DefaultCopies}"
-                                       FontSize="13" FontWeight="Bold" Foreground="#14181D"
+                                       FontSize="13" FontWeight="Bold" Foreground="{DynamicResource Ink}"
                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             <Button Grid.Column="2" Command="{Binding IncreaseCopiesCommand}"
                                     Background="Transparent" Tag="7" Cursor="Hand"
-                                    Foreground="#0891B2" FontSize="16" FontWeight="Bold"
+                                    Foreground="{DynamicResource Action}" FontSize="16" FontWeight="Bold"
                                     Content="+" Template="{StaticResource FlatBtn}"/>
                         </Grid>
                     </Border>
                     <!-- The queue can override this per row, so say so rather than
                          letting the two numbers look like a contradiction. -->
                     <TextBlock Text="{DynamicResource PM_CopiesHint}"
-                               FontSize="9" Foreground="#6B6864"
+                               FontSize="9" Foreground="{DynamicResource Muted}"
                                TextWrapping="Wrap" Margin="0,4,0,0"/>
 
                     <!-- Orientation. SelectedValuePath keeps the invariant value in the
@@ -1145,7 +1145,7 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
-                    <Border Height="1" Background="#FFFFFF" Margin="0,18,0,14"/>
+                    <Border Height="1" Background="{DynamicResource Panel}" Margin="0,18,0,14"/>
 
                     <!-- Colour -->
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
@@ -1156,7 +1156,7 @@
                             </CheckBox.LayoutTransform>
                         </CheckBox>
                         <TextBlock Text="{DynamicResource Upload_ColorPrinting}"
-                                   FontSize="12" Foreground="#14181D"
+                                   FontSize="12" Foreground="{DynamicResource Ink}"
                                    VerticalAlignment="Center" TextWrapping="Wrap"/>
                     </StackPanel>
 
@@ -1169,7 +1169,7 @@
                             </CheckBox.LayoutTransform>
                         </CheckBox>
                         <TextBlock Text="{DynamicResource Upload_Duplex}"
-                                   FontSize="12" Foreground="#14181D"
+                                   FontSize="12" Foreground="{DynamicResource Ink}"
                                    VerticalAlignment="Center" TextWrapping="Wrap"/>
                     </StackPanel>
 

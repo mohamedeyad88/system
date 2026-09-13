@@ -10,8 +10,8 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <!-- Modern Button -->
         <Style x:Key="CardButton" TargetType="Button">
-            <Setter Property="Background" Value="#14181D"/>
-            <Setter Property="Foreground" Value="#6B6864"/>
+            <Setter Property="Background" Value="{DynamicResource PanelSunk}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
             <Setter Property="FontWeight" Value="Medium"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Padding" Value="12,8"/>
@@ -29,8 +29,8 @@
         </Style>
 
         <Style x:Key="PrimaryCardButton" TargetType="Button" BasedOn="{StaticResource CardButton}">
-            <Setter Property="Background" Value="#DBEAFE"/>
-            <Setter Property="Foreground" Value="#0E7490"/>
+            <Setter Property="Background" Value="{DynamicResource BrandSoft}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Action}"/>
         </Style>
     </UserControl.Resources>
     
@@ -72,18 +72,18 @@
                 </Border>
                 
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="15" Foreground="#FFFFFF" TextTrimming="CharacterEllipsis"/>
-                    <TextBlock Text="{Binding StatusText}" FontSize="12" Foreground="#6B6864" Margin="0,2,0,0"/>
+                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="15" Foreground="{DynamicResource OnAction}" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding StatusText}" FontSize="12" Foreground="{DynamicResource Muted}" Margin="0,2,0,0"/>
                 </StackPanel>
                 
                 <!-- Status Indicator -->
                 <Border Grid.Column="2" Width="10" Height="10" CornerRadius="5">
                     <Border.Style>
                         <Style TargetType="Border">
-                            <Setter Property="Background" Value="#B42318"/>
+                            <Setter Property="Background" Value="{DynamicResource Stopped}"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsOnline}" Value="True">
-                                    <Setter Property="Background" Value="#1B7F4C"/>
+                                    <Setter Property="Background" Value="{DynamicResource Done}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -94,47 +94,47 @@
             <!-- Stats & Badges -->
             <StackPanel Grid.Row="1">
                 <!-- Queue Info -->
-                <Border Background="#FAF9F7" CornerRadius="8" Padding="12" Margin="0,0,0,10">
+                <Border Background="{DynamicResource Paper}" CornerRadius="8" Padding="12" Margin="0,0,0,10">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel>
-                            <TextBlock Text="{DynamicResource PrinterCard_QueueLength}" FontSize="11" Foreground="#6B6864"/>
-                            <TextBlock Text="{Binding QueueLength, StringFormat='{}{0} jobs'}" FontWeight="Bold" FontSize="16" Foreground="#FFFFFF"/>
+                            <TextBlock Text="{DynamicResource PrinterCard_QueueLength}" FontSize="11" Foreground="{DynamicResource Muted}"/>
+                            <TextBlock Text="{Binding QueueLength, StringFormat='{}{0} jobs'}" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource OnAction}"/>
                         </StackPanel>
-                        <Border Grid.Column="1" Background="#DBEAFE" CornerRadius="6" Padding="8,4" VerticalAlignment="Center">
-                            <TextBlock Text="{Binding JobsToday, StringFormat='{}{0} today'}" FontSize="11" Foreground="#0E7490"/>
+                        <Border Grid.Column="1" Background="{DynamicResource BrandSoft}" CornerRadius="6" Padding="8,4" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding JobsToday, StringFormat='{}{0} today'}" FontSize="11" Foreground="{DynamicResource Action}"/>
                         </Border>
                     </Grid>
                 </Border>
                 
                 <!-- Alert Badges -->
                 <WrapPanel Margin="0,0,0,8">
-                    <Border Background="#FEF3C7" CornerRadius="6" Padding="8,4" Margin="0,0,6,4" 
+                    <Border Background="{DynamicResource PrintingSoft}" CornerRadius="6" Padding="8,4" Margin="0,0,6,4" 
                             Visibility="{Binding HasPaperJam, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Text="⚠️ Paper Jam" Foreground="#B45309" FontSize="11" FontWeight="SemiBold"/>
+                        <TextBlock Text="⚠️ Paper Jam" Foreground="{DynamicResource Printing}" FontSize="11" FontWeight="SemiBold"/>
                     </Border>
-                    <Border Background="#FEE2E2" CornerRadius="6" Padding="8,4" Margin="0,0,6,4"
+                    <Border Background="{DynamicResource StoppedSoft}" CornerRadius="6" Padding="8,4" Margin="0,0,6,4"
                             Visibility="{Binding IsTonerLow, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Text="🔴 Low Toner" Foreground="#B91C1C" FontSize="11" FontWeight="SemiBold"/>
+                        <TextBlock Text="🔴 Low Toner" Foreground="{DynamicResource Stopped}" FontSize="11" FontWeight="SemiBold"/>
                     </Border>
                 </WrapPanel>
                 
                 <!-- Capability Badges -->
                 <WrapPanel>
-                    <Border Background="#D1FAE5" CornerRadius="6" Padding="8,4" Margin="0,0,6,4"
+                    <Border Background="{DynamicResource DoneSoft}" CornerRadius="6" Padding="8,4" Margin="0,0,6,4"
                             Visibility="{Binding Capabilities.CanPrintColor, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Text="🎨 Color" Foreground="#047857" FontSize="11" FontWeight="SemiBold"/>
+                        <TextBlock Text="🎨 Color" Foreground="{DynamicResource Done}" FontSize="11" FontWeight="SemiBold"/>
                     </Border>
-                    <Border Background="#E0E7FF" CornerRadius="6" Padding="8,4" Margin="0,0,6,4"
+                    <Border Background="{DynamicResource BrandSoft}" CornerRadius="6" Padding="8,4" Margin="0,0,6,4"
                             Visibility="{Binding Capabilities.CanDuplex, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Text="📄 Duplex" Foreground="#4338CA" FontSize="11" FontWeight="SemiBold"/>
+                        <TextBlock Text="📄 Duplex" Foreground="{DynamicResource Action}" FontSize="11" FontWeight="SemiBold"/>
                     </Border>
-                    <Border Background="#FCE7F3" CornerRadius="6" Padding="8,4" Margin="0,0,6,4"
+                    <Border Background="{DynamicResource BrandSoft}" CornerRadius="6" Padding="8,4" Margin="0,0,6,4"
                             Visibility="{Binding Capabilities.CanStaple, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Text="📎 Staple" Foreground="#0E7490" FontSize="11" FontWeight="SemiBold"/>
+                        <TextBlock Text="📎 Staple" Foreground="{DynamicResource Action}" FontSize="11" FontWeight="SemiBold"/>
                     </Border>
                 </WrapPanel>
             </StackPanel>

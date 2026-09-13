@@ -35,15 +35,15 @@
             <Trigger Property="IsEnabled" Value="False">
                 <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Disabled}"/>
                 <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Disabled}"/>
-                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush.Border.Light}"/>
+                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Border}"/>
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
     
     <!-- Primary Button -->
     <Style x:Key="Button.Primary" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Brush.Primary}"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.OnPrimary}"/>
+        <Setter Property="Background" Value="{DynamicResource Action}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="24,12"/>
         <Setter Property="FontSize" Value="14"/>
@@ -52,16 +52,16 @@
         <Setter Property="Template" Value="{StaticResource Template.Button.Base}"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource Brush.Primary.Dark}"/>
+                <Setter Property="Background" Value="{DynamicResource ActionHover}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
     
     <!-- Secondary Button -->
     <Style x:Key="Button.Secondary" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Primary}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Medium}"/>
+        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Action}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="24,12"/>
         <Setter Property="FontSize" Value="14"/>
@@ -80,16 +80,16 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Primary.Lightest}"/>
-                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush.Primary}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource BrandSoft}"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Action}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Primary.Lighter}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brand}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Disabled}"/>
                             <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Disabled}"/>
-                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush.Border.Light}"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Border}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -100,7 +100,7 @@
     <!-- Ghost/Text Button -->
     <Style x:Key="Button.Ghost" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Action}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="12,8"/>
         <Setter Property="FontSize" Value="14"/>
@@ -116,7 +116,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Hover}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Hover}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Active}"/>
@@ -129,8 +129,8 @@
     
     <!-- Success Button -->
     <Style x:Key="Button.Success" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Brush.Success}"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{DynamicResource Done}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="24,12"/>
         <Setter Property="FontSize" Value="14"/>
@@ -139,15 +139,15 @@
         <Setter Property="Template" Value="{StaticResource Template.Button.Base}"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource Brush.Success.Dark}"/>
+                <Setter Property="Background" Value="{DynamicResource Done}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
     
     <!-- Warning Button -->
     <Style x:Key="Button.Warning" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Brush.Warning}"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{DynamicResource Printing}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="24,12"/>
         <Setter Property="FontSize" Value="14"/>
@@ -156,15 +156,15 @@
         <Setter Property="Template" Value="{StaticResource Template.Button.Base}"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource Brush.Warning.Dark}"/>
+                <Setter Property="Background" Value="{DynamicResource Printing}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
     
     <!-- Error/Danger Button -->
     <Style x:Key="Button.Danger" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Brush.Error}"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{DynamicResource Stopped}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="24,12"/>
         <Setter Property="FontSize" Value="14"/>
@@ -173,7 +173,7 @@
         <Setter Property="Template" Value="{StaticResource Template.Button.Base}"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource Brush.Error.Dark}"/>
+                <Setter Property="Background" Value="{DynamicResource Stopped}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -181,7 +181,7 @@
     <!-- Navigation Button (for Sidebar) -->
     <Style x:Key="Button.Nav" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Sidebar.Text}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Padding" Value="16,12"/>
         <Setter Property="Margin" Value="8,2"/>
@@ -200,12 +200,12 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Sidebar.Hover}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource Brush.Sidebar.Text.Active}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Hover}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Sidebar.Active}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.OnPrimary}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Action}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -216,7 +216,7 @@
     <!-- Icon Button (Small, Square) -->
     <Style x:Key="Button.Icon" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="8"/>
         <Setter Property="Width" Value="32"/>
@@ -232,8 +232,8 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Brush.Hover}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource Brush.Primary}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Hover}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Action}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -245,8 +245,8 @@
     <!-- سيتم إزالتها في المستقبل - استخدم الأسماء الجديدة Button.* -->
     
     <Style x:Key="ActionButton" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Brush.Primary}"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.OnPrimary}"/>
+        <Setter Property="Background" Value="{DynamicResource Action}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
         <Setter Property="Padding" Value="24,12"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
@@ -261,8 +261,8 @@
     </Style>
     
     <Style x:Key="PrimaryButton" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Brush.Primary}"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.OnPrimary}"/>
+        <Setter Property="Background" Value="{DynamicResource Action}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
         <Setter Property="Padding" Value="24,12"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
@@ -277,9 +277,9 @@
    </Style>
     
     <Style x:Key="SecondaryButton" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Primary}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Medium}"/>
+        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Action}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="24,12"/>
         <Setter Property="Cursor" Value="Hand"/>
@@ -296,9 +296,9 @@
     </Style>
     
     <Style x:Key="ModernButton" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Primary}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Medium}"/>
+        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Action}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="24,12"/>
         <Setter Property="Cursor" Value="Hand"/>
@@ -316,7 +316,7 @@
     
     <Style x:Key="GhostButton" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Action}"/>
         <Setter Property="Padding" Value="12,8"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
@@ -331,8 +331,8 @@
     </Style>
     
     <Style x:Key="SuccessButton" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Brush.Success}"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{DynamicResource Done}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
         <Setter Property="Padding" Value="24,12"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
@@ -348,7 +348,7 @@
     
     <Style x:Key="NavButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Sidebar.Text}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
         <Setter Property="Padding" Value="16,12"/>
         <Setter Property="Margin" Value="8,2"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -366,8 +366,8 @@
     
     <!-- Card-specific buttons (legacy) -->
     <Style x:Key="PrimaryCardButton" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Brush.Primary}"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.OnPrimary}"/>
+        <Setter Property="Background" Value="{DynamicResource Action}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
         <Setter Property="Padding" Value="12,8"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="Cursor" Value="Hand"/>
@@ -383,9 +383,9 @@
     </Style>
     
     <Style x:Key="CardButton" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Primary}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Medium}"/>
+        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Action}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="12,8"/>
         <Setter Property="FontSize" Value="12"/>
@@ -406,8 +406,8 @@
     
     <!-- Base Card Style -->
     <Style x:Key="Card" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Light}"/>
+        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Padding" Value="20"/>
@@ -416,8 +416,8 @@
     
     <!-- Interactive Card (with hover) -->
     <Style x:Key="Card.Interactive" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Light}"/>
+        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Padding" Value="20"/>
@@ -433,8 +433,8 @@
     
     <!-- Legacy Card Aliases -->
     <Style x:Key="CardStyle" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Light}"/>
+        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Padding" Value="20"/>
@@ -442,8 +442,8 @@
     </Style>
     
     <Style x:Key="ModernCard" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Light}"/>
+        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Padding" Value="20"/>
@@ -451,8 +451,8 @@
     </Style>
     
     <Style x:Key="MetricCard" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Light}"/>
+        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Padding" Value="16"/>
@@ -463,7 +463,7 @@
     
     <!-- Page Title - Also defined here as fallback for StaticResource references -->
     <Style x:Key="Text.PageTitle" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
         <Setter Property="FontSize" Value="28"/>
         <Setter Property="FontWeight" Value="700"/>
         <Setter Property="Margin" Value="0,0,0,16"/>
@@ -471,7 +471,7 @@
     
     <!-- Section Title -->
     <Style x:Key="Text.SectionTitle" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="FontWeight" Value="600"/>
         <Setter Property="Margin" Value="0,0,0,12"/>
@@ -479,7 +479,7 @@
     
     <!-- Section Label -->
     <Style x:Key="Text.SectionLabel" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
         <Setter Property="FontSize" Value="16"/>
         <Setter Property="FontWeight" Value="600"/>
         <Setter Property="Margin" Value="0,0,0,12"/>
@@ -487,7 +487,7 @@
     
     <!-- Field Label -->
     <Style x:Key="Text.FieldLabel" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="500"/>
         <Setter Property="Margin" Value="0,0,0,6"/>
@@ -495,62 +495,62 @@
     
     <!-- Body Text -->
     <Style x:Key="Text.Body" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="LineHeight" Value="20"/>
     </Style>
     
     <!-- Caption Text -->
     <Style x:Key="Text.Caption" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
         <Setter Property="FontSize" Value="12"/>
     </Style>
     
     <!-- Legacy Typography Aliases -->
     <Style x:Key="PageTitle" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
         <Setter Property="FontSize" Value="28"/>
         <Setter Property="FontWeight" Value="700"/>
         <Setter Property="Margin" Value="0,0,0,16"/>
     </Style>
     
     <Style x:Key="SectionTitle" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="FontWeight" Value="600"/>
         <Setter Property="Margin" Value="0,0,0,12"/>
     </Style>
     
     <Style x:Key="SectionLabel" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
         <Setter Property="FontSize" Value="16"/>
         <Setter Property="FontWeight" Value="600"/>
         <Setter Property="Margin" Value="0,0,0,12"/>
     </Style>
     
     <Style x:Key="FieldLabel" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="500"/>
         <Setter Property="Margin" Value="0,0,0,6"/>
     </Style>
     
     <Style x:Key="InputLabel" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="500"/>
         <Setter Property="Margin" Value="0,0,0,6"/>
     </Style>
     
     <Style x:Key="PropLabel" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="500"/>
         <Setter Property="Margin" Value="0,0,0,6"/>
     </Style>
     
     <Style x:Key="PropValue" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="LineHeight" Value="20"/>
     </Style>
@@ -559,9 +559,9 @@
     
     <!-- Default TextBox Style -->
     <Style TargetType="TextBox">
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Medium}"/>
+        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="12,10"/>
         <Setter Property="FontSize" Value="14"/>
@@ -578,10 +578,10 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush.Border.Dark}"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Muted}"/>
                         </Trigger>
                         <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brush.Focus}"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brand}"/>
                             <Setter TargetName="border" Property="BorderThickness" Value="2"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
@@ -596,18 +596,18 @@
     
     <!-- Named TextBox Styles -->
     <Style x:Key="TextBox.Large" TargetType="TextBox">
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Medium}"/>
+        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="FontSize" Value="16"/>
         <Setter Property="Padding" Value="16,12"/>
     </Style>
     
     <Style x:Key="TextBox.Multiline" TargetType="TextBox">
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Medium}"/>
+        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="12,10"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
@@ -618,25 +618,25 @@
     
     <!-- Legacy TextBox Aliases -->
     <Style x:Key="DarkInput" TargetType="TextBox">
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Medium}"/>
+        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="12,10"/>
     </Style>
     
     <Style x:Key="ModernTextBox" TargetType="TextBox">
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Medium}"/>
+        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="12,10"/>
     </Style>
     
     <Style x:Key="InputBox" TargetType="TextBox">
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border.Medium}"/>
+        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="12,10"/>
     </Style>
@@ -652,8 +652,8 @@
         embed the same ControlTemplate for explicit coverage.
     -->
     <Style TargetType="ComboBoxItem">
-        <Setter Property="Background"                  Value="#FFFFFF"/>
-        <Setter Property="Foreground"                  Value="#14181D"/>
+        <Setter Property="Background"                  Value="{DynamicResource Panel}"/>
+        <Setter Property="Foreground"                  Value="{DynamicResource Ink}"/>
         <Setter Property="Padding"                     Value="10,6"/>
         <Setter Property="FontSize"                    Value="13"/>
         <Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
@@ -668,23 +668,23 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="#0B5C72"/>
-                            <Setter Property="Foreground" Value="White"/>
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ActionHover}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="#0E7490"/>
-                            <Setter Property="Foreground" Value="White"/>
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Action}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsSelected"    Value="True"/>
                                 <Condition Property="IsHighlighted" Value="True"/>
                             </MultiTrigger.Conditions>
-                            <Setter TargetName="Bd" Property="Background" Value="#1E40AF"/>
-                            <Setter Property="Foreground" Value="White"/>
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Action}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                         </MultiTrigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Foreground" Value="#6B6864"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -700,9 +700,9 @@
         can still do so; this style is the baseline.
     -->
     <Style TargetType="ComboBox">
-        <Setter Property="Background"        Value="#FFFFFF"/>
-        <Setter Property="Foreground"        Value="#14181D"/>
-        <Setter Property="BorderBrush"       Value="#8F887A"/>
+        <Setter Property="Background"        Value="{DynamicResource Panel}"/>
+        <Setter Property="Foreground"        Value="{DynamicResource Ink}"/>
+        <Setter Property="BorderBrush"       Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness"   Value="1"/>
         <Setter Property="Height"            Value="34"/>
         <Setter Property="FontSize"          Value="13"/>
@@ -716,8 +716,8 @@
                      The only reliable fix is to supply our own template with a named Border
                      so our triggers can target it directly. -->
                 <Style TargetType="ComboBoxItem">
-                    <Setter Property="Background"                  Value="#FFFFFF"/>
-                    <Setter Property="Foreground"                  Value="#14181D"/>
+                    <Setter Property="Background"                  Value="{DynamicResource Panel}"/>
+                    <Setter Property="Foreground"                  Value="{DynamicResource Ink}"/>
                     <Setter Property="Padding"                     Value="10,6"/>
                     <Setter Property="FontSize"                    Value="13"/>
                     <Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
@@ -732,23 +732,23 @@
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsHighlighted" Value="True">
-                                        <Setter TargetName="Bd" Property="Background" Value="#0B5C72"/>
-                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ActionHover}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                     </Trigger>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="Bd" Property="Background" Value="#0E7490"/>
-                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Action}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                     </Trigger>
                                     <MultiTrigger>
                                         <MultiTrigger.Conditions>
                                             <Condition Property="IsSelected"    Value="True"/>
                                             <Condition Property="IsHighlighted" Value="True"/>
                                         </MultiTrigger.Conditions>
-                                        <Setter TargetName="Bd" Property="Background" Value="#1E40AF"/>
-                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Action}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                     </MultiTrigger>
                                     <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Foreground" Value="#6B6864"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -778,17 +778,17 @@
                                             CornerRadius="6">
                                         <DockPanel LastChildFill="False">
                                             <TextBlock DockPanel.Dock="Right" Text="▾"
-                                                       Foreground="#6B6864" FontSize="11"
+                                                       Foreground="{DynamicResource Muted}" FontSize="11"
                                                        VerticalAlignment="Center"
                                                        Margin="0,0,10,0"/>
                                         </DockPanel>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="Bd" Property="BorderBrush" Value="#6B6864"/>
+                                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Muted}"/>
                                         </Trigger>
                                         <Trigger Property="IsChecked" Value="True">
-                                            <Setter TargetName="Bd" Property="BorderBrush" Value="#0891B2"/>
+                                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -813,8 +813,8 @@
                                Focusable="False"
                                PopupAnimation="Slide">
                             <Border x:Name="DropBorder"
-                                    Background="#FFFFFF"
-                                    BorderBrush="#8F887A"
+                                    Background="{DynamicResource Panel}"
+                                    BorderBrush="{DynamicResource Border}"
                                     BorderThickness="1"
                                     CornerRadius="6"
                                     MinWidth="{Binding ElementName=MainGrid, Path=ActualWidth}"
@@ -843,7 +843,7 @@
     <!-- ==================== CHECKBOX - مربع اختيار ==================== -->
     
     <Style TargetType="CheckBox">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Cursor" Value="Hand"/>
     </Style>
@@ -855,7 +855,7 @@
         backgrounds). Keyed styles (e.g. ModernTabRadioButton) still override this.
     -->
     <Style TargetType="RadioButton">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -864,13 +864,13 @@
     <!-- ==================== SEPARATOR - فاصل ==================== -->
     
     <Style TargetType="Separator">
-        <Setter Property="Background" Value="{DynamicResource Brush.Divider}"/>
+        <Setter Property="Background" Value="{DynamicResource Border}"/>
         <Setter Property="Height" Value="1"/>
         <Setter Property="Margin" Value="0,8"/>
     </Style>
     
     <Style x:Key="VerticalSeparator" TargetType="Separator">
-        <Setter Property="Background" Value="{DynamicResource Brush.Divider}"/>
+        <Setter Property="Background" Value="{DynamicResource Border}"/>
         <Setter Property="Width" Value="1"/>
         <Setter Property="Margin" Value="8,0"/>
     </Style>
@@ -879,9 +879,9 @@
 
     <!-- Card.Dark - dark surface card used by views with hardcoded dark theme -->
     <Style x:Key="Card.Dark" TargetType="Border">
-        <Setter Property="Background" Value="#FFFFFF"/>
+        <Setter Property="Background" Value="{DynamicResource Panel}"/>
         <Setter Property="CornerRadius" Value="16"/>
-        <Setter Property="BorderBrush" Value="#8F887A"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="24"/>
         <Setter Property="Margin" Value="0,0,0,20"/>
@@ -889,8 +889,8 @@
 
     <!-- Button.Dark.Primary - blue button for dark-theme views -->
     <Style x:Key="Button.Dark.Primary" TargetType="Button">
-        <Setter Property="Background" Value="#0E7490"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{DynamicResource Action}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="500"/>
         <Setter Property="Padding" Value="16,10"/>
@@ -905,10 +905,10 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#0B5C72"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionHover}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#0E7490"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Action}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -919,7 +919,7 @@
     <!-- Button.Dark.Ghost - transparent button for dark backgrounds -->
     <Style x:Key="Button.Dark.Ghost" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="#6B6864"/>
+        <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="Padding" Value="8,6"/>
         <Setter Property="BorderThickness" Value="0"/>
@@ -933,7 +933,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#DDD9D3"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Hover}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

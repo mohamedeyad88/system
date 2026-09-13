@@ -417,7 +417,7 @@
         </Border>
 
         <!-- Main Content Area — animated page transitions -->
-        <Grid Grid.Column="1" Background="{DynamicResource Brush.Background}">
+        <Grid Grid.Column="1" Background="{DynamicResource Paper}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -433,15 +433,15 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" VerticalAlignment="Center" Foreground="White" FontSize="13">
+                    <TextBlock Grid.Column="0" VerticalAlignment="Center" Foreground="{DynamicResource OnAction}" FontSize="13">
                         <Run Text="🚀 تحديث جديد متاح — الإصدار"/>
                         <Run Text="{Binding UpdateVersion}" FontWeight="Bold"/>
                     </TextBlock>
                     <Button Grid.Column="1" Content="تحميل التحديث" Command="{Binding OpenUpdateLinkCommand}"
-                            Background="White" Foreground="{DynamicResource BrandDeep}" BorderThickness="0"
+                            Background="{DynamicResource Panel}" Foreground="{DynamicResource BrandDeep}" BorderThickness="0"
                             Padding="14,5" FontSize="12" FontWeight="SemiBold" Cursor="Hand" Margin="0,0,8,0"/>
                     <Button Grid.Column="2" Content="✕" Command="{Binding DismissUpdateCommand}"
-                            Background="Transparent" Foreground="White" BorderThickness="0"
+                            Background="Transparent" Foreground="{DynamicResource OnAction}" BorderThickness="0"
                             Padding="8,4" FontSize="12" Cursor="Hand"/>
                 </Grid>
             </Border>

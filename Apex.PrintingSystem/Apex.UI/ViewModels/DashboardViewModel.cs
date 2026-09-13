@@ -338,8 +338,8 @@ namespace Apex.UI.ViewModels
 
         /// <summary>Color string for health score display.</summary>
         public string HealthColor =>
-            HealthScore >= 80 ? "#22C55E" :
-            HealthScore >= 50 ? "#F59E0B" : "#EF4444";
+            HealthScore >= 80 ? StatusPalette.Done :
+            HealthScore >= 50 ? StatusPalette.Warning : StatusPalette.Error;
 
         /// <summary>Short health label.</summary>
         public string HealthText =>

@@ -22,7 +22,7 @@ namespace Apex.UI.ViewModels
         [ObservableProperty] private bool _isLicenseValid = false;
         [ObservableProperty] private bool _isTrialActive = false;
         [ObservableProperty] private int _daysRemaining = 0;
-        [ObservableProperty] private string _statusColor = "#EF4444";
+        [ObservableProperty] private string _statusColor = StatusPalette.Error;
 
         // ── Online serial activation (buy now, no need to wait for trial to end) ──
         [ObservableProperty] private string _serialKey = "";
@@ -82,7 +82,7 @@ namespace Apex.UI.ViewModels
             if (string.IsNullOrWhiteSpace(SerialKey))
             {
                 OnlineStatus = L("Act_EnterSerial");
-                OnlineStatusColor = "#EF4444";
+                OnlineStatusColor = StatusPalette.Error;
                 return;
             }
 
@@ -95,7 +95,7 @@ namespace Apex.UI.ViewModels
                 if (outcome.Success)
                 {
                     OnlineStatus = L("Act_ActivatedRestart");
-                    OnlineStatusColor = "#22C55E";
+                    OnlineStatusColor = StatusPalette.Done;
                     MessageBox.Show(
                         Lf("Lic_ActivatedMsg", outcome.Result?.Type,
                             outcome.Result?.ExpiresUtc?.Year >= 9999
@@ -107,13 +107,13 @@ namespace Apex.UI.ViewModels
                 else
                 {
                     OnlineStatus = $"❌ {outcome.Message}";
-                    OnlineStatusColor = "#EF4444";
+                    OnlineStatusColor = StatusPalette.Error;
                 }
             }
             catch (Exception ex)
             {
                 OnlineStatus = Lf("Act_UnexpectedError", ex.Message);
-                OnlineStatusColor = "#EF4444";
+                OnlineStatusColor = StatusPalette.Error;
             }
             finally
             {
@@ -194,8 +194,8 @@ namespace Apex.UI.ViewModels
                 : "—";
 
             StatusColor = r.IsValid
-                ? (r.Type == LicenseType.Trial ? "#F59E0B" : "#10B981")
-                : "#EF4444";
+                ? (r.Type == LicenseType.Trial ? StatusPalette.Warning : StatusPalette.Done)
+                : StatusPalette.Error;
         }
     }
 }

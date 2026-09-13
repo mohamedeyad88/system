@@ -98,26 +98,16 @@ namespace Apex.UI.ViewModels
 
         public string BorderColor => Slot.DataType switch
         {
-            SlotDataType.Text => "#3B82F6",
-            SlotDataType.Number => "#10B981",
-            SlotDataType.Date => "#F59E0B",
-            SlotDataType.Image => "#8B5CF6",
-            SlotDataType.Barcode => "#EF4444",
-            SlotDataType.QrCode => "#EF4444",
-            SlotDataType.Counter => "#06B6D4",
-            _ => "#3B82F6"
+            // One colour for every field type. The old per-type rainbow (blue, green, amber,
+            // violet, cyan) came from no palette in this app, and painted barcode and QR fields
+            // RED — the colour this identity keeps for errors — so a perfectly good barcode
+            // field looked broken. The type is already named on the field's own label chip.
+            _ => StatusPalette.Brand
         };
 
         public string FillColor => Slot.DataType switch
         {
-            SlotDataType.Text => "#193B82F6",
-            SlotDataType.Number => "#1910B981",
-            SlotDataType.Date => "#19F59E0B",
-            SlotDataType.Image => "#198B5CF6",
-            SlotDataType.Barcode => "#19EF4444",
-            SlotDataType.QrCode => "#19EF4444",
-            SlotDataType.Counter => "#1906B6D4",
-            _ => "#193B82F6"
+            _ => StatusPalette.BrandTint
         };
     }
 
@@ -220,7 +210,7 @@ namespace Apex.UI.ViewModels
 
         // ── Status ────────────────────────────────────────────────────────────
         [ObservableProperty] private string _statusMessage = "";
-        [ObservableProperty] private string _statusColor = "#22C55E";
+        [ObservableProperty] private string _statusColor = StatusPalette.Done;
         [ObservableProperty] private bool _isBusy;
         [ObservableProperty] private bool _hasTemplate;
         [ObservableProperty] private bool _hasSlot;
@@ -1272,8 +1262,8 @@ namespace Apex.UI.ViewModels
 
         private DispatcherTimer? _statusTimer;
 
-        private void SetSuccess(string msg) { StatusMessage = msg; StatusColor = "#22C55E"; ArmStatusTimer(); }
-        private void SetError(string msg)   { StatusMessage = msg; StatusColor = "#EF4444"; ArmStatusTimer(); }
+        private void SetSuccess(string msg) { StatusMessage = msg; StatusColor = StatusPalette.Done; ArmStatusTimer(); }
+        private void SetError(string msg)   { StatusMessage = msg; StatusColor = StatusPalette.Error; ArmStatusTimer(); }
 
         private void ArmStatusTimer()
         {
@@ -1284,7 +1274,7 @@ namespace Apex.UI.ViewModels
         }
 
         /// <summary>Show a transient info hint (blue colour, same auto-clear timer).</summary>
-        public void SetHint(string msg) { StatusMessage = msg; StatusColor = "#3B82F6"; ArmStatusTimer(); }
+        public void SetHint(string msg) { StatusMessage = msg; StatusColor = StatusPalette.Info; ArmStatusTimer(); }
 
         /// <summary>Called by the drag handler after each completed drag movement.</summary>
         public void NotifyDragDirty() => IsDirty = true;

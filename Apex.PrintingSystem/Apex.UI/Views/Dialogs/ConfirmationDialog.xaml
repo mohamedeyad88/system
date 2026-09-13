@@ -5,7 +5,7 @@
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None"
         AllowsTransparency="True" Background="Transparent">
     
-    <Border Background="{DynamicResource Brush.Surface}" CornerRadius="12" BorderBrush="{DynamicResource Brush.Border.Medium}" BorderThickness="1">
+    <Border Background="{DynamicResource Panel}" CornerRadius="12" BorderBrush="{DynamicResource Border}" BorderThickness="1">
         <Border.Effect>
             <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.2" Color="#000"/>
         </Border.Effect>
@@ -17,10 +17,10 @@
             </Grid.RowDefinitions>
 
             <!-- Title -->
-            <TextBlock Text="{Binding Title}" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource Brush.Text.Primary}"/>
+            <TextBlock Text="{Binding Title}" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
 
             <!-- Message -->
-            <TextBlock Grid.Row="1" Text="{Binding Message}" FontSize="14" Foreground="{DynamicResource Brush.Text.Secondary}" 
+            <TextBlock Grid.Row="1" Text="{Binding Message}" FontSize="14" Foreground="{DynamicResource Muted}" 
                        TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,16"/>
 
             <!-- Actions -->

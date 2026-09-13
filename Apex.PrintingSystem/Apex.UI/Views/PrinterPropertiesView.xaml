@@ -4,12 +4,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="400"
-             Background="#FAF9F7">
+             Background="{DynamicResource Paper}">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Style x:Key="PropLabel" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#6B6864"/>
+            <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Margin" Value="0,0,0,4"/>
         </Style>
@@ -28,7 +28,7 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Border Grid.Row="0" BorderBrush="#14181D" BorderThickness="0,0,0,1" Padding="20">
+        <Border Grid.Row="0" BorderBrush="{DynamicResource Ink}" BorderThickness="0,0,0,1" Padding="20">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -36,10 +36,10 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel>
                     <TextBlock Text="⚙️ Printer Properties" FontSize="18" FontWeight="Bold" Foreground="#FAF9F7"/>
-                    <TextBlock Text="{Binding PropertiesPrinter.Name}" FontSize="14" Foreground="#6B6864" Margin="0,4,0,0"/>
+                    <TextBlock Text="{Binding PropertiesPrinter.Name}" FontSize="14" Foreground="{DynamicResource Muted}" Margin="0,4,0,0"/>
                 </StackPanel>
                 <Button Grid.Column="1" Content="✕" Command="{Binding ClosePropertiesCommand}"
-                        Background="Transparent" BorderThickness="0" FontSize="16" Foreground="#6B6864" Cursor="Hand"/>
+                        Background="Transparent" BorderThickness="0" FontSize="16" Foreground="{DynamicResource Muted}" Cursor="Hand"/>
             </Grid>
         </Border>
 
@@ -47,7 +47,7 @@
         <ScrollViewer Grid.Row="1" Padding="20">
             <StackPanel>
                 <!-- Status Section -->
-                <Border Background="#FAF9F7" CornerRadius="8" Padding="16" Margin="0,0,0,20">
+                <Border Background="{DynamicResource Paper}" CornerRadius="8" Padding="16" Margin="0,0,0,20">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -58,10 +58,10 @@
                             <Border HorizontalAlignment="Left" CornerRadius="4" Padding="8,4">
                                 <Border.Style>
                                     <Style TargetType="Border">
-                                        <Setter Property="Background" Value="#FEE2E2"/>
+                                        <Setter Property="Background" Value="{DynamicResource StoppedSoft}"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding PropertiesPrinter.IsOnline}" Value="True">
-                                                <Setter Property="Background" Value="#D1FAE5"/>
+                                                <Setter Property="Background" Value="{DynamicResource DoneSoft}"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -70,11 +70,11 @@
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Text" Value="Offline"/>
-                                            <Setter Property="Foreground" Value="#B42318"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource Stopped}"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding PropertiesPrinter.IsOnline}" Value="True">
                                                     <Setter Property="Text" Value="Online"/>
-                                                    <Setter Property="Foreground" Value="#166B40"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource Done}"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -115,13 +115,13 @@
                 <!-- Capabilities -->
                 <TextBlock Text="{DynamicResource PrinterProps_Capabilities}" FontWeight="SemiBold" Margin="0,0,0,12"/>
                 <WrapPanel Margin="0,0,0,20">
-                    <Border Background="#E0E7FF" CornerRadius="6" Padding="10,6" Margin="0,0,8,8"
+                    <Border Background="{DynamicResource BrandSoft}" CornerRadius="6" Padding="10,6" Margin="0,0,8,8"
                             Visibility="{Binding PropertiesPrinter.Capabilities.CanPrintColor, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Text="🎨 Color Printing" Foreground="#4338CA" FontSize="12" FontWeight="SemiBold"/>
+                        <TextBlock Text="🎨 Color Printing" Foreground="{DynamicResource Action}" FontSize="12" FontWeight="SemiBold"/>
                     </Border>
-                    <Border Background="#F3E8FF" CornerRadius="6" Padding="10,6" Margin="0,0,8,8"
+                    <Border Background="{DynamicResource BrandSoft}" CornerRadius="6" Padding="10,6" Margin="0,0,8,8"
                             Visibility="{Binding PropertiesPrinter.Capabilities.CanDuplex, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Text="📄 Duplex (Double-sided)" Foreground="#7E22CE" FontSize="12" FontWeight="SemiBold"/>
+                        <TextBlock Text="📄 Duplex (Double-sided)" Foreground="{DynamicResource Action}" FontSize="12" FontWeight="SemiBold"/>
                     </Border>
                     
                     <!-- Paper Sizes -->
@@ -133,8 +133,8 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Background="#F4F2EF" BorderBrush="#8F887A" BorderThickness="1" CornerRadius="6" Padding="10,6" Margin="0,0,8,8">
-                                    <TextBlock Text="{Binding}" Foreground="#14181D" FontSize="12"/>
+                                <Border Background="{DynamicResource PanelSunk}" BorderBrush="{DynamicResource Border}" BorderThickness="1" CornerRadius="6" Padding="10,6" Margin="0,0,8,8">
+                                    <TextBlock Text="{Binding}" Foreground="{DynamicResource Ink}" FontSize="12"/>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -144,10 +144,10 @@
                 <!-- Warnings -->
                 <!-- Warnings -->
                 <StackPanel Visibility="{Binding PropertiesPrinter.IsOutOfPaper, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Border Background="#FEF2F2" BorderBrush="#FECACA" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,8">
+                    <Border Background="{DynamicResource StoppedSoft}" BorderBrush="{DynamicResource Border}" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,8">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="⚠️" Margin="0,0,8,0"/>
-                            <TextBlock Text="{DynamicResource PrinterProps_OutOfPaper}" Foreground="#B91C1C" FontWeight="SemiBold"/>
+                            <TextBlock Text="{DynamicResource PrinterProps_OutOfPaper}" Foreground="{DynamicResource Stopped}" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>
@@ -155,12 +155,12 @@
         </ScrollViewer>
 
         <!-- Actions -->
-        <Border Grid.Row="2" BorderBrush="#14181D" BorderThickness="0,1,0,0" Padding="20" Background="#FAF9F7">
+        <Border Grid.Row="2" BorderBrush="{DynamicResource Ink}" BorderThickness="0,1,0,0" Padding="20" Background="{DynamicResource Paper}">
             <StackPanel>
                 <Button Content="🖨️ Print Test Page" 
                         Command="{Binding TestPrintCommand}" 
                         CommandParameter="{Binding PropertiesPrinter}"
-                        Height="40" Background="#0E7490" Foreground="White" BorderThickness="0" Margin="0,0,0,10">
+                        Height="40" Background="{DynamicResource Action}" Foreground="{DynamicResource OnAction}" BorderThickness="0" Margin="0,0,0,10">
                     <Button.Resources>
                         <Style TargetType="Border">
                             <Setter Property="CornerRadius" Value="8"/>
@@ -171,7 +171,7 @@
                 <Button Content="🗑️ Flush Print Queue" 
                         Command="{Binding FlushQueueCommand}" 
                         CommandParameter="{Binding PropertiesPrinter}"
-                        Height="40" Background="#B42318" Foreground="White" BorderThickness="0">
+                        Height="40" Background="{DynamicResource Stopped}" Foreground="{DynamicResource OnAction}" BorderThickness="0">
                     <Button.Resources>
                         <Style TargetType="Border">
                             <Setter Property="CornerRadius" Value="8"/>

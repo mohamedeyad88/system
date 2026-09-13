@@ -14,18 +14,18 @@
         <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
             <TextBlock Text="⚠️" FontSize="32" Margin="0,0,10,0"/>
             <StackPanel>
-                <TextBlock Text="An unexpected error occurred" FontSize="18" FontWeight="Bold" Foreground="#D9534F"/>
+                <TextBlock Text="An unexpected error occurred" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource Stopped}"/>
                 <TextBlock Text="The application encountered a critical problem." FontSize="14" Foreground="#666"/>
             </StackPanel>
         </StackPanel>
 
         <TextBox Grid.Row="1" x:Name="ErrorDetails" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
-                 Background="White" Padding="10" BorderThickness="0" FontFamily="Consolas"/>
+                 Background="{DynamicResource Panel}" Padding="10" BorderThickness="0" FontFamily="Consolas"/>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
             <Button Content="View Logs" Click="ViewLogs_Click" Padding="15,8" Margin="0,0,10,0" Background="Transparent" BorderThickness="1"/>
-            <Button Content="Ignore &amp; Continue" Click="Ignore_Click" Padding="15,8" Margin="0,0,10,0" Background="#F0AD4E" Foreground="White" BorderThickness="0"/>
-            <Button Content="Exit Application" Click="Exit_Click" Padding="15,8" Background="#D9534F" Foreground="White" BorderThickness="0"/>
+            <Button Content="Ignore &amp; Continue" Click="Ignore_Click" Padding="15,8" Margin="0,0,10,0" Background="{DynamicResource Printing}" Foreground="{DynamicResource OnAction}" BorderThickness="0"/>
+            <Button Content="Exit Application" Click="Exit_Click" Padding="15,8" Background="{DynamicResource Stopped}" Foreground="{DynamicResource OnAction}" BorderThickness="0"/>
         </StackPanel>
     </Grid>
 </Window>

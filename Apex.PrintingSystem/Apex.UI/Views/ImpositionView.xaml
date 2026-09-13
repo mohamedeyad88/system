@@ -10,7 +10,7 @@
              d:DataContext="{d:DesignInstance Type=vm:ImpositionViewModel}"
              FlowDirection="{Binding Source={x:Static svc:LocalizationService.Instance},
                                      Path=FlowDirection, Mode=OneWay}"
-             Background="{DynamicResource Brush.Background}">
+             Background="{DynamicResource Paper}">
 
     <UserControl.Resources>
         <!-- All screen styles derive from the shared design system (Styles/*.xaml):
@@ -20,13 +20,13 @@
             <Setter Property="Margin"       Value="0,0,0,12"/>
         </Style>
         <Style x:Key="SectionTitle" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
             <Setter Property="FontSize"   Value="11"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Margin"     Value="0,0,0,12"/>
         </Style>
         <Style x:Key="Label" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
             <Setter Property="FontSize"   Value="12"/>
             <Setter Property="Margin"     Value="0,0,0,4"/>
             <!-- Wrap rather than clip. These captions sit in fixed grid columns, and
@@ -42,26 +42,26 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
         <Style x:Key="LocalInput" TargetType="TextBox" BasedOn="{StaticResource InputBox}">
-            <Setter Property="Background"   Value="{DynamicResource Brush.Background}"/>
+            <Setter Property="Background"   Value="{DynamicResource Paper}"/>
             <Setter Property="Padding"      Value="8,6"/>
             <Setter Property="FontSize"     Value="13"/>
-            <Setter Property="CaretBrush"   Value="{DynamicResource Brush.Text.Primary}"/>
+            <Setter Property="CaretBrush"   Value="{DynamicResource Ink}"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
         <!-- Inherits the global dark ComboBox template (correct popup colours) -->
         <Style x:Key="ComboStyle" TargetType="ComboBox"
                BasedOn="{StaticResource {x:Type ComboBox}}">
-            <Setter Property="Background"  Value="{DynamicResource Brush.Background}"/>
-            <Setter Property="Foreground"  Value="{DynamicResource Brush.Text.Primary}"/>
+            <Setter Property="Background"  Value="{DynamicResource Paper}"/>
+            <Setter Property="Foreground"  Value="{DynamicResource Ink}"/>
             <Setter Property="FontSize"    Value="13"/>
         </Style>
         <Style x:Key="CheckStyle" TargetType="CheckBox">
-            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
             <Setter Property="FontSize"   Value="13"/>
             <Setter Property="Margin"     Value="0,3"/>
         </Style>
         <Style x:Key="LocalStatCard" TargetType="Border">
-            <Setter Property="Background"   Value="{DynamicResource Brush.Background}"/>
+            <Setter Property="Background"   Value="{DynamicResource Paper}"/>
             <Setter Property="CornerRadius" Value="10"/>
             <Setter Property="Padding"      Value="16,12"/>
         </Style>
@@ -70,8 +70,8 @@
             <Setter Property="Padding" Value="20,10"/>
         </Style>
         <Style x:Key="SecondaryBtn" TargetType="Button">
-            <Setter Property="Background" Value="{DynamicResource Brush.Surface.Elevated}"/>
-            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+            <Setter Property="Background" Value="{DynamicResource Hover}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="16,10"/>
             <Setter Property="FontSize" Value="13"/>
@@ -85,7 +85,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource Brush.Slate.600}"/>
+                                <Setter Property="Background" Value="{DynamicResource Border}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -101,12 +101,12 @@
         </Grid.ColumnDefinitions>
 
         <!-- ═══════════ LEFT — Inputs ═══════════ -->
-        <Border Grid.Column="0" Background="{DynamicResource Brush.Surface}">
+        <Border Grid.Column="0" Background="{DynamicResource Panel}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="20">
                     <StackPanel Margin="0,0,0,18">
-                        <TextBlock Text="{DynamicResource Imp_Title}" FontSize="20" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="{DynamicResource Imp_Subtitle}" FontSize="12" Foreground="{DynamicResource Brush.Text.Tertiary}" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        <TextBlock Text="{DynamicResource Imp_Title}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource OnAction}"/>
+                        <TextBlock Text="{DynamicResource Imp_Subtitle}" FontSize="12" Foreground="{DynamicResource Muted}" Margin="0,4,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
 
                     <!-- Source -->
@@ -121,7 +121,7 @@
                                  ellipsis eats the end, which is the file name — the one
                                  part that tells the operator which job is loaded. The
                                  folder is still one hover away. -->
-                            <TextBlock Text="{Binding SourceFileName}" Foreground="{DynamicResource Brush.Text.Secondary}" FontSize="11"
+                            <TextBlock Text="{Binding SourceFileName}" Foreground="{DynamicResource Muted}" FontSize="11"
                                        TextTrimming="CharacterEllipsis"
                                        ToolTip="{Binding SourcePath}"
                                        Visibility="{Binding HasSource, Converter={StaticResource BooleanToVisibilityConverter}}"/>
@@ -129,13 +129,13 @@
                                  that returns a bool where a Visibility is expected — that
                                  never collapsed, so this placeholder sat under the loaded
                                  file's name saying no file had been chosen. -->
-                            <TextBlock Text="{DynamicResource Imp_NoSource}" Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="11"
+                            <TextBlock Text="{DynamicResource Imp_NoSource}" Foreground="{DynamicResource Muted}" FontSize="11"
                                        FontStyle="Italic"
                                        Visibility="{Binding HasNoSource, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                             <StackPanel Orientation="Horizontal" Margin="0,8,0,0"
                                         Visibility="{Binding HasSource, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <TextBlock Text="{DynamicResource Imp_Pages}" Style="{StaticResource Label}" Margin="0,0,8,0"/>
-                                <TextBlock Text="{Binding SourcePageCount}" Style="{StaticResource Value}" Foreground="{DynamicResource Brush.Primary.Light}"/>
+                                <TextBlock Text="{Binding SourcePageCount}" Style="{StaticResource Value}" Foreground="{DynamicResource Brand}"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -222,7 +222,7 @@
 
                             <!-- Plain-language explanation of the selected imposition type -->
                             <TextBlock Text="{Binding SchemeDescription}"
-                                       TextWrapping="Wrap" FontSize="11" Foreground="{DynamicResource Brush.Text.Secondary}"
+                                       TextWrapping="Wrap" FontSize="11" Foreground="{DynamicResource Muted}"
                                        Margin="2,0,2,10"/>
 
                             <StackPanel Visibility="{Binding IsNUpScheme, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -236,7 +236,7 @@
                                           SelectedIndex="{Binding SelectedAlignmentIndex}"
                                           Style="{StaticResource ComboStyle}"/>
                                 <TextBlock Text="{DynamicResource IMPX_001}"
-                                           Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="10" TextWrapping="Wrap" Margin="2,3,0,0"/>
+                                           Foreground="{DynamicResource Muted}" FontSize="10" TextWrapping="Wrap" Margin="2,3,0,0"/>
                             </StackPanel>
 
                             <StackPanel Visibility="{Binding IsPerfectBinding, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -279,13 +279,13 @@
                             </Grid>
 
                             <!-- Preflight findings for the loaded source file -->
-                            <Border Background="{DynamicResource Brush.Background}" CornerRadius="8" Padding="12"
+                            <Border Background="{DynamicResource Paper}" CornerRadius="8" Padding="12"
                                     Margin="0,0,0,10"
                                     Visibility="{Binding HasSource, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <StackPanel>
                                     <TextBlock Text="{DynamicResource Imp_PreflightTitle}"
                                                FontSize="12" FontWeight="SemiBold"
-                                               Foreground="{DynamicResource Brush.Text.Secondary}" Margin="0,0,0,6"/>
+                                               Foreground="{DynamicResource Muted}" Margin="0,0,0,6"/>
                                     <TextBlock Text="{Binding PreflightSummary}"
                                                Foreground="{Binding PreflightSummaryColor}"
                                                FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap"/>
@@ -294,7 +294,7 @@
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding}" FontSize="11" TextWrapping="Wrap"
-                                                           Foreground="{DynamicResource Brush.Text.Secondary}"
+                                                           Foreground="{DynamicResource Muted}"
                                                            Margin="0,0,0,3"/>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
@@ -308,7 +308,7 @@
                                       Style="{StaticResource CheckStyle}" Margin="0,10,0,0"/>
                             <StackPanel Visibility="{Binding UseAdvancedSpacing, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <TextBlock Text="{DynamicResource Imp_GripperHint}"
-                                           Foreground="{DynamicResource Brush.Text.Secondary}"
+                                           Foreground="{DynamicResource Muted}"
                                            FontSize="11" TextWrapping="Wrap" Margin="0,4,0,8"/>
                                 <UniformGrid Columns="4">
                                     <StackPanel Margin="0,0,6,6">
@@ -354,14 +354,14 @@
                                 <TextBlock Text="{DynamicResource Imp_PaperThickness}" Style="{StaticResource Label}"/>
                                 <TextBox Text="{Binding PaperThickness, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
                                 <TextBlock Text="{DynamicResource Imp_PaperThicknessHint}"
-                                           Foreground="{DynamicResource Brush.Text.Secondary}"
+                                           Foreground="{DynamicResource Muted}"
                                            FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"/>
                             </StackPanel>
 
                             <CheckBox IsChecked="{Binding AllowRotation}" Content="{DynamicResource Imp_Rotation}" Style="{StaticResource CheckStyle}"/>
                             <CheckBox IsChecked="{Binding ScaleToFit}" Content="{DynamicResource Imp_ScaleToFit}" Style="{StaticResource CheckStyle}"/>
                             <CheckBox IsChecked="{Binding AlignSheetsIndependently}" Content="{DynamicResource Imp_AlignIndep}" Style="{StaticResource CheckStyle}"/>
-                            <Separator Background="{DynamicResource Brush.Surface.Elevated}" Margin="0,8"/>
+                            <Separator Background="{DynamicResource Hover}" Margin="0,8"/>
                             <CheckBox IsChecked="{Binding CropMarks}"        Content="{DynamicResource Imp_CropMarks}" Style="{StaticResource CheckStyle}"/>
                             <CheckBox IsChecked="{Binding FoldMarks}"        Content="{DynamicResource Imp_FoldMarks}" Style="{StaticResource CheckStyle}"/>
                             <CheckBox IsChecked="{Binding RegistrationMarks}" Content="{DynamicResource Imp_RegMarks}" Style="{StaticResource CheckStyle}"/>
@@ -444,26 +444,26 @@
             <StackPanel Margin="20">
 
                 <!-- Error -->
-                <Border Background="{DynamicResource Brush.Error.Surface}" CornerRadius="10" Padding="16,12" Margin="0,0,0,16"
+                <Border Background="{DynamicResource StoppedSoft}" CornerRadius="10" Padding="16,12" Margin="0,0,0,16"
                         Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="âڑ " Foreground="{DynamicResource Brush.Error.Light}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Brush.Error.Light}" FontSize="13" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        <TextBlock Text="âڑ " Foreground="{DynamicResource Stopped}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Stopped}" FontSize="13" TextWrapping="Wrap" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Border>
 
                 <!-- Status -->
-                <Border Background="{DynamicResource Brush.Success.Surface}" CornerRadius="10" Padding="14,10" Margin="0,0,0,16"
+                <Border Background="{DynamicResource DoneSoft}" CornerRadius="10" Padding="14,10" Margin="0,0,0,16"
                         Visibility="{Binding StatusMessage, Converter={StaticResource StringToVisibilityConverter}}">
-                    <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource Brush.Success.Light}" FontSize="13" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource Done}" FontSize="13" TextWrapping="Wrap"/>
                 </Border>
 
                 <!-- Placeholder -->
-                <Border CornerRadius="12" Padding="40" Background="{DynamicResource Brush.Surface}"
+                <Border CornerRadius="12" Padding="40" Background="{DynamicResource Panel}"
                         Visibility="{Binding HasResult, Converter={StaticResource InverseBoolConverter}}">
                     <StackPanel HorizontalAlignment="Center">
                         <TextBlock Text="📐" FontSize="48" HorizontalAlignment="Center" Foreground="{DynamicResource Brush.Text.Disabled}" Margin="0,0,0,16"/>
-                        <TextBlock Text="{DynamicResource Imp_PlaceholderTitle}" Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource Imp_PlaceholderTitle}" Foreground="{DynamicResource Muted}" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                         <TextBlock Text="{DynamicResource Imp_PlaceholderDesc}" Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="12" HorizontalAlignment="Center" Margin="0,8,0,0"/>
                     </StackPanel>
                 </Border>
@@ -473,7 +473,7 @@
 
                     <Border Style="{StaticResource LocalCard}">
                         <StackPanel>
-                            <TextBlock Text="{DynamicResource Imp_SummaryTitle}" FontSize="16" FontWeight="Bold" Foreground="White" Margin="0,0,0,16"/>
+                            <TextBlock Text="{DynamicResource Imp_SummaryTitle}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource OnAction}" Margin="0,0,0,16"/>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/>
@@ -481,19 +481,19 @@
                                 <Border Grid.Column="0" Style="{StaticResource LocalStatCard}">
                                     <StackPanel>
                                         <TextBlock Text="{DynamicResource Imp_SheetsRequired}" Style="{StaticResource SectionTitle}" Margin="0"/>
-                                        <TextBlock Text="{Binding SheetsRequired}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource Brush.Primary.Light}"/>
+                                        <TextBlock Text="{Binding SheetsRequired}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource Brand}"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Column="2" Style="{StaticResource LocalStatCard}">
                                     <StackPanel>
                                         <TextBlock Text="{DynamicResource Imp_PagesPerSide}" Style="{StaticResource SectionTitle}" Margin="0"/>
-                                        <TextBlock Text="{Binding PagesPerSide}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource Brush.Primary.Light}"/>
+                                        <TextBlock Text="{Binding PagesPerSide}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource Brand}"/>
                                     </StackPanel>
                                 </Border>
                                 <Border Grid.Column="4" Style="{StaticResource LocalStatCard}">
                                     <StackPanel>
                                         <TextBlock Text="{DynamicResource Imp_Utilization}" Style="{StaticResource SectionTitle}" Margin="0"/>
-                                        <TextBlock Text="{Binding UtilizationPercent, StringFormat='{}{0:F1}%'}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource Brush.Warning}"/>
+                                        <TextBlock Text="{Binding UtilizationPercent, StringFormat='{}{0:F1}%'}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource Printing}"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>
@@ -521,12 +521,12 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{DynamicResource Imp_Preview}" FontSize="14" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="0" Text="{DynamicResource Imp_Preview}" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource OnAction}" VerticalAlignment="Center"/>
                                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                                     <Button Command="{Binding PrevSheetCommand}" Content="{DynamicResource Imp_PrevSheet}"
                                             Style="{StaticResource SecondaryBtn}" Padding="10,5" FontSize="11" Margin="0,0,6,0"/>
-                                    <Border Background="{DynamicResource Brush.Background}" CornerRadius="6" Padding="10,5" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding CurrentSheetLabel}" Foreground="{DynamicResource Brush.Primary.Light}" FontSize="12" FontWeight="SemiBold"/>
+                                    <Border Background="{DynamicResource Paper}" CornerRadius="6" Padding="10,5" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding CurrentSheetLabel}" Foreground="{DynamicResource Brand}" FontSize="12" FontWeight="SemiBold"/>
                                     </Border>
                                     <Button Command="{Binding NextSheetCommand}" Content="{DynamicResource Imp_NextSheet}"
                                             Style="{StaticResource SecondaryBtn}" Padding="10,5" FontSize="11" Margin="6,0,0,0"/>
@@ -537,16 +537,16 @@
                                     <Button Command="{Binding PreviewZoomOutCommand}" Content="−"
                                             Style="{StaticResource SecondaryBtn}" Padding="10,5" FontSize="11" Margin="12,0,0,0"
                                             Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                    <Border Background="{DynamicResource Brush.Background}" CornerRadius="6" Padding="8,5" VerticalAlignment="Center" Margin="4,0,0,0"
+                                    <Border Background="{DynamicResource Paper}" CornerRadius="6" Padding="8,5" VerticalAlignment="Center" Margin="4,0,0,0"
                                             Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <TextBlock Text="{Binding PreviewZoomLabel}" Foreground="{DynamicResource Brush.Primary.Light}" FontSize="12" FontWeight="SemiBold" MinWidth="40" TextAlignment="Center"/>
+                                        <TextBlock Text="{Binding PreviewZoomLabel}" Foreground="{DynamicResource Brand}" FontSize="12" FontWeight="SemiBold" MinWidth="40" TextAlignment="Center"/>
                                     </Border>
                                     <Button Command="{Binding PreviewZoomInCommand}" Content="+"
                                             Style="{StaticResource SecondaryBtn}" Padding="10,5" FontSize="11" Margin="4,0,0,0"
                                             Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                 </StackPanel>
                             </Grid>
-                            <Border Background="{DynamicResource Brush.Surface.Sunken}" CornerRadius="10" Padding="20">
+                            <Border Background="{DynamicResource PanelSunk}" CornerRadius="10" Padding="20">
                                 <Grid MinHeight="380">
                                     <!-- Schematic sheet preview: true aspect ratio, page order,
                                          rotation and margin guide. Shown until a rendered PDF
@@ -566,7 +566,7 @@
                                                   HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                                                   Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}"
                                                   PreviewMouseWheel="ImpPreview_PreviewMouseWheel">
-                                        <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="White" Margin="8">
+                                        <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="{DynamicResource Panel}" Margin="8">
                                             <Border.LayoutTransform>
                                                 <ScaleTransform ScaleX="{Binding PreviewZoom}" ScaleY="{Binding PreviewZoom}"/>
                                             </Border.LayoutTransform>
@@ -580,9 +580,9 @@
 
                                     <!-- Loading state -->
                                     <Border HorizontalAlignment="Center" VerticalAlignment="Center"
-                                            Background="{DynamicResource Brush.Background}" CornerRadius="8" Padding="16,10"
+                                            Background="{DynamicResource Paper}" CornerRadius="8" Padding="16,10"
                                             Visibility="{Binding IsPreviewLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <TextBlock Text="{DynamicResource PT_034}" Foreground="{DynamicResource Brush.Text.Secondary}" FontSize="13"/>
+                                        <TextBlock Text="{DynamicResource PT_034}" Foreground="{DynamicResource Muted}" FontSize="13"/>
                                     </Border>
                                 </Grid>
                             </Border>
@@ -592,10 +592,10 @@
                     <!-- Full report -->
                     <Border Style="{StaticResource LocalCard}">
                         <StackPanel>
-                            <TextBlock Text="{DynamicResource Imp_FullReport}" FontSize="14" FontWeight="Bold" Foreground="White" Margin="0,0,0,12"/>
-                            <Border Background="{DynamicResource Brush.Background}" CornerRadius="8" Padding="16">
+                            <TextBlock Text="{DynamicResource Imp_FullReport}" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource OnAction}" Margin="0,0,0,12"/>
+                            <Border Background="{DynamicResource Paper}" CornerRadius="8" Padding="16">
                                 <TextBox Text="{Binding HumanReadableSummary, Mode=OneWay}"
-                                         Background="Transparent" BorderThickness="0" Foreground="{DynamicResource Brush.Text.Secondary}"
+                                         Background="Transparent" BorderThickness="0" Foreground="{DynamicResource Muted}"
                                          FontFamily="Consolas" FontSize="12" IsReadOnly="True"
                                          TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" MaxHeight="280"/>
                             </Border>

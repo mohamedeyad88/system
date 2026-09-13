@@ -254,7 +254,7 @@
     <!-- Flash Success (background highlight) -->
     <Storyboard x:Key="Anim.FlashSuccess">
         <ColorAnimation Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" 
-                       To="#10B981" 
+                       To="#166B40" 
                        Duration="0:0:0.2" 
                        AutoReverse="True"/>
     </Storyboard>
@@ -262,7 +262,7 @@
     <!-- Flash Error (background highlight) -->
     <Storyboard x:Key="Anim.FlashError">
         <ColorAnimation Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" 
-                       To="#EF4444" 
+                       To="#B42318" 
                        Duration="0:0:0.2" 
                        AutoReverse="True"/>
     </Storyboard>

@@ -75,10 +75,10 @@
                         <Border CornerRadius="20" Padding="12,5" Margin="0,0,12,0">
                             <Border.Style>
                                 <Style TargetType="Border">
-                                    <Setter Property="Background" Value="#E7F3EC"/>
+                                    <Setter Property="Background" Value="{DynamicResource DoneSoft}"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsSystemOnline}" Value="False">
-                                            <Setter Property="Background" Value="#F6E4E2"/>
+                                            <Setter Property="Background" Value="{DynamicResource StoppedSoft}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -140,7 +140,7 @@
                         </Button.Template>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="🔄" Margin="0,0,8,0"/>
-                            <TextBlock Text="{DynamicResource Refresh}" Foreground="White" FontWeight="SemiBold"/>
+                            <TextBlock Text="{DynamicResource Refresh}" Foreground="{DynamicResource OnAction}" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
@@ -349,10 +349,10 @@
                                                     HorizontalAlignment="Right" Margin="0,6,0,0">
                                                 <Border.Style>
                                                     <Style TargetType="Border">
-                                                        <Setter Property="Background" Value="#F6E4E2"/>
+                                                        <Setter Property="Background" Value="{DynamicResource StoppedSoft}"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding IsOnline}" Value="True">
-                                                                <Setter Property="Background" Value="#E7F3EC"/>
+                                                                <Setter Property="Background" Value="{DynamicResource DoneSoft}"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -520,10 +520,10 @@
                             <Border CornerRadius="12" Padding="14,11" Margin="0,0,0,14">
                                 <Border.Style>
                                     <Style TargetType="Border">
-                                        <Setter Property="Background" Value="#E7F3EC"/>
+                                        <Setter Property="Background" Value="{DynamicResource DoneSoft}"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsSystemOnline}" Value="False">
-                                                <Setter Property="Background" Value="#F6E4E2"/>
+                                                <Setter Property="Background" Value="{DynamicResource StoppedSoft}"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>

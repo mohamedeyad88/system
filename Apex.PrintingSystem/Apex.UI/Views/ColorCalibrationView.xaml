@@ -5,7 +5,7 @@
              xmlns:svc="clr-namespace:Apex.UI.Services"
              FlowDirection="{Binding Source={x:Static svc:LocalizationService.Instance},
                                      Path=FlowDirection, Mode=OneWay}"
-             Background="#FAF9F7">
+             Background="{DynamicResource Paper}">
 
     <UserControl.Resources>
         <Style x:Key="SliderStyle" TargetType="Slider">
@@ -18,18 +18,18 @@
         <Style x:Key="GroupTitle" TargetType="TextBlock">
             <Setter Property="FontSize"      Value="12"/>
             <Setter Property="FontWeight"    Value="SemiBold"/>
-            <Setter Property="Foreground"    Value="#6B6864"/>
+            <Setter Property="Foreground"    Value="{DynamicResource Muted}"/>
             <Setter Property="Margin"        Value="0,12,0,8"/>
         </Style>
         <Style x:Key="SliderLabel" TargetType="TextBlock">
             <Setter Property="FontSize"      Value="11"/>
-            <Setter Property="Foreground"    Value="#6B6864"/>
+            <Setter Property="Foreground"    Value="{DynamicResource Muted}"/>
             <Setter Property="Width"         Value="80"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
         <Style x:Key="ValueLabel" TargetType="TextBlock">
             <Setter Property="FontSize"      Value="11"/>
-            <Setter Property="Foreground"    Value="#0891B2"/>
+            <Setter Property="Foreground"    Value="{DynamicResource Action}"/>
             <Setter Property="Width"         Value="44"/>
             <Setter Property="TextAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -43,7 +43,7 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Border Grid.Row="0" Background="#FFFFFF" Padding="24,0">
+        <Border Grid.Row="0" Background="{DynamicResource Panel}" Padding="24,0">
             <!-- Two columns. The title and the button used to share one cell, so the
                  button drew over the heading and it read "ة الألوان" — the first word
                  gone. Both strings were hardcoded Arabic too, so the header stayed in
@@ -54,7 +54,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" Foreground="White"
+                <TextBlock Grid.Column="0" Foreground="{DynamicResource OnAction}"
                            FontSize="20" FontWeight="Bold" VerticalAlignment="Center"
                            TextTrimming="CharacterEllipsis">
                     <Run Text="🎨 "/><Run Text="{DynamicResource CC_001}"/>
@@ -63,7 +63,7 @@
                 <Button Grid.Column="1" Command="{Binding LoadPrintersCommand}"
                         VerticalAlignment="Center"
                         Height="32" Padding="12,0" Margin="12,0,0,0"
-                        Background="#DDD9D3" Foreground="#6B6864" BorderThickness="0"
+                        Background="{DynamicResource Hover}" Foreground="{DynamicResource Muted}" BorderThickness="0"
                         FontSize="12" Cursor="Hand">
                     <TextBlock>
                         <Run Text="🔄 "/><Run Text="{DynamicResource Common_Refresh}"/>
@@ -80,8 +80,8 @@
             </Grid.ColumnDefinitions>
 
             <!-- Left: Printer List -->
-            <Border Grid.Column="0" Background="#FFFFFF"
-                    BorderBrush="#8F887A" BorderThickness="0,0,1,0">
+            <Border Grid.Column="0" Background="{DynamicResource Panel}"
+                    BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -89,7 +89,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Text="الطابعات" Foreground="White"
+                    <TextBlock Grid.Row="0" Text="الطابعات" Foreground="{DynamicResource OnAction}"
                                FontSize="13" FontWeight="SemiBold" Margin="16,16,16,8"/>
 
                     <ListBox Grid.Row="1"
@@ -99,7 +99,7 @@
                              Margin="8,0,8,8">
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="ListBoxItem">
-                                <Setter Property="Foreground"  Value="#14181D"/>
+                                <Setter Property="Foreground"  Value="{DynamicResource Ink}"/>
                                 <Setter Property="Padding"     Value="12,10"/>
                                 <Setter Property="FontSize"    Value="12"/>
                                 <Setter Property="Template">
@@ -111,11 +111,11 @@
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="b" Property="Background" Value="#DDD9D3"/>
+                                                    <Setter TargetName="b" Property="Background" Value="{DynamicResource Hover}"/>
                                                 </Trigger>
                                                 <Trigger Property="IsSelected" Value="True">
-                                                    <Setter TargetName="b" Property="Background" Value="#0B5C72"/>
-                                                    <Setter Property="Foreground" Value="White"/>
+                                                    <Setter TargetName="b" Property="Background" Value="{DynamicResource ActionHover}"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -127,10 +127,10 @@
 
                     <!-- ICC Profile -->
                     <Border Grid.Row="2" Padding="16,12"
-                            BorderBrush="#8F887A" BorderThickness="0,1,0,0">
+                            BorderBrush="{DynamicResource Border}" BorderThickness="0,1,0,0">
                         <StackPanel>
-                            <TextBlock Text="ملف ICC:" Foreground="#6B6864" FontSize="10"/>
-                            <TextBlock Foreground="#6B6864" FontSize="11" TextWrapping="Wrap"
+                            <TextBlock Text="ملف ICC:" Foreground="{DynamicResource Muted}" FontSize="10"/>
+                            <TextBlock Foreground="{DynamicResource Muted}" FontSize="11" TextWrapping="Wrap"
                                        Margin="0,2,0,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
@@ -152,7 +152,7 @@
             <Grid Grid.Column="1">
                 <!-- No printer selected -->
                 <TextBlock Text="← اختر طابعة من القائمة"
-                           Foreground="#6B6864" FontSize="16"
+                           Foreground="{DynamicResource Muted}" FontSize="16"
                            HorizontalAlignment="Center" VerticalAlignment="Center">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
@@ -181,16 +181,16 @@
                     <StackPanel>
 
                         <!-- Title -->
-                        <TextBlock Text="إعدادات الضبط اللوني" Foreground="White"
+                        <TextBlock Text="إعدادات الضبط اللوني" Foreground="{DynamicResource OnAction}"
                                    FontSize="15" FontWeight="Bold" Margin="0,0,0,4"/>
-                        <TextBlock Foreground="#6B6864" FontSize="11" Margin="0,0,0,16">
+                        <TextBlock Foreground="{DynamicResource Muted}" FontSize="11" Margin="0,0,0,16">
                             <Run Text="الطابعة: "/>
-                            <Run Text="{Binding SelectedPrinterName}" Foreground="#6B6864"/>
+                            <Run Text="{Binding SelectedPrinterName}" Foreground="{DynamicResource Muted}"/>
                         </TextBlock>
 
                         <!-- RGB Adjustments -->
                         <TextBlock Text="— ضبط الصورة" Style="{StaticResource GroupTitle}"
-                                   Foreground="#0891B2"/>
+                                   Foreground="{DynamicResource Action}"/>
 
                         <!-- Brightness -->
                         <Grid Margin="0,0,0,10">
@@ -242,7 +242,7 @@
 
                         <!-- CMYK -->
                         <TextBlock Text="— إزاحة CMYK" Style="{StaticResource GroupTitle}"
-                                   Foreground="#FB923C"/>
+                                   Foreground="{DynamicResource Printing}"/>
 
                         <!-- Cyan -->
                         <Grid Margin="0,0,0,10">
@@ -317,21 +317,21 @@
                             </Grid.ColumnDefinitions>
                             <Button Grid.Column="0"
                                     Command="{Binding SaveCalibrationCommand}"
-                                    Height="40" Background="#0E7490"
-                                    Foreground="White" BorderThickness="0"
+                                    Height="40" Background="{DynamicResource Action}"
+                                    Foreground="{DynamicResource OnAction}" BorderThickness="0"
                                     FontSize="13" FontWeight="SemiBold"
                                     Content="💾 حفظ الإعدادات" Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="b" Background="#0E7490" CornerRadius="8"
+                                        <Border x:Name="b" Background="{DynamicResource Action}" CornerRadius="8"
                                                 Height="40">
                                             <TextBlock Text="{TemplateBinding Content}"
-                                                       Foreground="White" FontSize="13" FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource OnAction}" FontSize="13" FontWeight="SemiBold"
                                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="b" Property="Background" Value="#0E7490"/>
+                                                <Setter TargetName="b" Property="Background" Value="{DynamicResource Action}"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -343,14 +343,14 @@
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
                                         <Border x:Name="b" Background="Transparent" CornerRadius="8"
-                                                BorderBrush="#6B6864" BorderThickness="1" Height="40">
+                                                BorderBrush="{DynamicResource Muted}" BorderThickness="1" Height="40">
                                             <TextBlock Text="{TemplateBinding Content}"
-                                                       Foreground="#6B6864" FontSize="13"
+                                                       Foreground="{DynamicResource Muted}" FontSize="13"
                                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="b" Property="Background" Value="#FFFFFF"/>
+                                                <Setter TargetName="b" Property="Background" Value="{DynamicResource Panel}"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -360,7 +360,7 @@
 
                         <!-- Status -->
                         <TextBlock Text="{Binding StatusMessage}"
-                                   Foreground="#166B40" FontSize="12"
+                                   Foreground="{DynamicResource Done}" FontSize="12"
                                    Margin="0,12,0,0" HorizontalAlignment="Center">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">

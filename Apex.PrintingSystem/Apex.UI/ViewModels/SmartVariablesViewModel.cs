@@ -121,7 +121,7 @@ namespace Apex.UI.ViewModels
                 if (string.IsNullOrWhiteSpace(text))
                 {
                     PasteStatus = L("SV_ClipboardEmpty");
-                    PasteStatusColor = "#EF4444";
+                    PasteStatusColor = StatusPalette.Error;
                     return;
                 }
                 RawPasteText = text;
@@ -130,7 +130,7 @@ namespace Apex.UI.ViewModels
             catch (Exception ex)
             {
                 PasteStatus = Lf("Num_ErrorColon", ex.Message);
-                PasteStatusColor = "#EF4444";
+                PasteStatusColor = StatusPalette.Error;
             }
         }
 
@@ -157,7 +157,7 @@ namespace Apex.UI.ViewModels
             _cleaner.Clean(State.DataSource, opts);
             RefreshDataGrid();
             PasteStatus = L("SV_CleanupApplied");
-            PasteStatusColor = "#22C55E";
+            PasteStatusColor = StatusPalette.Done;
         }
 
         [RelayCommand]
@@ -241,7 +241,7 @@ namespace Apex.UI.ViewModels
             MappingStatus = required > 0
                 ? Lf("SV_RequiredUnmapped", required)
                 : Lf("SV_MappedCount", mapped, mappings.Count);
-            MappingStatusColor = required > 0 ? "#F59E0B" : "#22C55E";
+            MappingStatusColor = required > 0 ? StatusPalette.Warning : StatusPalette.Done;
 
             // If the user is already viewing the preview tab, refresh it now
             if (ActiveTabIndex == 3)
@@ -345,7 +345,7 @@ namespace Apex.UI.ViewModels
             if (string.IsNullOrWhiteSpace(ImageFolderPath) || !Directory.Exists(ImageFolderPath))
             {
                 ImageStatusText = L("SV_FolderMissing");
-                ImageStatusColor = "#EF4444";
+                ImageStatusColor = StatusPalette.Error;
                 return;
             }
 
@@ -356,7 +356,7 @@ namespace Apex.UI.ViewModels
             ScanProgress = 0;
             ImageAssets.Clear();
             ImageStatusText = L("SV_Scanning");
-            ImageStatusColor = "#3B82F6";
+            ImageStatusColor = StatusPalette.Info;
 
             try
             {
@@ -374,7 +374,7 @@ namespace Apex.UI.ViewModels
                     ImageAssets.Add(new ImageAssetItem(a));
 
                 ImageStatusText = Lf("SV_FoundImages", assets.Count);
-                ImageStatusColor = "#22C55E";
+                ImageStatusColor = StatusPalette.Done;
 
                 // Immediately resolve matches if data exists
                 if (HasPastedData)
@@ -388,7 +388,7 @@ namespace Apex.UI.ViewModels
             catch (Exception ex)
             {
                 ImageStatusText = Lf("SV_ScanError", ex.Message);
-                ImageStatusColor = "#EF4444";
+                ImageStatusColor = StatusPalette.Error;
             }
             finally
             {
@@ -417,7 +417,7 @@ namespace Apex.UI.ViewModels
             int missing = State.DataSource.Rows.Count(r => r.ImageStatus == ImageStatus.Missing);
 
             ImageStatusText = Lf("SV_MatchSummary", found, missing);
-            ImageStatusColor = missing > 0 ? "#F59E0B" : "#22C55E";
+            ImageStatusColor = missing > 0 ? StatusPalette.Warning : StatusPalette.Done;
 
             // Refresh asset used-state
             foreach (var item in ImageAssets)
@@ -603,13 +603,13 @@ namespace Apex.UI.ViewModels
             if (!HasPastedData || State.DataSource.Rows.Count == 0)
             {
                 ExportStatusText = L("SV_NoData");
-                ExportStatusColor = "#EF4444";
+                ExportStatusColor = StatusPalette.Error;
                 return;
             }
             if (_session?.CurrentPage == null)
             {
                 ExportStatusText = L("SV_NoTemplate");
-                ExportStatusColor = "#F59E0B";
+                ExportStatusColor = StatusPalette.Warning;
                 return;
             }
 
@@ -635,12 +635,12 @@ namespace Apex.UI.ViewModels
                 ExportRenderedTemplateToPng(rendered, dlg.FileName);
 
                 ExportStatusText = Lf("SV_Saved", Path.GetFileName(dlg.FileName));
-                ExportStatusColor = "#22C55E";
+                ExportStatusColor = StatusPalette.Done;
             }
             catch (Exception ex)
             {
                 ExportStatusText = Lf("SV_ExportError", ex.Message);
-                ExportStatusColor = "#EF4444";
+                ExportStatusColor = StatusPalette.Error;
             }
         }
 
@@ -655,13 +655,13 @@ namespace Apex.UI.ViewModels
             if (!HasPastedData || State.DataSource.Rows.Count == 0)
             {
                 ExportStatusText = L("SV_NoDataExport");
-                ExportStatusColor = "#EF4444";
+                ExportStatusColor = StatusPalette.Error;
                 return;
             }
             if (_session?.CurrentPage == null)
             {
                 ExportStatusText = L("SV_NoTemplate");
-                ExportStatusColor = "#F59E0B";
+                ExportStatusColor = StatusPalette.Warning;
                 return;
             }
 
@@ -675,7 +675,7 @@ namespace Apex.UI.ViewModels
                 !Directory.Exists(ExportSettings.OutputFolder))
             {
                 ExportStatusText = L("SV_NoSaveFolder");
-                ExportStatusColor = "#F59E0B";
+                ExportStatusColor = StatusPalette.Warning;
                 return;
             }
 
@@ -720,12 +720,12 @@ namespace Apex.UI.ViewModels
                 ExportStatusText = failed == 0
                     ? Lf("SV_ExportedTo", ok, outFolder)
                     : Lf("SV_ExportPartial", ok, failed);
-                ExportStatusColor = failed == 0 ? "#22C55E" : "#F59E0B";
+                ExportStatusColor = failed == 0 ? StatusPalette.Done : StatusPalette.Warning;
             }
             catch (Exception ex)
             {
                 ExportStatusText = Lf("SV_ExportError", ex.Message);
-                ExportStatusColor = "#EF4444";
+                ExportStatusColor = StatusPalette.Error;
             }
             finally
             {
@@ -761,14 +761,14 @@ namespace Apex.UI.ViewModels
             if (!PreflightCanExport)
             {
                 ExportStatusText = L("SV_ErrorsBlock");
-                ExportStatusColor = "#EF4444";
+                ExportStatusColor = StatusPalette.Error;
                 return;
             }
 
             if (_session?.CurrentPage == null)
             {
                 ExportStatusText = L("SV_NoTemplateSave");
-                ExportStatusColor = "#F59E0B";
+                ExportStatusColor = StatusPalette.Warning;
                 return;
             }
 
@@ -776,7 +776,7 @@ namespace Apex.UI.ViewModels
                 !Directory.Exists(ExportSettings.OutputFolder))
             {
                 ExportStatusText = L("SV_ChooseSaveFirst");
-                ExportStatusColor = "#F59E0B";
+                ExportStatusColor = StatusPalette.Warning;
                 return;
             }
 
@@ -832,12 +832,12 @@ namespace Apex.UI.ViewModels
                 ExportStatusText = failed == 0
                     ? Lf("SV_ExportedSuccess", ok, ExportSettings.OutputFolder)
                     : Lf("SV_ExportPartial2", ok, failed);
-                ExportStatusColor = failed == 0 ? "#22C55E" : "#F59E0B";
+                ExportStatusColor = failed == 0 ? StatusPalette.Done : StatusPalette.Warning;
             }
             catch (Exception ex)
             {
                 ExportStatusText = Lf("SV_ExportError", ex.Message);
-                ExportStatusColor = "#EF4444";
+                ExportStatusColor = StatusPalette.Error;
             }
             finally
             {
@@ -917,13 +917,13 @@ namespace Apex.UI.ViewModels
             if (!HasPastedData || State.DataSource.Rows.Count == 0)
             {
                 ExportStatusText = L("SV_NoData");
-                ExportStatusColor = "#EF4444";
+                ExportStatusColor = StatusPalette.Error;
                 return;
             }
             if (_session?.CurrentPage == null)
             {
                 ExportStatusText = L("SV_NoTemplate");
-                ExportStatusColor = "#F59E0B";
+                ExportStatusColor = StatusPalette.Warning;
                 return;
             }
 
@@ -950,12 +950,12 @@ namespace Apex.UI.ViewModels
                 _vectorPdf.ExportSingle(rt, dlg.FileName);
 
                 ExportStatusText = Lf("SV_Saved", Path.GetFileName(dlg.FileName));
-                ExportStatusColor = "#22C55E";
+                ExportStatusColor = StatusPalette.Done;
             }
             catch (Exception ex)
             {
                 ExportStatusText = Lf("SV_PdfExportError", ex.Message);
-                ExportStatusColor = "#EF4444";
+                ExportStatusColor = StatusPalette.Error;
             }
         }
 
@@ -970,13 +970,13 @@ namespace Apex.UI.ViewModels
             if (!HasPastedData || State.DataSource.Rows.Count == 0)
             {
                 ExportStatusText = L("SV_NoDataExport2");
-                ExportStatusColor = "#EF4444";
+                ExportStatusColor = StatusPalette.Error;
                 return;
             }
             if (_session?.CurrentPage == null)
             {
                 ExportStatusText = L("SV_NoTemplateShort");
-                ExportStatusColor = "#F59E0B";
+                ExportStatusColor = StatusPalette.Warning;
                 return;
             }
 
@@ -1037,12 +1037,12 @@ namespace Apex.UI.ViewModels
                 });
 
                 ExportStatusText = Lf("SV_PdfExported", total, Path.GetFileName(dlg.FileName));
-                ExportStatusColor = "#22C55E";
+                ExportStatusColor = StatusPalette.Done;
             }
             catch (Exception ex)
             {
                 ExportStatusText = Lf("SV_PdfExportError", ex.Message);
-                ExportStatusColor = "#EF4444";
+                ExportStatusColor = StatusPalette.Error;
             }
             finally
             {
@@ -1149,7 +1149,7 @@ namespace Apex.UI.ViewModels
                 PasteStatus = src.HasData
                     ? Lf("SV_ParsedSummary", src.TotalRows, src.Columns.Count, DetectedSeparatorLabel)
                     : L("SV_NoDataDetected");
-                PasteStatusColor = src.HasData ? "#22C55E" : "#EF4444";
+                PasteStatusColor = src.HasData ? StatusPalette.Done : StatusPalette.Error;
 
                 // Auto-trigger mapping if fields are loaded
                 if (src.HasData && _templateFields.Count > 0)
@@ -1158,7 +1158,7 @@ namespace Apex.UI.ViewModels
             catch (Exception ex)
             {
                 PasteStatus = Lf("SV_ParseError", ex.Message);
-                PasteStatusColor = "#EF4444";
+                PasteStatusColor = StatusPalette.Error;
             }
         }
 
@@ -1235,7 +1235,7 @@ namespace Apex.UI.ViewModels
                 : mapped > 0
                     ? Lf("SV_MappedCount", mapped, State.Mappings.Count)
                     : "";
-            MappingStatusColor = required > 0 ? "#F59E0B" : "#22C55E";
+            MappingStatusColor = required > 0 ? StatusPalette.Warning : StatusPalette.Done;
 
             // Refresh preview live if user is watching it
             if (ActiveTabIndex == 3 || ActiveTabIndex == 4)

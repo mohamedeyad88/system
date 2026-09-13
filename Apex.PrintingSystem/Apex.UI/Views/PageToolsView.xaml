@@ -9,7 +9,7 @@
              d:DataContext="{d:DesignInstance Type=vm:PageToolsViewModel}"
              FlowDirection="{Binding Source={x:Static svc:LocalizationService.Instance},
                                      Path=FlowDirection, Mode=OneWay}"
-             Background="{DynamicResource Brush.Background}">
+             Background="{DynamicResource Paper}">
 
     <UserControl.Resources>
         <!-- All screen styles derive from the shared design system (Styles/*.xaml):
@@ -19,23 +19,23 @@
             <Setter Property="Margin" Value="0,0,0,12"/>
         </Style>
         <Style x:Key="Section" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Margin" Value="0,0,0,12"/>
         </Style>
         <Style x:Key="Lbl" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Secondary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Margin" Value="0,0,6,0"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
         <Style x:Key="Inp" TargetType="TextBox" BasedOn="{StaticResource InputBox}">
-            <Setter Property="Background" Value="{DynamicResource Brush.Background}"/>
+            <Setter Property="Background" Value="{DynamicResource Paper}"/>
             <Setter Property="Padding" Value="6,4"/>
             <Setter Property="Width" Value="52"/>
             <Setter Property="Margin" Value="0,0,10,0"/>
-            <Setter Property="CaretBrush" Value="{DynamicResource Brush.Text.Primary}"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource Ink}"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
         <!-- Operation buttons inherit the app-wide primary button (incl. hover/disabled). -->
@@ -45,7 +45,7 @@
             <Setter Property="MinWidth" Value="150"/>
             <Setter Property="HorizontalAlignment" Value="Right"/>
         </Style>
-        <Style x:Key="SaveBtn" TargetType="Button" BasedOn="{StaticResource Button.Success}">
+        <Style x:Key="SaveBtn" TargetType="Button" BasedOn="{StaticResource Button.Primary}">
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="MinWidth" Value="150"/>
             <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -64,7 +64,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Text="{DynamicResource PT_001}"
-                   Foreground="White" FontSize="20" FontWeight="Bold" Margin="0,0,0,16"/>
+                   Foreground="{DynamicResource Ink}" FontSize="20" FontWeight="Bold" Margin="0,0,0,16"/>
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -92,14 +92,14 @@
                                 <Button Content="{DynamicResource PT_003}" Command="{Binding LoadSourceCommand}" Style="{StaticResource Btn}"/>
                             </StackPanel>
                             <TextBlock Style="{StaticResource Lbl}" TextTrimming="CharacterEllipsis">
-                                <Run Text="{DynamicResource PT_004}"/><Run Text=" "/><Run Text="{Binding PageCount}" Foreground="White"/>
+                                <Run Text="{DynamicResource PT_004}"/><Run Text=" "/><Run Text="{Binding PageCount}" Foreground="{DynamicResource Ink}"/>
                             </TextBlock>
 
                             <!-- Pipeline history: operations chain on the working document;
                                  undo/redo/reset step through or discard the whole pipeline. -->
                             <TextBlock Style="{StaticResource Lbl}" TextWrapping="Wrap" Margin="0,6,0,0"
                                        Visibility="{Binding HasResult, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Run Text="{DynamicResource PT_Pipeline}"/><Run Text=" "/><Run Text="{Binding PipelineLabel}" Foreground="White"/>
+                                <Run Text="{DynamicResource PT_Pipeline}"/><Run Text=" "/><Run Text="{Binding PipelineLabel}" Foreground="{DynamicResource Ink}"/>
                             </TextBlock>
                             <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                                 <Button Content="{DynamicResource PT_Undo}" Command="{Binding UndoCommand}"
@@ -128,18 +128,32 @@
                             <!-- Pass/fail banner -->
                             <Border Margin="0,10,0,0" CornerRadius="8" Padding="10,7"
                                     Visibility="{Binding HasPreflight, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <!-- Was a near-black green / red slab with white text — the old dark theme
+                                     left behind in a light app. Now the same light tint + status ink every
+                                     other status chip uses: Done on DoneSoft 5.74:1, Stopped on StoppedSoft 5.36:1. -->
                                 <Border.Style>
                                     <Style TargetType="Border">
-                                        <Setter Property="Background" Value="#052E16"/>
+                                        <Setter Property="Background" Value="{DynamicResource DoneSoft}"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding PreflightPassed}" Value="False">
-                                                <Setter Property="Background" Value="#450A0A"/>
+                                                <Setter Property="Background" Value="{DynamicResource StoppedSoft}"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Border.Style>
-                                <TextBlock Text="{Binding PreflightSummary}" Foreground="White"
-                                           FontWeight="SemiBold" FontSize="12" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding PreflightSummary}"
+                                           FontWeight="SemiBold" FontSize="12" TextWrapping="Wrap">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{DynamicResource Done}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding PreflightPassed}" Value="False">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Stopped}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </Border>
 
                             <!-- Findings -->
@@ -169,7 +183,7 @@
                                 <Button Content="{DynamicResource PT_007}" Command="{Binding ReverseCommand}" Style="{StaticResource Btn}"/>
                             </StackPanel>
                             <StackPanel Style="{StaticResource Row}">
-                                <CheckBox Content="{DynamicResource PT_008}" IsChecked="{Binding BacksReversed}" Foreground="{DynamicResource Brush.Text.Secondary}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                <CheckBox Content="{DynamicResource PT_008}" IsChecked="{Binding BacksReversed}" Foreground="{DynamicResource Muted}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                                 <Button Content="{DynamicResource PT_009}" Command="{Binding InterleaveCommand}" Style="{StaticResource Btn}"/>
                             </StackPanel>
                             <StackPanel Style="{StaticResource Row}">
@@ -230,7 +244,7 @@
                             </StackPanel>
                             <StackPanel Style="{StaticResource Row}">
                                 <CheckBox Content="{DynamicResource PT_StepCrop}" IsChecked="{Binding StepCropMarks}"
-                                          Foreground="{DynamicResource Brush.Text.Secondary}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                          Foreground="{DynamicResource Muted}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                                 <Button Content="{DynamicResource PT_StepRun}" Command="{Binding StepRepeatCommand}" Style="{StaticResource Btn}"/>
                             </StackPanel>
                         </StackPanel>
@@ -304,11 +318,11 @@
                                 <TextBlock Text="{DynamicResource PT_MarksMargin}" Style="{StaticResource Lbl}"/>
                                 <TextBox Text="{Binding MarksMarginMm, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Inp}"/>
                                 <CheckBox Content="{DynamicResource PT_MarksCrop}" IsChecked="{Binding MarksCrop}"
-                                          Foreground="{DynamicResource Brush.Text.Secondary}" VerticalAlignment="Center" Margin="8,0,8,0"/>
+                                          Foreground="{DynamicResource Muted}" VerticalAlignment="Center" Margin="8,0,8,0"/>
                                 <CheckBox Content="{DynamicResource PT_MarksReg}" IsChecked="{Binding MarksReg}"
-                                          Foreground="{DynamicResource Brush.Text.Secondary}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                          Foreground="{DynamicResource Muted}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                 <CheckBox Content="{DynamicResource PT_MarksBars}" IsChecked="{Binding MarksColorBars}"
-                                          Foreground="{DynamicResource Brush.Text.Secondary}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                          Foreground="{DynamicResource Muted}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                             </StackPanel>
                             <StackPanel Style="{StaticResource Row}">
                                 <Button Content="{DynamicResource PT_MarksRun}" Command="{Binding PrinterMarksCommand}" Style="{StaticResource Btn}"/>
@@ -344,14 +358,14 @@
                         </StackPanel>
                     </Border>
 
-                    <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource Brush.Success.Light}" FontSize="13" Margin="2,4,0,0" TextWrapping="Wrap"/>
-                    <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Brush.Error.Light}" FontSize="13" Margin="2,4,0,0" TextWrapping="Wrap"
+                    <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource Done}" FontSize="13" Margin="2,4,0,0" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Stopped}" FontSize="13" Margin="2,4,0,0" TextWrapping="Wrap"
                                Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 </StackPanel>
             </ScrollViewer>
 
             <!-- ══ Live preview (left, RTL col 2) ══ -->
-            <Border Grid.Column="2" Background="{DynamicResource Brush.Surface.Sunken}" CornerRadius="12" Padding="16">
+            <Border Grid.Column="2" Background="{DynamicResource PanelSunk}" CornerRadius="12" Padding="16">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -362,8 +376,8 @@
                     <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,12"
                                 Visibility="{Binding CanNavigate, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Button Content="{DynamicResource PT_030}" Command="{Binding PrevPageCommand}" Style="{StaticResource Btn}" MinWidth="90" Margin="0,0,8,0"/>
-                        <Border Background="{DynamicResource Brush.Background}" CornerRadius="6" Padding="12,6" VerticalAlignment="Center">
-                            <TextBlock Text="{Binding PreviewPageLabel}" Foreground="{DynamicResource Brush.Primary.Light}" FontSize="12" FontWeight="SemiBold"/>
+                        <Border Background="{DynamicResource Paper}" CornerRadius="6" Padding="12,6" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding PreviewPageLabel}" Foreground="{DynamicResource Brand}" FontSize="12" FontWeight="SemiBold"/>
                         </Border>
                         <Button Content="{DynamicResource PT_031}" Command="{Binding NextPageCommand}" Style="{StaticResource Btn}" MinWidth="90" Margin="8,0,0,0"/>
                     </StackPanel>
@@ -373,7 +387,7 @@
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
                                 Visibility="{Binding HasPreviewImage, Converter={StaticResource InverseBoolConverter}}">
                         <TextBlock Text="👁" FontSize="40" Foreground="{DynamicResource Brush.Text.Disabled}" HorizontalAlignment="Center"/>
-                        <TextBlock Text="{DynamicResource PT_032}" Foreground="{DynamicResource Brush.Text.Tertiary}" FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                        <TextBlock Text="{DynamicResource PT_032}" Foreground="{DynamicResource Muted}" FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,8,0,0"/>
                         <TextBlock Text="{DynamicResource PT_033}" Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="12" HorizontalAlignment="Center" Margin="0,4,0,0"/>
                     </StackPanel>
 
@@ -383,7 +397,7 @@
                                   HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                                   Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}"
                                   PreviewMouseWheel="PtPreview_PreviewMouseWheel">
-                        <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="White" Margin="8">
+                        <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="{DynamicResource Panel}" Margin="8">
                             <Border.LayoutTransform>
                                 <ScaleTransform ScaleX="{Binding PreviewZoom}" ScaleY="{Binding PreviewZoom}"/>
                             </Border.LayoutTransform>
@@ -397,20 +411,20 @@
 
                     <!-- Zoom controls (top-right overlay) -->
                     <Border VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,4,4,0"
-                            Background="{DynamicResource Brush.Background}" CornerRadius="8" Padding="4"
+                            Background="{DynamicResource Paper}" CornerRadius="8" Padding="4"
                             Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel Orientation="Horizontal">
                             <Button Content="−" Command="{Binding PreviewZoomOutCommand}" Style="{StaticResource Btn}" MinWidth="32" Margin="0,0,4,0"/>
-                            <TextBlock Text="{Binding PreviewZoomLabel}" Foreground="{DynamicResource Brush.Text.Secondary}" MinWidth="44" TextAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+                            <TextBlock Text="{Binding PreviewZoomLabel}" Foreground="{DynamicResource Muted}" MinWidth="44" TextAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
                             <Button Content="+" Command="{Binding PreviewZoomInCommand}" Style="{StaticResource Btn}" MinWidth="32" Margin="4,0,0,0"/>
                             <Button Content="⟳" Command="{Binding PreviewZoomResetCommand}" Style="{StaticResource Btn}" MinWidth="32" Margin="4,0,0,0"/>
                         </StackPanel>
                     </Border>
 
                     <!-- Loading -->
-                    <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="{DynamicResource Brush.Background}" CornerRadius="8" Padding="16,10"
+                    <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="{DynamicResource Paper}" CornerRadius="8" Padding="16,10"
                             Visibility="{Binding IsPreviewLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Text="{DynamicResource PT_034}" Foreground="{DynamicResource Brush.Text.Secondary}" FontSize="13"/>
+                        <TextBlock Text="{DynamicResource PT_034}" Foreground="{DynamicResource Muted}" FontSize="13"/>
                     </Border>
                     </Grid>
                 </Grid>

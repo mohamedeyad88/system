@@ -6,14 +6,14 @@
              xmlns:properties="clr-namespace:Apex.UI.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="900"
-             Background="#FAF9F7">
+             Background="{DynamicResource Paper}">
     
     <UserControl.Resources>
         <!-- Dark Card -->
         <Style x:Key="DarkCard" TargetType="Border">
-            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="Background" Value="{DynamicResource Panel}"/>
             <Setter Property="CornerRadius" Value="16"/>
-            <Setter Property="BorderBrush" Value="#8F887A"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="24"/>
             <Setter Property="Margin" Value="0,0,0,20"/>
@@ -22,15 +22,15 @@
         <!-- Dark TextBox -->
         <Style x:Key="DarkTextBox" TargetType="TextBox">
             <Setter Property="Padding" Value="14,12"/>
-            <Setter Property="Background" Value="#FAF9F7"/>
-            <Setter Property="BorderBrush" Value="#8F887A"/>
+            <Setter Property="Background" Value="{DynamicResource Paper}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <!-- Typed text and caret were WHITE on an off-white box, so every value an operator
                  entered — company name, phone, backup path — was invisible, and the fields
                  looked empty even when they were filled. -->
-            <Setter Property="Foreground" Value="#14181D"/>
+            <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="CaretBrush" Value="#14181D"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource Ink}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
@@ -42,7 +42,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="#0891B2"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                 <Setter TargetName="border" Property="BorderThickness" Value="2"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -53,8 +53,8 @@
 
         <!-- Dark Button -->
         <Style x:Key="DarkButton" TargetType="Button">
-            <Setter Property="Background" Value="#0E7490"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource Action}"/>
+            <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="24,14"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -68,7 +68,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#0B5C72"/>
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionHover}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -78,8 +78,8 @@
 
         <!-- Dark Secondary Button -->
         <Style x:Key="DarkSecondaryButton" TargetType="Button">
-            <Setter Property="Background" Value="#EDEAE5"/>
-            <Setter Property="Foreground" Value="#57534E"/>
+            <Setter Property="Background" Value="{DynamicResource TrackColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
             <Setter Property="Padding" Value="12,10"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -92,8 +92,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#6B6864"/>
-                                <Setter Property="Foreground" Value="White"/>
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource Muted}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -105,7 +105,7 @@
         <Style x:Key="DarkSectionTitle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="15"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="#14181D"/>
+            <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
             <Setter Property="Margin" Value="0,0,0,20"/>
         </Style>
 
@@ -113,7 +113,7 @@
         <Style x:Key="DarkFieldLabel" TargetType="TextBlock">
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="Foreground" Value="#6B6864"/>
+            <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
             <Setter Property="Margin" Value="0,0,0,8"/>
         </Style>
     </UserControl.Resources>
@@ -129,10 +129,10 @@
         <StackPanel Grid.Row="0" Margin="0,0,0,32">
             <!-- Was Foreground="White" on the off-white page (1.05:1): the screen title was invisible,
                  a leftover from when this app was dark. -->
-            <TextBlock FontSize="32" FontWeight="Bold" Foreground="#14181D">
+            <TextBlock FontSize="32" FontWeight="Bold" Foreground="{DynamicResource Ink}">
                 <Run Text="⚙️ "/><Run Text="{DynamicResource Settings_Title}"/>
             </TextBlock>
-            <TextBlock Text="{DynamicResource Settings_Description}" FontSize="14" Foreground="#6B6864" Margin="0,8,0,0"/>
+            <TextBlock Text="{DynamicResource Settings_Description}" FontSize="14" Foreground="{DynamicResource Muted}" Margin="0,8,0,0"/>
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -210,9 +210,9 @@
                             
                             <StackPanel>
                                 <TextBlock Text="{DynamicResource Settings_ApplicationLanguage}" Style="{StaticResource DarkFieldLabel}"/>
-                                <Border Background="#FAF9F7" BorderBrush="#8F887A" BorderThickness="1" CornerRadius="10" Padding="4">
+                                <Border Background="{DynamicResource Paper}" BorderBrush="{DynamicResource Border}" BorderThickness="1" CornerRadius="10" Padding="4">
                                     <ComboBox SelectedValue="{Binding SelectedLanguage}" SelectedValuePath="Tag" 
-                                              BorderThickness="0" Background="Transparent" Foreground="#14181D"
+                                              BorderThickness="0" Background="Transparent" Foreground="{DynamicResource Ink}"
                                               FontSize="14" Padding="10,8">
                                         <!-- No flag emoji: Windows has no glyphs for
                                              regional-indicator pairs, so 🇺🇸 rendered as the
@@ -249,7 +249,7 @@
                                 <Button Command="{Binding RunBackupCommand}" Style="{StaticResource DarkButton}" HorizontalAlignment="Left">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="💾" FontSize="14" Margin="0,0,8,0"/>
-                                        <TextBlock Text="{DynamicResource Settings_RunBackup}" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                        <TextBlock Text="{DynamicResource Settings_RunBackup}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource OnAction}"/>
                                     </StackPanel>
                                 </Button>
                             </StackPanel>
@@ -263,7 +263,7 @@
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,24,0,0">
             <!-- Was green: "done" is a status colour, not an action. One primary colour for actions. -->
             <Button Command="{Binding SaveSettingsCommand}" Style="{StaticResource DarkButton}">
-                <TextBlock FontSize="15" FontWeight="SemiBold" Foreground="White">
+                <TextBlock FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource OnAction}">
                     <Run Text="💾 "/><Run Text="{DynamicResource Settings_Save}"/>
                 </TextBlock>
             </Button>

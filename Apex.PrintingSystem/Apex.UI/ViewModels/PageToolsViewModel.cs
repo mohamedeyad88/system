@@ -111,8 +111,8 @@ namespace Apex.UI.ViewModels
         {
             string hex = s switch
             {
-                PreflightSeverity.Error   => "#EF4444",
-                PreflightSeverity.Warning => "#F59E0B",
+                PreflightSeverity.Error   => StatusPalette.Error,
+                PreflightSeverity.Warning => StatusPalette.Warning,
                 _                         => "#94A3B8"
             };
             var color = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(hex);

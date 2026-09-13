@@ -7,7 +7,7 @@
     
     <!-- Dark-theme dialog (was a fully light-mode window: white surface, dark text —
          it stood out jarringly against the dark app when opened from the slot swatch). -->
-    <Border Background="#FFFFFF" CornerRadius="12" BorderBrush="#8F887A" BorderThickness="1">
+    <Border Background="{DynamicResource Panel}" CornerRadius="12" BorderBrush="{DynamicResource Border}" BorderThickness="1">
         <Border.Effect>
             <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.15" Color="#000"/>
         </Border.Effect>
@@ -19,13 +19,13 @@
             </Grid.RowDefinitions>
 
             <!-- Title -->
-            <TextBlock Text="{DynamicResource CPW_001}" FontSize="18" FontWeight="SemiBold" Foreground="#14181D" Margin="0,0,0,20"/>
+            <TextBlock Text="{DynamicResource CPW_001}" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource Ink}" Margin="0,0,0,20"/>
 
             <!-- Color Palette -->
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <!-- Preset Colors -->
-                    <TextBlock Text="{DynamicResource CPW_002}" FontSize="14" FontWeight="SemiBold" Foreground="#6B6864" Margin="0,0,0,12"/>
+                    <TextBlock Text="{DynamicResource CPW_002}" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource Muted}" Margin="0,0,0,12"/>
                     
                     <ItemsControl x:Name="PresetColorsGrid">
                         <ItemsControl.ItemsPanel>
@@ -37,7 +37,7 @@
                             <DataTemplate>
                                 <Border Width="40" Height="40" 
                                         Background="{Binding}" 
-                                        BorderBrush="#6B6864" 
+                                        BorderBrush="{DynamicResource Muted}" 
                                         BorderThickness="1"
                                         CornerRadius="6"
                                         Margin="4"
@@ -52,7 +52,7 @@
                                             </Setter>
                                             <Style.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="BorderBrush" Value="#0891B2"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                     <Setter Property="BorderThickness" Value="2"/>
                                                 </Trigger>
                                             </Style.Triggers>
@@ -64,7 +64,7 @@
                     </ItemsControl>
 
                     <!-- Custom Color -->
-                    <TextBlock Text="{DynamicResource CPW_003}" FontSize="14" FontWeight="SemiBold" Foreground="#6B6864" Margin="0,20,0,12"/>
+                    <TextBlock Text="{DynamicResource CPW_003}" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource Muted}" Margin="0,20,0,12"/>
                     
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -75,29 +75,29 @@
                         <StackPanel>
                             <!-- RGB Sliders -->
                             <StackPanel Margin="0,0,0,12">
-                                <TextBlock Text="R" Foreground="#6B6864" FontSize="11" Margin="0,0,0,4"/>
+                                <TextBlock Text="R" Foreground="{DynamicResource Muted}" FontSize="11" Margin="0,0,0,4"/>
                                 <Slider x:Name="RedSlider" Minimum="0" Maximum="255" Value="0" ValueChanged="ColorSlider_ValueChanged"/>
                             </StackPanel>
                             
                             <StackPanel Margin="0,0,0,12">
-                                <TextBlock Text="G" Foreground="#6B6864" FontSize="11" Margin="0,0,0,4"/>
+                                <TextBlock Text="G" Foreground="{DynamicResource Muted}" FontSize="11" Margin="0,0,0,4"/>
                                 <Slider x:Name="GreenSlider" Minimum="0" Maximum="255" Value="0" ValueChanged="ColorSlider_ValueChanged"/>
                             </StackPanel>
                             
                             <StackPanel Margin="0,0,0,12">
-                                <TextBlock Text="B" Foreground="#6B6864" FontSize="11" Margin="0,0,0,4"/>
+                                <TextBlock Text="B" Foreground="{DynamicResource Muted}" FontSize="11" Margin="0,0,0,4"/>
                                 <Slider x:Name="BlueSlider" Minimum="0" Maximum="255" Value="0" ValueChanged="ColorSlider_ValueChanged"/>
                             </StackPanel>
                             
                             <!-- Hex Input -->
-                            <TextBlock Text="Hex" Foreground="#6B6864" FontSize="11" Margin="0,0,0,4"/>
+                            <TextBlock Text="Hex" Foreground="{DynamicResource Muted}" FontSize="11" Margin="0,0,0,4"/>
                             <TextBox x:Name="HexInput"
                                      Text="#000000"
                                      TextChanged="HexInput_TextChanged"
-                                     Background="#FAF9F7"
-                                     Foreground="#14181D"
-                                     CaretBrush="#14181D"
-                                     BorderBrush="#6B6864"
+                                     Background="{DynamicResource Paper}"
+                                     Foreground="{DynamicResource Ink}"
+                                     CaretBrush="{DynamicResource Ink}"
+                                     BorderBrush="{DynamicResource Muted}"
                                      BorderThickness="1"
                                      Padding="8,6"
                                      Height="36"/>
@@ -109,7 +109,7 @@
                                 Width="80" 
                                 Height="80" 
                                 Background="#000000"
-                                BorderBrush="#6B6864"
+                                BorderBrush="{DynamicResource Muted}"
                                 BorderThickness="1"
                                 CornerRadius="8"
                                 Margin="16,0,0,0"/>
@@ -120,7 +120,7 @@
             <!-- Actions -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
                 <Button Content="{DynamicResource CPW_004}" x:Name="BtnCancel" Click="BtnCancel_Click"
-                        Background="#DDD9D3" Foreground="#14181D" BorderThickness="0"
+                        Background="{DynamicResource Hover}" Foreground="{DynamicResource Ink}" BorderThickness="0"
                         Padding="16,10" Margin="0,0,12,0" Width="100" Cursor="Hand">
                     <Button.Style>
                         <Style TargetType="Button">
@@ -140,7 +140,7 @@
                 </Button>
                 
                 <Button Content="{DynamicResource CPW_005}" x:Name="BtnApply" Click="BtnApply_Click"
-                        Background="#0E7490" Foreground="White" BorderThickness="0"
+                        Background="{DynamicResource Action}" Foreground="{DynamicResource OnAction}" BorderThickness="0"
                         Padding="16,10" Width="100" Cursor="Hand">
                     <Button.Style>
                         <Style TargetType="Button">

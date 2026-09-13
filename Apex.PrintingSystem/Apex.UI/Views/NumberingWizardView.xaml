@@ -107,7 +107,7 @@
              ═══════════════════════════════════════════════════════════════════ -->
         <Style x:Key="ModernTabItem" TargetType="TabItem">
             <!-- Idle text lightened for the dark ribbon (was #6B6864, too dim on #FAF9F7). -->
-            <Setter Property="Foreground" Value="#6B6864"/>
+            <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -116,7 +116,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
                         <Border x:Name="TabBorder" 
-                                Background="#FAF9F7" 
+                                Background="{DynamicResource Paper}" 
                                 BorderThickness="1"
                                 BorderBrush="{DynamicResource Border}"
                                 CornerRadius="8"
@@ -129,22 +129,22 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="TabBorder" Property="Background" Value="#0B5C72"/>
-                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="#0891B2"/>
-                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ActionHover}"/>
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="{DynamicResource Brand}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <!-- Dark-theme hover (was #DDD9D3/#FFFFFF, a light-mode leftover). -->
-                                <Setter TargetName="TabBorder" Property="Background" Value="#DDD9D3"/>
-                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="#6B6864"/>
-                                <Setter Property="Foreground" Value="#14181D"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource Hover}"/>
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="{DynamicResource Muted}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
                                     <Condition Property="IsSelected" Value="True"/>
                                     <Condition Property="IsMouseOver" Value="True"/>
                                 </MultiTrigger.Conditions>
-                                <Setter TargetName="TabBorder" Property="Background" Value="#0B5C72"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ActionHover}"/>
                             </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -162,8 +162,8 @@
         <!-- Modern Tab as RadioButton - More Reliable -->
         <Style x:Key="ModernTabRadioButton" TargetType="RadioButton">
             <!-- Dark-theme idle state (was #6B6864 text on #F4F2EF, a light-mode leftover). -->
-            <Setter Property="Foreground" Value="#6B6864"/>
-            <Setter Property="Background" Value="#FAF9F7"/>
+            <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
+            <Setter Property="Background" Value="{DynamicResource Paper}"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -181,22 +181,22 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="TabBorder" Property="Background" Value="#0B5C72"/>
-                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="#0891B2"/>
-                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ActionHover}"/>
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="{DynamicResource Brand}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <!-- Dark-theme hover (was #DDD9D3, a light-mode leftover). -->
-                                <Setter TargetName="TabBorder" Property="Background" Value="#DDD9D3"/>
-                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="#6B6864"/>
-                                <Setter Property="Foreground" Value="#14181D"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource Hover}"/>
+                                <Setter TargetName="TabBorder" Property="BorderBrush" Value="{DynamicResource Muted}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
                                     <Condition Property="IsChecked" Value="True"/>
                                     <Condition Property="IsMouseOver" Value="True"/>
                                 </MultiTrigger.Conditions>
-                                <Setter TargetName="TabBorder" Property="Background" Value="#0B5C72"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ActionHover}"/>
                             </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -279,7 +279,7 @@
         </Storyboard>
     </UserControl.Resources>
     
-    <Grid Background="#FAF9F7">
+    <Grid Background="{DynamicResource Paper}">
 
         <!-- ════ اختصارات لوحة المفاتيح ════ -->
         <Grid.InputBindings>
@@ -326,9 +326,9 @@
                             Cursor="Hand">
                         <Button.Style>
                             <Style TargetType="Button">
-                                <Setter Property="Background" Value="#FAF9F7"/>
-                                <Setter Property="Foreground" Value="#6B6864"/>
-                                <Setter Property="BorderBrush" Value="#8F887A"/>
+                                <Setter Property="Background" Value="{DynamicResource Paper}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
+                                <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
                                 <Setter Property="BorderThickness" Value="1"/>
                                 <Setter Property="Template">
                                     <Setter.Value>
@@ -345,12 +345,12 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsPrepareMode}" Value="True">
-                                        <Setter Property="Background" Value="#0E7490"/>
-                                        <Setter Property="Foreground" Value="White"/>
-                                        <Setter Property="BorderBrush" Value="#0891B2"/>
+                                        <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
+                                        <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                     </DataTrigger>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#DDD9D3"/>
+                                        <Setter Property="Background" Value="{DynamicResource Hover}"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -365,9 +365,9 @@
                             Cursor="Hand">
                         <Button.Style>
                             <Style TargetType="Button">
-                                <Setter Property="Background" Value="#FAF9F7"/>
-                                <Setter Property="Foreground" Value="#6B6864"/>
-                                <Setter Property="BorderBrush" Value="#8F887A"/>
+                                <Setter Property="Background" Value="{DynamicResource Paper}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
+                                <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
                                 <Setter Property="BorderThickness" Value="1"/>
                                 <Setter Property="Template">
                                     <Setter.Value>
@@ -384,12 +384,12 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsLayoutMode}" Value="True">
-                                        <Setter Property="Background" Value="#0E7490"/>
-                                        <Setter Property="Foreground" Value="White"/>
-                                        <Setter Property="BorderBrush" Value="#0891B2"/>
+                                        <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
+                                        <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                     </DataTrigger>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#DDD9D3"/>
+                                        <Setter Property="Background" Value="{DynamicResource Hover}"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -403,9 +403,9 @@
                             Cursor="Hand">
                         <Button.Style>
                             <Style TargetType="Button">
-                                <Setter Property="Background" Value="#FAF9F7"/>
-                                <Setter Property="Foreground" Value="#6B6864"/>
-                                <Setter Property="BorderBrush" Value="#8F887A"/>
+                                <Setter Property="Background" Value="{DynamicResource Paper}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
+                                <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
                                 <Setter Property="BorderThickness" Value="1"/>
                                 <Setter Property="Template">
                                     <Setter.Value>
@@ -422,12 +422,12 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsExecuteMode}" Value="True">
-                                        <Setter Property="Background" Value="#0E7490"/>
-                                        <Setter Property="Foreground" Value="White"/>
-                                        <Setter Property="BorderBrush" Value="#0891B2"/>
+                                        <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
+                                        <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                     </DataTrigger>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#DDD9D3"/>
+                                        <Setter Property="Background" Value="{DynamicResource Hover}"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -437,7 +437,7 @@
                 
                 <!-- Tab Content Panels -->
                 <Border Grid.Row="1"
-                        Background="#FFFFFF"
+                        Background="{DynamicResource Panel}"
                         BorderBrush="{DynamicResource Border}"
                         BorderThickness="0,0,0,1"
                         Padding="16,12"
@@ -472,7 +472,7 @@
                                 <!-- Plain button to open file dialog (no printer dropdown) -->
                                 <Button x:Name="InsertDesignButton"
                                         Command="{Binding LoadTemplateCommand}" 
-                                        Foreground="White"
+                                        Foreground="{DynamicResource OnAction}"
                                         Padding="20,10"
                                         FontSize="13"
                                         FontWeight="SemiBold"
@@ -508,7 +508,7 @@
                                 <Button Command="{Binding ClearTemplateCommand}"
                                         ToolTip="{DynamicResource Numbering_ClearDesign_Tip}"
                                         Content="{DynamicResource Numbering_ClearDesign}"
-                                        Foreground="#B42318"
+                                        Foreground="{DynamicResource Stopped}"
                                         Background="Transparent"
                                         BorderThickness="0"
                                         Padding="4,6,4,0"
@@ -538,7 +538,7 @@
                                                     Command="{Binding UseNextAvailableNumberCommand}"
                                                     DockPanel.Dock="Right" Cursor="Hand"
                                                     FontSize="10" Padding="6,2" Margin="8,0,0,0"
-                                                    Background="#FFFFFF" Foreground="#0891B2"
+                                                    Background="{DynamicResource Panel}" Foreground="{DynamicResource Action}"
                                                     BorderBrush="{DynamicResource Border}" BorderThickness="1"
                                                     ToolTip="{Binding SuggestedNextNumber}"/>
                                         </DockPanel>
@@ -549,19 +549,19 @@
                                                  FontWeight="SemiBold"
                                                  Padding="8,0"
                                                  VerticalContentAlignment="Center"
-                                                 Background="#FFFFFF"
-                                                 Foreground="#14181D"
-                                                 BorderBrush="#6B6864"
+                                                 Background="{DynamicResource Panel}"
+                                                 Foreground="{DynamicResource Ink}"
+                                                 BorderBrush="{DynamicResource Muted}"
                                                  BorderThickness="1"
-                                                 CaretBrush="#0891B2">
+                                                 CaretBrush="{DynamicResource Brand}">
                                             <TextBox.Style>
                                                 <Style TargetType="TextBox">
                                                     <Style.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="BorderBrush" Value="#6B6864"/>
+                                                            <Setter Property="BorderBrush" Value="{DynamicResource Muted}"/>
                                                         </Trigger>
                                                         <Trigger Property="IsFocused" Value="True">
-                                                            <Setter Property="BorderBrush" Value="#0891B2"/>
+                                                            <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                             <Setter Property="BorderThickness" Value="2"/>
                                                             <Trigger.EnterActions>
                                                                 <BeginStoryboard>
@@ -586,19 +586,19 @@
                                                  FontWeight="Bold"
                                                  Padding="8,0"
                                                  VerticalContentAlignment="Center"
-                                                 Background="#FFFFFF"
-                                                 Foreground="#14181D"
-                                                 BorderBrush="#0891B2"
+                                                 Background="{DynamicResource Panel}"
+                                                 Foreground="{DynamicResource Ink}"
+                                                 BorderBrush="{DynamicResource Brand}"
                                                  BorderThickness="2"
-                                                 CaretBrush="#0891B2">
+                                                 CaretBrush="{DynamicResource Brand}">
                                             <TextBox.Style>
                                                 <Style TargetType="TextBox">
                                                     <Style.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="BorderBrush" Value="#0891B2"/>
+                                                            <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                         </Trigger>
                                                         <Trigger Property="IsFocused" Value="True">
-                                                            <Setter Property="BorderBrush" Value="#0E7490"/>
+                                                            <Setter Property="BorderBrush" Value="{DynamicResource Action}"/>
                                                             <Setter Property="BorderThickness" Value="2"/>
                                                             <Trigger.EnterActions>
                                                                 <BeginStoryboard>
@@ -616,7 +616,7 @@
                                     </StackPanel>
                                 </Grid>
                                 <TextBlock Text="{DynamicResource Num_RangeInvalid}"
-                                           Foreground="#B42318" FontSize="10" Margin="0,6,0,0"
+                                           Foreground="{DynamicResource Stopped}" FontSize="10" Margin="0,6,0,0"
                                            TextWrapping="Wrap" MaxWidth="228"
                                            Visibility="{Binding RangeInvalid, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                             </StackPanel>
@@ -632,20 +632,20 @@
                                          FontSize="13"
                                          Padding="10,0"
                                          TextAlignment="Center"
-                                         Background="#FFFFFF"
-                                         Foreground="#14181D"
-                                         BorderBrush="#6B6864"
+                                         Background="{DynamicResource Panel}"
+                                         Foreground="{DynamicResource Ink}"
+                                         BorderBrush="{DynamicResource Muted}"
                                         BorderThickness="1"
                                         ToolTip="{DynamicResource Numbering_CopiesTooltip}">
                                     <TextBox.Style>
                                         <Style TargetType="TextBox">
                                             <Style.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="BorderBrush" Value="#0891B2"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                     <Setter Property="BorderThickness" Value="2"/>
                                                 </Trigger>
                                                 <Trigger Property="IsFocused" Value="True">
-                                                    <Setter Property="BorderBrush" Value="#0891B2"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                     <Setter Property="BorderThickness" Value="2"/>
                                                 </Trigger>
                                             </Style.Triggers>
@@ -707,8 +707,8 @@
                                                 </Setter>
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#FFFFFF"/>
-                                                        <Setter Property="Foreground" Value="#6B6864"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -732,8 +732,8 @@
                                     <Button Command="{Binding SaveProjectCommand}"
                                             ToolTip="{DynamicResource Numbering_SaveProjectToolTip}"
                                             Padding="12,8" Margin="0,0,6,0"
-                                            Background="#FAF9F7" Foreground="{DynamicResource Muted}"
-                                            BorderThickness="1" BorderBrush="#6B6864"
+                                            Background="{DynamicResource Paper}" Foreground="{DynamicResource Muted}"
+                                            BorderThickness="1" BorderBrush="{DynamicResource Muted}"
                                             FontSize="13" Cursor="Hand">
                                         <Button.Style>
                                             <Style TargetType="Button">
@@ -748,7 +748,7 @@
                                                     </Setter.Value>
                                                 </Setter>
                                                 <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="#E6F3F6"/></Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource BrandSoft}"/></Trigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Style>
@@ -760,8 +760,8 @@
                                     <Button Command="{Binding LoadProjectCommand}"
                                             ToolTip="{DynamicResource Numbering_LoadProjectToolTip}"
                                             Padding="12,8"
-                                            Background="#FAF9F7" Foreground="{DynamicResource Muted}"
-                                            BorderThickness="1" BorderBrush="#6B6864"
+                                            Background="{DynamicResource Paper}" Foreground="{DynamicResource Muted}"
+                                            BorderThickness="1" BorderBrush="{DynamicResource Muted}"
                                             FontSize="13" Cursor="Hand">
                                         <Button.Style>
                                             <Style TargetType="Button">
@@ -776,7 +776,7 @@
                                                     </Setter.Value>
                                                 </Setter>
                                                 <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="#E6F3F6"/></Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource BrandSoft}"/></Trigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Style>
@@ -804,7 +804,7 @@
                                             VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <!-- Checkpoints List -->
-                                <Border Background="#FAF9F7" BorderBrush="#8F887A" BorderThickness="1"
+                                <Border Background="{DynamicResource Paper}" BorderBrush="{DynamicResource Border}" BorderThickness="1"
                                         CornerRadius="6" Padding="6" MaxHeight="72" MinWidth="190"
                                         Visibility="{Binding CheckpointStates.Count, Converter={StaticResource CountToVisibilityConverter}}">
                                     <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -821,13 +821,13 @@
                                                             <Style TargetType="Border">
                                                                 <Style.Triggers>
                                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                                        <Setter Property="Background" Value="#FFFFFF"/>
+                                                                        <Setter Property="Background" Value="{DynamicResource Panel}"/>
                                                                     </Trigger>
                                                                 </Style.Triggers>
                                                             </Style>
                                                         </Border.Style>
                                                         <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="⏸" FontSize="10" Foreground="#B45309" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="⏸" FontSize="10" Foreground="{DynamicResource Printing}" Margin="0,0,5,0" VerticalAlignment="Center"/>
                                                             <TextBlock FontSize="11" Foreground="{DynamicResource Muted}" VerticalAlignment="Center">
                                                                 <TextBlock.Text>
                                                                     <MultiBinding StringFormat="{}{0:N0}  ·  {1:HH:mm  dd/MM}">
@@ -852,8 +852,8 @@
                                     <Button Command="{Binding ResumeFromCheckpointCommand}"
                                             ToolTip="{DynamicResource Numbering_ResumeCheckpointToolTip}"
                                             Padding="10,6" Margin="0,0,6,0"
-                                            Background="#E7F3EC" Foreground="#166B40"
-                                            BorderThickness="1" BorderBrush="#E7F3EC"
+                                            Background="{DynamicResource DoneSoft}" Foreground="{DynamicResource Done}"
+                                            BorderThickness="1" BorderBrush="{DynamicResource Border}"
                                             FontSize="12" Cursor="Hand">
                                         <Button.Style>
                                             <Style TargetType="Button">
@@ -868,7 +868,7 @@
                                                     </Setter.Value>
                                                 </Setter>
                                                 <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="#E7F3EC"/></Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource DoneSoft}"/></Trigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Style>
@@ -880,8 +880,8 @@
                                     <Button Command="{Binding DeleteCheckpointCommand}"
                                             ToolTip="{DynamicResource Numbering_DeleteCheckpointToolTip}"
                                             Padding="10,6"
-                                            Background="#FFFFFF" Foreground="{DynamicResource Muted}"
-                                            BorderThickness="1" BorderBrush="#6B6864"
+                                            Background="{DynamicResource Panel}" Foreground="{DynamicResource Muted}"
+                                            BorderThickness="1" BorderBrush="{DynamicResource Muted}"
                                             FontSize="12" Cursor="Hand">
                                         <Button.Style>
                                             <Style TargetType="Button">
@@ -896,7 +896,7 @@
                                                     </Setter.Value>
                                                 </Setter>
                                                 <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="#DDD9D3"/></Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource Hover}"/></Trigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Style>
@@ -971,25 +971,25 @@
                                     <StackPanel Margin="0,0,8,0">
                                         <TextBlock Text="{DynamicResource Numbering_Prefix}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                                         <TextBox Text="{Binding NumberPrefix, UpdateSourceTrigger=PropertyChanged}"
-                                                 Width="70" Padding="6,4" Background="#FAF9F7" Foreground="#14181D"
-                                                 BorderBrush="{DynamicResource Border}" BorderThickness="1" CaretBrush="#14181D"/>
+                                                 Width="70" Padding="6,4" Background="{DynamicResource Paper}" Foreground="{DynamicResource Ink}"
+                                                 BorderBrush="{DynamicResource Border}" BorderThickness="1" CaretBrush="{DynamicResource Ink}"/>
                                     </StackPanel>
                                     <StackPanel Margin="0,0,8,0">
                                         <TextBlock Text="{DynamicResource Numbering_Digits}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                                         <TextBox Text="{Binding NumberPadDigits, UpdateSourceTrigger=PropertyChanged}"
-                                                 Width="48" Padding="6,4" Background="#FAF9F7" Foreground="#14181D"
-                                                 BorderBrush="{DynamicResource Border}" BorderThickness="1" CaretBrush="#14181D"/>
+                                                 Width="48" Padding="6,4" Background="{DynamicResource Paper}" Foreground="{DynamicResource Ink}"
+                                                 BorderBrush="{DynamicResource Border}" BorderThickness="1" CaretBrush="{DynamicResource Ink}"/>
                                     </StackPanel>
                                     <StackPanel>
                                         <TextBlock Text="{DynamicResource Numbering_Suffix}" FontSize="10" Foreground="{DynamicResource Muted}"/>
                                         <TextBox Text="{Binding NumberSuffix, UpdateSourceTrigger=PropertyChanged}"
-                                                 Width="70" Padding="6,4" Background="#FAF9F7" Foreground="#14181D"
-                                                 BorderBrush="{DynamicResource Border}" BorderThickness="1" CaretBrush="#14181D"/>
+                                                 Width="70" Padding="6,4" Background="{DynamicResource Paper}" Foreground="{DynamicResource Ink}"
+                                                 BorderBrush="{DynamicResource Border}" BorderThickness="1" CaretBrush="{DynamicResource Ink}"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <!-- Live example of what will actually print -->
                                 <TextBlock Margin="0,8,0,0" FontFamily="Consolas" FontSize="13" FontWeight="Bold"
-                                           Foreground="#166B40" Text="{Binding NumberFormatPreview}"/>
+                                           Foreground="{DynamicResource Done}" Text="{Binding NumberFormatPreview}"/>
                             </StackPanel>
                         </Border>
                         <!-- Zoom Group -->
@@ -1002,10 +1002,10 @@
                                             Width="36" 
                                             Height="36" 
                                             Margin="0,0,4,0"
-                                            Background="#FAF9F7"
+                                            Background="{DynamicResource Paper}"
                                             Foreground="{DynamicResource Muted}"
                                             BorderThickness="1"
-                                            BorderBrush="#6B6864"
+                                            BorderBrush="{DynamicResource Muted}"
                                             FontSize="16"
                                             FontWeight="Bold"
                                             Cursor="Hand">
@@ -1028,7 +1028,7 @@
                                                 </Setter>
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#DDD9D3"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Hover}"/>
                                                         <Trigger.EnterActions>
                                                             <BeginStoryboard>
                                                                 <Storyboard>
@@ -1056,7 +1056,7 @@
                                     </Button>
                                     <Border VerticalAlignment="Center" 
                                             Width="50" 
-                                            Background="#FAF9F7"
+                                            Background="{DynamicResource Paper}"
                                             Padding="4,2"
                                             BorderBrush="{DynamicResource Border}"
                                             BorderThickness="1"
@@ -1074,10 +1074,10 @@
                                             Width="36" 
                                             Height="36" 
                                             Margin="4,0,0,0"
-                                            Background="#FAF9F7"
+                                            Background="{DynamicResource Paper}"
                                             Foreground="{DynamicResource Muted}"
                                             BorderThickness="1"
-                                            BorderBrush="#6B6864"
+                                            BorderBrush="{DynamicResource Muted}"
                                             FontSize="16"
                                             FontWeight="Bold"
                                             Cursor="Hand">
@@ -1100,7 +1100,7 @@
                                                 </Setter>
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#DDD9D3"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Hover}"/>
                                                         <Trigger.EnterActions>
                                                             <BeginStoryboard>
                                                                 <Storyboard>
@@ -1132,10 +1132,10 @@
                                             Height="36" 
                                             Margin="4,0,0,0" 
                                             ToolTip="Fit to Screen"
-                                            Background="#FAF9F7"
+                                            Background="{DynamicResource Paper}"
                                             Foreground="{DynamicResource Muted}"
                                             BorderThickness="1"
-                                            BorderBrush="#6B6864"
+                                            BorderBrush="{DynamicResource Muted}"
                                             FontSize="14"
                                             Cursor="Hand">
                                         <Button.RenderTransform>
@@ -1157,7 +1157,7 @@
                                                 </Setter>
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#DDD9D3"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Hover}"/>
                                                         <Trigger.EnterActions>
                                                             <BeginStoryboard>
                                                                 <Storyboard>
@@ -1195,10 +1195,10 @@
                                               IsChecked="{Binding ShowGrid}"
                                               Width="44" 
                                               Height="36"
-                                              Background="#FAF9F7"
+                                              Background="{DynamicResource Paper}"
                                               Foreground="{DynamicResource Muted}"
                                               BorderThickness="1"
-                                              BorderBrush="#6B6864"
+                                              BorderBrush="{DynamicResource Muted}"
                                               FontSize="16"
                                               Cursor="Hand"
                                               ToolTip="Toggle Grid">
@@ -1221,12 +1221,12 @@
                                             </Setter>
                                             <Style.Triggers>
                                                 <Trigger Property="IsChecked" Value="True">
-                                                    <Setter Property="Background" Value="#0E7490"/>
-                                                    <Setter Property="Foreground" Value="White"/>
-                                                    <Setter Property="BorderBrush" Value="#0891B2"/>
+                                                    <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                 </Trigger>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#DDD9D3"/>
+                                                    <Setter Property="Background" Value="{DynamicResource Hover}"/>
                                                     <Trigger.EnterActions>
                                                         <BeginStoryboard>
                                                             <Storyboard>
@@ -1324,8 +1324,8 @@
                                             Command="{Binding DeleteSelectedSlotCommand}" 
                                             Width="38" 
                                             Height="36"
-                                            Background="#B42318"
-                                            Foreground="White"
+                                            Background="{DynamicResource Stopped}"
+                                            Foreground="{DynamicResource OnAction}"
                                             BorderThickness="0"
                                             FontSize="16"
                                             Cursor="Hand"
@@ -1348,7 +1348,7 @@
                                                 </Setter>
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#B42318"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Stopped}"/>
                                                         <Trigger.EnterActions>
                                                             <BeginStoryboard>
                                                                 <Storyboard>
@@ -1372,8 +1372,8 @@
                                                     </Trigger>
                                                     <Trigger Property="IsEnabled" Value="False">
                                                         <!-- Dark-theme disabled (was #DDD9D3/#6B6864, light-mode leftover). -->
-                                                        <Setter Property="Background" Value="#FFFFFF"/>
-                                                        <Setter Property="Foreground" Value="#6B6864"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -1400,8 +1400,8 @@
                                                     </Setter.Value>
                                                 </Setter>
                                                 <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="#0E7490"/></Trigger>
-                                                    <Trigger Property="IsEnabled" Value="False"><Setter Property="Background" Value="#DDD9D3"/></Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource Action}"/></Trigger>
+                                                    <Trigger Property="IsEnabled" Value="False"><Setter Property="Background" Value="{DynamicResource Hover}"/></Trigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Style>
@@ -1418,8 +1418,8 @@
                                 <Button Command="{Binding ExportPreviewCommand}"
                                         ToolTip="{DynamicResource Numbering_ExportPreviewToolTip}"
                                         Padding="12,8"
-                                        Background="#FAF9F7" Foreground="{DynamicResource Muted}"
-                                        BorderThickness="1" BorderBrush="#6B6864"
+                                        Background="{DynamicResource Paper}" Foreground="{DynamicResource Muted}"
+                                        BorderThickness="1" BorderBrush="{DynamicResource Muted}"
                                         FontSize="13" Cursor="Hand">
                                     <Button.Style>
                                         <Style TargetType="Button">
@@ -1434,7 +1434,7 @@
                                                 </Setter.Value>
                                             </Setter>
                                             <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="#E6F3F6"/></Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource BrandSoft}"/></Trigger>
                                             </Style.Triggers>
                                         </Style>
                                     </Button.Style>
@@ -1469,9 +1469,9 @@
                                               Height="36"
                                               FontSize="13"
                                               Padding="10,0"
-                                              Background="#FFFFFF"
-                                              Foreground="#14181D"
-                                              BorderBrush="#6B6864"
+                                              Background="{DynamicResource Panel}"
+                                              Foreground="{DynamicResource Ink}"
+                                              BorderBrush="{DynamicResource Muted}"
                                               BorderThickness="1"
                                               Cursor="Hand"
                                               Margin="0,0,8,0">
@@ -1483,10 +1483,10 @@
                                                    BasedOn="{StaticResource {x:Type ComboBox}}">
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="BorderBrush" Value="#0891B2"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                     </Trigger>
                                                     <Trigger Property="IsFocused" Value="True">
-                                                        <Setter Property="BorderBrush" Value="#0891B2"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -1495,10 +1495,10 @@
                                     <Button Content="⚙️" 
                                             Width="36" 
                                             Height="36"
-                                            Background="#FAF9F7"
+                                            Background="{DynamicResource Paper}"
                                             Foreground="{DynamicResource Muted}"
                                             BorderThickness="1"
-                                            BorderBrush="#6B6864"
+                                            BorderBrush="{DynamicResource Muted}"
                                             FontSize="16"
                                             Cursor="Hand"
                                             ToolTip="{DynamicResource PrinterProps_GeneralInfo}"
@@ -1520,7 +1520,7 @@
                                                 </Setter>
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#DDD9D3"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Hover}"/>
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -1548,23 +1548,23 @@
                                             <Setter Property="Height"          Value="32"/>
                                             <Setter Property="FontSize"        Value="12"/>
                                             <Setter Property="Padding"         Value="8,0"/>
-                                            <Setter Property="Background"      Value="#FFFFFF"/>
-                                            <Setter Property="Foreground"      Value="#14181D"/>
-                                            <Setter Property="BorderBrush"     Value="#6B6864"/>
+                                            <Setter Property="Background"      Value="{DynamicResource Panel}"/>
+                                            <Setter Property="Foreground"      Value="{DynamicResource Ink}"/>
+                                            <Setter Property="BorderBrush"     Value="{DynamicResource Muted}"/>
                                             <Setter Property="BorderThickness" Value="1"/>
                                             <Setter Property="ItemContainerStyle">
                                                 <Setter.Value>
                                                     <Style TargetType="ComboBoxItem">
-                                                        <Setter Property="Background" Value="#FFFFFF"/>
-                                                        <Setter Property="Foreground" Value="#14181D"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
                                                         <Setter Property="Padding"    Value="8,5"/>
                                                         <Style.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Background" Value="#DDD9D3"/>
+                                                                <Setter Property="Background" Value="{DynamicResource Hover}"/>
                                                             </Trigger>
                                                             <Trigger Property="IsSelected" Value="True">
-                                                                <Setter Property="Background" Value="#0E7490"/>
-                                                                <Setter Property="Foreground" Value="White"/>
+                                                                <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                                                <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                                             </Trigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -1609,7 +1609,7 @@
                                          "multi-tray printing does not work" turned out to be. -->
                                     <TextBlock Text="{DynamicResource Numbering_TraySeparationUnavailable}"
                                                Visibility="{Binding TraySeparationUnavailable, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                               Foreground="#B42318" FontSize="11" TextWrapping="Wrap"
+                                               Foreground="{DynamicResource Stopped}" FontSize="11" TextWrapping="Wrap"
                                                MaxWidth="230" Margin="0,8,0,0"/>
                                 </StackPanel>
                             </StackPanel>
@@ -1624,23 +1624,23 @@
                                 <StackPanel>
                                     <TextBlock Margin="0,0,0,4">
                                         <Run Text="{DynamicResource Numbering_PrinterLabel}" Foreground="{DynamicResource Muted}"/>
-                                        <Run Text="{Binding SelectedPrinter}" FontWeight="SemiBold" Foreground="#14181D"/>
+                                        <Run Text="{Binding SelectedPrinter}" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
                                     </TextBlock>
                                     <TextBlock Margin="0,0,0,4">
                                         <Run Text="{DynamicResource Numbering_StartNumberLabel}" Foreground="{DynamicResource Muted}"/>
-                                        <Run Text="{Binding StartNumber}" FontWeight="SemiBold" Foreground="#14181D"/>
+                                        <Run Text="{Binding StartNumber}" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
                                     </TextBlock>
                                     <TextBlock Margin="0,0,0,4">
                                         <Run Text="{DynamicResource Numbering_TotalNumbersLabel}" Foreground="{DynamicResource Muted}"/>
-                                        <Run Text="{Binding TotalNumbers, StringFormat='{}{0:N0}'}" FontWeight="SemiBold" Foreground="#14181D"/>
+                                        <Run Text="{Binding TotalNumbers, StringFormat='{}{0:N0}'}" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
                                     </TextBlock>
                                     <TextBlock Margin="0,0,0,4">
                                         <Run Text="{DynamicResource Numbering_CopiesCountLabel}" Foreground="{DynamicResource Muted}"/>
-                                        <Run Text="{Binding CopiesCount, Mode=OneWay}" FontWeight="SemiBold" Foreground="#14181D"/>
+                                        <Run Text="{Binding CopiesCount, Mode=OneWay}" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
                                     </TextBlock>
                                     <TextBlock Margin="0,0,0,4">
                                         <Run Text="{DynamicResource Numbering_TotalPagesLabel}" Foreground="{DynamicResource Muted}"/>
-                                        <Run Text="{Binding TotalPagesComputed, Mode=OneWay, StringFormat='{}{0:N0}'}" FontWeight="Bold" Foreground="#0891B2"/>
+                                        <Run Text="{Binding TotalPagesComputed, Mode=OneWay, StringFormat='{}{0:N0}'}" FontWeight="Bold" Foreground="{DynamicResource Action}"/>
                                     </TextBlock>
                                     <!-- The mode and its explanation used to be repeated here,
                                          a full sentence wide, even though the Mode group at
@@ -1681,7 +1681,7 @@
                                              GroupName="PrintScale"
                                              Margin="0,0,0,6"
                                              FontSize="12"
-                                             Foreground="#14181D"
+                                             Foreground="{DynamicResource Ink}"
                                              Cursor="Hand"
                                              Checked="PrintScaleMode_Checked"/>
 
@@ -1690,7 +1690,7 @@
                                              IsChecked="{Binding PrintScaleMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=FitToPage}"
                                              GroupName="PrintScale"
                                              FontSize="12"
-                                             Foreground="#14181D"
+                                             Foreground="{DynamicResource Ink}"
                                              Cursor="Hand"
                                              Checked="PrintScaleMode_Checked"/>
                             </StackPanel>
@@ -1712,8 +1712,8 @@
                                     <Button Command="{Binding TogglePrintHistoryCommand}"
                                             ToolTip="{DynamicResource Numbering_PrintHistoryToolTip}"
                                             Padding="12,8" Margin="0,0,6,0"
-                                            Background="#FAF9F7" Foreground="{DynamicResource Muted}"
-                                            BorderThickness="1" BorderBrush="#6B6864"
+                                            Background="{DynamicResource Paper}" Foreground="{DynamicResource Muted}"
+                                            BorderThickness="1" BorderBrush="{DynamicResource Muted}"
                                             FontSize="12" Cursor="Hand">
                                         <Button.Style>
                                             <Style TargetType="Button">
@@ -1728,10 +1728,10 @@
                                                     </Setter.Value>
                                                 </Setter>
                                                 <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="#E6F3F6"/></Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource BrandSoft}"/></Trigger>
                                                     <DataTrigger Binding="{Binding IsPrintHistoryOpen}" Value="True">
-                                                        <Setter Property="Background" Value="#E6F3F6"/>
-                                                        <Setter Property="BorderBrush" Value="#0891B2"/>
+                                                        <Setter Property="Background" Value="{DynamicResource BrandSoft}"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -1745,8 +1745,8 @@
                                     <Button Command="{Binding ToggleRecentProjectsCommand}"
                                             ToolTip="{DynamicResource Numbering_RecentProjectsToolTip}"
                                             Padding="12,8"
-                                            Background="#FAF9F7" Foreground="{DynamicResource Muted}"
-                                            BorderThickness="1" BorderBrush="#6B6864"
+                                            Background="{DynamicResource Paper}" Foreground="{DynamicResource Muted}"
+                                            BorderThickness="1" BorderBrush="{DynamicResource Muted}"
                                             FontSize="12" Cursor="Hand">
                                         <Button.Style>
                                             <Style TargetType="Button">
@@ -1761,10 +1761,10 @@
                                                     </Setter.Value>
                                                 </Setter>
                                                 <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="#E6F3F6"/></Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource BrandSoft}"/></Trigger>
                                                     <DataTrigger Binding="{Binding IsRecentProjectsOpen}" Value="True">
-                                                        <Setter Property="Background" Value="#E6F3F6"/>
-                                                        <Setter Property="BorderBrush" Value="#0891B2"/>
+                                                        <Setter Property="Background" Value="{DynamicResource BrandSoft}"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -1786,8 +1786,8 @@
                                     <Button Command="{Binding ShowMultiPreviewCommand}"
                                             ToolTip="{DynamicResource Numbering_Preview4PagesToolTip}"
                                             Padding="12,8" Margin="0,0,6,0"
-                                            Background="#FAF9F7" Foreground="{DynamicResource Muted}"
-                                            BorderThickness="1" BorderBrush="#6B6864"
+                                            Background="{DynamicResource Paper}" Foreground="{DynamicResource Muted}"
+                                            BorderThickness="1" BorderBrush="{DynamicResource Muted}"
                                             FontSize="13" Cursor="Hand">
                                         <Button.Style>
                                             <Style TargetType="Button">
@@ -1802,7 +1802,7 @@
                                                     </Setter.Value>
                                                 </Setter>
                                                 <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="#E6F3F6"/></Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource BrandSoft}"/></Trigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Style>
@@ -1818,9 +1818,9 @@
                                                   FontSize="12" Cursor="Hand">
                                         <ToggleButton.Style>
                                             <Style TargetType="ToggleButton">
-                                                <Setter Property="Background" Value="#FAF9F7"/>
-                                                <Setter Property="Foreground" Value="#6B6864"/>
-                                                <Setter Property="BorderBrush" Value="#6B6864"/>
+                                                <Setter Property="Background" Value="{DynamicResource Paper}"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
+                                                <Setter Property="BorderBrush" Value="{DynamicResource Muted}"/>
                                                 <Setter Property="BorderThickness" Value="1"/>
                                                 <Setter Property="Template">
                                                     <Setter.Value>
@@ -1834,12 +1834,12 @@
                                                 </Setter>
                                                 <Style.Triggers>
                                                     <Trigger Property="IsChecked" Value="True">
-                                                        <Setter Property="Background" Value="#E6F3F6"/>
-                                                        <Setter Property="Foreground" Value="#0891B2"/>
-                                                        <Setter Property="BorderBrush" Value="#0891B2"/>
+                                                        <Setter Property="Background" Value="{DynamicResource BrandSoft}"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource Action}"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                     </Trigger>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#FFFFFF"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Panel}"/>
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -1891,7 +1891,7 @@
                 </Border>
 
                 <!-- Action Buttons (moved outside Border to ensure visibility) -->
-                <StackPanel Grid.Row="2" Margin="16,16,16,16" Orientation="Horizontal" HorizontalAlignment="Right" Background="#FFFFFF">
+                <StackPanel Grid.Row="2" Margin="16,16,16,16" Orientation="Horizontal" HorizontalAlignment="Right" Background="{DynamicResource Panel}">
                     <!-- Back Button (visible when not in Prepare mode) -->
                     <Button Command="{Binding NavigateBackCommand}"
                             Visibility="{Binding IsPrepareMode, Converter={StaticResource InverseBoolConverter}}"
@@ -1900,8 +1900,8 @@
                             FontSize="14"
                             FontWeight="SemiBold"
                             BorderThickness="1"
-                            BorderBrush="#6B6864"
-                            Background="#FFFFFF"
+                            BorderBrush="{DynamicResource Muted}"
+                            Background="{DynamicResource Panel}"
                             Cursor="Hand"
                             Margin="0,0,12,0">
                         <Button.Content>
@@ -1917,7 +1917,7 @@
                             Command="{Binding StartLayoutCommand}" 
                             PreviewMouseDown="StartLayoutButton_PreviewMouseDown"
                             Visibility="{Binding IsPrepareMode, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Foreground="White"
+                            Foreground="{DynamicResource OnAction}"
                             Padding="28,12"
                             FontSize="15"
                             FontWeight="Bold"
@@ -1988,7 +1988,7 @@
                     <!-- Continue Button (visible in Layout mode) -->
                     <Button Command="{Binding NavigateToExecuteCommand}" 
                             Visibility="{Binding IsLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Foreground="White"
+                            Foreground="{DynamicResource OnAction}"
                             Padding="24,12"
                             FontSize="15"
                             FontWeight="Bold"
@@ -2016,7 +2016,7 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#0B5C72"/>
+                                        <Setter Property="Background" Value="{DynamicResource ActionHover}"/>
                                         <Setter Property="Effect" Value="{StaticResource Shadow.ButtonHover}"/>
                                         <Trigger.EnterActions>
                                             <BeginStoryboard Storyboard="{StaticResource ButtonHoverStoryboard}"/>
@@ -2072,7 +2072,7 @@
                             <Button x:Name="StartPrintButton"
                                     Command="{Binding StartPrintCommand}"
                             Visibility="{Binding IsExecuteMode, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    Foreground="White"
+                                    Foreground="{DynamicResource OnAction}"
                                     Padding="28,14"
                                     FontSize="16"
                                     FontWeight="Bold"
@@ -2116,8 +2116,8 @@
                                             </Trigger>
                                             <Trigger Property="IsEnabled" Value="False">
                                                 <!-- Dark-theme disabled (was #DDD9D3, light-mode leftover). -->
-                                                <Setter Property="Background" Value="#FFFFFF"/>
-                                                <Setter Property="Foreground" Value="#6B6864"/>
+                                                <Setter Property="Background" Value="{DynamicResource Panel}"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
                                                 <Setter Property="Effect" Value="{x:Null}"/>
                                             </Trigger>
                                         </Style.Triggers>
@@ -2157,8 +2157,8 @@
                      يظهر عند بدء الطباعة في أي وضع
                      ══════════════════════════════════════════════════════ -->
                 <Border Grid.Row="3"
-                        Background="#FAF9F7"
-                        BorderBrush="#8F887A" BorderThickness="0,2,0,0"
+                        Background="{DynamicResource Paper}"
+                        BorderBrush="{DynamicResource Border}" BorderThickness="0,2,0,0"
                         Padding="24,12"
                         Visibility="{Binding IsPrinting,
                                      Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -2175,9 +2175,9 @@
                                     VerticalAlignment="Center"
                                     Margin="0,0,24,0" MinWidth="220">
                             <TextBlock FontSize="13" FontWeight="SemiBold">
-                                <Run Text="🖨️  " Foreground="#0891B2"/>
+                                <Run Text="🖨️  " Foreground="{DynamicResource Action}"/>
                                 <Run Text="{Binding PrintStatus, Mode=OneWay}"
-                                     Foreground="#14181D"/>
+                                     Foreground="{DynamicResource Ink}"/>
                             </TextBlock>
                             <TextBlock Text="{Binding PrintedPagesDisplay, Mode=OneWay}"
                                        FontSize="11" Foreground="{DynamicResource Muted}"
@@ -2187,14 +2187,14 @@
                         <!-- ② Progress bar track (custom) -->
                         <Grid Grid.Column="1" VerticalAlignment="Center">
                             <!-- Track background -->
-                            <Border Height="10" Background="#FFFFFF" CornerRadius="5"/>
+                            <Border Height="10" Background="{DynamicResource Panel}" CornerRadius="5"/>
                             <!-- ProgressBar (WPF handles width automatically) -->
                             <ProgressBar x:Name="GlobalProgressBar"
                                          Value="{Binding PrintProgress, Mode=OneWay}"
                                          Maximum="100" Height="10"
                                          BorderThickness="0"
                                          Background="Transparent"
-                                         Foreground="#0891B2">
+                                         Foreground="{DynamicResource Action}">
                                 <ProgressBar.Style>
                                     <Style TargetType="ProgressBar">
                                         <Setter Property="Template">
@@ -2202,7 +2202,7 @@
                                                 <ControlTemplate TargetType="ProgressBar">
                                                     <Grid>
                                                         <!-- Track (named PART_Track so WPF sizes PART_Indicator) -->
-                                                        <Border x:Name="PART_Track" Background="#FFFFFF" CornerRadius="5"/>
+                                                        <Border x:Name="PART_Track" Background="{DynamicResource Panel}" CornerRadius="5"/>
                                                         <!-- Fill -->
                                                         <Border x:Name="PART_Indicator"
                                                                 HorizontalAlignment="Left"
@@ -2246,7 +2246,7 @@
                                 <TextBlock Text="{Binding ElapsedTimeDisplay, Mode=OneWay}"
                                            FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,10,0"/>
                                 <TextBlock Text="{Binding PrintSpeedDisplay, Mode=OneWay}"
-                                           FontSize="11" Foreground="#166B40"/>
+                                           FontSize="11" Foreground="{DynamicResource Done}"/>
                             </StackPanel>
                         </StackPanel>
 
@@ -2260,8 +2260,8 @@
                                     Margin="0,0,8,0">
                                 <Button.Style>
                                     <Style TargetType="Button">
-                                        <Setter Property="Background" Value="#E6F3F6"/>
-                                        <Setter Property="Foreground" Value="#0E7490"/>
+                                        <Setter Property="Background" Value="{DynamicResource BrandSoft}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource Action}"/>
                                         <Setter Property="FontSize" Value="12"/>
                                         <Setter Property="FontWeight" Value="SemiBold"/>
                                         <Setter Property="Padding" Value="14,8"/>
@@ -2278,7 +2278,7 @@
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="bg" Property="Background" Value="#E6F3F6"/>
+                                                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource BrandSoft}"/>
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
@@ -2297,8 +2297,8 @@
                                     Cursor="Hand">
                                 <Button.Style>
                                     <Style TargetType="Button">
-                                        <Setter Property="Background" Value="#F6E4E2"/>
-                                        <Setter Property="Foreground" Value="#B42318"/>
+                                        <Setter Property="Background" Value="{DynamicResource StoppedSoft}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource Stopped}"/>
                                         <Setter Property="FontSize" Value="12"/>
                                         <Setter Property="FontWeight" Value="SemiBold"/>
                                         <Setter Property="Padding" Value="14,8"/>
@@ -2315,7 +2315,7 @@
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="bg" Property="Background" Value="#F6E4E2"/>
+                                                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource StoppedSoft}"/>
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
@@ -2353,13 +2353,13 @@
                           HorizontalScrollBarVisibility="Auto"
                           VerticalScrollBarVisibility="Auto"
                           CanContentScroll="True">
-                <Border Background="#FAF9F7"
+                <Border Background="{DynamicResource Paper}"
                         BorderBrush="{DynamicResource Border}"
                         BorderThickness="1"
                         CornerRadius="12"
                         Padding="24">
                     <Border x:Name="CanvasContainer">
-                        <Border Background="#FFFFFF"
+                        <Border Background="{DynamicResource Panel}"
                                 BorderBrush="{DynamicResource Border}"
                                 BorderThickness="1">
                             <Border.Effect>
@@ -2389,7 +2389,7 @@
                                     FlowDirection="LeftToRight"
                                     Width="{Binding CanvasWidth}"
                                     Height="{Binding CanvasHeight}"
-                                    Background="#FFFFFF"
+                                    Background="{DynamicResource Panel}"
                                     ClipToBounds="True"
                                     MouseLeftButtonDown="Canvas_MouseLeftButtonDown"
                                     MouseMove="Canvas_MouseMove"
@@ -2417,8 +2417,8 @@
                                         Canvas.Top="8"
                                         Visibility="{Binding IsGeneratingPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="⟳" FontSize="14" Foreground="#0891B2" Margin="0,0,6,0"/>
-                                        <TextBlock Text="{DynamicResource Numbering_GeneratingPreview}" Foreground="#14181D" FontSize="12"/>
+                                        <TextBlock Text="⟳" FontSize="14" Foreground="{DynamicResource Action}" Margin="0,0,6,0"/>
+                                        <TextBlock Text="{DynamicResource Numbering_GeneratingPreview}" Foreground="{DynamicResource Ink}" FontSize="12"/>
                                     </StackPanel>
                                 </Border>
 
@@ -2434,7 +2434,7 @@
                                         <DataTemplate>
                                             <Line X1="{Binding X1}" Y1="{Binding Y1}"
                                                   X2="{Binding X2}" Y2="{Binding Y2}"
-                                                  Stroke="#C9C4BB"
+                                                  Stroke="{DynamicResource Border}"
                                                   StrokeThickness="0.5"
                                                   Opacity="0.7"/>
                                         </DataTemplate>
@@ -2480,13 +2480,13 @@
                                                 </Line.Y2>
                                                 <Line.Style>
                                                     <Style TargetType="Line">
-                                                        <Setter Property="Stroke" Value="#0891B2"/>
+                                                        <Setter Property="Stroke" Value="{DynamicResource Brand}"/>
                                                         <Setter Property="StrokeThickness" Value="1"/>
                                                         <Setter Property="StrokeDashArray" Value="5,3"/>
                                                         <Setter Property="Opacity" Value="0.7"/>
                                                         <Style.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Stroke" Value="#0891B2"/>
+                                                                <Setter Property="Stroke" Value="{DynamicResource Brand}"/>
                                                                 <Setter Property="StrokeThickness" Value="2"/>
                                                             </Trigger>
                                                         </Style.Triggers>
@@ -2549,7 +2549,7 @@
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                                             <Setter Property="Background" Value="#380891B2"/>
-                                                            <Setter Property="BorderBrush" Value="#FF0891B2"/>
+                                                            <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -2608,7 +2608,7 @@
             
             <!-- Properties Panel (Right Side) -->
             <Border Grid.Column="1" 
-                    Background="#FFFFFF" 
+                    Background="{DynamicResource Panel}" 
                     BorderBrush="{DynamicResource Border}" 
                     BorderThickness="1,0,0,0">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -2620,7 +2620,7 @@
                             <TextBlock Text="{DynamicResource Numbering_JobProperties}"
                                        FontSize="16"
                                        FontWeight="Bold"
-                                       Foreground="#14181D"
+                                       Foreground="{DynamicResource Ink}"
                                        Margin="0,0,0,20"/>
                             
                             <!-- Start Number Display -->
@@ -2631,7 +2631,7 @@
                             <TextBlock Text="{Binding StartNumber, StringFormat='{}{0:N0}'}" 
                                        FontSize="18" 
                                        FontWeight="Bold" 
-                                       Foreground="#14181D"
+                                       Foreground="{DynamicResource Ink}"
                                        Margin="0,0,0,20"/>
                             
                             <!-- Total Numbers Display -->
@@ -2642,7 +2642,7 @@
                             <TextBlock Text="{Binding TotalNumbers, StringFormat='{}{0:N0}'}" 
                                        FontSize="18" 
                                        FontWeight="Bold" 
-                                       Foreground="#14181D"
+                                       Foreground="{DynamicResource Ink}"
                                        Margin="0,0,0,20"/>
                             
                             <!-- Copies Count -->
@@ -2653,7 +2653,7 @@
                             <TextBlock Text="{Binding CopiesCount, Mode=OneWay, StringFormat='{}{0}'}"
                                        FontSize="18"
                                        FontWeight="Bold"
-                                       Foreground="#14181D"
+                                       Foreground="{DynamicResource Ink}"
                                        Margin="0,0,0,20"/>
                         </StackPanel>
                         
@@ -2662,7 +2662,7 @@
                             <TextBlock Text="{DynamicResource Numbering_DesignProperties}" 
                                        FontSize="16" 
                                        FontWeight="Bold" 
-                                       Foreground="#14181D"
+                                       Foreground="{DynamicResource Ink}"
                                        Margin="0,0,0,20"/>
                             
                             <!-- Selected Slot Properties -->
@@ -2684,20 +2684,20 @@
                                           Margin="0,0,0,16"
                                           Height="36"
                                           FontSize="13"
-                                          Background="#FFFFFF"
-                                          Foreground="#14181D"
-                                          BorderBrush="#6B6864">
+                                          Background="{DynamicResource Panel}"
+                                          Foreground="{DynamicResource Ink}"
+                                          BorderBrush="{DynamicResource Muted}">
                                     <ComboBox.ItemContainerStyle>
                                         <Style TargetType="ComboBoxItem">
-                                            <Setter Property="Background" Value="#FFFFFF"/>
-                                            <Setter Property="Foreground" Value="#14181D"/>
+                                            <Setter Property="Background" Value="{DynamicResource Panel}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
                                             <Style.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#DDD9D3"/>
+                                                    <Setter Property="Background" Value="{DynamicResource Hover}"/>
                                                 </Trigger>
                                                 <Trigger Property="IsSelected" Value="True">
-                                                    <Setter Property="Background" Value="#0E7490"/>
-                                                    <Setter Property="Foreground" Value="White"/>
+                                                    <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                                 </Trigger>
                                             </Style.Triggers>
                                         </Style>
@@ -2763,7 +2763,7 @@
                                             Cursor="Hand"
                                             MouseLeftButtonDown="RegularWeight_Click">
                                         <TextBlock Text="{DynamicResource Numbering_FontWeightNormal}" 
-                                                   Foreground="White" 
+                                                   Foreground="{DynamicResource OnAction}" 
                                                    HorizontalAlignment="Center"
                                                    FontSize="13"
                                                    FontWeight="SemiBold"/>
@@ -2775,7 +2775,7 @@
                                             Cursor="Hand"
                                             MouseLeftButtonDown="BoldWeight_Click">
                                         <TextBlock Text="{DynamicResource Numbering_FontWeightBold}" 
-                                                   Foreground="White" 
+                                                   Foreground="{DynamicResource OnAction}" 
                                                    HorizontalAlignment="Center"
                                                    FontSize="13"
                                                    FontWeight="SemiBold"/>
@@ -2797,7 +2797,7 @@
                                             CornerRadius="8" 
                                             Width="36" 
                                             Height="36"
-                                            BorderBrush="#6B6864"
+                                            BorderBrush="{DynamicResource Muted}"
                                             BorderThickness="1"
                                             Cursor="Hand"
                                             MouseLeftButtonDown="ColorSwatch_Click"/>
@@ -2805,9 +2805,9 @@
                                              Text="{Binding SelectedSlot.FontColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='#000000'}" 
                                              Margin="8,0,0,0"
                                              Height="36"
-                                             Background="#FFFFFF"
-                                             Foreground="#14181D"
-                                             BorderBrush="#6B6864"
+                                             Background="{DynamicResource Panel}"
+                                             Foreground="{DynamicResource Ink}"
+                                             BorderBrush="{DynamicResource Muted}"
                                              BorderThickness="1"
                                              Padding="8,0"
                                              VerticalContentAlignment="Center"/>
@@ -2829,7 +2829,7 @@
                             <TextBlock Text="{DynamicResource Numbering_PrintSummary}" 
                                        FontSize="16" 
                                        FontWeight="Bold" 
-                                       Foreground="#14181D"
+                                       Foreground="{DynamicResource Ink}"
                                        Margin="0,0,0,20"/>
                             
                             <!-- Read-only here: the printer is CHOSEN once in the top
@@ -2843,7 +2843,7 @@
                             <TextBlock Text="{Binding SelectedPrinter, FallbackValue='—', TargetNullValue='—'}"
                                        FontSize="14"
                                        FontWeight="SemiBold"
-                                       Foreground="#14181D"
+                                       Foreground="{DynamicResource Ink}"
                                        TextTrimming="CharacterEllipsis"
                                        Margin="0,0,0,20"/>
                             
@@ -2854,7 +2854,7 @@
                             <TextBlock Text="{Binding CopiesCount, Mode=OneWay, StringFormat='{}{0}'}"
                                        FontSize="14"
                                        FontWeight="SemiBold"
-                                       Foreground="#14181D"
+                                       Foreground="{DynamicResource Ink}"
                                        Margin="0,0,0,20"/>
                             
                             <TextBlock Text="{DynamicResource Numbering_TotalPagesLabel}" 
@@ -2864,7 +2864,7 @@
                             <TextBlock Text="{Binding TotalPagesComputed, Mode=OneWay, StringFormat='{}{0:N0}'}" 
                                        FontSize="18" 
                                        FontWeight="Bold" 
-                                       Foreground="#0891B2"
+                                       Foreground="{DynamicResource Action}"
                                        Margin="0,0,0,20"/>
                             
                             <!-- Printing Mode Info -->
@@ -2878,10 +2878,10 @@
                                        Margin="0,0,0,8">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="Foreground" Value="#166B40"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource Done}"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding UseSmartTrayPrinting}" Value="False">
-                                                <Setter Property="Foreground" Value="#6B6864"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -2889,7 +2889,7 @@
                             </TextBlock>
                             
                             <!-- Printing Mode Description -->
-                            <Border Background="#FAF9F7" 
+                            <Border Background="{DynamicResource Paper}" 
                                     BorderBrush="{DynamicResource Border}" 
                                     BorderThickness="1" 
                                     CornerRadius="4" 
@@ -2914,8 +2914,8 @@
               Background="#B4231814"
               Visibility="{Binding IsMultiPreviewOpen, Converter={StaticResource BooleanToVisibilityConverter}}"
               Panel.ZIndex="100">
-            <Border Background="#FAF9F7"
-                    BorderBrush="#8F887A"
+            <Border Background="{DynamicResource Paper}"
+                    BorderBrush="{DynamicResource Border}"
                     BorderThickness="1"
                     CornerRadius="12"
                     MaxWidth="1500"
@@ -2939,7 +2939,7 @@
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,16">
                         <TextBlock Text="🔍" FontSize="20" Margin="0,0,10,0" VerticalAlignment="Center"/>
                         <TextBlock Text="{DynamicResource Numbering_PreviewFirstPages}" FontSize="18" FontWeight="Bold"
-                                   Foreground="#14181D" VerticalAlignment="Center"/>
+                                   Foreground="{DynamicResource Ink}" VerticalAlignment="Center"/>
                         <TextBlock Text="{DynamicResource Numbering_PreviewFirstPagesSubtitle}"
                                    FontSize="13" Foreground="{DynamicResource Muted}" VerticalAlignment="Center" Margin="8,0,0,0"/>
                     </StackPanel>
@@ -2949,12 +2949,12 @@
                          guillotine each field becomes its own book, and a wrong range is only
                          discovered once the paper is already cut. -->
                     <Border Grid.Row="1"
-                            Background="#FFFBEB" BorderBrush="#F59E0B" BorderThickness="1"
+                            Background="{DynamicResource PrintingSoft}" BorderBrush="{DynamicResource Printing}" BorderThickness="1"
                             CornerRadius="6" Padding="12,8" Margin="0,0,0,12"
                             Visibility="{Binding HasImposedRanges, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel>
                             <TextBlock Text="{DynamicResource Numbering_CutPiecesTitle}"
-                                       FontSize="12" FontWeight="SemiBold" Foreground="#14181D" Margin="0,0,0,6"/>
+                                       FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource Ink}" Margin="0,0,0,6"/>
                             <ItemsControl ItemsSource="{Binding ImposedRanges}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -2963,9 +2963,9 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Background="#FFFFFF" BorderBrush="#F59E0B" BorderThickness="1"
+                                        <Border Background="{DynamicResource Panel}" BorderBrush="{DynamicResource Printing}" BorderThickness="1"
                                                 CornerRadius="4" Padding="8,4" Margin="0,0,8,4">
-                                            <TextBlock Text="{Binding Text}" FontSize="12" Foreground="#14181D"/>
+                                            <TextBlock Text="{Binding Text}" FontSize="12" Foreground="{DynamicResource Ink}"/>
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -2978,7 +2978,7 @@
                         <!-- Generating spinner -->
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
                                     Visibility="{Binding IsGeneratingMultiPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="⟳" FontSize="32" Foreground="#0891B2" HorizontalAlignment="Center"/>
+                            <TextBlock Text="⟳" FontSize="32" Foreground="{DynamicResource Action}" HorizontalAlignment="Center"/>
                             <TextBlock Text="{DynamicResource Numbering_GeneratingPreview}" FontSize="14" Foreground="{DynamicResource Muted}"
                                        HorizontalAlignment="Center" Margin="0,10,0,0"/>
                         </StackPanel>
@@ -3013,14 +3013,14 @@
                                         <Button.Template>
                                             <ControlTemplate TargetType="Button">
                                                 <Border x:Name="Frame"
-                                                        Background="#FFFFFF" BorderBrush="#8F887A" BorderThickness="1"
+                                                        Background="{DynamicResource Panel}" BorderBrush="{DynamicResource Border}" BorderThickness="1"
                                                         CornerRadius="6" Padding="6">
                                                     <ContentPresenter/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="Frame" Property="BorderBrush" Value="#0891B2"/>
-                                                        <Setter TargetName="Frame" Property="Background" Value="#F2FBFD"/>
+                                                        <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource Brand}"/>
+                                                        <Setter TargetName="Frame" Property="Background" Value="{DynamicResource BrandSoft}"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -3038,7 +3038,7 @@
 
                         <!-- One page, opened properly. Scrollable, because at full size an
                              A4 sheet at 300 dpi is taller than any window. -->
-                        <Grid Background="#FAF9F7"
+                        <Grid Background="{DynamicResource Paper}"
                               Visibility="{Binding IsPreviewPageOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -3047,12 +3047,12 @@
                             <Button Grid.Row="0" Command="{Binding ClosePreviewPageCommand}"
                                     Content="{DynamicResource Numbering_BackToPages}"
                                     HorizontalAlignment="Right" Margin="0,0,0,10"
-                                    Padding="14,6" Background="#FFFFFF" Foreground="{DynamicResource Muted}"
-                                    BorderThickness="1" BorderBrush="#6B6864" FontSize="12" Cursor="Hand"/>
+                                    Padding="14,6" Background="{DynamicResource Panel}" Foreground="{DynamicResource Muted}"
+                                    BorderThickness="1" BorderBrush="{DynamicResource Muted}" FontSize="12" Cursor="Hand"/>
                             <ScrollViewer Grid.Row="1"
                                           HorizontalScrollBarVisibility="Auto"
                                           VerticalScrollBarVisibility="Auto"
-                                          Background="#DDD9D3">
+                                          Background="{DynamicResource Hover}">
                                 <Image Source="{Binding OpenedPreviewPage}" Stretch="None"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12"/>
                             </ScrollViewer>
@@ -3063,8 +3063,8 @@
                     <Button Grid.Row="3" Command="{Binding CloseMultiPreviewCommand}"
                             Content="{DynamicResource NW_001}"
                             HorizontalAlignment="Center" Margin="0,16,0,0"
-                            Padding="24,10" Background="#FFFFFF" Foreground="{DynamicResource Muted}"
-                            BorderThickness="1" BorderBrush="#6B6864" FontSize="14" Cursor="Hand">
+                            Padding="24,10" Background="{DynamicResource Panel}" Foreground="{DynamicResource Muted}"
+                            BorderThickness="1" BorderBrush="{DynamicResource Muted}" FontSize="14" Cursor="Hand">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Template">
@@ -3078,7 +3078,7 @@
                                     </Setter.Value>
                                 </Setter>
                                 <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="#DDD9D3"/></Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource Hover}"/></Trigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
@@ -3091,8 +3091,8 @@
              MEDIUM ④ — Project Notes Slide-in Panel
              ════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="1"
-                Background="#FAF9F7"
-                BorderBrush="#8F887A"
+                Background="{DynamicResource Paper}"
+                BorderBrush="{DynamicResource Border}"
                 BorderThickness="1,0,0,0"
                 Width="260"
                 HorizontalAlignment="Right"
@@ -3110,7 +3110,7 @@
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="16,16,16,8">
                     <TextBlock Text="📝" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
                     <TextBlock Text="{DynamicResource Numbering_ProjectNotes}" FontSize="14" FontWeight="SemiBold"
-                               Foreground="#14181D" VerticalAlignment="Center"/>
+                               Foreground="{DynamicResource Ink}" VerticalAlignment="Center"/>
                     <Button Command="{Binding ToggleNotesCommand}"
                             Content="✕"
                             Background="Transparent" Foreground="{DynamicResource Muted}"
@@ -3129,28 +3129,28 @@
                                     </Setter.Value>
                                 </Setter>
                                 <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Foreground" Value="#14181D"/></Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Foreground" Value="{DynamicResource Ink}"/></Trigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
                     </Button>
                 </StackPanel>
 
-                <Rectangle Grid.Row="0" Height="1" Fill="#E6F3F6" VerticalAlignment="Bottom" Margin="0,36,0,0"/>
+                <Rectangle Grid.Row="0" Height="1" Fill="{DynamicResource BrandSoft}" VerticalAlignment="Bottom" Margin="0,36,0,0"/>
 
                 <!-- Notes TextBox -->
                 <TextBox Grid.Row="1"
                          Text="{Binding ProjectNotes, UpdateSourceTrigger=PropertyChanged}"
-                         Background="#FAF9F7"
-                         Foreground="#14181D"
+                         Background="{DynamicResource Paper}"
+                         Foreground="{DynamicResource Ink}"
                          BorderThickness="0"
                          Padding="16,12"
                          FontSize="13"
                          AcceptsReturn="True"
                          TextWrapping="Wrap"
                          VerticalScrollBarVisibility="Auto"
-                         CaretBrush="#0891B2"
-                         SelectionBrush="#0891B2"
+                         CaretBrush="{DynamicResource Brand}"
+                         SelectionBrush="{DynamicResource Brand}"
                          VerticalContentAlignment="Top">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -3180,8 +3180,8 @@
              LOW ② — Print History Panel
              ════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="1"
-                Background="#FAF9F7"
-                BorderBrush="#8F887A"
+                Background="{DynamicResource Paper}"
+                BorderBrush="{DynamicResource Border}"
                 BorderThickness="1,0,0,0"
                 Width="300"
                 HorizontalAlignment="Right"
@@ -3205,7 +3205,7 @@
                     <StackPanel Orientation="Horizontal" Grid.Column="0">
                         <TextBlock Text="📋" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
                         <TextBlock Text="{DynamicResource Numbering_PrintHistory}" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#14181D" VerticalAlignment="Center"/>
+                                   Foreground="{DynamicResource Ink}" VerticalAlignment="Center"/>
                     </StackPanel>
                     <Button Grid.Column="1" Command="{Binding TogglePrintHistoryCommand}"
                             Content="✕" Background="Transparent" Foreground="{DynamicResource Muted}"
@@ -3222,13 +3222,13 @@
                                     </Setter.Value>
                                 </Setter>
                                 <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Foreground" Value="#14181D"/></Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Foreground" Value="{DynamicResource Ink}"/></Trigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
                     </Button>
                 </Grid>
-                <Rectangle Grid.Row="0" Height="1" Fill="#E6F3F6" VerticalAlignment="Bottom" Margin="0,44,0,0"/>
+                <Rectangle Grid.Row="0" Height="1" Fill="{DynamicResource BrandSoft}" VerticalAlignment="Bottom" Margin="0,44,0,0"/>
 
                 <!-- History List -->
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,2,0,0">
@@ -3245,13 +3245,13 @@
                         <ItemsControl ItemsSource="{Binding PrintHistory}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="Transparent" BorderBrush="#FFFFFF" BorderThickness="0,0,0,1"
+                                    <Border Background="Transparent" BorderBrush="{DynamicResource Panel}" BorderThickness="0,0,0,1"
                                             Padding="16,10">
                                         <Border.Style>
                                             <Style TargetType="Border">
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#FAF9F7"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Paper}"/>
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -3262,7 +3262,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Grid.Column="0">
-                                                <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#14181D" TextTrimming="CharacterEllipsis">
+                                                <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource Ink}" TextTrimming="CharacterEllipsis">
                                                     <TextBlock.Text>
                                                         <MultiBinding StringFormat="{}#{0:N0} — {1:N0} رقم">
                                                             <Binding Path="StartNumber"/>
@@ -3285,26 +3285,26 @@
                                                 <Border CornerRadius="3" Padding="5,1" Margin="0,3,0,0" HorizontalAlignment="Right">
                                                     <Border.Style>
                                                         <Style TargetType="Border">
-                                                            <Setter Property="Background" Value="#E7F3EC"/>
+                                                            <Setter Property="Background" Value="{DynamicResource DoneSoft}"/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding Status}" Value="ملغي">
-                                                                    <Setter Property="Background" Value="#F6E4E2"/>
+                                                                    <Setter Property="Background" Value="{DynamicResource StoppedSoft}"/>
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding Status}" Value="خطأ">
-                                                                    <Setter Property="Background" Value="#F6E4E2"/>
+                                                                    <Setter Property="Background" Value="{DynamicResource StoppedSoft}"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                     </Border.Style>
-                                                    <TextBlock Text="{Binding Status}" FontSize="9" Foreground="#166B40">
+                                                    <TextBlock Text="{Binding Status}" FontSize="9" Foreground="{DynamicResource Done}">
                                                         <TextBlock.Style>
                                                             <Style TargetType="TextBlock">
                                                                 <Style.Triggers>
                                                                     <DataTrigger Binding="{Binding Status}" Value="ملغي">
-                                                                        <Setter Property="Foreground" Value="#B42318"/>
+                                                                        <Setter Property="Foreground" Value="{DynamicResource Stopped}"/>
                                                                     </DataTrigger>
                                                                     <DataTrigger Binding="{Binding Status}" Value="خطأ">
-                                                                        <Setter Property="Foreground" Value="#B42318"/>
+                                                                        <Setter Property="Foreground" Value="{DynamicResource Stopped}"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
@@ -3321,11 +3321,11 @@
                 </ScrollViewer>
 
                 <!-- Footer: Clear button -->
-                <Border Grid.Row="2" BorderBrush="#8F887A" BorderThickness="0,1,0,0" Padding="16,10">
+                <Border Grid.Row="2" BorderBrush="{DynamicResource Border}" BorderThickness="0,1,0,0" Padding="16,10">
                     <Button Command="{Binding ClearPrintHistoryCommand}"
                             Content="{DynamicResource NW_002}"
                             HorizontalAlignment="Center"
-                            Padding="16,7" Background="#FFFFFF" Foreground="{DynamicResource Muted}"
+                            Padding="16,7" Background="{DynamicResource Panel}" Foreground="{DynamicResource Muted}"
                             BorderThickness="1" BorderBrush="{DynamicResource Border}" FontSize="12" Cursor="Hand">
                         <Button.Style>
                             <Style TargetType="Button">
@@ -3341,8 +3341,8 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#DDD9D3"/>
-                                        <Setter Property="Foreground" Value="#B42318"/>
+                                        <Setter Property="Background" Value="{DynamicResource Hover}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource Stopped}"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -3356,8 +3356,8 @@
              LOW ⑥ — Recent Projects Panel
              ════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="1"
-                Background="#FAF9F7"
-                BorderBrush="#8F887A"
+                Background="{DynamicResource Paper}"
+                BorderBrush="{DynamicResource Border}"
                 BorderThickness="1,0,0,0"
                 Width="300"
                 HorizontalAlignment="Right"
@@ -3379,13 +3379,13 @@
                     <StackPanel Orientation="Horizontal" Grid.Column="0">
                         <TextBlock Text="🕐" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
                         <TextBlock Text="{DynamicResource Numbering_RecentProjects}" FontSize="14" FontWeight="SemiBold"
-                                   Foreground="#14181D" VerticalAlignment="Center"/>
+                                   Foreground="{DynamicResource Ink}" VerticalAlignment="Center"/>
                         <!-- Clear-all sits next to the title rather than at the foot of the
                              list, so it is visible without scrolling a long list first. -->
                         <Button Command="{Binding ClearRecentProjectsCommand}"
                                 Content="{DynamicResource Numbering_ClearRecent}"
                                 ToolTip="{DynamicResource Numbering_ClearRecent_Tip}"
-                                Background="Transparent" Foreground="#B42318"
+                                Background="Transparent" Foreground="{DynamicResource Stopped}"
                                 BorderThickness="0" FontSize="11" Cursor="Hand"
                                 Padding="8,2" Margin="10,0,0,0" VerticalAlignment="Center"
                                 Visibility="{Binding RecentProjects.Count, Converter={StaticResource CountToVisibilityConverter}}"/>
@@ -3405,13 +3405,13 @@
                                     </Setter.Value>
                                 </Setter>
                                 <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Foreground" Value="#14181D"/></Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Foreground" Value="{DynamicResource Ink}"/></Trigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
                     </Button>
                 </Grid>
-                <Rectangle Grid.Row="0" Height="1" Fill="#E6F3F6" VerticalAlignment="Bottom" Margin="0,44,0,0"/>
+                <Rectangle Grid.Row="0" Height="1" Fill="{DynamicResource BrandSoft}" VerticalAlignment="Bottom" Margin="0,44,0,0"/>
 
                 <!-- Projects List -->
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
@@ -3428,7 +3428,7 @@
                         <ItemsControl ItemsSource="{Binding RecentProjects}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="Transparent" BorderBrush="#FFFFFF" BorderThickness="0,0,0,1"
+                                    <Border Background="Transparent" BorderBrush="{DynamicResource Panel}" BorderThickness="0,0,0,1"
                                             Padding="16,10" Cursor="Hand">
                                         <Border.InputBindings>
                                             <MouseBinding MouseAction="LeftClick"
@@ -3439,7 +3439,7 @@
                                             <Style TargetType="Border">
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#FAF9F7"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Paper}"/>
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -3452,7 +3452,7 @@
                                             <StackPanel Grid.Column="0">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="📄" FontSize="13" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                                    <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#14181D"
+                                                    <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"
                                                                TextTrimming="CharacterEllipsis" MaxWidth="190"
                                                                VerticalAlignment="Center">
                                                         <TextBlock.Text>
@@ -3493,8 +3493,8 @@
                                                         </Setter>
                                                         <Style.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Background" Value="#FDECEA"/>
-                                                                <Setter Property="Foreground" Value="#B42318"/>
+                                                                <Setter Property="Background" Value="{DynamicResource StoppedSoft}"/>
+                                                                <Setter Property="Foreground" Value="{DynamicResource Stopped}"/>
                                                             </Trigger>
                                                         </Style.Triggers>
                                                     </Style>

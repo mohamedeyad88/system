@@ -42,11 +42,11 @@ namespace Apex.UI.Converters
             {
                 // If step is completed or current, use blue; otherwise gray
                 if (currentStep >= targetStep)
-                    return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3B82F6"));
+                    return new SolidColorBrush((Color)ColorConverter.ConvertFromString(StatusPalette.Info));
                 else
-                    return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CBD5E1"));
+                    return new SolidColorBrush((Color)ColorConverter.ConvertFromString(StatusPalette.Pending));
             }
-            return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CBD5E1"));
+            return new SolidColorBrush((Color)ColorConverter.ConvertFromString(StatusPalette.Pending));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => Binding.DoNothing;

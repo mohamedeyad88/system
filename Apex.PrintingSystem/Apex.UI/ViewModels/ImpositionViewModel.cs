@@ -727,9 +727,9 @@ namespace Apex.UI.ViewModels
                     : Res("Imp_PreflightClean");
 
                 PreflightSummaryColor =
-                    !report.CanPrint || report.HasErrors ? "#EF4444"
-                    : report.HasWarnings ? "#F59E0B"
-                    : "#22C55E";
+                    !report.CanPrint || report.HasErrors ? StatusPalette.Error
+                    : report.HasWarnings ? StatusPalette.Warning
+                    : StatusPalette.Done;
             }
             catch
             {
