@@ -613,9 +613,7 @@ namespace Apex.UI.ViewModels
             InitializeGridLines();
 
             // Subscribe to Slots collection changes for debugging
-            Slots.CollectionChanged += (s, e) =>
-            {
-            };
+            Slots.CollectionChanged += OnSlotsCollectionChanged;
 
             // Initialize available printers
             foreach (string printer in PrinterSettings.InstalledPrinters)
@@ -2164,7 +2162,13 @@ namespace Apex.UI.ViewModels
         {
             if (!AutoPreviewEnabled) return;
             if (string.IsNullOrEmpty(TemplatePath) || !File.Exists(TemplatePath)) return;
-            if (Slots.Count == 0) return;
+            if (Slots.Count == 0)
+            {
+                // Deleting the last field used to return here with the old picture still up,
+                // so its number stayed on the sheet with nothing left to delete.
+                LivePreviewImage = null;
+                return;
+            }
 
             _previewDebounceTimer?.Dispose();
             _previewDebounceTimer = new System.Threading.Timer(
@@ -2174,16 +2178,90 @@ namespace Apex.UI.ViewModels
                 Timeout.Infinite);
         }
 
+        /// <summary>Set when a change arrives while a preview is already rendering.</summary>
+        private volatile bool _previewPending;
+
+        private readonly HashSet<NumberSlot> _watchedSlots = new();
+
+        /// <summary>
+        /// Slot properties that change what the rendered sheet looks like. PreviewNumber and
+        /// IsSelected are left out on purpose: the renderer sets the first and selection
+        /// does not change the print, and listening to them would redraw in a loop.
+        /// </summary>
+        private static readonly HashSet<string> SlotLookProperties = new()
+        {
+            nameof(NumberSlot.X), nameof(NumberSlot.Y),
+            nameof(NumberSlot.Width), nameof(NumberSlot.Height),
+            nameof(NumberSlot.FontFamily), nameof(NumberSlot.FontSize),
+            nameof(NumberSlot.FontColor), nameof(NumberSlot.IsBold),
+            nameof(NumberSlot.Rotation), nameof(NumberSlot.Opacity),
+            nameof(NumberSlot.Alignment), nameof(NumberSlot.SlotKind),
+            nameof(NumberSlot.BarcodeType),
+        };
+
+        partial void OnSlotsChanged(ObservableCollection<NumberSlot>? oldValue, ObservableCollection<NumberSlot> newValue)
+        {
+            if (oldValue != null) oldValue.CollectionChanged -= OnSlotsCollectionChanged;
+            foreach (var s in _watchedSlots) s.PropertyChanged -= OnSlotPropertyChanged;
+            _watchedSlots.Clear();
+            if (newValue != null)
+            {
+                newValue.CollectionChanged += OnSlotsCollectionChanged;
+                OnSlotsCollectionChanged(newValue, null!);
+            }
+        }
+
+        private void OnSlotsCollectionChanged(object? sender,
+            System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            // Clear() raises Reset without the old items, so re-sync against the list.
+            foreach (var old in _watchedSlots.Where(s => !Slots.Contains(s)).ToList())
+            {
+                old.PropertyChanged -= OnSlotPropertyChanged;
+                _watchedSlots.Remove(old);
+            }
+            foreach (var slot in Slots)
+            {
+                if (_watchedSlots.Add(slot)) slot.PropertyChanged += OnSlotPropertyChanged;
+            }
+        }
+
+        /// <summary>
+        /// Keeps the rendered sheet in step with the fields on it.
+        ///
+        /// <para>Nothing listened to a field's own properties, so dragging a field or
+        /// changing its size or colour left the rendered picture underneath showing the
+        /// number where the field USED to be. With the field's live box now elsewhere, the
+        /// sheet showed that number twice — reported from the floor as "the first number
+        /// repeats". The stale picture is dropped at once so no ghost survives a drag, and
+        /// redrawn once the edit settles.</para>
+        /// </summary>
+        private void OnSlotPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == null || !SlotLookProperties.Contains(e.PropertyName)) return;
+
+            LivePreviewImage = null;
+            SchedulePreviewUpdate();
+        }
+
         private async Task GenerateLivePreviewAsync()
         {
             if (string.IsNullOrEmpty(TemplatePath) || !File.Exists(TemplatePath)) return;
-            if (IsGeneratingPreview) return;
+
+            // A change that lands mid-render used to be dropped on the floor, leaving the
+            // picture one edit behind. Remember it and render again when this one finishes.
+            if (IsGeneratingPreview) { _previewPending = true; return; }
 
             await Application.Current?.Dispatcher.InvokeAsync(() => IsGeneratingPreview = true);
             try
             {
+                _previewPending = false;
                 var slots = Slots.Select(s => s.ToSlotSpec()).ToList();
-                if (slots.Count == 0) return;
+                if (slots.Count == 0)
+                {
+                    await Application.Current?.Dispatcher.InvokeAsync(() => LivePreviewImage = null);
+                    return;
+                }
 
                 var isPdf = TemplatePath.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
                 var format = isPdf ? TemplateFormat.Pdf : TemplateFormat.Image;
@@ -2197,17 +2275,22 @@ namespace Apex.UI.ViewModels
                 if (pages.Count > 0)
                 {
                     var bmp = SKImageExtensions.ToBitmapSource(pages[0]);
-                    await Application.Current?.Dispatcher.InvokeAsync(() =>
-                    {
-                        LivePreviewImage = bmp;
-                        IsGeneratingPreview = false;
-                    });
+                    await Application.Current?.Dispatcher.InvokeAsync(() => LivePreviewImage = bmp);
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Apex.Core.Diagnostics.AppDiagnostics.LogWarning("Numbering.LivePreview", ex);
+            }
+            finally
+            {
+                // Always released. The early return above (no fields) and an empty render
+                // both used to leave this stuck at true, after which every later preview
+                // was silently refused and the canvas kept showing an old picture for good.
                 await Application.Current?.Dispatcher.InvokeAsync(() => IsGeneratingPreview = false);
             }
+
+            if (_previewPending) SchedulePreviewUpdate();
         }
 
         [RelayCommand]
