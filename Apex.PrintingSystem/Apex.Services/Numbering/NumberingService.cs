@@ -278,37 +278,89 @@ namespace Apex.Services.Numbering
         /// <summary>
         /// Generates preview images for multiple pages.
         /// </summary>
-        public List<SKImage> GeneratePreviewPages(Stream templateStream, List<SlotSpec> slots, long startNumber, int pageCount, TemplateFormat format = TemplateFormat.Image)
+        /// <summary>
+        /// Renders the first <paramref name="pageCount"/> sheets exactly as the press will
+        /// number them.
+        ///
+        /// <para>Each sheet used to be composed with <c>new[] { number }</c> — one number
+        /// for the whole page — so on a design with several fields only the first field was
+        /// ever numbered and the rest came out blank. It also ignored the numbering mode, so
+        /// a cutting job previewed as if it were sequential, and it ignored the number
+        /// format. The preview is what an operator checks before committing the paper, and
+        /// with more than one field it had never shown what would print. Page numbers now
+        /// come from the same strategy the print path uses.</para>
+        /// </summary>
+        /// <param name="totalNumbers">
+        /// The whole job's count. Cutting-mode numbers depend on it (a field's first number
+        /// is <c>start + slot × sheets</c>), so previewing with a smaller count shows the wrong
+        /// numbers. When omitted, enough numbers are assumed to fill every previewed sheet.
+        /// </param>
+        public List<SKImage> GeneratePreviewPages(
+            Stream templateStream,
+            List<SlotSpec> slots,
+            long startNumber,
+            int pageCount,
+            TemplateFormat format = TemplateFormat.Image,
+            long? totalNumbers = null,
+            NumberingMode mode = NumberingMode.Auto,
+            NumberFormatOptions? numberFormat = null,
+            bool useArabicDigits = false)
         {
-            var options = new BookJobOptions(
+            var options = PreviewJobOptions(slots, startNumber, pageCount, format, totalNumbers, mode);
+
+            var composer = new Composer
+            {
+                UseArabicDigits = useArabicDigits,
+                NumberFormat = (numberFormat ?? NumberFormatOptions.Default) with { UseArabicDigits = useArabicDigits }
+            };
+
+            var previews = new List<SKImage>();
+            using var templateImage = _templateLoader.LoadTemplate(templateStream, format);
+
+            foreach (var numbers in PreviewPageNumbers(options, pageCount))
+            {
+                previews.Add(composer.ComposePage(templateImage, numbers, options, 0));
+            }
+
+            return previews;
+        }
+
+        /// <summary>
+        /// The numbers each previewed sheet carries, one entry per field (-1 for a field the
+        /// range does not reach) — taken from the same strategy the print path uses.
+        /// </summary>
+        public static IReadOnlyList<long[]> PreviewPageNumbers(BookJobOptions options, int pageCount)
+        {
+            if (options.Slots.Count == 0 || pageCount <= 0) return Array.Empty<long[]>();
+            return NumberingStrategyFactory.Create(options)
+                .GeneratePageNumbers(options)
+                .Take(pageCount)
+                .ToList();
+        }
+
+        public static BookJobOptions PreviewJobOptions(
+            List<SlotSpec> slots,
+            long startNumber,
+            int pageCount,
+            TemplateFormat format = TemplateFormat.Image,
+            long? totalNumbers = null,
+            NumberingMode mode = NumberingMode.Auto)
+            => new(
                 TemplateStream: null,
                 TemplatePath: null,
                 TemplateFormat: format,
                 Layout: LayoutSpec.A4,
                 Slots: slots,
                 StartNumber: startNumber,
-                TotalNumbers: pageCount,
+                TotalNumbers: totalNumbers ?? (long)Math.Max(1, pageCount) * Math.Max(1, slots.Count),
                 PagesPerBook: 1,
                 CopiesPerPage: 1,
-                Mode: NumberingMode.Auto,
+                Mode: mode,
                 LowResourceMode: false,
                 DegreeOfParallelism: 1,
                 CheckpointEvery: 0,
                 OutputMode: "Preview",
                 OutputPath: "");
-
-            var previews = new List<SKImage>();
-            using var templateImage = _templateLoader.LoadTemplate(templateStream, format);
-
-            for (int i = 0; i < pageCount; i++)
-            {
-                var number = startNumber + i;
-                var pageImage = _composer.ComposePage(templateImage, new[] { number }, options, 0);
-                previews.Add(pageImage);
-            }
-
-            return previews;
-        }
     }
 }
 

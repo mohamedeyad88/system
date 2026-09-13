@@ -2269,7 +2269,12 @@ namespace Apex.UI.ViewModels
                 List<SkiaSharp.SKImage> pages;
                 using (var stream = File.OpenRead(TemplatePath))
                 {
-                    pages = _numberingService.GeneratePreviewPages(stream, slots, StartNumber, 1, format);
+                    pages = _numberingService.GeneratePreviewPages(
+                        stream, slots, StartNumber, 1, format,
+                        totalNumbers: TotalNumbers,
+                        mode: IsImposedMode ? NumberingMode.Imposed : (IsLinearMode ? NumberingMode.Linear : NumberingMode.Auto),
+                        numberFormat: CurrentNumberFormat,
+                        useArabicDigits: UseArabicDigits);
                 }
 
                 if (pages.Count > 0)
@@ -2718,7 +2723,12 @@ namespace Apex.UI.ViewModels
 
                 List<SkiaSharp.SKImage> pages;
                 using (var stream = File.OpenRead(TemplatePath))
-                    pages = _numberingService.GeneratePreviewPages(stream, slots, StartNumber, count, format);
+                    pages = _numberingService.GeneratePreviewPages(
+                        stream, slots, StartNumber, 4, format,
+                        totalNumbers: TotalNumbers,
+                        mode: IsImposedMode ? NumberingMode.Imposed : (IsLinearMode ? NumberingMode.Linear : NumberingMode.Auto),
+                        numberFormat: CurrentNumberFormat,
+                        useArabicDigits: UseArabicDigits);
 
                 var labelFormat = L("Num_PreviewPageLabel");
                 int pageNumber = 1;
