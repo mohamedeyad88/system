@@ -101,6 +101,7 @@ namespace Apex.UI.ViewModels
                 Slots[i].PreviewNumber = CalculatePreviewNumber(value, i);
             }
             SchedulePreviewUpdate();
+            RefreshImposedRanges();
         }
 
         // The operator enters a RANGE — "from StartNumber to EndNumber" — the way a
@@ -168,6 +169,85 @@ namespace Apex.UI.ViewModels
             {
                 Slots[i].PreviewNumber = CalculatePreviewNumber(StartNumber, i);
             }
+
+            // Redraw the rendered overlay too, not just the field boxes.
+            //
+            // This is called when a field is added, removed or renumbered, and it used to
+            // update only the boxes on the canvas. The numbers the operator actually sees
+            // come from LivePreviewImage — a picture of the sheet rendered underneath them —
+            // so deleting a field left its number sitting there in that picture. Reported as
+            // a numbering field that "got stuck and cannot be deleted": the field was long
+            // gone, its portrait was not.
+            SchedulePreviewUpdate();
+            RefreshImposedRanges();
+        }
+
+        /// <summary>
+        /// In cutting mode, what each cut piece will actually carry — one line per field,
+        /// e.g. "القطعة ١: ٠٠٠٠٠١ → ٠٠٠٠٣٤ (٣٤ رقم)".
+        ///
+        /// <para>A press puts four A5 books on one A3, prints the sheet, then cuts it into
+        /// four piles — and each pile is a separate book. The operator could see the four
+        /// numbers on the sheet but nothing about what each PILE would end up holding, and
+        /// that is the only thing that matters: if the ranges are wrong you find out after
+        /// the guillotine, with twenty thousand sheets already cut and nothing to salvage.
+        /// Reported as "the sheet is an A3 split into four A5 books and the numbering lands
+        /// on them — that is not visible in the preview".</para>
+        ///
+        /// <para>It also exposes the uneven tail. Splitting 100 numbers across 3 fields
+        /// gives 34 sheets, so the first two piles hold 34 numbers and the last holds 32 —
+        /// worth knowing before the run, not after.</para>
+        /// </summary>
+        /// <param name="Piece">1-based position of the cut piece on the sheet.</param>
+        /// <param name="From">First number in this pile, 0 when the pile gets nothing.</param>
+        /// <param name="To">Last number in this pile, 0 when the pile gets nothing.</param>
+        /// <param name="Count">How many numbers this pile holds.</param>
+        /// <param name="Text">The same thing said in the operator's language, for the UI.</param>
+        public record CutPiece(int Piece, long From, long To, long Count, string Text);
+
+        [ObservableProperty]
+        private ObservableCollection<CutPiece> _imposedRanges = new();
+
+        /// <summary>True when there is a cut-piece breakdown worth showing.</summary>
+        public bool HasImposedRanges => ImposedRanges.Count > 0;
+
+        private void RefreshImposedRanges()
+        {
+            ImposedRanges.Clear();
+
+            if (!IsImposedMode || Slots == null || Slots.Count == 0 || TotalNumbers < 1)
+            {
+                OnPropertyChanged(nameof(HasImposedRanges));
+                return;
+            }
+
+            int slotCount = Slots.Count;
+            long sheets = (long)Math.Ceiling((double)TotalNumbers / slotCount);
+            long lastNumber = StartNumber + TotalNumbers - 1;
+            var format = CurrentNumberFormat;
+
+            for (int i = 0; i < slotCount; i++)
+            {
+                long from = StartNumber + (i * sheets);
+
+                if (from > lastNumber)
+                {
+                    // More fields than the range can fill: this piece prints nothing.
+                    ImposedRanges.Add(new CutPiece(i + 1, 0, 0, 0, Lf("Num_CutPieceEmpty", i + 1)));
+                    continue;
+                }
+
+                long to = Math.Min(from + sheets - 1, lastNumber);
+                var text = Lf("Num_CutPieceRange",
+                    i + 1,
+                    Apex.NumberedBooksEngine.Core.NumberFormatter.Format(from, format),
+                    Apex.NumberedBooksEngine.Core.NumberFormatter.Format(to, format),
+                    to - from + 1);
+
+                ImposedRanges.Add(new CutPiece(i + 1, from, to, to - from + 1, text));
+            }
+
+            OnPropertyChanged(nameof(HasImposedRanges));
         }
 
         [ObservableProperty]
@@ -2431,7 +2511,18 @@ namespace Apex.UI.ViewModels
         //  MEDIUM PRIORITY ①  —  معاينة متعددة الصفحات
         // ══════════════════════════════════════════════════════════════
 
-        [ObservableProperty] private ObservableCollection<BitmapSource> _multiPreviewPages = new();
+        /// <summary>
+        /// One sheet in the four-page preview, carrying its own caption.
+        ///
+        /// <para>The caption used to be derived in XAML from the item's position in the
+        /// ItemsControl. That breaks the moment the item template gains a templated control
+        /// of its own — wrapping each page in a button to make it clickable was enough for
+        /// every sheet to come out labelled "صفحة ١". A page knows which page it is; it
+        /// should not depend on where its caption sits in the visual tree.</para>
+        /// </summary>
+        public record PreviewPage(BitmapSource Image, string Label);
+
+        [ObservableProperty] private ObservableCollection<PreviewPage> _multiPreviewPages = new();
         [ObservableProperty] private bool _isMultiPreviewOpen = false;
         [ObservableProperty] private bool _isGeneratingMultiPreview = false;
 
@@ -2464,10 +2555,14 @@ namespace Apex.UI.ViewModels
                 using (var stream = File.OpenRead(TemplatePath))
                     pages = _numberingService.GeneratePreviewPages(stream, slots, StartNumber, count, format);
 
+                var labelFormat = L("Num_PreviewPageLabel");
+                int pageNumber = 1;
                 foreach (var page in pages)
                 {
                     var bmp = SKImageExtensions.ToBitmapSource(page);
-                    await Application.Current?.Dispatcher.InvokeAsync(() => MultiPreviewPages.Add(bmp));
+                    var label = string.Format(System.Globalization.CultureInfo.CurrentCulture, labelFormat, pageNumber++);
+                    await Application.Current?.Dispatcher.InvokeAsync(
+                        () => MultiPreviewPages.Add(new PreviewPage(bmp, label)));
                 }
             }
             catch (Exception ex)
@@ -2481,7 +2576,39 @@ namespace Apex.UI.ViewModels
         }
 
         [RelayCommand]
-        private void CloseMultiPreview() => IsMultiPreviewOpen = false;
+        private void CloseMultiPreview()
+        {
+            OpenedPreviewPage = null;
+            IsMultiPreviewOpen = false;
+        }
+
+        /// <summary>
+        /// The page the operator asked to look at properly, or null while the four
+        /// thumbnails are showing.
+        ///
+        /// <para>Four A4 sheets side by side in one dialog leaves each about 200&#160;px
+        /// wide, and a numbering stamp at that scale is a few unreadable pixels. The point
+        /// of this preview is to check the numbers before committing the press to twenty
+        /// thousand sheets, and it could not be used for that — reported as "the preview is
+        /// no use, I cannot open the page and see what is on it". Clicking a page now opens
+        /// it at full size.</para>
+        /// </summary>
+        [ObservableProperty] private BitmapSource? _openedPreviewPage;
+
+        /// <summary>True while a single page is open, so the dialog can swap what it shows.</summary>
+        public bool IsPreviewPageOpen => OpenedPreviewPage != null;
+
+        partial void OnOpenedPreviewPageChanged(BitmapSource? value)
+            => OnPropertyChanged(nameof(IsPreviewPageOpen));
+
+        [RelayCommand]
+        private void OpenPreviewPage(PreviewPage? page)
+        {
+            if (page != null) OpenedPreviewPage = page.Image;
+        }
+
+        [RelayCommand]
+        private void ClosePreviewPage() => OpenedPreviewPage = null;
 
         // ══════════════════════════════════════════════════════════════
         //  MEDIUM PRIORITY ②  —  إحصائيات الطباعة

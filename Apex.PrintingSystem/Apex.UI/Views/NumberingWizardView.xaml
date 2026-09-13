@@ -26,7 +26,6 @@
         <converters:FileNameOnlyConverter x:Key="FileNameOnlyConverter"/>
         <converters:NormalizedToPixelConverter x:Key="NormalizedToPixelConverter"/>
         <converters:ZoomInvariantThicknessConverter x:Key="ZoomInvariantThicknessConverter"/>
-        <converters:PageIndexToLabelConverter x:Key="PageIndexToLabelConverter"/>
         <converters:SlotFontScaleConverter x:Key="SlotFontScaleConverter"/>
         <converters:BooleanToColorConverter x:Key="BooleanToColorConverter"/>
         <converters:InverseBoolToColorConverter x:Key="InverseBoolToColorConverter"/>
@@ -2908,19 +2907,21 @@
                     BorderBrush="#E6F3F6"
                     BorderThickness="1"
                     CornerRadius="12"
-                    MaxWidth="860"
-                    MaxHeight="640"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
+                    MaxWidth="1500"
+                    MaxHeight="980"
+                    Margin="40"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
                     Padding="24">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="40" ShadowDepth="8" Opacity="0.5" Color="#FAF9F7"/>
                 </Border.Effect>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>   <!-- title -->
+                        <RowDefinition Height="Auto"/>   <!-- cut-piece breakdown -->
+                        <RowDefinition Height="*"/>      <!-- the four sheets -->
+                        <RowDefinition Height="Auto"/>   <!-- close -->
                     </Grid.RowDefinitions>
 
                     <!-- Header -->
@@ -2932,8 +2933,37 @@
                                    FontSize="13" Foreground="{DynamicResource Muted}" VerticalAlignment="Center" Margin="8,0,0,0"/>
                     </StackPanel>
 
+                    <!-- What each cut piece ends up holding. Only meaningful in cutting mode,
+                         and the one thing the four sheets on screen cannot show: after the
+                         guillotine each field becomes its own book, and a wrong range is only
+                         discovered once the paper is already cut. -->
+                    <Border Grid.Row="1"
+                            Background="#FFFBEB" BorderBrush="#F59E0B" BorderThickness="1"
+                            CornerRadius="6" Padding="12,8" Margin="0,0,0,12"
+                            Visibility="{Binding HasImposedRanges, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Numbering_CutPiecesTitle}"
+                                       FontSize="12" FontWeight="SemiBold" Foreground="#14181D" Margin="0,0,0,6"/>
+                            <ItemsControl ItemsSource="{Binding ImposedRanges}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#FFFFFF" BorderBrush="#F59E0B" BorderThickness="1"
+                                                CornerRadius="4" Padding="8,4" Margin="0,0,8,4">
+                                            <TextBlock Text="{Binding Text}" FontSize="12" Foreground="#14181D"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
                     <!-- Pages Grid -->
-                    <Grid Grid.Row="1">
+                    <Grid Grid.Row="2">
                         <!-- Generating spinner -->
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
                                     Visibility="{Binding IsGeneratingMultiPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -2943,7 +2973,7 @@
                         </StackPanel>
 
                         <!-- 4 Page thumbnails -->
-                        <ItemsControl ItemsSource="{Binding MultiPreviewPages}" AlternationCount="4">
+                        <ItemsControl ItemsSource="{Binding MultiPreviewPages}">
                             <ItemsControl.Style>
                                 <Style TargetType="ItemsControl">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -2954,29 +2984,72 @@
                                     </Style.Triggers>
                                 </Style>
                             </ItemsControl.Style>
+                            <!-- Two by two, not four in a row: four A4 sheets side by side
+                                 left each about 200px wide and the numbering stamp on them
+                                 a few unreadable pixels. -->
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <UniformGrid Rows="1" Columns="4"/>
+                                    <UniformGrid Rows="2" Columns="2"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="#FAF9F7" BorderBrush="#E6F3F6" BorderThickness="1"
-                                            CornerRadius="6" Margin="6" Padding="4">
+                                    <Button Command="{Binding DataContext.OpenPreviewPageCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding}"
+                                            Cursor="Hand"
+                                            ToolTip="{DynamicResource Numbering_OpenPageToolTip}"
+                                            Background="Transparent" BorderThickness="0" Padding="0" Margin="6">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="Frame"
+                                                        Background="#FFFFFF" BorderBrush="#E6F3F6" BorderThickness="1"
+                                                        CornerRadius="6" Padding="6">
+                                                    <ContentPresenter/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="Frame" Property="BorderBrush" Value="#0891B2"/>
+                                                        <Setter TargetName="Frame" Property="Background" Value="#F2FBFD"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Button.Template>
                                         <StackPanel>
-                                            <Image Source="{Binding}" Stretch="Uniform" MaxHeight="480"/>
-                                            <TextBlock Text="{Binding (ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ContentPresenter}, Converter={StaticResource PageIndexToLabelConverter}}"
-                                                       FontSize="11" Foreground="{DynamicResource Muted}"
-                                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                            <Image Source="{Binding Image}" Stretch="Uniform"/>
+                                            <TextBlock Text="{Binding Label}"
+                                                       FontSize="12" Foreground="{DynamicResource Muted}"
+                                                       HorizontalAlignment="Center" Margin="0,6,0,0"/>
                                         </StackPanel>
-                                    </Border>
+                                    </Button>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+
+                        <!-- One page, opened properly. Scrollable, because at full size an
+                             A4 sheet at 300 dpi is taller than any window. -->
+                        <Grid Background="#FAF9F7"
+                              Visibility="{Binding IsPreviewPageOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Button Grid.Row="0" Command="{Binding ClosePreviewPageCommand}"
+                                    Content="{DynamicResource Numbering_BackToPages}"
+                                    HorizontalAlignment="Right" Margin="0,0,0,10"
+                                    Padding="14,6" Background="#FFFFFF" Foreground="{DynamicResource Muted}"
+                                    BorderThickness="1" BorderBrush="#6B6864" FontSize="12" Cursor="Hand"/>
+                            <ScrollViewer Grid.Row="1"
+                                          HorizontalScrollBarVisibility="Auto"
+                                          VerticalScrollBarVisibility="Auto"
+                                          Background="#DDD9D3">
+                                <Image Source="{Binding OpenedPreviewPage}" Stretch="None"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12"/>
+                            </ScrollViewer>
+                        </Grid>
                     </Grid>
 
                     <!-- Close button -->
-                    <Button Grid.Row="2" Command="{Binding CloseMultiPreviewCommand}"
+                    <Button Grid.Row="3" Command="{Binding CloseMultiPreviewCommand}"
                             Content="{DynamicResource NW_001}"
                             HorizontalAlignment="Center" Margin="0,16,0,0"
                             Padding="24,10" Background="#FFFFFF" Foreground="{DynamicResource Muted}"

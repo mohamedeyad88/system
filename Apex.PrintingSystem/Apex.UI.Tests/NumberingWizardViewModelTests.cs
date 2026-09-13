@@ -275,6 +275,69 @@ public class NumberingWizardViewModelTests
         Assert.Equal("#000000", only.FontColor);
     }
 
+    // ── Cutting mode: four A5 books on one A3, printed then guillotined into four piles.
+    // Each pile is its own book, and a wrong range is only discovered after the paper is
+    // cut. These lock the arithmetic the operator is shown before committing the run.
+
+    private static (long From, long To, long Count) Pile(NumberingWizardViewModel vm, int index)
+    {
+        var p = vm.ImposedRanges[index];
+        return (p.From, p.To, p.Count);
+    }
+
+    private static NumberingWizardViewModel VmInCuttingMode(int fields, long from, long to)
+    {
+        var vm = VmReadyToPlaceFields();
+        vm.IsImposedMode = true;
+        vm.StartNumber = from;
+        vm.EndNumber = to;
+        for (int i = 0; i < fields; i++) vm.AddSlotCommand.Execute(null);
+        return vm;
+    }
+
+    [Fact]
+    public void CuttingMode_SplitsTheRangeEvenlyWhenItDivides()
+    {
+        var vm = VmInCuttingMode(fields: 4, from: 1, to: 100);
+
+        Assert.True(vm.HasImposedRanges);
+        Assert.Equal(4, vm.ImposedRanges.Count);
+
+        // 100 over 4 fields = 25 sheets, so the piles are 1-25, 26-50, 51-75, 76-100.
+        Assert.Equal((1L, 25L, 25L), Pile(vm, 0));
+        Assert.Equal((26L, 50L, 25L), Pile(vm, 1));
+        Assert.Equal((51L, 75L, 25L), Pile(vm, 2));
+        Assert.Equal((76L, 100L, 25L), Pile(vm, 3));
+    }
+
+    /// <summary>
+    /// 100 numbers across 3 fields needs 34 sheets, so the first two piles hold 34 each and
+    /// the last holds only 32. The short pile is exactly what an operator needs to see
+    /// before the run rather than after the guillotine.
+    /// </summary>
+    [Fact]
+    public void CuttingMode_ShowsTheShortLastPile()
+    {
+        var vm = VmInCuttingMode(fields: 3, from: 1, to: 100);
+
+        Assert.Equal(3, vm.ImposedRanges.Count);
+        Assert.Equal((1L, 34L, 34L), Pile(vm, 0));
+        Assert.Equal((35L, 68L, 34L), Pile(vm, 1));
+        Assert.Equal((69L, 100L, 32L), Pile(vm, 2));   // the short one
+    }
+
+    [Fact]
+    public void LinearMode_HasNoCutPieces()
+    {
+        var vm = VmReadyToPlaceFields();
+        vm.IsLinearMode = true;
+        vm.AddSlotCommand.Execute(null);
+        vm.AddSlotCommand.Execute(null);
+
+        Assert.False(vm.HasImposedRanges);
+        Assert.Empty(vm.ImposedRanges);
+    }
+
     [Fact]
     public void HasTemplate_IsFalseUntilADesignIsLoaded()
     {

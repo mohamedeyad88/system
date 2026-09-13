@@ -198,7 +198,7 @@
     <sys:String x:Key="UPL_003">Print templates</sys:String>
     <sys:String x:Key="Nav_QuickPrint">Quick Print</sys:String>
     <sys:String x:Key="SV_ImageFilter">Image files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tiff;*.tif;*.webp|All files|*.*</sys:String>
-    <sys:String x:Key="Num_TraditionalDesc">All original pages print first, then all image pages. Collation is done manually after printing.</sys:String>
+    <sys:String x:Key="Num_TraditionalDesc">Every original prints first from its own tray, then every copy from its tray.&#x0a;The tray changes once, between the two batches; you collate by hand afterwards.</sys:String>
     <sys:String x:Key="Num_AddOneSlot">There are no numbering fields on the design.&#x0a;Go back to the Design tab and add at least one before printing.</sys:String>
     <sys:String x:Key="LIC_013">Import license file</sys:String>
     <sys:String x:Key="CC_009">Color adjustment settings</sys:String>
@@ -217,6 +217,11 @@
     <sys:String x:Key="Numbering_ClearDesign_Tip">Take the design off the canvas along with the numbering fields on it. The file itself stays on your computer.</sys:String>
     <sys:String x:Key="Num_ConfirmClearDesign">Remove the design from the canvas?&#x0a;&#x0a;The numbering fields on it are removed too, because their positions are relative to this design.&#x0a;The file itself will not be deleted from your computer.</sys:String>
     <sys:String x:Key="Num_DesignCleared">Design removed</sys:String>
+    <sys:String x:Key="Numbering_OpenPageToolTip">Click to open this page at full size and check the numbers</sys:String>
+    <sys:String x:Key="Numbering_BackToPages">← Back to all four pages</sys:String>
+    <sys:String x:Key="Numbering_CutPiecesTitle">⚠ After cutting — each piece becomes its own book, carrying:</sys:String>
+    <sys:String x:Key="Num_CutPieceRange">Piece {0}:  {1} → {2}  ({3} numbers)</sys:String>
+    <sys:String x:Key="Num_CutPieceEmpty">Piece {0}: no numbers — the range runs out before it</sys:String>
     <sys:String x:Key="Numbering_ClearRecent">Clear all</sys:String>
     <sys:String x:Key="Numbering_ClearRecent_Tip">Empty the recent projects list. The files themselves stay on your computer.</sys:String>
     <sys:String x:Key="Numbering_RemoveRecent_Tip">Remove from this list. The file itself stays on your computer.</sys:String>
@@ -386,7 +391,6 @@
     <sys:String x:Key="SV_PngFilter">PNG image|*.png</sys:String>
     <sys:String x:Key="Dashboard_PendingJobs">Pending</sys:String>
     <sys:String x:Key="Numbering_NumberingMode">Numbering Mode</sys:String>
-    <sys:String x:Key="Numbering_TraditionalPrint_Description">Manual assembly: Each copy is printed completely</sys:String>
     <sys:String x:Key="Created">Created</sys:String>
     <sys:String x:Key="Diagnostics_LocalDevice">Local Device</sys:String>
     <sys:String x:Key="Imp_SaveResized">Save the resized PDF</sys:String>
@@ -660,7 +664,6 @@
     <sys:String x:Key="Num_SaveProject">Save numbering project</sys:String>
     <sys:String x:Key="ACT_003">Days left in trial:</sys:String>
     <sys:String x:Key="Imp_SheetLabel">Sheet {0} / {1}</sys:String>
-    <sys:String x:Key="Numbering_SmartPrint_Description">Imposed book: Each page prints with its copies</sys:String>
     <sys:String x:Key="Imp_ExportSettings">⬆ Export</sys:String>
     <sys:String x:Key="Imp_PlanFirst">Run the imposition before exporting.</sys:String>
     <sys:String x:Key="Imp_Desc_StepRepeat">Step &amp; repeat: repeats a single design to fill the sheet with the maximum pieces. Best for business cards, stickers, and labels.</sys:String>
@@ -1223,7 +1226,7 @@
     <sys:String x:Key="FreeForm_Width">Width</sys:String>
     <sys:String x:Key="Num_SettingsCorrupt">The settings file is corrupt or has no items</sys:String>
     <sys:String x:Key="Num_Redone">↪ Redone ({0} step(s) left)</sys:String>
-    <sys:String x:Key="Num_SmartDesc">Each page prints with its images in sequence, and the booklet comes out automatically collated — no manual gathering.</sys:String>
+    <sys:String x:Key="Num_SmartDesc">Each sheet prints with its copies in sequence, each from its own tray.&#x0a;The tray switches on every sheet, and the book comes out collated.</sys:String>
     <sys:String x:Key="TD_006">Design</sys:String>
     <sys:String x:Key="Imp_Type_StepRepeat">Step &amp; repeat (cards/labels)</sys:String>
     <sys:String x:Key="Imp_Type_WorkTurn">Single plate — Work &amp; Turn</sys:String>
