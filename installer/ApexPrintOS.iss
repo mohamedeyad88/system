@@ -49,6 +49,8 @@ DisableDirPage=auto
 
 ; ── End-User License Agreement (shown as an Accept/Decline page) ──
 LicenseFile=LICENSE-ar.txt
+; ── What changed — shown before installing, because an upgrade can move numbers on paper ──
+InfoBeforeFile=RELEASE-NOTES-ar.txt
 
 ; ── Uninstall presentation in Control Panel / Apps & features ──
 UninstallDisplayName={#MyAppName}
@@ -75,6 +77,7 @@ Source: "{#AppSrc}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#AppSrc}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; Ship the license alongside the app for reference.
 Source: "LICENSE-ar.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "RELEASE-NOTES-ar.txt"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
