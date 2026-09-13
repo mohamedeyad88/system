@@ -41,7 +41,7 @@ namespace Apex.UI.Views
             if (vm.CurrentRenderedTemplate == null)
             {
                 vm.ExportPreviewStatus = "⚠ لا توجد معاينة — اربط المتغيرات أولاً";
-                vm.ExportPreviewStatusColor = "#F59E0B";
+                vm.ExportPreviewStatusColor = StatusPalette.Warning;
                 return;
             }
 
@@ -66,12 +66,12 @@ namespace Apex.UI.Views
 
                 string shortName = Path.GetFileName(dlg.FileName);
                 vm.ExportPreviewStatus = $"✅ تم الحفظ: {shortName}";
-                vm.ExportPreviewStatusColor = "#22C55E";
+                vm.ExportPreviewStatusColor = StatusPalette.Done;
             }
             catch (Exception ex)
             {
                 vm.ExportPreviewStatus = $"خطأ في التصدير: {ex.Message}";
-                vm.ExportPreviewStatusColor = "#EF4444";
+                vm.ExportPreviewStatusColor = StatusPalette.Error;
                 MessageBox.Show(
                     $"فشل تصدير PNG:\n{ex.Message}",
                     "خطأ في التصدير",

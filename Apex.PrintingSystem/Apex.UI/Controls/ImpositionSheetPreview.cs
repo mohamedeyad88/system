@@ -91,14 +91,17 @@ namespace Apex.UI.Controls
         // ── Brushes (frozen, shared) ──────────────────────────────────────────
 
         private static readonly Brush Paper = Frozen(new SolidColorBrush(Colors.White));
-        private static readonly Brush SheetEdge = Frozen(new SolidColorBrush(Color.FromRgb(0x33, 0x41, 0x55)));
-        private static readonly Brush PageFill = Frozen(new SolidColorBrush(Color.FromRgb(0x3B, 0x82, 0xF6)));
-        private static readonly Brush RotatedFill = Frozen(new SolidColorBrush(Color.FromRgb(0xF5, 0x9E, 0x0B)));
-        private static readonly Brush BlankFill = Frozen(new SolidColorBrush(Color.FromRgb(0xCB, 0xD5, 0xE1)));
-        private static readonly Brush PageEdge = Frozen(new SolidColorBrush(Color.FromRgb(0x1E, 0x29, 0x3B)));
+        // Brand.xaml values. The page labels are white on the fills, so the fills are the
+        // text-safe Action (5.36:1) and Printing (5.02:1) — the old blue and amber gave the
+        // page numbers 3.68 and 2.15:1. Blank pages carry no label.
+        private static readonly Brush SheetEdge = Frozen(new SolidColorBrush(Color.FromRgb(0x6B, 0x68, 0x64)));
+        private static readonly Brush PageFill = Frozen(new SolidColorBrush(Color.FromRgb(0x0E, 0x74, 0x90)));
+        private static readonly Brush RotatedFill = Frozen(new SolidColorBrush(Color.FromRgb(0xB4, 0x53, 0x09)));
+        private static readonly Brush BlankFill = Frozen(new SolidColorBrush(Color.FromRgb(0xDD, 0xD9, 0xD3)));
+        private static readonly Brush PageEdge = Frozen(new SolidColorBrush(Color.FromRgb(0x14, 0x18, 0x1D)));
         private static readonly Brush LabelBrush = Frozen(new SolidColorBrush(Colors.White));
-        private static readonly Brush HintBrush = Frozen(new SolidColorBrush(Color.FromRgb(0x64, 0x74, 0x8B)));
-        private static readonly Brush MarginBrush = Frozen(new SolidColorBrush(Color.FromRgb(0x94, 0xA3, 0xB8)));
+        private static readonly Brush HintBrush = Frozen(new SolidColorBrush(Color.FromRgb(0x6B, 0x68, 0x64)));
+        private static readonly Brush MarginBrush = Frozen(new SolidColorBrush(Color.FromRgb(0x8F, 0x88, 0x7A)));
 
         private static Brush Frozen(Brush b) { b.Freeze(); return b; }
 

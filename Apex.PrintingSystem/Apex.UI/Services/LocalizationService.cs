@@ -40,6 +40,13 @@ namespace Apex.UI.Services
         public bool IsArabicActive => CurrentCulture.Name.StartsWith("ar");
         public bool IsEnglishActive => !CurrentCulture.Name.StartsWith("ar");
 
+        /// <summary>
+        /// Settings key for the chosen UI language ("ar" / "en"). Deliberately not the old
+        /// "Language" key: Settings used to save that from a picker that showed "en" in Arabic
+        /// sessions, so existing installs may hold an "en" nobody chose.
+        /// </summary>
+        public const string LanguageSettingKey = "UiLanguage";
+
         public void SwitchLanguage(string cultureCode)
         {
             // Normalize language codes: "en" -> "en-US", "ar" -> "ar" (or "ar-SA")

@@ -2757,25 +2757,47 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Border Background="{Binding SelectedSlot.IsBold, Converter={StaticResource InverseBoolToColorConverter}, FallbackValue=#0891B2}" 
-                                            CornerRadius="8,0,0,8" 
-                                            Padding="12,10" 
+                                    <!-- Selected half: Action ground, white text. The other half used to be a
+                                         dark #2D323C slab from the old theme, still with white text. -->
+                                    <Border CornerRadius="8,0,0,8"
+                                            Padding="12,10"
                                             Cursor="Hand"
                                             MouseLeftButtonDown="RegularWeight_Click">
-                                        <TextBlock Text="{DynamicResource Numbering_FontWeightNormal}" 
-                                                   Foreground="{DynamicResource OnAction}" 
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                                <Setter Property="TextElement.Foreground" Value="{DynamicResource OnAction}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SelectedSlot.IsBold}" Value="True">
+                                                        <Setter Property="Background" Value="{DynamicResource PanelSunk}"/>
+                                                        <Setter Property="TextElement.Foreground" Value="{DynamicResource Ink}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="{DynamicResource Numbering_FontWeightNormal}"
                                                    HorizontalAlignment="Center"
                                                    FontSize="13"
                                                    FontWeight="SemiBold"/>
                                     </Border>
-                                    <Border Grid.Column="1" 
-                                            Background="{Binding SelectedSlot.IsBold, Converter={StaticResource BoolToColorConverter}, FallbackValue=#DDD9D3}" 
-                                            CornerRadius="0,8,8,0" 
-                                            Padding="12,10" 
+                                    <Border Grid.Column="1"
+                                            CornerRadius="0,8,8,0"
+                                            Padding="12,10"
                                             Cursor="Hand"
                                             MouseLeftButtonDown="BoldWeight_Click">
-                                        <TextBlock Text="{DynamicResource Numbering_FontWeightBold}" 
-                                                   Foreground="{DynamicResource OnAction}" 
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="{DynamicResource PanelSunk}"/>
+                                                <Setter Property="TextElement.Foreground" Value="{DynamicResource Ink}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SelectedSlot.IsBold}" Value="True">
+                                                        <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                                        <Setter Property="TextElement.Foreground" Value="{DynamicResource OnAction}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="{DynamicResource Numbering_FontWeightBold}"
                                                    HorizontalAlignment="Center"
                                                    FontSize="13"
                                                    FontWeight="SemiBold"/>

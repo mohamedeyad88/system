@@ -145,6 +145,18 @@ namespace Apex.UI
                 }
                 Apex.Services.Logging.PrintLogger.Info("startup: 3 db initialized");
 
+                // Reapply the language the operator last chose (Arabic until they choose).
+                try
+                {
+                    using var scope = scopeFactory.CreateScope();
+                    var settings = scope.ServiceProvider.GetRequiredService<Apex.Core.Interfaces.ISettingsService>();
+                    var saved = System.Threading.Tasks.Task.Run(() =>
+                        settings.GetValueAsync(Services.LocalizationService.LanguageSettingKey, "ar")).GetAwaiter().GetResult();
+                    if (saved is "ar" or "en")
+                        Services.LocalizationService.Instance.SwitchLanguage(saved);
+                }
+                catch { /* stay in Arabic */ }
+
                 // Create and show main window
                 var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
                 Apex.Services.Logging.PrintLogger.Info("startup: 4 main VM created");

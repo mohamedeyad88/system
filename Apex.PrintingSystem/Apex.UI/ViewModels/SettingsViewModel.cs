@@ -43,7 +43,10 @@ namespace Apex.UI.ViewModels
             CompanyPhone     = Get("CompanyPhone",   "");
             LogoPath         = Get("LogoPath",       "");
             BackupPath       = Get("BackupPath",     "");
-            SelectedLanguage = Get("Language",       "en");
+            // Show the language the app is actually running in. This used to read the saved
+            // "Language" key (default "en"), while startup always opened in Arabic and the
+            // sidebar toggle saved nothing — so an Arabic session showed "English" here.
+            SelectedLanguage = Services.LocalizationService.Instance.IsArabicActive ? "ar" : "en";
         }
 
         [RelayCommand]
@@ -55,7 +58,7 @@ namespace Apex.UI.ViewModels
             await _settingsService.SetValueAsync("LogoPath",       LogoPath);
 
             await _settingsService.SetValueAsync("BackupPath", BackupPath);
-            await _settingsService.SetValueAsync("Language", SelectedLanguage);
+            await _settingsService.SetValueAsync(Services.LocalizationService.LanguageSettingKey, SelectedLanguage);
 
             // FIX: Apply language change immediately
             Services.LocalizationService.Instance.SwitchLanguage(SelectedLanguage);

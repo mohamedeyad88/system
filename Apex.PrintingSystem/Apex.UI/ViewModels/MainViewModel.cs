@@ -220,6 +220,19 @@ namespace Apex.UI.ViewModels
         public void SwitchLanguage(string cultureCode)
         {
             Services.LocalizationService.Instance.SwitchLanguage(cultureCode);
+            _ = PersistLanguageAsync(cultureCode);
+        }
+
+        /// <summary>The sidebar toggle is the switch operators use; remember it for next start.</summary>
+        private async System.Threading.Tasks.Task PersistLanguageAsync(string cultureCode)
+        {
+            try
+            {
+                using var scope = _scopeFactory.CreateScope();
+                var settings = scope.ServiceProvider.GetRequiredService<Apex.Core.Interfaces.ISettingsService>();
+                await settings.SetValueAsync(Services.LocalizationService.LanguageSettingKey, cultureCode);
+            }
+            catch { /* a language that is not remembered is not worth an error dialog */ }
         }
 
         [RelayCommand]

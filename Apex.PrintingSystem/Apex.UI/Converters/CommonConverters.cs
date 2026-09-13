@@ -158,18 +158,18 @@ namespace Apex.UI.Converters
         }
     }
 
-    // Convert bool to color (true = accent blue, false = card bg)
+    // Convert bool to color (true = Action, false = PanelSunk)
     public class BoolToColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             // Defensive: handle null or binding errors
             if (value == null || value == DependencyProperty.UnsetValue)
-                return new SolidColorBrush(Color.FromRgb(0x2D, 0x32, 0x3C)); // CardBg fallback
+                return new SolidColorBrush(Color.FromRgb(0xF4, 0xF2, 0xEF)); // PanelSunk fallback
 
             if (value is bool b && b)
-                return new SolidColorBrush(Color.FromRgb(0x3B, 0x82, 0xF6)); // AccentBlue
-            return new SolidColorBrush(Color.FromRgb(0x2D, 0x32, 0x3C)); // CardBg
+                return new SolidColorBrush(Color.FromRgb(0x0E, 0x74, 0x90)); // Action
+            return new SolidColorBrush(Color.FromRgb(0xF4, 0xF2, 0xEF)); // PanelSunk
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -178,18 +178,18 @@ namespace Apex.UI.Converters
         }
     }
 
-    // Inverse bool to color (false = accent blue, true = card bg)
+    // Inverse bool to color (false = Action, true = PanelSunk)
     public class InverseBoolToColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             // Defensive: handle null or binding errors
             if (value == null || value == DependencyProperty.UnsetValue)
-                return new SolidColorBrush(Color.FromRgb(0x2D, 0x32, 0x3C)); // CardBg fallback
+                return new SolidColorBrush(Color.FromRgb(0xF4, 0xF2, 0xEF)); // PanelSunk fallback
 
             if (value is bool b && !b)
-                return new SolidColorBrush(Color.FromRgb(0x3B, 0x82, 0xF6)); // AccentBlue
-            return new SolidColorBrush(Color.FromRgb(0x2D, 0x32, 0x3C)); // CardBg
+                return new SolidColorBrush(Color.FromRgb(0x0E, 0x74, 0x90)); // Action
+            return new SolidColorBrush(Color.FromRgb(0xF4, 0xF2, 0xEF)); // PanelSunk
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

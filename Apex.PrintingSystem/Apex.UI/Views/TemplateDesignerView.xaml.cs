@@ -427,7 +427,7 @@ namespace Apex.UI.Views
                     Width = HandleSizePx,
                     Height = HandleSizePx,
                     Background = Brushes.White,
-                    BorderBrush = new SolidColorBrush(Color.FromRgb(0xF5, 0x9E, 0x0B)),
+                    BorderBrush = (Brush)new BrushConverter().ConvertFromString(StatusPalette.Brand)!,
                     BorderThickness = new Thickness(1.5),
                     CornerRadius = new CornerRadius(2),
                     Tag = EdgeNames[i],
