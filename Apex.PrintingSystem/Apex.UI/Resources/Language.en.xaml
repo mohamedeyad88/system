@@ -222,6 +222,8 @@
     <sys:String x:Key="Numbering_CutPiecesTitle">⚠ After cutting — each piece becomes its own book, carrying:</sys:String>
     <sys:String x:Key="Num_CutPieceRange">Piece {0}:  {1} → {2}  ({3} numbers)</sys:String>
     <sys:String x:Key="Num_CutPieceEmpty">Piece {0}: no numbers — the range runs out before it</sys:String>
+    <sys:String x:Key="Num_UnfinishedJob">This job was started before and stopped at number {0}&#x0a;(on {1}).&#x0a;&#x0a;If the printed sheets are still to hand, carrying on after that number wastes less paper than reprinting the range.&#x0a;&#x0a;Start from the beginning anyway?</sys:String>
+    <sys:String x:Key="Num_RegisterInterrupted">interrupted — {0}</sys:String>
     <sys:String x:Key="Numbering_ClearRecent">Clear all</sys:String>
     <sys:String x:Key="Numbering_ClearRecent_Tip">Empty the recent projects list. The files themselves stay on your computer.</sys:String>
     <sys:String x:Key="Numbering_RemoveRecent_Tip">Remove from this list. The file itself stays on your computer.</sys:String>

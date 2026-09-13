@@ -92,6 +92,56 @@ namespace Apex.Services.Numbering
         }
 
         /// <summary>
+        /// How far an earlier attempt at this exact job got, or null if there is nothing to
+        /// pick up. Ask before printing, and put the answer to the operator — resuming
+        /// silently would mean a job asked to start at 1 quietly starting at 201.
+        /// </summary>
+        public async Task<CheckpointRecord?> FindUnfinishedJobAsync(
+            string templatePath,
+            IReadOnlyList<SlotSpec> slots,
+            long startNumber,
+            long totalNumbers,
+            int copiesPerPage,
+            NumberFormatOptions? numberFormat = null)
+            => await _orchestrator.FindUnfinishedJobAsync(
+                BuildJobKey(templatePath, slots, startNumber, totalNumbers, copiesPerPage, numberFormat));
+
+        /// <summary>Drops the record of an interrupted attempt once the operator starts over.</summary>
+        public void ForgetUnfinishedJob(
+            string templatePath,
+            IReadOnlyList<SlotSpec> slots,
+            long startNumber,
+            long totalNumbers,
+            int copiesPerPage,
+            NumberFormatOptions? numberFormat = null)
+            => _orchestrator.ForgetUnfinishedJob(
+                BuildJobKey(templatePath, slots, startNumber, totalNumbers, copiesPerPage, numberFormat));
+
+        /// <summary>
+        /// The subset of a job's options that decides its identity. Only these fields are
+        /// hashed, so the rest can be left at defaults here without affecting the answer.
+        /// </summary>
+        private static NumberedPrintJobOptions BuildJobKey(
+            string templatePath,
+            IReadOnlyList<SlotSpec> slots,
+            long startNumber,
+            long totalNumbers,
+            int copiesPerPage,
+            NumberFormatOptions? numberFormat)
+            => new(
+                PrinterName: "",
+                TemplatePath: templatePath,
+                Dpi: 300,
+                StartNumber: startNumber,
+                TotalNumbers: totalNumbers,
+                CopiesPerPage: copiesPerPage,
+                Slots: slots,
+                UsePrinterStoredTemplate: false,
+                LowResourceMode: false,
+                CheckpointEvery: 100,
+                NumberFormat: numberFormat);
+
+        /// <summary>
         /// Runs cycle-based printing: each number is a CycleJob with its own print job, dependencies enforced.
         /// Fail-fast tray verification; sequential execution with dependency manager.
         /// </summary>

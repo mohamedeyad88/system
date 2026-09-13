@@ -27,7 +27,13 @@ namespace Apex.NumberedBooksEngine.Core
 
         public CheckpointManager(string? checkpointDirectory = null, int checkpointInterval = 500)
         {
-            _checkpointDirectory = checkpointDirectory ?? Path.Combine(Path.GetTempPath(), "ApexPrintCheckpoints");
+            // ProgramData, not Temp. A checkpoint is the only record of where a 20,000-sheet
+            // run stopped, and Windows empties Temp whenever it feels short of disk — the
+            // one place recovery data must not live. Per-machine, like the number register,
+            // so it survives user profiles and reinstalls.
+            _checkpointDirectory = checkpointDirectory ?? Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                "ApexPrintingSystem", "checkpoints");
             _checkpointInterval = checkpointInterval;
 
             Directory.CreateDirectory(_checkpointDirectory);

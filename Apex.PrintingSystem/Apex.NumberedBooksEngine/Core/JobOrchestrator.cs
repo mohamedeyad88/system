@@ -83,6 +83,46 @@ namespace Apex.NumberedBooksEngine.Core
         internal NumberFormatOptions PrintBuilderNumberFormat => _commandBuilder.NumberFormat;
 
         /// <summary>
+        /// A stable name for "this job", so an interrupted run can be found again.
+        ///
+        /// <para>Checkpoints were written under <c>Guid.NewGuid()</c> and then looked up by
+        /// that same freshly-minted guid moments later, so the lookup could never match
+        /// anything. Every checkpoint the engine had ever written was unreachable, and a
+        /// run that stopped at sheet 12,000 of 20,000 had no way back: the operator counted
+        /// the stack by hand and guessed where to restart.</para>
+        ///
+        /// <para>The identity is what makes two runs the same job to a press: the same
+        /// design, the same series, the same range. It deliberately excludes the printer —
+        /// moving a stalled job to the machine next door is still the same job.</para>
+        /// </summary>
+        public static string JobIdentity(NumberedPrintJobOptions options)
+        {
+            var seed = string.Join("|",
+                options.TemplatePath ?? "",
+                options.StartNumber,
+                options.TotalNumbers,
+                options.CopiesPerPage,
+                options.Slots?.Count ?? 0,
+                options.NumberFormat?.Prefix ?? "");
+
+            using var sha = System.Security.Cryptography.SHA256.Create();
+            var hash = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(seed));
+            return Convert.ToHexString(hash, 0, 6).ToLowerInvariant();
+        }
+
+        /// <summary>
+        /// How far an earlier attempt at this exact job got, or null if there is nothing to
+        /// resume. The caller asks the operator what to do with it — the engine never
+        /// decides on its own to skip numbers.
+        /// </summary>
+        public async Task<CheckpointRecord?> FindUnfinishedJobAsync(NumberedPrintJobOptions options)
+            => await _checkpointManager.LoadCheckpointAsync(JobIdentity(options));
+
+        /// <summary>Forgets an interrupted attempt, once the operator has decided to start over.</summary>
+        public void ForgetUnfinishedJob(NumberedPrintJobOptions options)
+            => _checkpointManager.DeleteCheckpoint(JobIdentity(options));
+
+        /// <summary>
         /// Runs a streaming print job using "template once" optimization.
         /// </summary>
         public async Task<JobResult> RunStreamingPrintJobAsync(
@@ -90,7 +130,7 @@ namespace Apex.NumberedBooksEngine.Core
             IProgress<ProgressInfo> progress,
             CancellationToken ct)
         {
-            var jobId = Guid.NewGuid().ToString("N").Substring(0, 12);
+            var jobId = JobIdentity(options);
             var errors = new List<string>();
 
             try
@@ -106,9 +146,12 @@ namespace Apex.NumberedBooksEngine.Core
                 // composer, so both have to be configured — see ApplyNumberFormat.
                 ApplyNumberFormat(options.NumberFormat, options.UseArabicDigits);
 
-                // 1. Check for resume checkpoint
-                var resumeNumber = await _checkpointManager.GetResumeStartNumberAsync(jobId);
-                var startNumber = resumeNumber ?? options.StartNumber;
+                // 1. Start where the operator asked. A checkpoint from an interrupted run
+                //    is NOT applied here: silently starting a "1 to 500" job at 201 because
+                //    of an earlier attempt would be a worse failure than not resuming at
+                //    all. The checkpoint is offered to the caller through
+                //    FindUnfinishedJobAsync so the operator decides; see that method.
+                var startNumber = options.StartNumber;
 
                 // 2. Detect printer capabilities
                 var capabilities = _capabilityDetector.Detect(options.PrinterName);

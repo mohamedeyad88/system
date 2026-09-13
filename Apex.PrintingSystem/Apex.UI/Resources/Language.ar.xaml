@@ -504,6 +504,8 @@
     <sys:String x:Key="Numbering_CutPiecesTitle">⚠ بعد القص — كل قطعة هتطلع دفتر لوحده بالأرقام دي:</sys:String>
     <sys:String x:Key="Num_CutPieceRange">القطعة {0}:  {1} ← {2}  ({3} رقم)</sys:String>
     <sys:String x:Key="Num_CutPieceEmpty">القطعة {0}: مفيش أرقام — النطاق خلص قبلها</sys:String>
+    <sys:String x:Key="Num_UnfinishedJob">الشغلانة دي بدأت قبل كده ووقفت عند الرقم {0}&#x0a;(بتاريخ {1}).&#x0a;&#x0a;لو الورق المطبوع لسه موجود، الأفضل تكمّل من بعد الرقم ده بدل ما تعيد النطاق كله.&#x0a;&#x0a;تبدأ من الأول برضه؟</sys:String>
+    <sys:String x:Key="Num_RegisterInterrupted">اتقطعت — {0}</sys:String>
     <sys:String x:Key="Numbering_ClearRecent">مسح الكل</sys:String>
     <sys:String x:Key="Numbering_ClearRecent_Tip">إفراغ قائمة المشاريع الأخيرة. الملفات نفسها تفضل على الجهاز.</sys:String>
     <sys:String x:Key="Numbering_RemoveRecent_Tip">إزالة من القائمة. الملف نفسه يفضل على الجهاز.</sys:String>

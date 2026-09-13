@@ -823,6 +823,93 @@ namespace Apex.UI.ViewModels
         // Computed property for tray selection visibility
         public bool HasMultipleCopies => CopiesCount > 1;
 
+        /// <summary>
+        /// The furthest number the engine reported reaching on the current job. Reset when
+        /// a job starts, raised by every progress report.
+        /// </summary>
+        private long _highestNumberReached;
+
+        /// <summary>
+        /// Tells the operator when this exact job was already started and stopped part-way,
+        /// and lets them call it off.
+        ///
+        /// <para>The engine never acts on a checkpoint by itself. Only the operator knows
+        /// whether the half-printed stack is still on the table — in which case reprinting
+        /// the whole range wastes the paper already run — or went in the bin, in which case
+        /// starting over is right. Returns false if they choose to stop.</para>
+        /// </summary>
+        private async Task<bool> ConfirmUnfinishedJobAsync()
+        {
+            try
+            {
+                var slots = Slots.Select(s => s.ToSlotSpec()).ToList();
+                var unfinished = await _numberingService.FindUnfinishedJobAsync(
+                    TemplatePath ?? "", slots, StartNumber, TotalNumbers, CopiesCount, CurrentNumberFormat);
+
+                if (unfinished == null) return true;
+
+                var reached = Apex.NumberedBooksEngine.Core.NumberFormatter.Format(
+                    unfinished.LastPrintedNumber, CurrentNumberFormat);
+
+                var answer = MessageBox.Show(
+                    Lf("Num_UnfinishedJob", reached, unfinished.Timestamp.ToLocalTime().ToString("yyyy-MM-dd HH:mm")),
+                    L("Dlg_Confirm"), MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+
+                if (answer != MessageBoxResult.Yes) return false;
+
+                // Starting over is a decision; the old attempt stops being pending.
+                _numberingService.ForgetUnfinishedJob(
+                    TemplatePath ?? "", slots, StartNumber, TotalNumbers, CopiesCount, CurrentNumberFormat);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Never block a job over the recovery check itself.
+                Apex.Core.Diagnostics.AppDiagnostics.LogWarning("Numbering.CheckUnfinished", ex);
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Writes what actually reached paper into the register — whether the job finished,
+        /// was cancelled, or died.
+        ///
+        /// <para>This only ran at 99.9% before, so an interrupted job recorded NOTHING. Ten
+        /// thousand invoice numbers could be lying in the output tray with the register
+        /// insisting they had never been issued, and the duplicate check — which reads that
+        /// register — would then wave the operator straight through a reprint of the same
+        /// range. A duplicated invoice number is a breach for the press and for its
+        /// customer; that was the one failure this register exists to prevent.</para>
+        ///
+        /// <para>When the count is uncertain the range is rounded UP to the last reporting
+        /// interval, deliberately. An over-recorded range leaves a gap, and a gap can be
+        /// explained to an auditor; an under-recorded one hands the same number out twice,
+        /// and that cannot.</para>
+        /// </summary>
+        private void RecordIssuedNumbers(bool completed)
+        {
+            try
+            {
+                long issued = completed
+                    ? TotalNumbers
+                    : (_highestNumberReached >= StartNumber ? _highestNumberReached - StartNumber + 1 : 0);
+
+                if (issued <= 0) return;
+                if (issued > TotalNumbers) issued = TotalNumbers;
+
+                _numberRegistry.Record(
+                    NumberPrefix, StartNumber, issued,
+                    SelectedPrinter ?? "",
+                    notes: completed
+                        ? (CurrentProjectPath ?? "")
+                        : Lf("Num_RegisterInterrupted", CurrentProjectPath ?? ""));
+            }
+            catch (Exception ex)
+            {
+                Apex.Core.Diagnostics.AppDiagnostics.LogWarning("Numbering.RecordRange", ex);
+            }
+        }
+
         [RelayCommand]
         private async Task StartPrint()
         {
@@ -902,9 +989,15 @@ namespace Apex.UI.ViewModels
                 if (proceed != MessageBoxResult.Yes) return;
             }
 
+            // An earlier attempt at this exact job may have stopped part-way. Say so before
+            // the press starts, because the operator is the only one who knows whether the
+            // half-printed stack is still on the table or already in the bin.
+            if (!await ConfirmUnfinishedJobAsync()) return;
+
             IsPrinting = true;
             PrintStatus = L("Num_Preparing");
             PrintProgress = 0;
+            _highestNumberReached = 0;
 
             try
             {
@@ -939,26 +1032,10 @@ namespace Apex.UI.ViewModels
             }
             finally
             {
-                // Record successful completion
-                if (PrintProgress >= 99.9)
-                {
-                    RecordPrintHistory(TotalPagesComputed, L("Num_Complete"));
+                bool completed = PrintProgress >= 99.9;
+                if (completed) RecordPrintHistory(TotalPagesComputed, L("Num_Complete"));
 
-                    // Burn the range in the register only once the job really printed —
-                    // reserving up front would consume numbers on a cancelled job and
-                    // create a gap the operator cannot explain.
-                    try
-                    {
-                        _numberRegistry.Record(
-                            NumberPrefix, StartNumber, TotalNumbers,
-                            SelectedPrinter ?? "",
-                            notes: CurrentProjectPath ?? "");
-                    }
-                    catch (Exception ex)
-                    {
-                        Apex.Core.Diagnostics.AppDiagnostics.LogWarning("Numbering.RecordRange", ex);
-                    }
-                }
+                RecordIssuedNumbers(completed);
 
                 IsPrinting = false;
                 if (_cts != null)
@@ -1001,6 +1078,11 @@ namespace Apex.UI.ViewModels
 
                 var progress = new Progress<Apex.NumberedBooksEngine.Models.ProgressInfo>(info =>
                 {
+                    // Remember how far the press actually got. If the job is cancelled or
+                    // dies, this is what tells the register which numbers really reached
+                    // paper — see the note on _highestNumberReached.
+                    if (info.LastNumber > _highestNumberReached) _highestNumberReached = info.LastNumber;
+
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         PrintProgress = info.Percent;
