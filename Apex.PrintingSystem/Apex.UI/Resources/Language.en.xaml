@@ -224,6 +224,14 @@
     <sys:String x:Key="Num_CutPieceEmpty">Piece {0}: no numbers — the range runs out before it</sys:String>
     <sys:String x:Key="Num_UnfinishedJob">This job was started before and stopped at number {0}&#x0a;(on {1}).&#x0a;&#x0a;If the printed sheets are still to hand, carrying on after that number wastes less paper than reprinting the range.&#x0a;&#x0a;Start from the beginning anyway?</sys:String>
     <sys:String x:Key="Num_RegisterInterrupted">interrupted — {0}</sys:String>
+    <sys:String x:Key="Crash_PreviousSessionTitle">Apex closed unexpectedly</sys:String>
+    <sys:String x:Key="Crash_PreviousSession">The last session (started {0}) did not close normally.&#x0a;&#x0a;Cause recorded by Windows:&#x0a;{1}&#x0a;&#x0a;If a print job was running, check the last sheet that came out before carrying on.&#x0a;&#x0a;Prepare a file to send to support now?</sys:String>
+    <sys:String x:Key="Crash_NoWindowsRecord">Windows recorded no cause — most likely closed from Task Manager, a shutdown, or a power cut.</sys:String>
+    <sys:String x:Key="Report_Button">Report a problem</sys:String>
+    <sys:String x:Key="Report_Hint">Builds a zip with the logs, version, device ID and number register to send to support on WhatsApp. Your designs and customer files are not included.</sys:String>
+    <sys:String x:Key="Report_DialogTitle">Save problem report</sys:String>
+    <sys:String x:Key="Report_Saved">Report saved:&#x0a;{0}&#x0a;&#x0a;Send this file to support on WhatsApp with a short note: what you were doing and what appeared.</sys:String>
+    <sys:String x:Key="Report_Failed">The report could not be prepared:&#x0a;{0}</sys:String>
     <sys:String x:Key="Numbering_ClearRecent">Clear all</sys:String>
     <sys:String x:Key="Numbering_ClearRecent_Tip">Empty the recent projects list. The files themselves stay on your computer.</sys:String>
     <sys:String x:Key="Numbering_RemoveRecent_Tip">Remove from this list. The file itself stays on your computer.</sys:String>

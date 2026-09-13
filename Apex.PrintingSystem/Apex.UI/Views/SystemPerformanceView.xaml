@@ -168,6 +168,12 @@
                         <TextBlock Text="{DynamicResource Performance_ProcessID}" Foreground="{DynamicResource Muted}"/>
                         <TextBlock Grid.Column="1" Text="{Binding ProcessId, FallbackValue='12345'}" FontWeight="Medium" Foreground="{DynamicResource Ink}"/>
                     </Grid>
+
+                    <Border Height="1" Background="{DynamicResource Border}" Margin="0,20,0,16"/>
+                    <Button Content="{DynamicResource Report_Button}" Command="{Binding ReportProblemCommand}"
+                            Style="{StaticResource Button.Secondary}" HorizontalAlignment="Left"/>
+                    <TextBlock Text="{DynamicResource Report_Hint}" TextWrapping="Wrap" FontSize="12"
+                               Foreground="{DynamicResource Muted}" Margin="0,8,0,0"/>
                 </StackPanel>
             </Border>
 

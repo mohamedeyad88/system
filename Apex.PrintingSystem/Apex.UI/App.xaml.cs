@@ -68,6 +68,19 @@ namespace Apex.UI
             ShutdownMode = ShutdownMode.OnLastWindowClose;
             InstallGlobalExceptionHandlers();
 
+            // Did the last session die? A native crash never reaches the handlers above,
+            // so a marker left behind is the only sign it happened. Watched only after the
+            // single-instance check, so a second launch cannot clear the first one's marker.
+            Diagnostics.PreviousSession? previousSession = null;
+            try
+            {
+                previousSession = Diagnostics.SessionGuard.Begin(
+                    System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "?");
+            }
+            catch { }
+            Exit += (_, _) => Diagnostics.SessionGuard.End();
+            SessionEnding += (_, _) => Diagnostics.SessionGuard.End();
+
             // Open the print log now rather than on the first print.
             //
             // PrintLogger is static, so its file was only created once something
@@ -165,6 +178,13 @@ namespace Apex.UI
                 mainWindow.DataContext = mainViewModel;
                 mainWindow.Show();
                 Apex.Services.Logging.PrintLogger.Info("startup: 6 main window shown");
+
+                if (previousSession != null)
+                {
+                    var previous = previousSession;
+                    Dispatcher.BeginInvoke(new Action(() => Diagnostics.CrashNotice.Show(mainWindow, previous)),
+                        System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }
 
                 // Start print queue
                 try

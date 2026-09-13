@@ -506,6 +506,14 @@
     <sys:String x:Key="Num_CutPieceEmpty">القطعة {0}: مفيش أرقام — النطاق خلص قبلها</sys:String>
     <sys:String x:Key="Num_UnfinishedJob">الشغلانة دي بدأت قبل كده ووقفت عند الرقم {0}&#x0a;(بتاريخ {1}).&#x0a;&#x0a;لو الورق المطبوع لسه موجود، الأفضل تكمّل من بعد الرقم ده بدل ما تعيد النطاق كله.&#x0a;&#x0a;تبدأ من الأول برضه؟</sys:String>
     <sys:String x:Key="Num_RegisterInterrupted">اتقطعت — {0}</sys:String>
+    <sys:String x:Key="Crash_PreviousSessionTitle">البرنامج اتقفل بشكل غير طبيعي</sys:String>
+    <sys:String x:Key="Crash_PreviousSession">آخر مرة البرنامج اشتغل (من {0}) ماتقفلش بشكل طبيعي.&#x0a;&#x0a;السبب اللي ويندوز سجّله:&#x0a;{1}&#x0a;&#x0a;لو كانت فيه طباعة شغالة، راجع آخر ورقة طلعت قبل ما تكمّل.&#x0a;&#x0a;تجهّز ملف تبعته للدعم الفني دلوقتي؟</sys:String>
+    <sys:String x:Key="Crash_NoWindowsRecord">ويندوز ماسجّلش سبب — غالبًا اتقفل من مدير المهام، أو الجهاز اتطفى، أو الكهربا قطعت.</sys:String>
+    <sys:String x:Key="Report_Button">إبلاغ عن مشكلة</sys:String>
+    <sys:String x:Key="Report_Hint">بيجهّز ملف مضغوط فيه السجلات ورقم النسخة ومعرّف الجهاز وسجل الأرقام، تبعته للدعم الفني على واتساب. مافيهوش تصميماتك ولا ملفات عملائك.</sys:String>
+    <sys:String x:Key="Report_DialogTitle">حفظ تقرير المشكلة</sys:String>
+    <sys:String x:Key="Report_Saved">التقرير اتحفظ:&#x0a;{0}&#x0a;&#x0a;ابعت الملف ده للدعم الفني على واتساب، مع وصف قصير: كنت بتعمل إيه، وإيه اللي ظهر.</sys:String>
+    <sys:String x:Key="Report_Failed">ماقدرناش نجهّز التقرير:&#x0a;{0}</sys:String>
     <sys:String x:Key="Numbering_ClearRecent">مسح الكل</sys:String>
     <sys:String x:Key="Numbering_ClearRecent_Tip">إفراغ قائمة المشاريع الأخيرة. الملفات نفسها تفضل على الجهاز.</sys:String>
     <sys:String x:Key="Numbering_RemoveRecent_Tip">إزالة من القائمة. الملف نفسه يفضل على الجهاز.</sys:String>

@@ -39,6 +39,11 @@ namespace Apex.UI.ViewModels
                                               ?.ToString(3) ?? "1.0.0";
         public int ProcessId => _currentProcess.Id;
 
+        /// <summary>Beside the version number — the first thing support asks for.</summary>
+        [CommunityToolkit.Mvvm.Input.RelayCommand]
+        private System.Threading.Tasks.Task ReportProblem() =>
+            Diagnostics.ProblemReport.SaveInteractiveAsync(System.Windows.Application.Current?.MainWindow);
+
         // ── Recent Activity feed ─────────────────────────────────────────────
         public ObservableCollection<ActivityLogEntry> RecentActivities { get; } = new();
 
