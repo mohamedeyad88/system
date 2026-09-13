@@ -21,7 +21,7 @@
 
             <!-- Status Card -->
             <Border Background="#FFFFFF" CornerRadius="12" Padding="24" Margin="0,0,0,20"
-                    BorderBrush="#DDD9D3" BorderThickness="1">
+                    BorderBrush="#8F887A" BorderThickness="1">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -42,7 +42,7 @@
                                     Visibility="{Binding IsTrialActive, Converter={StaticResource BoolToVisibilityConverter}}">
                             <TextBlock Text="{DynamicResource LIC_006}" FontSize="13" Foreground="#6B6864"/>
                             <TextBlock Text="{Binding DaysRemaining}" FontSize="13"
-                                       Foreground="#E08A00" FontWeight="Bold"/>
+                                       Foreground="#B45309" FontWeight="Bold"/>
                         </StackPanel>
                     </StackPanel>
                     <Button Grid.Column="1" Command="{Binding RefreshStatusCommand}"
@@ -71,7 +71,7 @@
 
             <!-- Device ID Card -->
             <Border Background="#FFFFFF" CornerRadius="12" Padding="24" Margin="0,0,0,20"
-                    BorderBrush="#DDD9D3" BorderThickness="1">
+                    BorderBrush="#8F887A" BorderThickness="1">
                 <StackPanel>
                     <TextBlock Text="{DynamicResource ACT_005}" FontSize="14" FontWeight="SemiBold"
                                Foreground="#14181D" Margin="0,0,0,6"/>
@@ -147,7 +147,7 @@
 
             <!-- Activate Card -->
             <Border Background="#FFFFFF" CornerRadius="12" Padding="24"
-                    BorderBrush="#DDD9D3" BorderThickness="1">
+                    BorderBrush="#8F887A" BorderThickness="1">
                 <StackPanel>
                     <TextBlock Text="{DynamicResource LIC_011}" FontSize="14" FontWeight="SemiBold"
                                Foreground="#14181D" Margin="0,0,0,6"/>
@@ -169,7 +169,7 @@
                                  FontFamily="Consolas" FontSize="14" Padding="12,10"
                                  VerticalContentAlignment="Center" MinWidth="220"
                                  Background="#FAF9F7" Foreground="#14181D" CaretBrush="#14181D"
-                                 BorderBrush="#DDD9D3" BorderThickness="1"/>
+                                 BorderBrush="#8F887A" BorderThickness="1"/>
                         <Button Grid.Column="1" Command="{Binding ActivateWithSerialCommand}"
                                 IsEnabled="{Binding IsNotActivating}" Margin="10,0,0,0" Cursor="Hand"
                                 Padding="22,10" Background="#1B7F4C" BorderThickness="0"

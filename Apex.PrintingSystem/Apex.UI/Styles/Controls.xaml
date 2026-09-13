@@ -668,7 +668,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="#0891B2"/>
+                            <Setter TargetName="Bd" Property="Background" Value="#0B5C72"/>
                             <Setter Property="Foreground" Value="White"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
@@ -702,7 +702,7 @@
     <Style TargetType="ComboBox">
         <Setter Property="Background"        Value="#FFFFFF"/>
         <Setter Property="Foreground"        Value="#14181D"/>
-        <Setter Property="BorderBrush"       Value="#DDD9D3"/>
+        <Setter Property="BorderBrush"       Value="#8F887A"/>
         <Setter Property="BorderThickness"   Value="1"/>
         <Setter Property="Height"            Value="34"/>
         <Setter Property="FontSize"          Value="13"/>
@@ -732,7 +732,7 @@
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsHighlighted" Value="True">
-                                        <Setter TargetName="Bd" Property="Background" Value="#0891B2"/>
+                                        <Setter TargetName="Bd" Property="Background" Value="#0B5C72"/>
                                         <Setter Property="Foreground" Value="White"/>
                                     </Trigger>
                                     <Trigger Property="IsSelected" Value="True">
@@ -814,7 +814,7 @@
                                PopupAnimation="Slide">
                             <Border x:Name="DropBorder"
                                     Background="#FFFFFF"
-                                    BorderBrush="#DDD9D3"
+                                    BorderBrush="#8F887A"
                                     BorderThickness="1"
                                     CornerRadius="6"
                                     MinWidth="{Binding ElementName=MainGrid, Path=ActualWidth}"
@@ -881,7 +881,7 @@
     <Style x:Key="Card.Dark" TargetType="Border">
         <Setter Property="Background" Value="#FFFFFF"/>
         <Setter Property="CornerRadius" Value="16"/>
-        <Setter Property="BorderBrush" Value="#DDD9D3"/>
+        <Setter Property="BorderBrush" Value="#8F887A"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="24"/>
         <Setter Property="Margin" Value="0,0,0,20"/>
@@ -889,7 +889,7 @@
 
     <!-- Button.Dark.Primary - blue button for dark-theme views -->
     <Style x:Key="Button.Dark.Primary" TargetType="Button">
-        <Setter Property="Background" Value="#0891B2"/>
+        <Setter Property="Background" Value="#0E7490"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="500"/>
@@ -905,7 +905,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#0891B2"/>
+                            <Setter TargetName="border" Property="Background" Value="#0B5C72"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="Background" Value="#0E7490"/>

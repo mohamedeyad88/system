@@ -7,7 +7,7 @@
     
     <!-- Dark-theme dialog (was a fully light-mode window: white surface, dark text —
          it stood out jarringly against the dark app when opened from the slot swatch). -->
-    <Border Background="#FFFFFF" CornerRadius="12" BorderBrush="#DDD9D3" BorderThickness="1">
+    <Border Background="#FFFFFF" CornerRadius="12" BorderBrush="#8F887A" BorderThickness="1">
         <Border.Effect>
             <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.15" Color="#000"/>
         </Border.Effect>
@@ -140,7 +140,7 @@
                 </Button>
                 
                 <Button Content="{DynamicResource CPW_005}" x:Name="BtnApply" Click="BtnApply_Click"
-                        Background="#0891B2" Foreground="White" BorderThickness="0"
+                        Background="#0E7490" Foreground="White" BorderThickness="0"
                         Padding="16,10" Width="100" Cursor="Hand">
                     <Button.Style>
                         <Style TargetType="Button">

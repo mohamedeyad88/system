@@ -53,14 +53,15 @@
         </LinearGradientBrush>
         
         <!-- Primary Button Gradient -->
+        <!-- White-labelled button fill: 0891B2 measured 3.68:1 with white text, 0E7490 5.36:1. -->
         <LinearGradientBrush x:Key="PrimaryButtonGradient" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="#0891B2" Offset="0"/>
-            <GradientStop Color="#0891B2" Offset="1"/>
+            <GradientStop Color="#0E7490" Offset="0"/>
+            <GradientStop Color="#0E7490" Offset="1"/>
         </LinearGradientBrush>
         
         <LinearGradientBrush x:Key="PrimaryButtonHoverGradient" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="#0891B2" Offset="0"/>
-            <GradientStop Color="#0891B2" Offset="1"/>
+            <GradientStop Color="#0B5C72" Offset="0"/>
+            <GradientStop Color="#0B5C72" Offset="1"/>
         </LinearGradientBrush>
         
         <!-- Success Button Gradient -->
@@ -128,7 +129,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="TabBorder" Property="Background" Value="#0891B2"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="#0B5C72"/>
                                 <Setter TargetName="TabBorder" Property="BorderBrush" Value="#0891B2"/>
                                 <Setter Property="Foreground" Value="#FFFFFF"/>
                             </Trigger>
@@ -143,7 +144,7 @@
                                     <Condition Property="IsSelected" Value="True"/>
                                     <Condition Property="IsMouseOver" Value="True"/>
                                 </MultiTrigger.Conditions>
-                                <Setter TargetName="TabBorder" Property="Background" Value="#0891B2"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="#0B5C72"/>
                             </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -180,7 +181,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="TabBorder" Property="Background" Value="#0891B2"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="#0B5C72"/>
                                 <Setter TargetName="TabBorder" Property="BorderBrush" Value="#0891B2"/>
                                 <Setter Property="Foreground" Value="#FFFFFF"/>
                             </Trigger>
@@ -195,7 +196,7 @@
                                     <Condition Property="IsChecked" Value="True"/>
                                     <Condition Property="IsMouseOver" Value="True"/>
                                 </MultiTrigger.Conditions>
-                                <Setter TargetName="TabBorder" Property="Background" Value="#0891B2"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="#0B5C72"/>
                             </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -327,7 +328,7 @@
                             <Style TargetType="Button">
                                 <Setter Property="Background" Value="#FAF9F7"/>
                                 <Setter Property="Foreground" Value="#6B6864"/>
-                                <Setter Property="BorderBrush" Value="#DDD9D3"/>
+                                <Setter Property="BorderBrush" Value="#8F887A"/>
                                 <Setter Property="BorderThickness" Value="1"/>
                                 <Setter Property="Template">
                                     <Setter.Value>
@@ -344,7 +345,7 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsPrepareMode}" Value="True">
-                                        <Setter Property="Background" Value="#0891B2"/>
+                                        <Setter Property="Background" Value="#0E7490"/>
                                         <Setter Property="Foreground" Value="White"/>
                                         <Setter Property="BorderBrush" Value="#0891B2"/>
                                     </DataTrigger>
@@ -366,7 +367,7 @@
                             <Style TargetType="Button">
                                 <Setter Property="Background" Value="#FAF9F7"/>
                                 <Setter Property="Foreground" Value="#6B6864"/>
-                                <Setter Property="BorderBrush" Value="#DDD9D3"/>
+                                <Setter Property="BorderBrush" Value="#8F887A"/>
                                 <Setter Property="BorderThickness" Value="1"/>
                                 <Setter Property="Template">
                                     <Setter.Value>
@@ -383,7 +384,7 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsLayoutMode}" Value="True">
-                                        <Setter Property="Background" Value="#0891B2"/>
+                                        <Setter Property="Background" Value="#0E7490"/>
                                         <Setter Property="Foreground" Value="White"/>
                                         <Setter Property="BorderBrush" Value="#0891B2"/>
                                     </DataTrigger>
@@ -404,7 +405,7 @@
                             <Style TargetType="Button">
                                 <Setter Property="Background" Value="#FAF9F7"/>
                                 <Setter Property="Foreground" Value="#6B6864"/>
-                                <Setter Property="BorderBrush" Value="#DDD9D3"/>
+                                <Setter Property="BorderBrush" Value="#8F887A"/>
                                 <Setter Property="BorderThickness" Value="1"/>
                                 <Setter Property="Template">
                                     <Setter.Value>
@@ -421,7 +422,7 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsExecuteMode}" Value="True">
-                                        <Setter Property="Background" Value="#0891B2"/>
+                                        <Setter Property="Background" Value="#0E7490"/>
                                         <Setter Property="Foreground" Value="White"/>
                                         <Setter Property="BorderBrush" Value="#0891B2"/>
                                     </DataTrigger>
@@ -803,7 +804,7 @@
                                             VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <!-- Checkpoints List -->
-                                <Border Background="#FAF9F7" BorderBrush="#E6F3F6" BorderThickness="1"
+                                <Border Background="#FAF9F7" BorderBrush="#8F887A" BorderThickness="1"
                                         CornerRadius="6" Padding="6" MaxHeight="72" MinWidth="190"
                                         Visibility="{Binding CheckpointStates.Count, Converter={StaticResource CountToVisibilityConverter}}">
                                     <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -826,7 +827,7 @@
                                                             </Style>
                                                         </Border.Style>
                                                         <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="⏸" FontSize="10" Foreground="#E08A00" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="⏸" FontSize="10" Foreground="#B45309" Margin="0,0,5,0" VerticalAlignment="Center"/>
                                                             <TextBlock FontSize="11" Foreground="{DynamicResource Muted}" VerticalAlignment="Center">
                                                                 <TextBlock.Text>
                                                                     <MultiBinding StringFormat="{}{0:N0}  ·  {1:HH:mm  dd/MM}">
@@ -851,7 +852,7 @@
                                     <Button Command="{Binding ResumeFromCheckpointCommand}"
                                             ToolTip="{DynamicResource Numbering_ResumeCheckpointToolTip}"
                                             Padding="10,6" Margin="0,0,6,0"
-                                            Background="#E7F3EC" Foreground="#1B7F4C"
+                                            Background="#E7F3EC" Foreground="#166B40"
                                             BorderThickness="1" BorderBrush="#E7F3EC"
                                             FontSize="12" Cursor="Hand">
                                         <Button.Style>
@@ -988,7 +989,7 @@
                                 </StackPanel>
                                 <!-- Live example of what will actually print -->
                                 <TextBlock Margin="0,8,0,0" FontFamily="Consolas" FontSize="13" FontWeight="Bold"
-                                           Foreground="#1B7F4C" Text="{Binding NumberFormatPreview}"/>
+                                           Foreground="#166B40" Text="{Binding NumberFormatPreview}"/>
                             </StackPanel>
                         </Border>
                         <!-- Zoom Group -->
@@ -1220,7 +1221,7 @@
                                             </Setter>
                                             <Style.Triggers>
                                                 <Trigger Property="IsChecked" Value="True">
-                                                    <Setter Property="Background" Value="#0891B2"/>
+                                                    <Setter Property="Background" Value="#0E7490"/>
                                                     <Setter Property="Foreground" Value="White"/>
                                                     <Setter Property="BorderBrush" Value="#0891B2"/>
                                                 </Trigger>
@@ -1288,7 +1289,8 @@
                                                 </Setter>
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#1B7F4C"/>
+                                                        <!-- Hovered green under ink text; the + is not a success state. -->
+                                                        <Setter Property="Background" Value="{DynamicResource BrandSoft}"/>
                                                         <Trigger.EnterActions>
                                                             <BeginStoryboard>
                                                                 <Storyboard>
@@ -1561,7 +1563,7 @@
                                                                 <Setter Property="Background" Value="#DDD9D3"/>
                                                             </Trigger>
                                                             <Trigger Property="IsSelected" Value="True">
-                                                                <Setter Property="Background" Value="#0891B2"/>
+                                                                <Setter Property="Background" Value="#0E7490"/>
                                                                 <Setter Property="Foreground" Value="White"/>
                                                             </Trigger>
                                                         </Style.Triggers>
@@ -1997,7 +1999,8 @@
                         </Button.RenderTransform>
                         <Button.Style>
                             <Style TargetType="Button">
-                                <Setter Property="Background" Value="{StaticResource SuccessButtonGradient}"/>
+                                <!-- Was green. "Done" is a status colour; the step forward is the primary action. -->
+                                <Setter Property="Background" Value="{StaticResource PrimaryButtonGradient}"/>
                                 <Setter Property="Effect" Value="{StaticResource Shadow.Button}"/>
                                 <Setter Property="Template">
                                     <Setter.Value>
@@ -2013,7 +2016,7 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#1B7F4C"/>
+                                        <Setter Property="Background" Value="#0B5C72"/>
                                         <Setter Property="Effect" Value="{StaticResource Shadow.ButtonHover}"/>
                                         <Trigger.EnterActions>
                                             <BeginStoryboard Storyboard="{StaticResource ButtonHoverStoryboard}"/>
@@ -2155,7 +2158,7 @@
                      ══════════════════════════════════════════════════════ -->
                 <Border Grid.Row="3"
                         Background="#FAF9F7"
-                        BorderBrush="#E6F3F6" BorderThickness="0,2,0,0"
+                        BorderBrush="#8F887A" BorderThickness="0,2,0,0"
                         Padding="24,12"
                         Visibility="{Binding IsPrinting,
                                      Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -2243,7 +2246,7 @@
                                 <TextBlock Text="{Binding ElapsedTimeDisplay, Mode=OneWay}"
                                            FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,10,0"/>
                                 <TextBlock Text="{Binding PrintSpeedDisplay, Mode=OneWay}"
-                                           FontSize="11" Foreground="#1B7F4C"/>
+                                           FontSize="11" Foreground="#166B40"/>
                             </StackPanel>
                         </StackPanel>
 
@@ -2693,7 +2696,7 @@
                                                     <Setter Property="Background" Value="#DDD9D3"/>
                                                 </Trigger>
                                                 <Trigger Property="IsSelected" Value="True">
-                                                    <Setter Property="Background" Value="#0891B2"/>
+                                                    <Setter Property="Background" Value="#0E7490"/>
                                                     <Setter Property="Foreground" Value="White"/>
                                                 </Trigger>
                                             </Style.Triggers>
@@ -2875,7 +2878,7 @@
                                        Margin="0,0,0,8">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="Foreground" Value="#1B7F4C"/>
+                                        <Setter Property="Foreground" Value="#166B40"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding UseSmartTrayPrinting}" Value="False">
                                                 <Setter Property="Foreground" Value="#6B6864"/>
@@ -2912,7 +2915,7 @@
               Visibility="{Binding IsMultiPreviewOpen, Converter={StaticResource BooleanToVisibilityConverter}}"
               Panel.ZIndex="100">
             <Border Background="#FAF9F7"
-                    BorderBrush="#E6F3F6"
+                    BorderBrush="#8F887A"
                     BorderThickness="1"
                     CornerRadius="12"
                     MaxWidth="1500"
@@ -3010,7 +3013,7 @@
                                         <Button.Template>
                                             <ControlTemplate TargetType="Button">
                                                 <Border x:Name="Frame"
-                                                        Background="#FFFFFF" BorderBrush="#E6F3F6" BorderThickness="1"
+                                                        Background="#FFFFFF" BorderBrush="#8F887A" BorderThickness="1"
                                                         CornerRadius="6" Padding="6">
                                                     <ContentPresenter/>
                                                 </Border>
@@ -3089,7 +3092,7 @@
              ════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="1"
                 Background="#FAF9F7"
-                BorderBrush="#E6F3F6"
+                BorderBrush="#8F887A"
                 BorderThickness="1,0,0,0"
                 Width="260"
                 HorizontalAlignment="Right"
@@ -3178,7 +3181,7 @@
              ════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="1"
                 Background="#FAF9F7"
-                BorderBrush="#E6F3F6"
+                BorderBrush="#8F887A"
                 BorderThickness="1,0,0,0"
                 Width="300"
                 HorizontalAlignment="Right"
@@ -3293,7 +3296,7 @@
                                                             </Style.Triggers>
                                                         </Style>
                                                     </Border.Style>
-                                                    <TextBlock Text="{Binding Status}" FontSize="9" Foreground="#1B7F4C">
+                                                    <TextBlock Text="{Binding Status}" FontSize="9" Foreground="#166B40">
                                                         <TextBlock.Style>
                                                             <Style TargetType="TextBlock">
                                                                 <Style.Triggers>
@@ -3318,7 +3321,7 @@
                 </ScrollViewer>
 
                 <!-- Footer: Clear button -->
-                <Border Grid.Row="2" BorderBrush="#E6F3F6" BorderThickness="0,1,0,0" Padding="16,10">
+                <Border Grid.Row="2" BorderBrush="#8F887A" BorderThickness="0,1,0,0" Padding="16,10">
                     <Button Command="{Binding ClearPrintHistoryCommand}"
                             Content="{DynamicResource NW_002}"
                             HorizontalAlignment="Center"
@@ -3354,7 +3357,7 @@
              ════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="1"
                 Background="#FAF9F7"
-                BorderBrush="#E6F3F6"
+                BorderBrush="#8F887A"
                 BorderThickness="1,0,0,0"
                 Width="300"
                 HorizontalAlignment="Right"

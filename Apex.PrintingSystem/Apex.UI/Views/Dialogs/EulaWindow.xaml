@@ -33,7 +33,7 @@
                     Click="CloseButton_Click"
                     HorizontalAlignment="Right"
                     Padding="26,9" FontSize="14" FontWeight="SemiBold"
-                    Foreground="White" Background="#0891B2" BorderThickness="0"
+                    Foreground="White" Background="#0E7490" BorderThickness="0"
                     Cursor="Hand"/>
         </Border>
     </Grid>

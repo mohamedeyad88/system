@@ -81,7 +81,7 @@
 
             <!-- Left: Printer List -->
             <Border Grid.Column="0" Background="#FFFFFF"
-                    BorderBrush="#DDD9D3" BorderThickness="0,0,1,0">
+                    BorderBrush="#8F887A" BorderThickness="0,0,1,0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -114,7 +114,7 @@
                                                     <Setter TargetName="b" Property="Background" Value="#DDD9D3"/>
                                                 </Trigger>
                                                 <Trigger Property="IsSelected" Value="True">
-                                                    <Setter TargetName="b" Property="Background" Value="#0891B2"/>
+                                                    <Setter TargetName="b" Property="Background" Value="#0B5C72"/>
                                                     <Setter Property="Foreground" Value="White"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
@@ -127,7 +127,7 @@
 
                     <!-- ICC Profile -->
                     <Border Grid.Row="2" Padding="16,12"
-                            BorderBrush="#DDD9D3" BorderThickness="0,1,0,0">
+                            BorderBrush="#8F887A" BorderThickness="0,1,0,0">
                         <StackPanel>
                             <TextBlock Text="ملف ICC:" Foreground="#6B6864" FontSize="10"/>
                             <TextBlock Foreground="#6B6864" FontSize="11" TextWrapping="Wrap"
@@ -317,13 +317,13 @@
                             </Grid.ColumnDefinitions>
                             <Button Grid.Column="0"
                                     Command="{Binding SaveCalibrationCommand}"
-                                    Height="40" Background="#0891B2"
+                                    Height="40" Background="#0E7490"
                                     Foreground="White" BorderThickness="0"
                                     FontSize="13" FontWeight="SemiBold"
                                     Content="💾 حفظ الإعدادات" Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="b" Background="#0891B2" CornerRadius="8"
+                                        <Border x:Name="b" Background="#0E7490" CornerRadius="8"
                                                 Height="40">
                                             <TextBlock Text="{TemplateBinding Content}"
                                                        Foreground="White" FontSize="13" FontWeight="SemiBold"
@@ -360,7 +360,7 @@
 
                         <!-- Status -->
                         <TextBlock Text="{Binding StatusMessage}"
-                                   Foreground="#1B7F4C" FontSize="12"
+                                   Foreground="#166B40" FontSize="12"
                                    Margin="0,12,0,0" HorizontalAlignment="Center">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">

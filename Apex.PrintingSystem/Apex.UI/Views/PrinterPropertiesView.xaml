@@ -74,7 +74,7 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding PropertiesPrinter.IsOnline}" Value="True">
                                                     <Setter Property="Text" Value="Online"/>
-                                                    <Setter Property="Foreground" Value="#1B7F4C"/>
+                                                    <Setter Property="Foreground" Value="#166B40"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -133,7 +133,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Background="#F4F2EF" BorderBrush="#DDD9D3" BorderThickness="1" CornerRadius="6" Padding="10,6" Margin="0,0,8,8">
+                                <Border Background="#F4F2EF" BorderBrush="#8F887A" BorderThickness="1" CornerRadius="6" Padding="10,6" Margin="0,0,8,8">
                                     <TextBlock Text="{Binding}" Foreground="#14181D" FontSize="12"/>
                                 </Border>
                             </DataTemplate>
@@ -160,7 +160,7 @@
                 <Button Content="🖨️ Print Test Page" 
                         Command="{Binding TestPrintCommand}" 
                         CommandParameter="{Binding PropertiesPrinter}"
-                        Height="40" Background="#0891B2" Foreground="White" BorderThickness="0" Margin="0,0,0,10">
+                        Height="40" Background="#0E7490" Foreground="White" BorderThickness="0" Margin="0,0,0,10">
                     <Button.Resources>
                         <Style TargetType="Border">
                             <Setter Property="CornerRadius" Value="8"/>

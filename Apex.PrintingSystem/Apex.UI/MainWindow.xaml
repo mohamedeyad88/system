@@ -361,8 +361,8 @@
                                                 <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource BrandSoft}"/>
                                             </Trigger>
                                             <DataTrigger Binding="{Binding Source={x:Static services:LocalizationService.Instance}, Path=IsEnglishActive}" Value="True">
-                                                <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource Brand}"/>
-                                                <Setter Property="Foreground" Value="White"/>
+                                                <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource Action}"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                             </DataTrigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -391,8 +391,8 @@
                                                 <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource BrandSoft}"/>
                                             </Trigger>
                                             <DataTrigger Binding="{Binding Source={x:Static services:LocalizationService.Instance}, Path=IsArabicActive}" Value="True">
-                                                <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource Brand}"/>
-                                                <Setter Property="Foreground" Value="White"/>
+                                                <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource Action}"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                             </DataTrigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>

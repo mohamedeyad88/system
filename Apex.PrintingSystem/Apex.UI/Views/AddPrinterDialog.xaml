@@ -19,7 +19,7 @@
         </StackPanel>
 
         <!-- Printer List -->
-        <Border Grid.Row="1" Background="#FAF9F7" CornerRadius="12" Padding="4" BorderBrush="#DDD9D3" BorderThickness="1">
+        <Border Grid.Row="1" Background="#FAF9F7" CornerRadius="12" Padding="4" BorderBrush="#8F887A" BorderThickness="1">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.25" Color="#000"/>
             </Border.Effect>
@@ -31,7 +31,7 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListBoxItem">
                                     <Border x:Name="Bd" Background="#FFFFFF" CornerRadius="8"
-                                            Padding="16,12" Margin="4" Cursor="Hand" BorderThickness="1" BorderBrush="#DDD9D3">
+                                            Padding="16,12" Margin="4" Cursor="Hand" BorderThickness="1" BorderBrush="#8F887A">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
@@ -92,7 +92,7 @@
                 </Button.Template>
             </Button>
             <Button Content="Add Selected Printer" Click="Add_Click" Padding="20,12" Cursor="Hand"
-                    Background="#0891B2" Foreground="White" FontWeight="SemiBold" BorderThickness="0">
+                    Background="#0E7490" Foreground="White" FontWeight="SemiBold" BorderThickness="0">
                 <Button.Template>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">

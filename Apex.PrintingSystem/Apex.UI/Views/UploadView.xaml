@@ -40,7 +40,7 @@
         <ControlTemplate x:Key="DarkComboToggle" TargetType="ToggleButton">
             <Border x:Name="bg"
                     Background="{TemplateBinding Background}"
-                    BorderBrush="#DDD9D3" BorderThickness="1"
+                    BorderBrush="#8F887A" BorderThickness="1"
                     CornerRadius="7">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -70,7 +70,7 @@
         <Style TargetType="ComboBox">
             <Setter Property="Background"              Value="#FAF9F7"/>
             <Setter Property="Foreground"              Value="#14181D"/>
-            <Setter Property="BorderBrush"             Value="#DDD9D3"/>
+            <Setter Property="BorderBrush"             Value="#8F887A"/>
             <Setter Property="BorderThickness"         Value="1"/>
             <Setter Property="FontSize"                Value="12"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -98,7 +98,7 @@
                                    PopupAnimation="Slide">
                                 <Border x:Name="DropDown"
                                         Background="#FFFFFF"
-                                        BorderBrush="#DDD9D3" BorderThickness="1"
+                                        BorderBrush="#8F887A" BorderThickness="1"
                                         CornerRadius="8"
                                         MinWidth="{TemplateBinding ActualWidth}"
                                         MaxHeight="220" SnapsToDevicePixels="True">
@@ -252,7 +252,7 @@
              ══════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="0" Grid.ColumnSpan="2"
                 Background="#FFFFFF"
-                BorderBrush="#DDD9D3" BorderThickness="0,0,0,1"
+                BorderBrush="#8F887A" BorderThickness="0,0,0,1"
                 Padding="20,12">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -264,7 +264,7 @@
                 <!-- Title -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal"
                             VerticalAlignment="Center" Margin="0,0,24,0">
-                    <Border Background="#0891B2" CornerRadius="9"
+                    <Border Background="#0E7490" CornerRadius="9"
                             Width="36" Height="36" Margin="0,0,10,0">
                         <TextBlock Text="⚡" FontSize="17"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -340,7 +340,7 @@
                     <ToggleButton x:Name="PrinterPickerButton" Grid.Column="0"
                                   IsChecked="{Binding IsPrinterPickerOpen, Mode=TwoWay}"
                                   Height="32" Cursor="Hand"
-                                  Background="#FAF9F7" BorderBrush="#DDD9D3" BorderThickness="1"
+                                  Background="#FAF9F7" BorderBrush="#8F887A" BorderThickness="1"
                                   Template="{StaticResource PickerToggle}">
                         <Grid>
                             <TextBlock Text="{Binding SelectedPrintersSummary}"
@@ -357,7 +357,7 @@
                            PlacementTarget="{Binding ElementName=PrinterPickerButton}"
                            Placement="Bottom" StaysOpen="False"
                            AllowsTransparency="True" PopupAnimation="Fade">
-                        <Border Background="#FFFFFF" BorderBrush="#DDD9D3" BorderThickness="1"
+                        <Border Background="#FFFFFF" BorderBrush="#8F887A" BorderThickness="1"
                                 CornerRadius="8" Padding="10"
                                 Width="{Binding ActualWidth, ElementName=PrinterPickerButton}">
                             <Border.Effect>
@@ -366,7 +366,7 @@
                             </Border.Effect>
                             <StackPanel>
                                 <!-- Search: the only way 50 printers stay navigable -->
-                                <Border Background="#FAF9F7" BorderBrush="#DDD9D3"
+                                <Border Background="#FAF9F7" BorderBrush="#8F887A"
                                         BorderThickness="1" CornerRadius="6" Height="30">
                                     <Grid>
                                         <TextBox Background="Transparent" BorderThickness="0"
@@ -454,7 +454,7 @@
                     <!-- Start -->
                     <Button Command="{Binding CreateJobsCommand}"
                             IsEnabled="{Binding CanStartPrinting}"
-                            Background="#0891B2" Tag="10"
+                            Background="#0E7490" Tag="10"
                             Padding="20,0" Height="36" Cursor="Hand"
                             Template="{StaticResource FlatBtn}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -495,7 +495,7 @@
                 <!-- Add Files -->
                 <Button Grid.Column="0"
                         Command="{Binding BrowseFilesCommand}"
-                        Background="#0891B2" Tag="7"
+                        Background="#0E7490" Tag="7"
                         Padding="12,6" Cursor="Hand"
                         Template="{StaticResource FlatBtn}">
                     <StackPanel Orientation="Horizontal">
@@ -562,7 +562,7 @@
              ══════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="2" Grid.Column="0"
                 Background="#FAF9F7"
-                BorderBrush="#E6F3F6" BorderThickness="0,0,0,1"
+                BorderBrush="#8F887A" BorderThickness="0,0,0,1"
                 Padding="20,10"
                 Visibility="{Binding IsPresetPanelOpen,
                              Converter={StaticResource BoolToVisibility}}">
@@ -583,7 +583,7 @@
 
                 <!-- Preset name input -->
                 <Border Grid.Column="1"
-                        Background="#FAF9F7" BorderBrush="#DDD9D3"
+                        Background="#FAF9F7" BorderBrush="#8F887A"
                         BorderThickness="1" CornerRadius="6" Height="30">
                     <TextBox Background="Transparent"
                              Foreground="#14181D" BorderThickness="0"
@@ -670,7 +670,7 @@
              ══════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="3" Grid.Column="0"
                 Background="#FDF1DC"
-                BorderBrush="#E08A00" BorderThickness="0,0,0,2"
+                BorderBrush="#B45309" BorderThickness="0,0,0,2"
                 Padding="20,10"
                 Visibility="{Binding HasAlert, Converter={StaticResource BoolToVisibility}}">
             <Grid>
@@ -681,12 +681,12 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0" Text="⚠" FontSize="18"
-                           Foreground="#E08A00" VerticalAlignment="Center"
+                           Foreground="#B45309" VerticalAlignment="Center"
                            Margin="0,0,12,0"/>
 
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                     <TextBlock Text="{DynamicResource PM_HeldBannerTitle}"
-                               FontSize="11" FontWeight="Bold" Foreground="#E08A00"/>
+                               FontSize="11" FontWeight="Bold" Foreground="#B45309"/>
                     <TextBlock Text="{Binding AlertMessage, Mode=OneWay}"
                                FontSize="12" Foreground="#8A5A00"
                                TextWrapping="Wrap"/>
@@ -702,7 +702,7 @@
                             Command="{Binding AbandonHeldPrintersCommand}"
                             Padding="12,5" FontSize="11"
                             Background="#FDF1DC" Foreground="#8A5A00"
-                            BorderBrush="#E08A00" BorderThickness="1"/>
+                            BorderBrush="#B45309" BorderThickness="1"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -712,7 +712,7 @@
              ══════════════════════════════════════════════════════════════ -->
         <Border Grid.Row="4" Grid.Column="0"
                 Background="#FAF9F7"
-                BorderBrush="#E6F3F6" BorderThickness="0,0,0,1"
+                BorderBrush="#8F887A" BorderThickness="0,0,0,1"
                 Padding="20,8"
                 Visibility="{Binding IsPrinting,
                              Converter={StaticResource BoolToVisibility}}">
@@ -1009,7 +1009,7 @@
 
                     <!-- Right-click context menu -->
                     <DataGrid.ContextMenu>
-                        <ContextMenu Background="#FFFFFF" BorderBrush="#DDD9D3">
+                        <ContextMenu Background="#FFFFFF" BorderBrush="#8F887A">
                             <MenuItem Header="{DynamicResource UPL_018}"
                                       Command="{Binding PreviewFileCommand}"
                                       CommandParameter="{Binding PlacementTarget.SelectedItem,

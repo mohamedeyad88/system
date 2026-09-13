@@ -16,7 +16,9 @@
     <!-- Darkened DDD9D3 -> A69E91 (1.34:1 -> 2.52:1 on the page ground). At 1.34 the
          group separators on the numbering bar were invisible, so its 18 groups blurred
          into one another and the toolbar read as unorganised. -->
-    <Color x:Key="BorderColor">#FFA69E91</Color>   <!-- الحدود والفواصل -->
+    <!-- A69E91 -> 8F887A (2.52:1 -> 3.34:1 on paper). 2.52 was still under the 3:1 a
+         control boundary needs, so card and field edges stayed faint on the shop floor. -->
+    <Color x:Key="BorderColor">#FF8F887A</Color>   <!-- الحدود والفواصل -->
     <!-- Darkened 6B6864 -> 57534E (5.54:1 -> 7.63:1 on white). At the 10-11px sizes
          this UI uses for secondary text, 5.54 read as washed-out to operators. -->
     <Color x:Key="MutedColor">#FF57534E</Color>    <!-- النص الثانوي والتسميات -->
@@ -27,10 +29,14 @@
     <Color x:Key="BrandSoftColor">#FFE6F3F6</Color> <!-- خلفية خفيفة للتحديد/الإبراز -->
 
     <!-- ── ألوان الحالة — Status (أهم ألوان في البرنامج) ─────────────────── -->
-    <Color x:Key="PrintingColor">#FFE08A00</Color> <!-- قيد الطباعة — شغّال دلوقتي -->
-    <Color x:Key="DoneColor">#FF1B7F4C</Color>     <!-- تم بنجاح -->
+    <!-- E08A00 -> B45309. As text the old amber measured 2.56:1 on paper — "printing"
+         is the one state an operator must read at a glance, and it was the faintest. -->
+    <Color x:Key="PrintingColor">#FFB45309</Color> <!-- قيد الطباعة — شغّال دلوقتي -->
+    <!-- 1B7F4C -> 166B40: the old green fell to 4.40:1 on its own tinted chip. -->
+    <Color x:Key="DoneColor">#FF166B40</Color>     <!-- تم بنجاح -->
     <Color x:Key="StoppedColor">#FFB42318</Color>  <!-- متوقف — تدخّل مطلوب (أحمر: للأخطاء فقط) -->
-    <Color x:Key="WaitingColor">#FF8A8783</Color>  <!-- في الانتظار / في الطابور -->
+    <!-- 8A8783 -> 726F6A (3.58:1 -> 5.00:1 on white). -->
+    <Color x:Key="WaitingColor">#FF726F6A</Color>  <!-- في الانتظار / في الطابور -->
 
     <!-- ══════════════════════════════════════════════════════════════════════════
          الفرش — Brushes
@@ -49,6 +55,16 @@
     <SolidColorBrush x:Key="Done"       Color="{StaticResource DoneColor}"/>
     <SolidColorBrush x:Key="Stopped"    Color="{StaticResource StoppedColor}"/>
     <SolidColorBrush x:Key="Waiting"    Color="{StaticResource WaitingColor}"/>
+
+    <!-- The fill for a primary button that carries white text. Brand (0891B2) stays the
+         identity cyan for selection, focus and highlights, but white on it is only 3.68:1,
+         so every white-labelled button failed. 0E7490 gives 5.36:1, and 0B5C72 on hover
+         7.53:1. Not used for ink text: ink on 0E7490 is 3.33:1 — ink belongs on Brand. -->
+    <Color x:Key="ActionColor">#FF0E7490</Color>
+    <Color x:Key="ActionHoverColor">#FF0B5C72</Color>
+    <SolidColorBrush x:Key="Action"      Color="{StaticResource ActionColor}"/>
+    <SolidColorBrush x:Key="ActionHover" Color="{StaticResource ActionHoverColor}"/>
+    <SolidColorBrush x:Key="OnAction"    Color="#FFFFFFFF"/>
 
     <!-- نص على العلامة: أبيض تباينه ضعيف (~3.3:1) فوق السماوي؛ الحبر أوضح.
          نستخدم الحبر كنص افتراضي على الأزرار السماوية، ونحتفظ بأبيض للحالات الغامقة. -->

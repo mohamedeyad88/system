@@ -128,7 +128,7 @@
                         </StackPanel>
                     </Border>
                     <Button Command="{Binding RefreshDataCommand}" Cursor="Hand"
-                            Background="{DynamicResource Brand}" Foreground="White" BorderThickness="0"
+                            Background="{DynamicResource Action}" Foreground="{DynamicResource OnAction}" BorderThickness="0"
                             Padding="16,10">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
