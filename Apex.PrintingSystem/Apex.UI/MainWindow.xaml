@@ -354,7 +354,13 @@
                                                 Background="{DynamicResource TrackColor}"
                                                 CornerRadius="4"
                                                 Padding="{TemplateBinding Padding}">
-                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <!-- The button sets Foreground locally (Muted), and a local value outranks a
+                                                 template trigger, so the old trigger's white never applied: the active
+                                                 language showed grey text on the filled tile. The trigger now colours the
+                                                 presenter inside the template, which a template trigger does control. -->
+                                            <ContentPresenter x:Name="langText"
+                                                              TextElement.Foreground="{TemplateBinding Foreground}"
+                                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
@@ -362,7 +368,7 @@
                                             </Trigger>
                                             <DataTrigger Binding="{Binding Source={x:Static services:LocalizationService.Instance}, Path=IsEnglishActive}" Value="True">
                                                 <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource Action}"/>
-                                                <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
+                                                <Setter TargetName="langText" Property="TextElement.Foreground" Value="{DynamicResource OnAction}"/>
                                             </DataTrigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -384,7 +390,13 @@
                                                 Background="{DynamicResource TrackColor}"
                                                 CornerRadius="4"
                                                 Padding="{TemplateBinding Padding}">
-                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <!-- The button sets Foreground locally (Muted), and a local value outranks a
+                                                 template trigger, so the old trigger's white never applied: the active
+                                                 language showed grey text on the filled tile. The trigger now colours the
+                                                 presenter inside the template, which a template trigger does control. -->
+                                            <ContentPresenter x:Name="langText"
+                                                              TextElement.Foreground="{TemplateBinding Foreground}"
+                                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
@@ -392,7 +404,7 @@
                                             </Trigger>
                                             <DataTrigger Binding="{Binding Source={x:Static services:LocalizationService.Instance}, Path=IsArabicActive}" Value="True">
                                                 <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource Action}"/>
-                                                <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
+                                                <Setter TargetName="langText" Property="TextElement.Foreground" Value="{DynamicResource OnAction}"/>
                                             </DataTrigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
