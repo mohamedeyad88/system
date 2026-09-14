@@ -57,7 +57,9 @@ namespace Apex.UI.ViewModels
 
         public ActivationViewModel()
         {
-            var info = LicenseManager.GetDeviceInfo();
+            // A licence that no longer validates (expired, revoked) may still name the id the
+            // server bound; support needs that one, not a new one.
+            var info = MachineIdentity.ToInfo(LicenseManager.GetLicensedDeviceId());
             DeviceDisplayId = info.DisplayId;
         }
 
@@ -152,6 +154,10 @@ namespace Apex.UI.ViewModels
                 IsActivating = false;
             }
         }
+
+        /// <summary>The screen says "enter the serial you received after purchase" — this is where to purchase.</summary>
+        [RelayCommand]
+        private void OpenPricing() => WebLinks.OpenPricing(IsTrialExpired ? "trial-ended" : "activation");
 
         [RelayCommand]
         private void OpenWhatsApp()

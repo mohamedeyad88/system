@@ -35,12 +35,29 @@ namespace Apex.UI.Services
                 if (dto == null || string.IsNullOrWhiteSpace(dto.Version)) return null;
 
                 bool newer = CompareVersions(dto.Version, currentVersion) > 0;
-                return new UpdateInfo(newer, dto.Version, currentVersion, dto.DownloadUrl ?? "", dto.Notes ?? "");
+                return new UpdateInfo(newer, dto.Version, currentVersion,
+                    AbsoluteDownloadUrl(dto.DownloadUrl, _endpoint), dto.Notes ?? "");
             }
             catch
             {
                 return null; // offline / server error — never block the app
             }
+        }
+
+        /// <summary>
+        /// The server can answer with a site-relative link ("/api/download/…" — the live
+        /// server did, 2026-09-14). Shell-opening that fails silently, so an update the
+        /// customer was told about could never be downloaded. Resolve it against the host
+        /// that answered. Only http(s) links survive; anything else yields "".
+        /// </summary>
+        public static string AbsoluteDownloadUrl(string? downloadUrl, string endpoint)
+        {
+            if (string.IsNullOrWhiteSpace(downloadUrl)) return "";
+            if (!Uri.TryCreate(endpoint, UriKind.Absolute, out var baseUri)) return "";
+            if (!Uri.TryCreate(baseUri, downloadUrl.Trim(), out var resolved)) return "";
+            return resolved.Scheme == Uri.UriSchemeHttps || resolved.Scheme == Uri.UriSchemeHttp
+                ? resolved.AbsoluteUri
+                : "";
         }
 
         /// <summary>Compares dotted numeric versions ("2.3.0" vs "2.2.1"). &gt;0 if a is newer.</summary>

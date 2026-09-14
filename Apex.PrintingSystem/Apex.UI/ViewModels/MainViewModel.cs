@@ -48,6 +48,7 @@ namespace Apex.UI.ViewModels
             // the shell navigates there and drops the file into the queue.
             _handoff.SendToPrintingRequested += OnSendToPrinting;
             _ = CheckForUpdatesAsync();   // fire-and-forget; never blocks startup
+            CheckLicenseNotice();
         }
 
         private void OnSendToPrinting(string filePath) => OnUi(() =>
@@ -85,6 +86,7 @@ namespace Apex.UI.ViewModels
         // ── App update notice (server-driven) ─────────────────────────────────
         [ObservableProperty] private bool _updateAvailable;
         [ObservableProperty] private string _updateVersion = "";
+        [ObservableProperty] private string _updateNotes = "";
         private string _updateUrl = "";
 
         private async Task CheckForUpdatesAsync()
@@ -98,6 +100,7 @@ namespace Apex.UI.ViewModels
                 {
                     _updateUrl = info.DownloadUrl;
                     UpdateVersion = info.LatestVersion;
+                    UpdateNotes = info.Notes;
                     UpdateAvailable = true;
                 }
             }
@@ -121,6 +124,49 @@ namespace Apex.UI.ViewModels
 
         [RelayCommand]
         private void DismissUpdate() => UpdateAvailable = false;
+
+        // ── Licence ending soon ──────────────────────────────────────────────
+        // The site sells one- and two-year subscriptions, and an expired one used to
+        // surface only as the activation window on the morning it ran out — mid-week,
+        // with a job waiting. The shop now hears about it while there is time to renew.
+        [ObservableProperty] private bool _licenseNoticeVisible;
+        [ObservableProperty] private string _licenseNoticeText = "";
+        [ObservableProperty] private string _licenseNoticeAction = "";
+        private string _licenseNoticeReason = "";
+
+        /// <summary>Trial: last 2 days. Subscription: last 30 days. Perpetual: never.</summary>
+        public static (bool Show, bool IsTrial, int Days) LicenseNoticeFor(Apex.Licensing.ValidationResult r)
+        {
+            if (!r.IsValid || r.ExpiresUtc is null) return (false, false, 0);
+            int days = Math.Max(1, r.DaysRemaining);
+            if (r.Type == Apex.Licensing.LicenseType.Trial) return (r.DaysRemaining <= 2, true, days);
+            if (r.ExpiresUtc.Value.Year >= 9999) return (false, false, 0);
+            return (r.DaysRemaining <= 30, false, days);
+        }
+
+        private void CheckLicenseNotice()
+        {
+            try
+            {
+                var r = Apex.Licensing.LicenseManager.Validate();
+                var (show, trial, days) = LicenseNoticeFor(r);
+                if (!show) return;
+
+                LicenseNoticeText = trial
+                    ? Lf("Notice_TrialEnding", days)
+                    : Lf("Notice_LicenseEnding", days, r.ExpiresUtc!.Value.ToLocalTime().ToString("yyyy-MM-dd"));
+                LicenseNoticeAction = L(trial ? "Notice_Buy" : "Notice_Renew");
+                _licenseNoticeReason = trial ? "trial-ending" : "renewal";
+                LicenseNoticeVisible = true;
+            }
+            catch { /* a notice is never worth blocking the shell */ }
+        }
+
+        [RelayCommand]
+        private void OpenLicenseNoticeLink() => Services.WebLinks.OpenPricing(_licenseNoticeReason);
+
+        [RelayCommand]
+        private void DismissLicenseNotice() => LicenseNoticeVisible = false;
 
         partial void OnCurrentViewModelChanged(ViewModelBase? value)
         {

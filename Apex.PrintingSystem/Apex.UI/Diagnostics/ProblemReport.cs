@@ -126,7 +126,9 @@ namespace Apex.UI.Diagnostics
             Line("Windows", $"{RuntimeInformation.OSDescription} {RuntimeInformation.OSArchitecture}");
             Line(".NET", RuntimeInformation.FrameworkDescription);
             Line("UI language", CultureInfo.CurrentUICulture.Name);
-            Line("Device ID", Safe(() => Apex.Licensing.LicenseManager.GetDeviceInfo().DisplayId));
+            Line("Device ID (licence)", Safe(() => Apex.Licensing.MachineIdentity.ToInfo(Apex.Licensing.LicenseManager.GetLicensedDeviceId()).DisplayId));
+            Line("Device ID (current)", Safe(() => Apex.Licensing.LicenseManager.GetDeviceInfo().DisplayId));
+            Line("Accepted device IDs", Safe(() => string.Join(", ", Apex.Licensing.MachineIdentity.GetCandidateDeviceIds())));
             Line("License", Safe(() =>
             {
                 var r = Apex.Licensing.LicenseManager.Validate();

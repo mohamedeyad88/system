@@ -424,27 +424,50 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Update-available notice (server-driven, dismissible) -->
-            <Border Grid.Row="0" Background="{DynamicResource Brand}" Padding="14,8"
+            <StackPanel Grid.Row="0">
+            <!-- Update-available notice (server-driven, dismissible). Action, not Brand:
+                 white text on the identity cyan is 3.68:1. -->
+            <Border Background="{DynamicResource Action}" Padding="14,8"
                     Visibility="{Binding UpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Grid FlowDirection="RightToLeft">
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" VerticalAlignment="Center" Foreground="{DynamicResource OnAction}" FontSize="13">
-                        <Run Text="🚀 تحديث جديد متاح — الإصدار"/>
+                    <TextBlock Grid.Column="0" VerticalAlignment="Center" Foreground="{DynamicResource OnAction}" FontSize="13" TextWrapping="Wrap">
+                        <Run Text="{DynamicResource Update_Available}"/>
                         <Run Text="{Binding UpdateVersion}" FontWeight="Bold"/>
+                        <Run Text="{Binding UpdateNotes}"/>
                     </TextBlock>
-                    <Button Grid.Column="1" Content="تحميل التحديث" Command="{Binding OpenUpdateLinkCommand}"
-                            Background="{DynamicResource Panel}" Foreground="{DynamicResource BrandDeep}" BorderThickness="0"
-                            Padding="14,5" FontSize="12" FontWeight="SemiBold" Cursor="Hand" Margin="0,0,8,0"/>
+                    <Button Grid.Column="1" Content="{DynamicResource Update_Download}" Command="{Binding OpenUpdateLinkCommand}"
+                            Background="{DynamicResource Panel}" Foreground="{DynamicResource Action}" BorderThickness="0"
+                            Padding="14,5" FontSize="12" FontWeight="SemiBold" Cursor="Hand" Margin="8,0"/>
                     <Button Grid.Column="2" Content="✕" Command="{Binding DismissUpdateCommand}"
                             Background="Transparent" Foreground="{DynamicResource OnAction}" BorderThickness="0"
                             Padding="8,4" FontSize="12" Cursor="Hand"/>
                 </Grid>
             </Border>
+
+            <!-- Trial / subscription ending soon -->
+            <Border Background="{DynamicResource PrintingSoft}" BorderBrush="{DynamicResource Printing}" BorderThickness="0,0,0,1" Padding="14,8"
+                    Visibility="{Binding LicenseNoticeVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" VerticalAlignment="Center" Foreground="{DynamicResource Ink}" FontSize="13"
+                               TextWrapping="Wrap" Text="{Binding LicenseNoticeText}"/>
+                    <Button Grid.Column="1" Content="{Binding LicenseNoticeAction}" Command="{Binding OpenLicenseNoticeLinkCommand}"
+                            Style="{StaticResource Button.Primary}" Padding="14,5" FontSize="12" Margin="8,0"/>
+                    <Button Grid.Column="2" Content="✕" Command="{Binding DismissLicenseNoticeCommand}"
+                            Background="Transparent" Foreground="{DynamicResource Ink}" BorderThickness="0"
+                            Padding="8,4" FontSize="12" Cursor="Hand"/>
+                </Grid>
+            </Border>
+            </StackPanel>
 
             <controls:TransitionContentControl Grid.Row="1" Content="{Binding CurrentViewModel}"/>
 

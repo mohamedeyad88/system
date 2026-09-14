@@ -94,6 +94,10 @@
                     </Border>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <!-- Buy / renew — this screen shows the expiry date, so it is where renewal starts. -->
+                        <Button Command="{Binding OpenPricingCommand}" Content="{DynamicResource Buy_Button}"
+                                Style="{StaticResource Button.Primary}" Padding="16,10" FontSize="13" Margin="0,0,10,0"/>
+
                         <!-- Copy Button -->
                         <Button Command="{Binding CopyDeviceIdCommand}" Margin="0,0,10,0"
                                 Cursor="Hand">
@@ -103,13 +107,14 @@
                                             Padding="16,10" BorderBrush="{DynamicResource Muted}" BorderThickness="1">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="📋 " FontSize="14"/>
+                                            <!-- Was white on the light Hover ground (1.3:1). -->
                                             <TextBlock Text="{DynamicResource LIC_009}" FontSize="13" FontWeight="SemiBold"
-                                                       Foreground="{DynamicResource OnAction}"/>
+                                                       Foreground="{DynamicResource Ink}"/>
                                         </StackPanel>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="b" Property="Background" Value="{DynamicResource Muted}"/>
+                                            <Setter TargetName="b" Property="Background" Value="{DynamicResource BrandSoft}"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>

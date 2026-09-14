@@ -108,7 +108,7 @@ namespace Apex.UI
                 {
                     if (LicenseManager.HasFullLicense())
                     {
-                        var deviceId = LicenseManager.GetDeviceInfo().DeviceId;
+                        var deviceId = LicenseManager.GetLicensedDeviceId();
                         using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(5));
                         // Run off the UI thread: sync-over-async on the dispatcher would
                         // deadlock if the awaited call captured the UI context.

@@ -105,8 +105,10 @@ namespace Apex.Licensing
                 }
 
                 // ── 3. Device binding ──
+                // Any id this hardware produces: a trial opened before the 2.8.3 disk
+                // choice recorded the old id, and must not read as a hardware change.
                 if (!string.IsNullOrEmpty(state.DeviceId) &&
-                    state.DeviceId != deviceId)
+                    !System.Linq.Enumerable.Contains(MachineIdentity.GetCandidateDeviceIds(), state.DeviceId))
                 {
                     return Error(LicenseStatus.HardwareMismatch,
                         "تم اكتشاف تغيير في أجهزة الجهاز.");

@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:svc="clr-namespace:Apex.UI.Services"
-        Title="تفعيل أبكس لحلول الطباعة المتكاملة"
+        Title="{DynamicResource ACT_001}"
         Width="600" Height="820"
         MinHeight="700" MaxHeight="920"
         WindowStartupLocation="CenterScreen"
@@ -82,10 +82,11 @@
                     HorizontalAlignment="Center" Margin="0,0,0,16">
                 <TextBlock Text="🖨️" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
-            <TextBlock Text="أبكس لحلول الطباعة المتكاملة"
+            <!-- The name the website sells under; it used to read "أبكس لحلول الطباعة المتكاملة". -->
+            <TextBlock Text="{DynamicResource ACT_002}"
                        FontSize="22" FontWeight="Bold" Foreground="{DynamicResource Ink}"
                        HorizontalAlignment="Center"/>
-            <TextBlock Text="Apex Printing Solutions"
+            <TextBlock Text="apexprint.me"
                        FontSize="13" Foreground="{DynamicResource Muted}"
                        HorizontalAlignment="Center" Margin="0,4,0,0"/>
         </StackPanel>
@@ -197,6 +198,12 @@
                            FontSize="12" TextWrapping="Wrap" Margin="0,0,0,4"
                            Visibility="{Binding OnlineStatus, Converter={StaticResource StringToVisibilityConverter}}"/>
 
+                <!-- No serial yet: the screen asks for one "received after purchase", so say where to buy. -->
+                <Button Command="{Binding OpenPricingCommand}" Style="{StaticResource BtnSecondary}"
+                        HorizontalAlignment="Stretch" Padding="14,10" Margin="0,4,0,0">
+                    <TextBlock Text="{DynamicResource Buy_NoSerial}" FontWeight="SemiBold" FontSize="13"/>
+                </Button>
+
                 <!-- Separator -->
                 <Grid Margin="0,8,0,12">
                     <Rectangle Height="1" Fill="{DynamicResource Hover}" VerticalAlignment="Center"/>
@@ -244,7 +251,7 @@
              Footer note
              ══════════════════════════════════════════ -->
         <TextBlock Grid.Row="5"
-                   Text="Apex Printing Solutions © 2025 | الدعم الفني: 01099088053"
+                   Text="{DynamicResource ACT_018}"
                    FontSize="11" Foreground="{DynamicResource Muted}"
                    HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
     </Grid>

@@ -20,6 +20,7 @@ public class OwnerLicenseValidationTests
         var (isValid, payload) = LicenseCrypto.VerifyLicense(signed!);
         Assert.True(isValid, "signature failed to verify against embedded public key");
         Assert.NotNull(payload);
-        Assert.Equal(MachineIdentity.GetDeviceId(), payload!.DeviceId);
+        // The rule LicenseManager applies: any id this hardware produces (2.8.3 disk choice + legacy).
+        Assert.Contains(payload!.DeviceId, MachineIdentity.GetCandidateDeviceIds());
     }
 }

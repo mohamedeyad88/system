@@ -103,8 +103,7 @@ namespace Apex.Licensing
                     return (false, Error(LicenseStatus.Expired,
                         $"انتهت صلاحية الترخيص في {payload.ExpiresUtc:yyyy-MM-dd}."));
 
-                var currentDevice = MachineIdentity.GetDeviceId();
-                if (!string.IsNullOrEmpty(payload.DeviceId) && payload.DeviceId != currentDevice)
+                if (!IsThisDevice(payload.DeviceId))
                     return (false, Error(LicenseStatus.HardwareMismatch,
                         "هذا الترخيص مُصدَّر لجهاز آخر."));
 
@@ -147,6 +146,42 @@ namespace Apex.Licensing
         }
 
         /// <summary>
+        /// A license names this machine when it was issued for any id this hardware can
+        /// produce — see <see cref="MachineIdentity.GetCandidateDeviceIds"/>. An empty id
+        /// is an unbound license.
+        /// </summary>
+        private static bool IsThisDevice(string? licensedDeviceId) =>
+            string.IsNullOrEmpty(licensedDeviceId) ||
+            System.Linq.Enumerable.Contains(MachineIdentity.GetCandidateDeviceIds(), licensedDeviceId);
+
+        /// <summary>
+        /// The id the server knows this machine by: the one inside the installed license
+        /// when it is valid for this hardware, otherwise the current id. Revocation checks
+        /// and re-activation must use it — a shop activated before 2.8.3 is bound on the
+        /// server under its old id, and asking with the new one would find nothing (so a
+        /// refund could not be revoked) or spend one of its device changes.
+        /// </summary>
+        public static string GetLicensedDeviceId()
+        {
+            try
+            {
+                if (File.Exists(LicensePath))
+                {
+                    var signed = JsonSerializer.Deserialize<SignedLicense>(File.ReadAllText(LicensePath, Encoding.UTF8));
+                    if (signed != null)
+                    {
+                        var (isValid, payload) = LicenseCrypto.VerifyLicense(signed);
+                        if (isValid && payload != null && !string.IsNullOrEmpty(payload.DeviceId) &&
+                            IsThisDevice(payload.DeviceId))
+                            return payload.DeviceId;
+                    }
+                }
+            }
+            catch { /* fall back to the current id */ }
+            return MachineIdentity.GetDeviceId();
+        }
+
+        /// <summary>
         /// Returns true if a valid full license is already installed.
         /// </summary>
         public static bool HasFullLicense()
@@ -182,9 +217,7 @@ namespace Apex.Licensing
                         $"انتهت صلاحية الترخيص في {payload.ExpiresUtc:yyyy-MM-dd}.");
 
                 // Check hardware binding
-                var currentDevice = MachineIdentity.GetDeviceId();
-                if (!string.IsNullOrEmpty(payload.DeviceId) &&
-                    payload.DeviceId != currentDevice)
+                if (!IsThisDevice(payload.DeviceId))
                     return Error(LicenseStatus.HardwareMismatch,
                         "الترخيص مقيد بجهاز آخر.");
 

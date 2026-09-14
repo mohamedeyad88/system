@@ -232,6 +232,14 @@
     <sys:String x:Key="Report_DialogTitle">Save problem report</sys:String>
     <sys:String x:Key="Report_Saved">Report saved:&#x0a;{0}&#x0a;&#x0a;Send this file to support on WhatsApp with a short note: what you were doing and what appeared.</sys:String>
     <sys:String x:Key="Report_Failed">The report could not be prepared:&#x0a;{0}</sys:String>
+    <sys:String x:Key="Update_Available">A new version is available —</sys:String>
+    <sys:String x:Key="Update_Download">Download update</sys:String>
+    <sys:String x:Key="Notice_TrialEnding">Your free trial ends in {0} day(s). Buy now so work does not stop.</sys:String>
+    <sys:String x:Key="Notice_LicenseEnding">Your subscription ends in {0} day(s) ({1}). Renew before then so the program keeps running.</sys:String>
+    <sys:String x:Key="Notice_Buy">Buy now</sys:String>
+    <sys:String x:Key="Notice_Renew">Renew</sys:String>
+    <sys:String x:Key="Buy_Button">Buy or renew</sys:String>
+    <sys:String x:Key="Buy_NoSerial">No serial yet? Buy on the website</sys:String>
     <sys:String x:Key="Numbering_ClearRecent">Clear all</sys:String>
     <sys:String x:Key="Numbering_ClearRecent_Tip">Empty the recent projects list. The files themselves stay on your computer.</sys:String>
     <sys:String x:Key="Numbering_RemoveRecent_Tip">Remove from this list. The file itself stays on your computer.</sys:String>
@@ -248,7 +256,7 @@
     <sys:String x:Key="Numbering_DeleteButton">Delete</sys:String>
     <sys:String x:Key="Num_Resuming">Resuming...</sys:String>
     <sys:String x:Key="SV_014">Collapse multiple spaces</sys:String>
-    <sys:String x:Key="ACT_018">Apex Printing Solutions © 2025 | Support: 01099088053</sys:String>
+    <sys:String x:Key="ACT_018">Apex Print | Support: 01099088053</sys:String>
     <sys:String x:Key="TD_082">Y (mm)</sys:String>
     <sys:String x:Key="Upload_SelectPrinter">Select Printer</sys:String>
     <sys:String x:Key="Numbering_SheetsUnit">sheets</sys:String>
@@ -317,7 +325,7 @@
     <sys:String x:Key="PaperCutting_WastePercent">Production Waste %</sys:String>
     <sys:String x:Key="Numbering_TotalNumbersLabel">Total Numbers:</sys:String>
     <sys:String x:Key="TD_036">Image variable</sys:String>
-    <sys:String x:Key="ACT_002">Apex Integrated Printing Solutions</sys:String>
+    <sys:String x:Key="ACT_002">Apex Print</sys:String>
     <sys:String x:Key="Quotation_CostBreakdown">Cost Breakdown</sys:String>
     <sys:String x:Key="Monitor_PrinterStatus">Printer Status</sys:String>
     <sys:String x:Key="Msg_Saved">✅ Saved: {0}</sys:String>
@@ -964,7 +972,7 @@
     <sys:String x:Key="Quotation_FinalPrice">Final Price</sys:String>
     <sys:String x:Key="TD_057">Center horizontally</sys:String>
     <sys:String x:Key="Nav_TemplateDesigner">Template Designer</sys:String>
-    <sys:String x:Key="ACT_001">Activate Apex Integrated Printing Solutions</sys:String>
+    <sys:String x:Key="ACT_001">Activate Apex Print</sys:String>
     <sys:String x:Key="TD_081">X (mm)</sys:String>
     <sys:String x:Key="SV_NoDataExport">⚠ No data to export — paste the data first</sys:String>
     <sys:String x:Key="PC_001">pcs</sys:String>

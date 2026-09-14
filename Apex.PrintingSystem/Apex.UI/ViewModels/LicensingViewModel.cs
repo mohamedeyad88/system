@@ -59,6 +59,10 @@ namespace Apex.UI.ViewModels
         }
 
         [RelayCommand]
+        private void OpenPricing() =>
+            WebLinks.OpenPricing(IsTrialActive ? "trial" : IsLicenseValid ? "renewal" : "licence-screen");
+
+        [RelayCommand]
         private void OpenWhatsApp()
         {
             try { WhatsAppActivationService.OpenWhatsApp(DeviceDisplayId); }
@@ -160,7 +164,8 @@ namespace Apex.UI.ViewModels
         [RelayCommand]
         private void RefreshStatus()
         {
-            var info = LicenseManager.GetDeviceInfo();
+            // The id the licence server knows this machine by — what support must be sent.
+            var info = MachineIdentity.ToInfo(LicenseManager.GetLicensedDeviceId());
             DeviceDisplayId = info.DisplayId;
 
             var r = LicenseManager.Validate();

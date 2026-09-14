@@ -38,7 +38,9 @@ namespace Apex.UI.Services
             if (string.IsNullOrWhiteSpace(serial))
                 return new ActivationOutcome(false, "يرجى إدخال رقم السيريال.", null);
 
-            var info = LicenseManager.GetDeviceInfo();
+            // Re-activating a machine that already holds a license keeps the id the server
+            // bound it under, so it stays idempotent instead of spending a device change.
+            var info = MachineIdentity.ToInfo(LicenseManager.GetLicensedDeviceId());
             var url = $"{BaseUrl}/api/apex/activate";
             var requestBody = JsonSerializer.Serialize(new
             {

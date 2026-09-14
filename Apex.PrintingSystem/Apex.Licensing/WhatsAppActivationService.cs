@@ -13,7 +13,8 @@ namespace Apex.Licensing
         // Support WhatsApp number (international format, digits only)
         private const string SupportPhone = "201099088053";
 
-        private const string ProductName = "أبكس لحلول الطباعة المتكاملة";
+        // The name the website sells under.
+        private const string ProductName = "Apex Print";
 
         /// <summary>
         /// Returns a WhatsApp URL that can be opened with <see cref="Process.Start"/>.
@@ -51,11 +52,11 @@ namespace Apex.Licensing
         private static string BuildActivationMessage(string deviceDisplayId)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"مرحبًا، أريد تفعيل برنامج {ProductName}.");
+            // Shops buy a serial now; asking for a "licence file" sent support down the old
+            // manual path. The device id stays, for a rebind or an offline .apex.
+            sb.AppendLine($"مرحبًا، عايز أشتري أو أفعّل برنامج {ProductName}.");
             sb.AppendLine();
             sb.AppendLine($"رقم الجهاز: {deviceDisplayId}");
-            sb.AppendLine();
-            sb.AppendLine("يرجى إرسال ملف الترخيص. شكرًا.");
             return sb.ToString().TrimEnd();
         }
     }
