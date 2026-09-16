@@ -168,6 +168,8 @@ namespace Apex.UI.ViewModels
             for (int i = 0; i < Slots.Count; i++)
             {
                 Slots[i].PreviewNumber = CalculatePreviewNumber(StartNumber, i);
+                // A prefix or an extra digit makes the number wider; the box follows it.
+                AutoFitSlot(Slots[i], keepAnchor: true);
             }
 
             // Redraw the rendered overlay too, not just the field boxes.
@@ -1649,6 +1651,9 @@ namespace Apex.UI.ViewModels
                 Slots = new ObservableCollection<NumberSlot>();
             }
 
+            // Born the size of its own number, not 30% of the sheet.
+            AutoFitSlot(newSlot, keepAnchor: false);
+
             Slots.Add(newSlot);
             SelectedSlot = newSlot;
 
@@ -2199,6 +2204,47 @@ namespace Apex.UI.ViewModels
             nameof(NumberSlot.BarcodeType),
         };
 
+        /// <summary>The properties that change how big the number is drawn.</summary>
+        private static readonly HashSet<string> SlotSizeProperties = new()
+        {
+            nameof(NumberSlot.FontFamily), nameof(NumberSlot.FontSize),
+            nameof(NumberSlot.IsBold), nameof(NumberSlot.SlotKind),
+        };
+
+        private bool _autoFitting;
+
+        /// <summary>
+        /// Keeps a field's box the size of the number in it — see <see cref="Numbering.SlotAutoFit"/>.
+        /// <paramref name="keepAnchor"/> is false only for a field that does not exist on the
+        /// sheet yet, where there is no number position to preserve.
+        /// </summary>
+        private void AutoFitSlot(NumberSlot? slot, bool keepAnchor)
+        {
+            if (slot == null || _autoFitting) return;
+
+            var size = Numbering.SlotAutoFit.MeasureFor(slot, CanvasWidth, CanvasHeight);
+            if (size is not { } fit || fit.Width <= 0f || fit.Height <= 0f) return;
+            if (Math.Abs(fit.Width - slot.Width) < 0.0005f && Math.Abs(fit.Height - slot.Height) < 0.0005f) return;
+
+            _autoFitting = true;
+            try
+            {
+                if (keepAnchor)
+                {
+                    var (x, y) = Numbering.SlotAutoFit.KeepAnchor(
+                        slot.Alignment, slot.X, slot.Y, slot.Width, slot.Height, fit.Width, fit.Height);
+                    slot.X = x;
+                    slot.Y = y;
+                }
+                slot.Width = fit.Width;
+                slot.Height = fit.Height;
+            }
+            finally
+            {
+                _autoFitting = false;
+            }
+        }
+
         partial void OnSlotsChanged(ObservableCollection<NumberSlot>? oldValue, ObservableCollection<NumberSlot> newValue)
         {
             if (oldValue != null) oldValue.CollectionChanged -= OnSlotsCollectionChanged;
@@ -2239,6 +2285,10 @@ namespace Apex.UI.ViewModels
         private void OnSlotPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == null || !SlotLookProperties.Contains(e.PropertyName)) return;
+
+            // Type size, weight, family or kind changed → the box follows the number.
+            if (SlotSizeProperties.Contains(e.PropertyName))
+                AutoFitSlot(sender as NumberSlot, keepAnchor: true);
 
             LivePreviewImage = null;
             SchedulePreviewUpdate();
