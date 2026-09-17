@@ -334,6 +334,7 @@ namespace Apex.UI.ViewModels
             OnPropertyChanged(nameof(IsPrepareMode));
             OnPropertyChanged(nameof(IsLayoutMode));
             OnPropertyChanged(nameof(IsExecuteMode));
+            DesignAvailabilityChanged();
         }
 
         // Cycle-based printing properties
@@ -739,6 +740,9 @@ namespace Apex.UI.ViewModels
                 TemplateImage = null;
                 LivePreviewImage = null;
             }
+
+            // TemplateImage may already have been null, so its own hook would not fire.
+            DesignAvailabilityChanged();
         }
 
         /// <summary>
@@ -779,7 +783,26 @@ namespace Apex.UI.ViewModels
         /// <summary>True when there is a design on the canvas to remove.</summary>
         public bool HasTemplate => TemplateImage != null || !string.IsNullOrWhiteSpace(TemplatePath);
 
-        partial void OnTemplateImageChanged(BitmapSource? value) => OnPropertyChanged(nameof(HasTemplate));
+        /// <summary>
+        /// Placing a field needs a design under it and the design tab open.
+        ///
+        /// <para>The buttons used to stay live and answer a click with a modal warning
+        /// ("أدرج التصميم الأول"). Clicking three times produced three warnings to dismiss
+        /// one after another, which is what an operator sees as the message "always popping
+        /// up". A control that cannot do anything should look like it.</para>
+        /// </summary>
+        public bool CanEditDesign => HasTemplate && WorkflowMode == WorkflowMode.Design;
+
+        partial void OnTemplateImageChanged(BitmapSource? value) => DesignAvailabilityChanged();
+
+        private void DesignAvailabilityChanged()
+        {
+            OnPropertyChanged(nameof(HasTemplate));
+            OnPropertyChanged(nameof(CanEditDesign));
+            AddSlotCommand.NotifyCanExecuteChanged();
+            StartLayoutCommand.NotifyCanExecuteChanged();
+            NavigateToLayoutCommand.NotifyCanExecuteChanged();
+        }
 
         private void UpdateComputedValues()
         {
@@ -1523,29 +1546,19 @@ namespace Apex.UI.ViewModels
         /// <summary>
         /// Navigate to Layout mode (Design tab)
         /// </summary>
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(HasTemplate))]
         private void NavigateToLayout()
         {
-
-            if (string.IsNullOrEmpty(TemplatePath))
-            {
-                MessageBox.Show(L("Num_InsertDesignFirst"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            if (!HasTemplate) return;
 
             _navigationHistory.Push(WorkflowMode);
             WorkflowMode = WorkflowMode.Design;
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(HasTemplate))]
         private void StartLayout()
         {
-
-            if (string.IsNullOrEmpty(TemplatePath))
-            {
-                MessageBox.Show(L("Num_InsertDesignFirst"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            if (!HasTemplate) return;
 
             // ═══════════════════════════════════════════════════════════════════
             // CRITICAL FIX: Save current mode to navigation history for back button
@@ -1590,24 +1603,15 @@ namespace Apex.UI.ViewModels
             }
         }
 
-        [RelayCommand]
+        /// <summary>
+        /// Adds a numbering field. Disabled — not warned about — until there is a design to
+        /// put it on: the canvas is sized by the design image, so on an empty canvas the
+        /// field would be added to a zero-sized surface and never appear.
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(CanEditDesign))]
         private void AddSlot()
         {
-
-            if (WorkflowMode != WorkflowMode.Design)
-            {
-                MessageBox.Show(L("Num_SwitchDesignMode"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            // The canvas is sized by the design image, so with no design loaded a new
-            // field is added to a zero-sized surface and simply never appears — the
-            // operator clicks "+" and nothing happens. Say why instead of failing mute.
-            if (TemplateImage == null && string.IsNullOrWhiteSpace(TemplatePath))
-            {
-                MessageBox.Show(L("Num_InsertDesignFirst"), L("Dlg_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            if (!CanEditDesign) return;
 
             SaveUndoState(); // snapshot before adding
             _slotCounter++;
