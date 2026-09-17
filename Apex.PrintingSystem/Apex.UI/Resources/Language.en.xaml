@@ -240,6 +240,7 @@
     <sys:String x:Key="Notice_Renew">Renew</sys:String>
     <sys:String x:Key="Buy_Button">Buy or renew</sys:String>
     <sys:String x:Key="Buy_NoSerial">No serial yet? Buy on the website</sys:String>
+    <sys:String x:Key="Num_ExportWithoutNumbers">This export will be the design without numbers — there are no numbering fields on the sheet.&#x0a;&#x0a;Continue?</sys:String>
     <sys:String x:Key="Numbering_ClearRecent">Clear all</sys:String>
     <sys:String x:Key="Numbering_ClearRecent_Tip">Empty the recent projects list. The files themselves stay on your computer.</sys:String>
     <sys:String x:Key="Numbering_RemoveRecent_Tip">Remove from this list. The file itself stays on your computer.</sys:String>

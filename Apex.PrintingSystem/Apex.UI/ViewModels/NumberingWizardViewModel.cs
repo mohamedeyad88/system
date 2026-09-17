@@ -3141,9 +3141,22 @@ namespace Apex.UI.ViewModels
         //  LOW PRIORITY ③  —  تصدير المعاينة كـ PNG
         // ══════════════════════════════════════════════════════════════
 
+        /// <summary>
+        /// Exports the sheet as it will print — numbers included.
+        ///
+        /// <para>It used to take <c>LivePreviewImage ?? TemplateImage</c>, so whenever the
+        /// rendered sheet was not on screen yet (just after loading a design, or after an
+        /// edit dropped it) the export silently wrote the BARE DESIGN — no numbers — into a
+        /// file called "preview-000001". The operator sends that to a customer as a proof.
+        /// The numbers are rendered first now, and a design with no fields on it says so
+        /// instead of pretending.</para>
+        /// </summary>
         [RelayCommand]
-        private void ExportPreview()
+        private async Task ExportPreview()
         {
+            if (LivePreviewImage == null && Slots?.Count > 0 && !string.IsNullOrWhiteSpace(TemplatePath))
+                await GenerateLivePreviewAsync();
+
             var image = LivePreviewImage ?? TemplateImage;
             if (image == null)
             {
@@ -3152,12 +3165,17 @@ namespace Apex.UI.ViewModels
                 return;
             }
 
+            if (LivePreviewImage == null &&
+                MessageBox.Show(L("Num_ExportWithoutNumbers"), L("Dlg_Notice"),
+                    MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK)
+                return;
+
             var dlg = new SaveFileDialog
             {
                 Title = L("Num_ExportPreview"),
                 Filter = "PNG Image|*.png|JPEG Image|*.jpg",
                 DefaultExt = ".png",
-                FileName = $"preview-{StartNumber:D6}"
+                FileName = LivePreviewImage != null ? $"numbered-{StartNumber:D6}" : "design"
             };
             if (dlg.ShowDialog() != true) return;
 
