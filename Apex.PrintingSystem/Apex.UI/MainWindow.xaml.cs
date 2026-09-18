@@ -11,6 +11,38 @@ namespace Apex.UI
         {
             InitializeComponent();
             Loaded += MainWindow_Loaded;
+            Closing += MainWindow_Closing;
+        }
+
+        /// <summary>
+        /// A print run lives and dies with this process, so closing the window while
+        /// one is in flight throws the rest of the order away. Ask first, and default
+        /// to staying open.
+        /// </summary>
+        private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (DataContext is not MainViewModel vm) return;
+
+            MainViewModel.ShutdownPrompt prompt;
+            try { prompt = vm.CurrentShutdownPrompt(); }
+            catch { return; }   // never trap the operator in a window that will not close
+
+            if (!prompt.Ask) return;
+
+            var answer = MessageBox.Show(
+                ViewModelBase.Lf("Shell_ExitDuringPrintBody", prompt.OutstandingCopies),
+                ViewModelBase.L("Shell_ExitDuringPrintTitle"),
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning,
+                MessageBoxResult.No);
+
+            if (answer != MessageBoxResult.Yes)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            vm.AbandonPrintRunForShutdown();
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)

@@ -34,6 +34,22 @@ namespace Apex.Services.Printing
         private bool _isPaused;
         private readonly ManualResetEventSlim _pauseEvent = new(true);
 
+        private int _outstandingCopies;
+
+        /// <summary>
+        /// A run is in progress. The whole batch executes inside this process — each
+        /// page is rendered here and handed to the spooler one copy at a time — so
+        /// anything still owed dies with the process. Closing the app therefore has
+        /// to ask first, which is what this flag is for.
+        /// </summary>
+        public bool IsRunning { get; private set; }
+
+        /// <summary>
+        /// Copies the run still owes: never printed, never failed, never held. Zero
+        /// while idle. This is what would be lost if the app were closed right now.
+        /// </summary>
+        public int OutstandingCopies => Volatile.Read(ref _outstandingCopies);
+
         /// <summary>
         /// Stations the operator gave up on. A held printer otherwise waits forever,
         /// which is correct — the shop's rule is that work is never silently skipped —
@@ -227,12 +243,20 @@ namespace Apex.Services.Printing
             var held = new Dictionary<BatchJob, bool>();
             foreach (var job in pending) { remaining[job] = copiesPerJob; hardFailed[job] = false; held[job] = false; }
 
+            // What the run still owes, so the shell can say what closing would throw away.
+            Volatile.Write(ref _outstandingCopies, pending.Count * copiesPerJob);
+            IsRunning = true;
+
             // Record one (file, printer) copy: 'P' printed, 'F' failed, 'H' held. When
             // it is the file's last owed copy, finalise the job and report progress.
             void RecordCopy(BatchJob job, string printer, char outcome, string? fault)
             {
                 lock (tallyLock)
                 {
+                    // Settled one way or another — printed, failed or held — so it is no
+                    // longer work that closing the app would silently discard.
+                    Interlocked.Decrement(ref _outstandingCopies);
+
                     if (outcome == 'P')
                     {
                         copiesPrinted++;
@@ -349,7 +373,15 @@ namespace Apex.Services.Printing
             }
 
             // One worker per printer, all running at once.
-            await Task.WhenAll(printers.Select(p => Task.Run(() => RunPrinterAsync(p))));
+            try
+            {
+                await Task.WhenAll(printers.Select(p => Task.Run(() => RunPrinterAsync(p))));
+            }
+            finally
+            {
+                IsRunning = false;
+                Volatile.Write(ref _outstandingCopies, 0);
+            }
 
             batchStopwatch.Stop();
             var finalStatus = _cts.IsCancellationRequested

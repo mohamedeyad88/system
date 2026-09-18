@@ -1393,6 +1393,12 @@
     <sys:String x:Key="PM_Processing">Processing: {0}</sys:String>
     <sys:String x:Key="PM_JobsDone">{0} / {1} jobs completed</sys:String>
     <sys:String x:Key="PM_PrintDone">Printing completed successfully ✓</sys:String>
+    <!-- Closing mid-run: the batch runs inside this process, so whatever has not
+         reached the printer yet is lost when the app exits. -->
+    <sys:String x:Key="Shell_ExitDuringPrintTitle">A print run is still going</sys:String>
+    <sys:String x:Key="Shell_ExitDuringPrintBody">{0} copies have not been sent to the printer yet. Closing now means they will never print.
+
+Close anyway?</sys:String>
     <sys:String x:Key="PM_PrintFailed">Printing failed: {0}</sys:String>
     <sys:String x:Key="PM_Stopping">Stopping…</sys:String>
     <sys:String x:Key="PM_DocsReady">{0} document(s) ready to print</sys:String>

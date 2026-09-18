@@ -1400,6 +1400,12 @@
     <sys:String x:Key="PM_Processing">جارٍ معالجة: {0}</sys:String>
     <sys:String x:Key="PM_JobsDone">{0} / {1} وظيفة مكتملة</sys:String>
     <sys:String x:Key="PM_PrintDone">اكتملت الطباعة بنجاح ✓</sys:String>
+    <!-- الإغلاق أثناء التشغيل: الدفعة بتشتغل جوه البرنامج نفسه، فاللي لسه ما اتبعتش
+         للطابعة بيضيع مع القفل. -->
+    <sys:String x:Key="Shell_ExitDuringPrintTitle">في طباعة شغالة</sys:String>
+    <sys:String x:Key="Shell_ExitDuringPrintBody">لسه في {0} نسخة ما اتبعتتش للطابعة. لو قفلت البرنامج دلوقتي مش هتتطبع.
+
+تقفل على أي حال؟</sys:String>
     <sys:String x:Key="PM_PrintFailed">فشل الطباعة: {0}</sys:String>
     <sys:String x:Key="PM_Stopping">جارٍ الإيقاف…</sys:String>
     <sys:String x:Key="PM_DocsReady">{0} وثيقة جاهزة للطباعة</sys:String>

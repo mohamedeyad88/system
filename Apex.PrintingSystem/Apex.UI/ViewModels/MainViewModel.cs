@@ -51,6 +51,47 @@ namespace Apex.UI.ViewModels
             CheckLicenseNotice();
         }
 
+        // ── Closing the window in the middle of a run ────────────────────────
+        // Reported from the floor: "after the printing finished and the program was
+        // closed, the commands stopped and never arrived." They had not all arrived.
+        // The batch is executed inside this process — every page is rendered here and
+        // handed to the spooler one copy at a time, and a station that runs dry holds
+        // its copy until someone attends to it — so whatever the run still owes is
+        // lost the moment the process exits. Nothing warned about that, and nothing
+        // recorded it either: the operator saw the printer stop and had no way to know
+        // work had been thrown away.
+
+        /// <summary>What closing the window right now would cost.</summary>
+        public readonly record struct ShutdownPrompt(bool Ask, int OutstandingCopies);
+
+        /// <summary>
+        /// Ask before closing only while a run is actually in flight. A finished run
+        /// that still has sheets coming out of the printer is NOT a reason to ask:
+        /// those pages are the spooler's now and print whether Apex is open or not.
+        /// </summary>
+        public static ShutdownPrompt ShutdownPromptFor(bool runInFlight, int outstandingCopies) =>
+            runInFlight && outstandingCopies > 0
+                ? new ShutdownPrompt(true, outstandingCopies)
+                : new ShutdownPrompt(false, 0);
+
+        /// <summary>The live version of <see cref="ShutdownPromptFor"/>.</summary>
+        public ShutdownPrompt CurrentShutdownPrompt() =>
+            ShutdownPromptFor(_batch.IsRunning, _batch.OutstandingCopies);
+
+        /// <summary>
+        /// The operator chose to close anyway: stop the run and leave a record of what
+        /// it still owed, so a shop asking "why did half the order not print?" has an
+        /// answer in the print log.
+        /// </summary>
+        public void AbandonPrintRunForShutdown()
+        {
+            int lost = _batch.OutstandingCopies;
+            Apex.Services.Logging.PrintLogger.Warning(
+                "[Shell] The operator closed Apex during a print run. {Copies} copies were never sent.",
+                lost);
+            _batch.CancelBatch();
+        }
+
         private void OnSendToPrinting(string filePath) => OnUi(() =>
         {
             NavigateToPrintManager();
