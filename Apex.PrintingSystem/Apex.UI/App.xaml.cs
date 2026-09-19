@@ -179,10 +179,12 @@ namespace Apex.UI
                 mainWindow.Show();
                 Apex.Services.Logging.PrintLogger.Info("startup: 6 main window shown");
 
+                // A session that died is written down, not announced: the operator gets
+                // no startup dialog about it, support reads it in the problem report.
                 if (previousSession != null)
                 {
                     var previous = previousSession;
-                    Dispatcher.BeginInvoke(new Action(() => Diagnostics.CrashNotice.Show(mainWindow, previous)),
+                    Dispatcher.BeginInvoke(new Action(() => Diagnostics.CrashNotice.Record(previous)),
                         System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                 }
 
