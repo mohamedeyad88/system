@@ -945,6 +945,36 @@
          One template for all sidebar items. Per-item bits come from NavAssist
          attached properties (Icon, IconBrush, IsActive); the two text lines are
          the button CONTENT so DynamicResource localization keeps working. -->
+    <!-- The second line under a navigation item. It is the first thing to go on a short
+         screen: with ten sections plus their group headings, the sidebar did not fit a
+         1366×768 laptop — Settings and Licensing could only be reached by scrolling the
+         sidebar, which nobody thinks to do. The titles alone still name every section. -->
+    <!-- The group heading above a run of navigation items ("الطباعة", "التصميم"…).
+         Tightens up with everything else on a short screen. -->
+    <Style x:Key="NavSectionLabel" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
+        <Setter Property="Margin" Value="8,16,0,8"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding DataContext.IsNavCompact, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                <Setter Property="Margin" Value="8,10,0,4"/>
+                <Setter Property="FontSize" Value="10"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="NavItemDesc" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding DataContext.IsNavCompact, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                <Setter Property="Visibility" Value="Collapsed"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="NavItemButton" TargetType="Button">
         <Setter Property="Margin" Value="0,0,0,4"/>
         <Setter Property="Template">
@@ -970,6 +1000,15 @@
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
+                        <!-- Short screen: the row gives up its padding and the icon tile
+                             shrinks. Hiding the description line alone saved nothing —
+                             the 36px tile set the row height, not the text. -->
+                        <DataTrigger Binding="{Binding DataContext.IsNavCompact, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                            <Setter TargetName="border" Property="Padding" Value="12,5"/>
+                            <Setter TargetName="iconTile" Property="Width" Value="26"/>
+                            <Setter TargetName="iconTile" Property="Height" Value="26"/>
+                            <Setter TargetName="iconTile" Property="Margin" Value="0,0,10,0"/>
+                        </DataTrigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource BrandSoft}"/>
                             <Trigger.EnterActions>

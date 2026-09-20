@@ -51,6 +51,23 @@ namespace Apex.UI.ViewModels
             CheckLicenseNotice();
         }
 
+        // ── A sidebar that fits the screen in front of the operator ──────────
+        // Ten sections, each with a title and a description line, plus five group
+        // headings: on a 1366×768 laptop — the smallest screen actually in these shops —
+        // the last two sections sat below the fold, reachable only by scrolling the
+        // sidebar, which nobody thinks to do. On a short screen the description lines
+        // are dropped; the titles alone still name every section.
+        [ObservableProperty] private bool _isNavCompact;
+
+        /// <summary>
+        /// Below this the full sidebar does not fit: the ten items and their group
+        /// headings need roughly this much height with the descriptions shown.
+        /// </summary>
+        public const double NavCompactBelowHeight = 900;
+
+        public static bool NavCompactFor(double windowHeight) =>
+            windowHeight > 0 && windowHeight < NavCompactBelowHeight;
+
         // ── Closing the window in the middle of a run ────────────────────────
         // Reported from the floor: "after the printing finished and the program was
         // closed, the commands stopped and never arrived." They had not all arrived.

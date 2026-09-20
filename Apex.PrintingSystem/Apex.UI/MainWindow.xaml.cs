@@ -12,6 +12,14 @@ namespace Apex.UI
             InitializeComponent();
             Loaded += MainWindow_Loaded;
             Closing += MainWindow_Closing;
+            SizeChanged += (_, _) => ApplyNavDensity();
+        }
+
+        /// <summary>The sidebar drops its description lines when the screen is short.</summary>
+        private void ApplyNavDensity()
+        {
+            if (DataContext is MainViewModel vm)
+                vm.IsNavCompact = MainViewModel.NavCompactFor(ActualHeight);
         }
 
         /// <summary>
@@ -51,6 +59,8 @@ namespace Apex.UI
             {
                 System.Windows.Input.Mouse.OverrideCursor = null;
                 this.Cursor = System.Windows.Input.Cursors.Arrow;
+
+                ApplyNavDensity();
 
                 if (DataContext is MainViewModel mainViewModel)
                 {
