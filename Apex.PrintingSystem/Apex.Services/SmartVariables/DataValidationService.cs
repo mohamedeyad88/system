@@ -130,12 +130,35 @@ namespace Apex.Services.SmartVariables
             }
 
             // ── Image missing check ────────────────────────────────────────────
-            if (options.CheckImageFields)
+            //
+            // A record without a picture is only an error when the template has an
+            // image field AND that field is marked required. It used to be a hard
+            // error in every case: a template whose optional image had not been
+            // matched yet - or one with no image field at all - reported one error
+            // per record and the export refused to run, with nothing on screen to
+            // tell the shop what to fix.
+            bool hasImageField = false, imageRequired = false;
+            foreach (var m in mappings)
+            {
+                if (m.FieldType != SmartFieldType.ImageVariable) continue;
+                hasImageField = true;
+                if (m.IsRequired) imageRequired = true;
+            }
+
+            if (options.CheckImageFields && hasImageField)
             {
                 if (row.ImageStatus == ImageStatus.Missing)
                 {
-                    row.Errors.Add("الصورة مطلوبة لهذا السجل ولم يتم العثور عليها.");
-                    row.Status = RowStatus.Error;
+                    if (imageRequired)
+                    {
+                        row.Errors.Add("الصورة مطلوبة لهذا السجل ولم يتم العثور عليها.");
+                        row.Status = RowStatus.Error;
+                    }
+                    else
+                    {
+                        row.Warnings.Add("لا توجد صورة لهذا السجل — سيُطبع مكانها فارغاً.");
+                        if (row.Status < RowStatus.Warning) row.Status = RowStatus.Warning;
+                    }
                 }
                 else if (row.ImageStatus == ImageStatus.Corrupted)
                 {

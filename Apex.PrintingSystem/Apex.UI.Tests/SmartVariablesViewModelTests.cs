@@ -81,4 +81,27 @@ public class SmartVariablesViewModelTests
 
         Assert.True(vm.MappedCount > 0);
     }
+
+    /// <summary>
+    /// The check that guards the export has to judge the settings the export screen
+    /// writes to. It used to read a second copy that the screen never touched, so a
+    /// chosen save folder was invisible to it: the check reported "لم يتم تحديد
+    /// مجلد الحفظ", the export refused to start, and no project could be exported.
+    /// </summary>
+    [Fact]
+    public void Preflight_SeesTheSaveFolderTheScreenSet()
+    {
+        var vm = NewVm();
+        vm.LoadSampleDataCommand.Execute(null);
+
+        var field = new SmartTemplateField { Label = "اسم", VariableKey = "fld", FieldType = SmartFieldType.TextVariable };
+        vm.SetTemplateFields(new List<SmartTemplateField> { field });
+        vm.SetMapping(field.Id, "الاسم");
+
+        vm.ExportSettings.OutputFolder = System.IO.Path.GetTempPath();
+        vm.RunPreflightCommand.Execute(null);
+
+        Assert.DoesNotContain(vm.PreflightIssues, i => i.Message.Contains("مجلد الحفظ"));
+        Assert.Equal(vm.ExportSettings.OutputFolder, vm.SnapshotState().ExportSettings.OutputFolder);
+    }
 }

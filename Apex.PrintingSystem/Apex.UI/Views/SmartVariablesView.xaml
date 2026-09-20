@@ -1,4 +1,4 @@
-<UserControl x:Class="Apex.UI.Views.SmartVariablesView"
+﻿<UserControl x:Class="Apex.UI.Views.SmartVariablesView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:Apex.UI.ViewModels"
@@ -160,22 +160,21 @@
                     BorderBrush="{DynamicResource Border}">
 
             <TabControl.Resources>
+                <!-- No tab strip. The screen had two ways to move through the same
+                     five stages: the numbered stepper above it and this strip of
+                     tabs. They did not even agree — standing on "لصق" you could see
+                     tabs called ربط and تصدير, and then the stepper's next circle
+                     was ربط again. The stepper is the one that carries the state of
+                     each stage, so the headers are gone and the tabs are just pages
+                     it turns. -->
                 <Style TargetType="TabItem">
-                    <Setter Property="Background"       Value="{DynamicResource Panel}"/>
-                    <Setter Property="Foreground"       Value="{DynamicResource Muted}"/>
-                    <Setter Property="FontSize"         Value="12"/>
-                    <Setter Property="Padding"          Value="14,8"/>
-                    <Setter Property="BorderThickness"  Value="0"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource Paper}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource Action}"/>
-                            <Setter Property="FontWeight" Value="SemiBold"/>
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
-                        </Trigger>
-                    </Style.Triggers>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Border/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
                 </Style>
             </TabControl.Resources>
 
@@ -451,7 +450,7 @@
                                 Margin="0,0,8,0"/>
                         <Button Grid.Column="2" Content="🔄 مسح"
                                 Style="{StaticResource ActionBtn}"
-                                Command="{Binding ScanImageFolderAsyncCommand}"
+                                Command="{Binding ScanImageFolderCommand}"
                                 IsEnabled="{Binding IsScanning, Converter={StaticResource InverseBool}}"/>
                     </Grid>
 
@@ -702,18 +701,22 @@
             </TabItem>
 
             <!-- ═══════════════════════════════════════════════════════════════
-                 TAB 4 — PREFLIGHT
+                 TAB 4 — EXPORT (with the preflight check that precedes it)
             ═══════════════════════════════════════════════════════════════ -->
-            <TabItem Header="✅ الفحص المسبق">
-                <Grid Margin="16">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+            <TabItem Header="📤 التصدير">
+                <ScrollViewer Margin="16" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+
+                    <!-- ── Preflight ───────────────────────────────────────────
+                         This was a sixth tab, and the stepper had no circle for it:
+                         pressing "تصدير" landed on the check instead, and the export
+                         itself could only be reached by the tab strip. It belongs to
+                         the export stage anyway - look before you print - so it opens
+                         it. -->
+                    <TextBlock Text="الفحص المسبق" Style="{StaticResource SectionTitle}"/>
 
                     <!-- Run button + summary -->
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                         <Button Content="🔍 تشغيل الفحص"
                                 Style="{StaticResource ActionBtn}"
                                 Command="{Binding RunPreflightCommand}"
@@ -727,7 +730,7 @@
                     </StackPanel>
 
                     <!-- Summary counters -->
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                         <Border Background="{DynamicResource Panel}" CornerRadius="6" Padding="12,6" Margin="0,0,8,0">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding ErrorCount}" Foreground="{DynamicResource Stopped}" FontSize="18" FontWeight="Bold"/>
@@ -749,7 +752,9 @@
                     </StackPanel>
 
                     <!-- Issues list -->
-                    <Border Grid.Row="2" BorderBrush="{DynamicResource Border}" BorderThickness="1" CornerRadius="6">
+                    <Border BorderBrush="{DynamicResource Border}" BorderThickness="1" CornerRadius="6"
+                            MaxHeight="220"
+                            Visibility="{Binding HasPreflightIssues, Converter={StaticResource BoolToVis}}">
                         <ScrollViewer>
                             <ItemsControl ItemsSource="{Binding PreflightIssues}">
                                 <ItemsControl.ItemTemplate>
@@ -787,15 +792,8 @@
                             </ItemsControl>
                         </ScrollViewer>
                     </Border>
-                </Grid>
-            </TabItem>
 
-            <!-- ═══════════════════════════════════════════════════════════════
-                 TAB 5 — EXPORT
-            ═══════════════════════════════════════════════════════════════ -->
-            <TabItem Header="📤 التصدير">
-                <ScrollViewer Margin="16" VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
+                    <Border Height="1" Background="{DynamicResource Border}" Margin="0,16,0,16"/>
 
                         <!-- Scope + Format -->
                         <TextBlock Text="نطاق التصدير" Style="{StaticResource SectionTitle}"/>
@@ -931,7 +929,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Button Content="🚀 بدء التصدير"
                                             Style="{StaticResource SuccessBtn}"
-                                            Command="{Binding StartExportAsyncCommand}"
+                                            Command="{Binding StartExportCommand}"
                                             IsEnabled="{Binding IsExporting, Converter={StaticResource InverseBool}}"
                                             Padding="20,9" FontSize="14" FontWeight="SemiBold"
                                             Margin="0,0,12,0"/>

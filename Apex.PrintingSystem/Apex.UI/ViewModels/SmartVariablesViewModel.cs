@@ -549,6 +549,13 @@ namespace Apex.UI.ViewModels
         [ObservableProperty] private string _preflightSummaryColor = "#6B7280";
         [ObservableProperty] private bool _preflightCanExport;
         [ObservableProperty] private ObservableCollection<PreflightIssueItem> _preflightIssues = new();
+
+        /// <summary>
+        /// Keeps the issues list off the export page until a check has actually
+        /// found something — an empty bordered box under the counters read as a
+        /// broken control.
+        /// </summary>
+        public bool HasPreflightIssues => PreflightIssues.Count > 0;
         [ObservableProperty] private int _errorCount;
         [ObservableProperty] private int _warningCount;
         [ObservableProperty] private int _infoCount;
@@ -560,11 +567,20 @@ namespace Apex.UI.ViewModels
             _validator.ValidateAll(State.DataSource, State.Mappings);
 
             var library = ImageAssets.Select(i => i.Asset).ToList();
-            var report = _preflight.Run(State.DataSource, State.Mappings, library, State.ExportSettings);
+            // Judge the settings the export screen actually writes to. This read
+            // State.ExportSettings, which is a different object from the one bound
+            // to the screen unless a project happens to have been loaded from file:
+            // the save folder the shop had just chosen was invisible to the check,
+            // so every export was refused with "لم يتم تحديد مجلد الحفظ" and the
+            // project could never be exported at all.
+            State.ExportSettings = ExportSettings;
+            var report = _preflight.Run(State.DataSource, State.Mappings, library, ExportSettings);
 
             PreflightIssues.Clear();
             foreach (var issue in report.Issues)
                 PreflightIssues.Add(new PreflightIssueItem(issue));
+
+            OnPropertyChanged(nameof(HasPreflightIssues));
 
             PreflightSummary = report.SummaryText;
             PreflightSummaryColor = report.SummaryColor;
@@ -749,7 +765,13 @@ namespace Apex.UI.ViewModels
             {
                 string? folder = Path.GetDirectoryName(dialog.FileName);
                 if (!string.IsNullOrEmpty(folder))
+                {
                     ExportSettings.OutputFolder = folder;
+                    // ExportSettings is a plain object, so writing one of its
+                    // properties tells the box on screen nothing: the shop chose a
+                    // folder and the field stayed empty.
+                    OnPropertyChanged(nameof(ExportSettings));
+                }
             }
         }
 
