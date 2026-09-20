@@ -42,32 +42,32 @@
 
         <!-- Background - Dark -->
         <LinearGradientBrush x:Key="BackgroundGradient" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#FAF9F7" Offset="0"/>
-            <GradientStop Color="#FFFFFF" Offset="1"/>
+            <GradientStop Color="{StaticResource PaperColor}" Offset="0"/>
+            <GradientStop Color="{StaticResource PanelColor}" Offset="1"/>
         </LinearGradientBrush>
 
         <!-- Card Gradient (Dark) -->
         <LinearGradientBrush x:Key="CardGradient" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="#FFFFFF" Offset="0"/>
-            <GradientStop Color="#FAF9F7" Offset="1"/>
+            <GradientStop Color="{StaticResource PanelColor}" Offset="0"/>
+            <GradientStop Color="{StaticResource PaperColor}" Offset="1"/>
         </LinearGradientBrush>
         
         <!-- Primary Button Gradient -->
         <!-- White-labelled button fill: 0891B2 measured 3.68:1 with white text, 0E7490 5.36:1. -->
         <LinearGradientBrush x:Key="PrimaryButtonGradient" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="#0E7490" Offset="0"/>
-            <GradientStop Color="#0E7490" Offset="1"/>
+            <GradientStop Color="{StaticResource ActionColor}" Offset="0"/>
+            <GradientStop Color="{StaticResource ActionColor}" Offset="1"/>
         </LinearGradientBrush>
         
         <LinearGradientBrush x:Key="PrimaryButtonHoverGradient" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="#0B5C72" Offset="0"/>
-            <GradientStop Color="#0B5C72" Offset="1"/>
+            <GradientStop Color="{StaticResource ActionHoverColor}" Offset="0"/>
+            <GradientStop Color="{StaticResource ActionHoverColor}" Offset="1"/>
         </LinearGradientBrush>
         
         <!-- Success Button Gradient -->
         <LinearGradientBrush x:Key="SuccessButtonGradient" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="#1B7F4C" Offset="0"/>
-            <GradientStop Color="#1B7F4C" Offset="1"/>
+            <GradientStop Color="{StaticResource DoneColor}" Offset="0"/>
+            <GradientStop Color="{StaticResource DoneColor}" Offset="1"/>
         </LinearGradientBrush>
         
         <!-- Canvas Background (Design Area) -->
@@ -80,26 +80,26 @@
         
         <!-- Typography Panel Gradient -->
         <LinearGradientBrush x:Key="TypographyPanelGradient" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="#FFFFFF" Offset="0"/>
-            <GradientStop Color="#FAF9F7" Offset="1"/>
+            <GradientStop Color="{StaticResource PanelColor}" Offset="0"/>
+            <GradientStop Color="{StaticResource PaperColor}" Offset="1"/>
         </LinearGradientBrush>
         
         <!-- Ribbon Colors (Dark Theme) -->
-        <SolidColorBrush x:Key="RibbonBackground" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="RibbonTabActive" Color="#0891B2"/>
-        <SolidColorBrush x:Key="RibbonTabInactive" Color="#FAF9F7"/>
-        <SolidColorBrush x:Key="RibbonTabHover" Color="#DDD9D3"/>
-        <SolidColorBrush x:Key="RibbonBorder" Color="#DDD9D3"/>
+        <SolidColorBrush x:Key="RibbonBackground" Color="{StaticResource PanelColor}"/>
+        <SolidColorBrush x:Key="RibbonTabActive" Color="{StaticResource BrandColor}"/>
+        <SolidColorBrush x:Key="RibbonTabInactive" Color="{StaticResource PaperColor}"/>
+        <SolidColorBrush x:Key="RibbonTabHover" Color="{StaticResource HoverColor}"/>
+        <SolidColorBrush x:Key="RibbonBorder" Color="{StaticResource BorderColor}"/>
 
         <!-- Text Colors for Dark Theme -->
-        <SolidColorBrush x:Key="TextPrimary" Color="#14181D"/>
-        <SolidColorBrush x:Key="TextSecondary" Color="#6B6864"/>
-        <SolidColorBrush x:Key="TextMuted" Color="#6B6864"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="{StaticResource InkColor}"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="{StaticResource MutedColor}"/>
+        <SolidColorBrush x:Key="TextMuted" Color="{StaticResource MutedColor}"/>
 
         <!-- Card Colors (Dark) -->
-        <SolidColorBrush x:Key="CardBackground" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="CardBorder" Color="#DDD9D3"/>
-        <SolidColorBrush x:Key="CardHover" Color="#DDD9D3"/>
+        <SolidColorBrush x:Key="CardBackground" Color="{StaticResource PanelColor}"/>
+        <SolidColorBrush x:Key="CardBorder" Color="{StaticResource BorderColor}"/>
+        <SolidColorBrush x:Key="CardHover" Color="{StaticResource HoverColor}"/>
         
         <!-- ═══════════════════════════════════════════════════════════════════
              🎯 MODERN TAB CONTROL STYLE - تصميم التبويبات الحديث
