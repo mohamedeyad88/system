@@ -45,6 +45,9 @@
     <sys:String x:Key="Created">تاريخ الإنشاء</sys:String>
     <sys:String x:Key="Upload_ListEmpty">قائمة المستندات فارغة</sys:String>
     <sys:String x:Key="Numbering_InsertDesign">إدراج التصميم</sys:String>
+    <!-- اللوحة وهي فاضية: كانت مستطيل أبيض من غير أي كلام. -->
+    <sys:String x:Key="Numbering_EmptyTitle">ابدأ بإدراج التصميم</sys:String>
+    <sys:String x:Key="Numbering_EmptyBody">هات ملف الفاتورة أو الدفتر (PDF أو صورة)، وبعدين حدد مكان الرقم عليه.</sys:String>
     <sys:String x:Key="Numbering_TrayMapping">تعيين الصواني</sys:String>
     <sys:String x:Key="FreeForm_Position">الموضع</sys:String>
     <sys:String x:Key="Upload_ColorPrinting">طباعة ملونة</sys:String>

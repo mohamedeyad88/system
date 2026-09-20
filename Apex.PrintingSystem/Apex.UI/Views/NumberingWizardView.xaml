@@ -1890,8 +1890,14 @@
                     </ScrollViewer>
                 </Border>
 
-                <!-- Action Buttons (moved outside Border to ensure visibility) -->
-                <StackPanel Grid.Row="2" Margin="16,16,16,16" Orientation="Horizontal" HorizontalAlignment="Right" Background="{DynamicResource Panel}">
+                <!-- Action Buttons (moved outside Border to ensure visibility).
+                     HorizontalAlignment is Left, which RTL mirrors to the RIGHT of the
+                     screen — the same side as "Insert design" in the ribbon above, so
+                     the next step is directly under the last one instead of stranded on
+                     the far side of an empty white strip. -->
+                <Border Grid.Row="2" Background="{DynamicResource Panel}"
+                        BorderBrush="{DynamicResource Border}" BorderThickness="0,1,0,0">
+                <StackPanel Margin="16,12,16,12" Orientation="Horizontal" HorizontalAlignment="Left">
                     <!-- Back Button (visible when not in Prepare mode) -->
                     <Button Command="{Binding NavigateBackCommand}"
                             Visibility="{Binding IsPrepareMode, Converter={StaticResource InverseBoolConverter}}"
@@ -2151,6 +2157,7 @@
                                 </StackPanel>
                             </Button>
                         </StackPanel>
+                </Border>
 
                 <!-- ══════════════════════════════════════════════════════
                      GLOBAL PRINT PROGRESS BAR  (شريط تقدم الطباعة)
@@ -2359,7 +2366,42 @@
                         CornerRadius="12"
                         Padding="24">
                     <Border x:Name="CanvasContainer">
-                        <Border Background="{DynamicResource Panel}"
+                      <Grid>
+                        <!-- Nothing loaded yet: the sheet is a blank white rectangle that
+                             says nothing about what to do with it. Reported from the floor
+                             as "the screen is empty". The hint names the next step and
+                             carries the same command as the ribbon's Insert design. -->
+                        <Border Visibility="{Binding HasTemplate, Converter={StaticResource InverseBoolConverter}}"
+                                Background="{DynamicResource Panel}"
+                                BorderBrush="{DynamicResource Border}"
+                                BorderThickness="1"
+                                MinWidth="420" MinHeight="300"
+                                Padding="40"
+                                HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <!-- The registration corner, the same mark as the sidebar. -->
+                                <Canvas Width="34" Height="34" HorizontalAlignment="Center" Margin="0,0,0,18">
+                                    <Path Data="M 2,34 L 2,11 M 11,2 L 34,2"
+                                          Stroke="{DynamicResource Brand}" StrokeThickness="3"/>
+                                </Canvas>
+                                <TextBlock Text="{DynamicResource Numbering_EmptyTitle}"
+                                           FontSize="16" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource Ink}"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource Numbering_EmptyBody}"
+                                           FontSize="12" Foreground="{DynamicResource Muted}"
+                                           TextWrapping="Wrap" MaxWidth="340" TextAlignment="Center"
+                                           Margin="0,8,0,18"/>
+                                <Button Command="{Binding LoadTemplateCommand}"
+                                        Style="{StaticResource Button.Primary}"
+                                        Padding="22,10"
+                                        HorizontalAlignment="Center"
+                                        Content="{DynamicResource Numbering_InsertDesign}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Visibility="{Binding HasTemplate, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Background="{DynamicResource Panel}"
                                 BorderBrush="{DynamicResource Border}"
                                 BorderThickness="1">
                             <Border.Effect>
@@ -2602,6 +2644,7 @@
                                 </ItemsControl>
                             </Canvas>
                         </Border>
+                      </Grid>
                     </Border>
                 </Border>
             </ScrollViewer>

@@ -906,6 +906,9 @@
     <sys:String x:Key="CC_004">Effect preview</sys:String>
     <sys:String x:Key="PC_007">pcs/sheet</sys:String>
     <sys:String x:Key="Numbering_InsertDesign">Insert Design</sys:String>
+    <!-- The empty canvas: it used to be a blank white rectangle with no words on it. -->
+    <sys:String x:Key="Numbering_EmptyTitle">Start by inserting the design</sys:String>
+    <sys:String x:Key="Numbering_EmptyBody">Load the invoice or booklet file (PDF or image), then place the number on it.</sys:String>
     <sys:String x:Key="Imp_Desc_Perfect">Perfect binding (glued spine): groups pages into multi-leaf signatures glued at the spine. For thicker books.</sys:String>
     <sys:String x:Key="Imp_Duplex">Double-sided</sys:String>
     <sys:String x:Key="Imp_ResizeFailed">Resize failed: {0}</sys:String>
