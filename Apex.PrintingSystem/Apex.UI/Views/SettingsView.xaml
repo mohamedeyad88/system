@@ -147,50 +147,12 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Company Info Card (full width) -->
-                <Border Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource DarkCard}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="32"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="3" Margin="0,0,0,20">
-                            <TextBlock Text="🏢" FontSize="18" Margin="0,0,10,0"/>
-                            <TextBlock Text="{DynamicResource Settings_CompanyInfo}" Style="{StaticResource DarkSectionTitle}" Margin="0"/>
-                        </StackPanel>
-                        <!-- Left column -->
-                        <StackPanel Grid.Column="0" Margin="0,40,0,0">
-                            <StackPanel Margin="0,0,0,16">
-                                <TextBlock Text="{DynamicResource Settings_CompanyName}" Style="{StaticResource DarkFieldLabel}"/>
-                                <TextBox Text="{Binding CompanyName}" Style="{StaticResource DarkTextBox}"/>
-                            </StackPanel>
-                            <StackPanel Margin="0,0,0,16">
-                                <TextBlock Text="{DynamicResource Settings_Address}" Style="{StaticResource DarkFieldLabel}"/>
-                                <TextBox Text="{Binding CompanyAddress}" Style="{StaticResource DarkTextBox}"/>
-                            </StackPanel>
-                        </StackPanel>
-                        <!-- Right column -->
-                        <StackPanel Grid.Column="2" Margin="0,40,0,0">
-                            <StackPanel Margin="0,0,0,16">
-                                <TextBlock Text="{DynamicResource Settings_Phone}" Style="{StaticResource DarkFieldLabel}"/>
-                                <TextBox Text="{Binding CompanyPhone}" Style="{StaticResource DarkTextBox}"/>
-                            </StackPanel>
-                            <StackPanel>
-                                <TextBlock Text="{DynamicResource Settings_Logo}" Style="{StaticResource DarkFieldLabel}"/>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBox Text="{Binding LogoPath}" Style="{StaticResource DarkTextBox}" Margin="0,0,8,0"/>
-                                    <Button Grid.Column="1" Content="📂" Command="{Binding BrowseLogoCommand}"
-                                            Style="{StaticResource DarkSecondaryButton}" Width="48"/>
-                                </Grid>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Border>
+                <!-- The company card — name, address, phone, logo — used to sit here. Those
+                     four values were written to the database and read back by this screen
+                     and nowhere else: they never reached a printed sheet, a report or an
+                     invoice. A shop filling them in was told, silently, that its name and
+                     logo would appear somewhere. They come back when something actually
+                     prints them. -->
 
                 <!-- System Settings Card -->
                 <Border Grid.Row="1" Grid.ColumnSpan="3" Style="{StaticResource DarkCard}">

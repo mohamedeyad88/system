@@ -212,7 +212,7 @@
     <sys:String x:Key="Msg_SaveFailed">فشل الحفظ: {0}</sys:String>
     <sys:String x:Key="PrintExecution_Sides">الوجه</sys:String>
     <sys:String x:Key="CostCalc_SingleSide">طباعة وجه واحد</sys:String>
-    <sys:String x:Key="Settings_Description">تكوين تفضيلات التطبيق ومعلومات الشركة</sys:String>
+    <sys:String x:Key="Settings_Description">لغة البرنامج والنسخ الاحتياطي</sys:String>
     <sys:String x:Key="PrinterCard_QueueLength">طول قائمة الانتظار</sys:String>
     <sys:String x:Key="Distribution_Failed">فشل</sys:String>
     <sys:String x:Key="Num_EnterValidCount">يرجى إدخال عدد صحيح من الأرقام</sys:String>
@@ -1012,7 +1012,7 @@
     <sys:String x:Key="Numbering_DesignProperties">خصائص التصميم</sys:String>
     <sys:String x:Key="FileName">اسم الملف</sys:String>
     <sys:String x:Key="Imp_SheetLabel">ورقة {0} / {1}</sys:String>
-    <sys:String x:Key="Nav_TemplateDesigner_Desc">إنشاء وتعديل .apext</sys:String>
+    <sys:String x:Key="Nav_TemplateDesigner_Desc">إنشاء وتعديل ‎.apext‎</sys:String>
     <sys:String x:Key="Align_Centre">وسط</sys:String>
     <sys:String x:Key="Dashboard_ViewAll">← عرض الكل</sys:String>
     <sys:String x:Key="Num_LoadSavedError">خطأ في تحميل الحالات المحفوظة: {0}</sys:String>
@@ -1335,7 +1335,7 @@
     <sys:String x:Key="Des_QF_Number">الرقم</sys:String>
     <sys:String x:Key="Des_FileMissing">الملف غير موجود</sys:String>
     <sys:String x:Key="Des_Imported">✅ تم استيراد: {0}</sys:String>
-    <sys:String x:Key="Des_InvalidApext">الملف المختار ليس قالب Apex صالحاً — تأكد من اختيار ملف بامتداد .apext</sys:String>
+    <sys:String x:Key="Des_InvalidApext">الملف المختار ليس قالب Apex صالحاً — تأكد من اختيار ملف بامتداد ‎.apext‎</sys:String>
     <sys:String x:Key="Des_ImportFailed">فشل الاستيراد: {0}</sys:String>
     <sys:String x:Key="Des_ConfirmDeleteTemplate">هل تريد حذف القالب '{0}'؟</sys:String>
     <sys:String x:Key="Des_ConfirmDeleteTitle">تأكيد الحذف</sys:String>

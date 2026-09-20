@@ -1024,7 +1024,7 @@
     <sys:String x:Key="TD_078">Name</sys:String>
     <sys:String x:Key="TD_042">Auto numbering</sys:String>
     <sys:String x:Key="Numbering_Preview">Preview</sys:String>
-    <sys:String x:Key="Settings_Description">Configure application preferences and company information</sys:String>
+    <sys:String x:Key="Settings_Description">App language and backups</sys:String>
     <sys:String x:Key="Num_DesignExported">✅ Design exported ({0} item(s)): {1}</sys:String>
     <sys:String x:Key="Imp_ImportSettingsTitle">Import imposition settings</sys:String>
     <sys:String x:Key="PaperCutting_PlaceholderDesc">Enter dimensions and click Calculate</sys:String>

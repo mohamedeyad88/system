@@ -11,11 +11,10 @@ namespace Apex.UI.ViewModels
     {
         private readonly ISettingsService _settingsService;
 
-        // Company Info
-        [ObservableProperty] private string _companyName = string.Empty;
-        [ObservableProperty] private string _companyAddress = string.Empty;
-        [ObservableProperty] private string _companyPhone = string.Empty;
-        [ObservableProperty] private string _logoPath = string.Empty;
+        // Company name, address, phone and logo were collected here and written to the
+        // database, and nothing ever read them back: they reached no printed sheet, no
+        // report, no invoice. Asking a shop to fill them in implied otherwise, so the
+        // fields are gone until something prints them.
 
         // System
         [ObservableProperty] private string _backupPath = string.Empty;
@@ -38,10 +37,6 @@ namespace Apex.UI.ViewModels
             var s = await _settingsService.GetAllSettingsAsync();
             string Get(string key, string def) => s.TryGetValue(key, out var v) ? v : def;
 
-            CompanyName      = Get("CompanyName",    "Apex Printing");
-            CompanyAddress   = Get("CompanyAddress", "");
-            CompanyPhone     = Get("CompanyPhone",   "");
-            LogoPath         = Get("LogoPath",       "");
             BackupPath       = Get("BackupPath",     "");
             // Show the language the app is actually running in. This used to read the saved
             // "Language" key (default "en"), while startup always opened in Arabic and the
@@ -52,11 +47,6 @@ namespace Apex.UI.ViewModels
         [RelayCommand]
         private async Task SaveSettings()
         {
-            await _settingsService.SetValueAsync("CompanyName",    CompanyName);
-            await _settingsService.SetValueAsync("CompanyAddress", CompanyAddress);
-            await _settingsService.SetValueAsync("CompanyPhone",   CompanyPhone);
-            await _settingsService.SetValueAsync("LogoPath",       LogoPath);
-
             await _settingsService.SetValueAsync("BackupPath", BackupPath);
             await _settingsService.SetValueAsync(Services.LocalizationService.LanguageSettingKey, SelectedLanguage);
 
@@ -67,16 +57,6 @@ namespace Apex.UI.ViewModels
             var message = Services.LocalizationService.Instance.GetString("SettingsSavedSuccessfully") + ". " +
                          Services.LocalizationService.Instance.GetString("SomeChangesMayRequireRestart");
             MessageBox.Show(message, Services.LocalizationService.Instance.GetString("Settings"), MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        [RelayCommand]
-        private void BrowseLogo()
-        {
-            var dialog = new Microsoft.Win32.OpenFileDialog { Filter = "Images|*.png;*.jpg;*.bmp" };
-            if (dialog.ShowDialog() == true)
-            {
-                LogoPath = dialog.FileName;
-            }
         }
 
         [RelayCommand]

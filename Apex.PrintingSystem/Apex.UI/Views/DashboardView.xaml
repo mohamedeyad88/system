@@ -339,8 +339,19 @@
                                                 </Ellipse>
                                             </Grid>
 
+                                            <!-- Printer names are long and all alike at the start
+                                                 ("OneNote (Desktop)", "OneNote (Desktop) - Protected"):
+                                                 cut to one line they were unreadable, and the part
+                                                 that tells them apart is the part that got cut. Two
+                                                 lines, then ellipsis. -->
+                                            <!-- FlowDirection is pinned LTR: a printer name is a Latin
+                                                 string, and in the RTL card it was trimmed at its
+                                                 start ("…OneNote (Deskt"), hiding the beginning of the
+                                                 name and leaving every tile looking alike. -->
                                             <TextBlock Grid.Row="1" Text="{Binding Name}"
                                                        FontWeight="SemiBold" FontSize="12"
+                                                       FlowDirection="LeftToRight" TextAlignment="Right"
+                                                       TextWrapping="Wrap" MaxHeight="42"
                                                        TextTrimming="CharacterEllipsis"
                                                        Foreground="{DynamicResource Ink}" ToolTip="{Binding Name}"/>
 
@@ -501,8 +512,10 @@
                     </Grid>
                 </Border>
 
-                <!-- RIGHT TOP: System Status -->
-                <Border Grid.Column="2" Grid.Row="0" Style="{StaticResource LightCard}">
+                <!-- RIGHT TOP: System Status. Sized to its content: with the duplicated
+                     figures gone it is a short card, and stretching it to match the
+                     printer list beside it left a pane of empty white. -->
+                <Border Grid.Column="2" Grid.Row="0" Style="{StaticResource LightCard}" VerticalAlignment="Top">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -557,38 +570,20 @@
                                 </StackPanel>
                             </Border>
 
-                            <!-- 2×3 metrics grid — mono numbers, muted labels -->
+                            <!-- Only what the cards at the top of the screen do NOT already say.
+                                 This grid used to repeat four of them — pending, completed,
+                                 success rate, busy printers — so the same figure appeared twice
+                                 on one screen, in two different sizes, and a reader had to check
+                                 whether they disagreed. Failed and active are the two that are
+                                 only here. -->
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="10"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="10"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="10"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
 
-                                <Border Grid.Column="0" Grid.Row="0" Background="{DynamicResource Paper}"
-                                        CornerRadius="10" Padding="12" BorderBrush="{DynamicResource Border}" BorderThickness="1">
-                                    <StackPanel>
-                                        <TextBlock Text="{DynamicResource Dashboard_PendingJobs}" FontSize="10" Foreground="{DynamicResource Muted}"/>
-                                        <TextBlock Text="{Binding PendingJobs}" FontSize="24" FontWeight="Bold"
-                                                   FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Ink}"/>
-                                    </StackPanel>
-                                </Border>
-                                <Border Grid.Column="2" Grid.Row="0" Background="{DynamicResource Paper}"
-                                        CornerRadius="10" Padding="12" BorderBrush="{DynamicResource Border}" BorderThickness="1">
-                                    <StackPanel>
-                                        <TextBlock Text="{DynamicResource Dashboard_CompletedJobs}" FontSize="10" Foreground="{DynamicResource Muted}"/>
-                                        <TextBlock Text="{Binding CompletedJobs}" FontSize="24" FontWeight="Bold"
-                                                   FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Ink}"/>
-                                    </StackPanel>
-                                </Border>
-                                <Border Grid.Column="0" Grid.Row="2" Background="{DynamicResource Paper}"
+                                <Border Grid.Column="0" Background="{DynamicResource Paper}"
                                         CornerRadius="10" Padding="12" BorderBrush="{DynamicResource Border}" BorderThickness="1">
                                     <StackPanel>
                                         <TextBlock Text="{DynamicResource Dashboard_FailedJobs}" FontSize="10" Foreground="{DynamicResource Muted}"/>
@@ -596,23 +591,7 @@
                                                    FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Ink}"/>
                                     </StackPanel>
                                 </Border>
-                                <Border Grid.Column="2" Grid.Row="2" Background="{DynamicResource Paper}"
-                                        CornerRadius="10" Padding="12" BorderBrush="{DynamicResource Border}" BorderThickness="1">
-                                    <StackPanel>
-                                        <TextBlock Text="{DynamicResource Dashboard_SuccessRate}" FontSize="10" Foreground="{DynamicResource Muted}"/>
-                                        <TextBlock Text="{Binding SuccessRateText}" FontSize="24" FontWeight="Bold"
-                                                   FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Ink}"/>
-                                    </StackPanel>
-                                </Border>
-                                <Border Grid.Column="0" Grid.Row="4" Background="{DynamicResource Paper}"
-                                        CornerRadius="10" Padding="12" BorderBrush="{DynamicResource Border}" BorderThickness="1">
-                                    <StackPanel>
-                                        <TextBlock Text="{DynamicResource Dashboard_BusyPrinters}" FontSize="10" Foreground="{DynamicResource Muted}"/>
-                                        <TextBlock Text="{Binding BusyPrinters}" FontSize="24" FontWeight="Bold"
-                                                   FontFamily="{DynamicResource Font.Data}" Foreground="{DynamicResource Ink}"/>
-                                    </StackPanel>
-                                </Border>
-                                <Border Grid.Column="2" Grid.Row="4" Background="{DynamicResource Paper}"
+                                <Border Grid.Column="2" Background="{DynamicResource Paper}"
                                         CornerRadius="10" Padding="12" BorderBrush="{DynamicResource Border}" BorderThickness="1">
                                     <StackPanel>
                                         <TextBlock Text="{DynamicResource Dashboard_ActiveJobs}" FontSize="10" Foreground="{DynamicResource Muted}"/>
