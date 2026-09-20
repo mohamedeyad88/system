@@ -709,6 +709,15 @@ namespace Apex.UI.ViewModels
             SetSuccess(L("Des_BgRemoved"));
         }
 
+        /// <summary>
+        /// The one save. The screen used to carry three buttons — "حفظ" in the header,
+        /// "حفظ القالب" in the side panel and "حفظ المشروع" over the smart variables —
+        /// and they did not do the same thing: two of them wrote only the smart-variable
+        /// data into an already-saved file, did nothing at all for a template that had
+        /// never been saved, and left the "unsaved changes" badge lit afterwards. All
+        /// three now run this, which writes the template, its artwork and its smart data
+        /// in one go.
+        /// </summary>
         [RelayCommand]
         private void SaveCurrentTemplate()
         {
@@ -728,6 +737,10 @@ namespace Apex.UI.ViewModels
                 var idx = SelectedEntry != null ? Templates.IndexOf(SelectedEntry) : -1;
                 if (idx >= 0) Templates[idx] = newEntry;
                 SelectedEntry = Templates.ElementAtOrDefault(idx >= 0 ? idx : 0);
+
+                // Fold the smart-variable state (pasted data, column mapping) into the
+                // same .apext the library just wrote, so a project reopens complete.
+                SaveSmartDataInto(newEntry.FilePath);
 
                 IsDirty = false;
                 Step0Complete = true;
@@ -777,34 +790,52 @@ namespace Apex.UI.ViewModels
             SetSuccess(L("Des_PageDeleted"));
         }
 
-        [RelayCommand]
-        private void AddSlot()
+        /// <summary>
+        /// Put one new field on the page. Every route that adds a field — the blank
+        /// field, a chosen type, a ready field — lands here, so they cannot drift
+        /// apart the way three separate copies of this body had begun to.
+        /// <paramref name="naming"/> receives the field's number on the page.
+        /// </summary>
+        private void AddSlotCore(Func<int, (string Name, string Variable)> naming,
+                                 SlotDataType type,
+                                 double width = 80, double height = 15,
+                                 int fontSize = 12, bool bold = false,
+                                 string? format = null)
         {
             if (CurrentPage == null) return;
             PushUndo();
             CurrentPage.Slots ??= new List<TemplateSlotDefinition>();
             int n = CurrentPage.Slots.Count + 1;
+            var (name, variable) = naming(n);
+
             var slot = new TemplateSlotDefinition
             {
-                Name = Lf("Des_FieldN", n),
-                VariableName = $"Field{n}",
+                Name = name,
+                VariableName = variable,
                 X = 10,
                 Y = 10 + (n - 1) * 18,
-                Width = 80,
-                Height = 15,
+                Width = width,
+                Height = height,
                 FontFamily = "Tahoma",
-                FontSize = 12,
-                DataType = SlotDataType.Text,
+                FontSize = fontSize,
+                Bold = bold,
+                DataType = type,
+                FormatString = format,
                 IsRtl = true,
                 TextAlign = HorizontalAlign.Right,
                 TextColor = "#000000"
             };
+
             CurrentPage.Slots.Add(slot);
             RebuildCanvasSlots();
             SelectedCanvasSlot = CanvasSlots.LastOrDefault();
             IsDirty = true;
-            SetSuccess(Lf("Des_Added", slot.Name));
+            SetSuccess(Lf("Des_Added", name));
         }
+
+        [RelayCommand]
+        private void AddSlot()
+            => AddSlotCore(n => (Lf("Des_FieldN", n), $"Field{n}"), SlotDataType.Text);
 
         [RelayCommand]
         private void DeleteSlot()
@@ -1392,15 +1423,10 @@ namespace Apex.UI.ViewModels
         [RelayCommand]
         private void AddFieldOfType(string typeStr)
         {
-            if (CurrentPage == null) return;
             if (!Enum.TryParse<SlotDataType>(typeStr, out var dataType))
                 dataType = SlotDataType.Text;
 
-            PushUndo();
-            CurrentPage.Slots ??= new List<TemplateSlotDefinition>();
-            int n = CurrentPage.Slots.Count + 1;
-
-            string label = dataType switch
+            AddSlotCore(n => (dataType switch
             {
                 SlotDataType.Text => Lf("Des_TextN", n),
                 SlotDataType.Number => Lf("Des_NumberN", n),
@@ -1410,29 +1436,7 @@ namespace Apex.UI.ViewModels
                 SlotDataType.Barcode => Lf("Des_BarcodeN", n),
                 SlotDataType.Counter => Lf("Des_CounterN", n),
                 _ => Lf("Des_FieldN", n),
-            };
-
-            var slot = new TemplateSlotDefinition
-            {
-                Name = label,
-                VariableName = $"var{n}",
-                X = 10,
-                Y = 10 + (n - 1) * 18,
-                Width = 80,
-                Height = 15,
-                FontFamily = "Tahoma",
-                FontSize = 12,
-                DataType = dataType,
-                IsRtl = true,
-                TextAlign = HorizontalAlign.Right,
-                TextColor = "#000000",
-            };
-
-            CurrentPage.Slots.Add(slot);
-            RebuildCanvasSlots();
-            SelectedCanvasSlot = CanvasSlots.LastOrDefault();
-            IsDirty = true;
-            SetSuccess(Lf("Des_Added", label));
+            }, $"var{n}"), dataType);
         }
 
         /// <summary>
@@ -1444,43 +1448,19 @@ namespace Apex.UI.ViewModels
         [RelayCommand]
         private void AddQuickField(string kind)
         {
-            if (CurrentPage == null) return;
-            PushUndo();
-            CurrentPage.Slots ??= new List<TemplateSlotDefinition>();
-            int n = CurrentPage.Slots.Count + 1;
-
-            (string name, SlotDataType type, double w, double h, int font, bool bold, string? fmt) spec = kind switch
+            (string? name, SlotDataType type, double w, double h, int font, bool bold, string? fmt) spec = kind switch
             {
-                "Name"   => (L("Des_QF_Name"),   SlotDataType.Text,   90, 12, 12, false, null),
-                "Date"   => (L("Des_QF_Date"),   SlotDataType.Date,   60, 10, 12, false, "dd/MM/yyyy"),
-                "Amount" => (L("Des_QF_Amount"), SlotDataType.Number, 60, 12, 12, false, null),
-                "Number" => (L("Des_QF_Number"), SlotDataType.Number, 45, 14, 16, true,  null),
-                _        => (Lf("Des_FieldN", n), SlotDataType.Text,  80, 15, 12, false, null),
+                "Name"   => (L("Des_QF_Name"),   SlotDataType.Text,   90d, 12d, 12, false, (string?)null),
+                "Date"   => (L("Des_QF_Date"),   SlotDataType.Date,   60d, 10d, 12, false, "dd/MM/yyyy"),
+                "Amount" => (L("Des_QF_Amount"), SlotDataType.Number, 60d, 12d, 12, false, null),
+                "Number" => (L("Des_QF_Number"), SlotDataType.Number, 45d, 14d, 16, true,  null),
+                _        => (null,               SlotDataType.Text,   80d, 15d, 12, false, null),
             };
 
-            var slot = new TemplateSlotDefinition
-            {
-                Name = spec.name,
-                VariableName = spec.name,
-                X = 10,
-                Y = 10 + (n - 1) * 18,
-                Width = spec.w,
-                Height = spec.h,
-                FontFamily = "Tahoma",
-                FontSize = spec.font,
-                Bold = spec.bold,
-                DataType = spec.type,
-                FormatString = spec.fmt,
-                IsRtl = true,
-                TextAlign = HorizontalAlign.Right,
-                TextColor = "#000000",
-            };
-
-            CurrentPage.Slots.Add(slot);
-            RebuildCanvasSlots();
-            SelectedCanvasSlot = CanvasSlots.LastOrDefault();
-            IsDirty = true;
-            SetSuccess(Lf("Des_Added", spec.name));
+            // A ready field carries its Arabic name as the variable name too — that is
+            // what auto-maps it to the matching Excel column with no manual mapping.
+            AddSlotCore(n => (spec.name ?? Lf("Des_FieldN", n), spec.name ?? $"Field{n}"),
+                        spec.type, spec.w, spec.h, spec.font, spec.bold, spec.fmt);
         }
 
         // ── Open / close (for legacy button + keyboard shortcut) ─────────────
@@ -1520,20 +1500,16 @@ namespace Apex.UI.ViewModels
 
         // ── Save with Smart Variables data ────────────────────────────────────
 
-        [RelayCommand]
-        private void SaveWithSmartData()
+        /// <summary>
+        /// Write the smart-variable state into the template file the library just saved.
+        /// Called only by <see cref="SaveCurrentTemplate"/>; it is not a save of its own,
+        /// because on its own it silently did nothing for an unsaved template.
+        /// </summary>
+        private void SaveSmartDataInto(string? filePath)
         {
-            if (CurrentTemplate == null || string.IsNullOrWhiteSpace(SelectedEntry?.FilePath)) return;
-            try
-            {
-                var state = SmartVars.SnapshotState();
-                ApextFileFormat.SaveWithSmartData(CurrentTemplate, state, SelectedEntry.FilePath, _currentAssets);
-                SetSuccess(L("Des_SavedWithVars"));
-            }
-            catch (Exception ex)
-            {
-                SetError(Lf("Des_SaveError", ex.Message));
-            }
+            if (CurrentTemplate == null || string.IsNullOrWhiteSpace(filePath)) return;
+            var state = SmartVars.SnapshotState();
+            ApextFileFormat.SaveWithSmartData(CurrentTemplate, state, filePath, _currentAssets);
         }
 
         // ── Helpers ───────────────────────────────────────────────────────────

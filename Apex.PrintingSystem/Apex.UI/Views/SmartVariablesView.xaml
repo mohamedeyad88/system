@@ -141,10 +141,10 @@
                 <!-- Save button
                      AncestorLevel=2 climbs past SmartVariablesView (level 1, DataContext=SmartVars)
                      up to TemplateDesignerView (level 2, DataContext=TemplateDesignerViewModel)
-                     which owns SaveWithSmartDataCommand. -->
+                     which owns the save. -->
                 <Button Grid.Column="1" Content="💾 حفظ المشروع"
                         Style="{StaticResource GhostBtn}"
-                        Command="{Binding DataContext.SaveWithSmartDataCommand,
+                        Command="{Binding DataContext.SaveCurrentTemplateCommand,
                                           RelativeSource={RelativeSource AncestorType=UserControl,
                                                           AncestorLevel=2}}"
                         Margin="0,0,0,0"/>

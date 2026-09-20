@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <sys:String x:Key="TD_103">▼ تأخير</sys:String>
@@ -960,7 +960,6 @@
     <sys:String x:Key="TD_058">محاذاة لليمين</sys:String>
     <sys:String x:Key="Quotation_ManualDiscountHint">أدخل نسبة الخصم % (يلغي خصم الكمية)</sys:String>
     <sys:String x:Key="FreeForm_Size">الحجم</sys:String>
-    <sys:String x:Key="TD_045">التكبير:</sys:String>
     <sys:String x:Key="SV_NoDataDetected">لم يتم اكتشاف بيانات — تأكد من النسخ من Excel</sys:String>
     <sys:String x:Key="Imp_ExportedSettingsName">إعدادات مُصدَّرة</sys:String>
     <sys:String x:Key="Upload_AddFromMenu">أو أضفها من القائمة</sys:String>
@@ -1207,7 +1206,6 @@
     <sys:String x:Key="Quotation_Subtotal">المجموع الفرعي</sys:String>
     <sys:String x:Key="Numbering_Font">الخط</sys:String>
     <sys:String x:Key="Imp_Type_Perfect">بوكليت — تغليف لاصق</sys:String>
-    <sys:String x:Key="TD_055">محاذاة:</sys:String>
     <sys:String x:Key="PT_027">عرض</sys:String>
     <sys:String x:Key="Dlg_Success">نجاح</sys:String>
     <sys:String x:Key="PrintExecution_StartPrinting">بدء الطباعة</sys:String>
@@ -1329,6 +1327,13 @@
     <sys:String x:Key="Des_NewFromPaperDesc">قالب مبني فوق ورقة العميل الحالية</sys:String>
     <sys:String x:Key="Des_NewFromPaperReady">✅ تم تحميل ورقتك بالمقاس الصحيح — حُطّ الترقيم والحقول فوقها</sys:String>
     <sys:String x:Key="Des_QuickFields">حقول جاهزة</sys:String>
+    <!-- أسامي مجموعات شريط أدوات المصمم -->
+    <sys:String x:Key="TD_Grp_Page">الصفحة</sys:String>
+    <sys:String x:Key="TD_Grp_Fields">الحقول</sys:String>
+    <sys:String x:Key="TD_Grp_More">أنواع أخرى</sys:String>
+    <sys:String x:Key="TD_Grp_Undo">تراجع</sys:String>
+    <sys:String x:Key="TD_Grp_View">العرض</sys:String>
+    <sys:String x:Key="TD_Grp_Align">محاذاة</sys:String>
     <sys:String x:Key="Des_QF_Name">الاسم</sys:String>
     <sys:String x:Key="Des_QF_Date">التاريخ</sys:String>
     <sys:String x:Key="Des_QF_Amount">المبلغ</sys:String>

@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <sys:String x:Key="SV_012">Normalize Arabic digits</sys:String>
@@ -388,7 +388,6 @@
     <sys:String x:Key="ACT_013">Contact support via WhatsApp</sys:String>
     <sys:String x:Key="NW_002">🗑 Clear log</sys:String>
     <sys:String x:Key="Quotation_ComparisonTable">Price Comparison</sys:String>
-    <sys:String x:Key="TD_055">Align:</sys:String>
     <sys:String x:Key="Num_SmartMode">Smart print</sys:String>
     <sys:String x:Key="SV_FolderMissing">The folder does not exist</sys:String>
     <sys:String x:Key="SV_068">⚙ Advanced options</sys:String>
@@ -814,7 +813,6 @@
     <sys:String x:Key="SV_Exporting">Exporting...</sys:String>
     <sys:String x:Key="SV_062">📕 Export all PDF</sys:String>
     <sys:String x:Key="SV_ChooseAnyFile">Choose any file inside the images folder</sys:String>
-    <sys:String x:Key="TD_045">Zoom:</sys:String>
     <sys:String x:Key="Imp_Signatures">Signatures</sys:String>
     <sys:String x:Key="Nav_Section_Management">Management</sys:String>
     <sys:String x:Key="Monitor_Total">Total</sys:String>
@@ -1322,6 +1320,13 @@
     <sys:String x:Key="Des_NewFromPaperDesc">A template built over the customer's existing paper</sys:String>
     <sys:String x:Key="Des_NewFromPaperReady">✅ Your paper is loaded at its real size — drop the numbering and fields on top</sys:String>
     <sys:String x:Key="Des_QuickFields">Ready fields</sys:String>
+    <!-- Designer toolbar group names -->
+    <sys:String x:Key="TD_Grp_Page">Page</sys:String>
+    <sys:String x:Key="TD_Grp_Fields">Fields</sys:String>
+    <sys:String x:Key="TD_Grp_More">More types</sys:String>
+    <sys:String x:Key="TD_Grp_Undo">Undo</sys:String>
+    <sys:String x:Key="TD_Grp_View">View</sys:String>
+    <sys:String x:Key="TD_Grp_Align">Align</sys:String>
     <sys:String x:Key="Des_QF_Name">Name</sys:String>
     <sys:String x:Key="Des_QF_Date">Date</sys:String>
     <sys:String x:Key="Des_QF_Amount">Amount</sys:String>

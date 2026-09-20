@@ -1,4 +1,4 @@
-<UserControl x:Class="Apex.UI.Views.TemplateDesignerView"
+﻿<UserControl x:Class="Apex.UI.Views.TemplateDesignerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Apex.UI.Views"
@@ -76,21 +76,77 @@
             <Setter Property="FontSize"        Value="11"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Foreground"      Value="{DynamicResource Ink}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
+                        <Border x:Name="b" Background="{DynamicResource Hover}" CornerRadius="5"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Hover used to paint the button Muted — a dark grey behind
+                                 dark ink, so the label vanished under the pointer. -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="b" Property="Background" Value="{DynamicResource Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── Toolbar groups ───────────────────────────────────────────────
+             The name under each group, and the hairline that separates one
+             group from the next. -->
+        <Style x:Key="ToolGroupLabel" TargetType="TextBlock">
+            <Setter Property="FontSize"            Value="10"/>
+            <Setter Property="Foreground"          Value="{DynamicResource Muted}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin"              Value="0,5,0,0"/>
+        </Style>
+
+        <Style x:Key="ToolGroupRule" TargetType="Border">
+            <Setter Property="Width"             Value="1"/>
+            <Setter Property="Height"            Value="34"/>
+            <Setter Property="Background"        Value="{DynamicResource Hover}"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Margin"            Value="0,0,10,0"/>
+        </Style>
+
+        <!-- The "more" button: same skin as a field-type button, but it stays
+             lit while its list is open. -->
+        <Style x:Key="ToolMoreToggle" TargetType="ToggleButton">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
                         <Border x:Name="b" Background="{DynamicResource Hover}" CornerRadius="5"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="{DynamicResource Muted}"/>
+                                <Setter TargetName="b" Property="Background" Value="{DynamicResource Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="b" Property="Background" Value="{DynamicResource Border}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+
+        <!-- A row in that list: full width, left-aligned like a menu item. -->
+        <Style x:Key="ToolMenuBtn" TargetType="Button" BasedOn="{StaticResource FieldTypeBtn}">
+            <Setter Property="Height"                   Value="30"/>
+            <Setter Property="Margin"                   Value="0,0,0,3"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
         </Style>
 
         <!-- ── Zoom button ──────────────────────────────────────────────────── -->
@@ -107,10 +163,12 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="{DynamicResource Muted}"/>
+                                <Setter TargetName="b" Property="Background" Value="{DynamicResource Border}"/>
                             </Trigger>
+                            <!-- 0.35 left undo/redo all but invisible when there was
+                                 nothing to undo; it now reads as a greyed-out button. -->
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value="0.35"/>
+                                <Setter Property="Opacity" Value="0.5"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -296,8 +354,8 @@
                         <TextBlock Text="{DynamicResource TD_004}" Foreground="{DynamicResource OnAction}" FontSize="12"
                                    FontWeight="SemiBold" VerticalAlignment="Center"/>
                     </Button>
-                    <!-- Save button -->
-                    <Button Command="{Binding SaveWithSmartDataCommand}"
+                    <!-- Save button — the same save as the side panel's "حفظ القالب" -->
+                    <Button Command="{Binding SaveCurrentTemplateCommand}"
                             Height="34" Padding="14,0" Cursor="Hand"
                             IsEnabled="{Binding HasTemplate}"
                             Template="{StaticResource GhostBtnTpl}">
@@ -1104,291 +1162,342 @@
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
+                    <!-- ── Toolbar ─────────────────────────────────────────────────────
+                         Every tool used to sit in one flat row: twenty small buttons
+                         wrapping over three lines with nothing but hairlines between
+                         them, so nobody could tell where one job ended and the next
+                         began. They are now groups with a name under each, the way the
+                         numbering screen's ribbon reads, and the six field types a shop
+                         rarely asks for sit behind "more".
+                    ── -->
                     <WrapPanel Orientation="Horizontal">
 
-                        <!-- Page size preset -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,8,0">
-                            <TextBlock Text="{DynamicResource TD_019}" Foreground="{DynamicResource Muted}" FontSize="11"
-                                       VerticalAlignment="Center" Margin="0,0,6,0"/>
-                            <ComboBox ItemsSource="{Binding PageSizePresets}"
-                                      SelectedItem="{Binding SelectedPageSize}"
-                                      Style="{StaticResource DarkCombo}"
-                                      Width="110" Height="30"/>
 
-                            <!-- Custom width × height (shown only when "مخصص" is selected) -->
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
-                                        Margin="6,0,0,0"
-                                        Visibility="{Binding IsCustomPageSize, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <TextBox Text="{Binding CustomWidthMm, UpdateSourceTrigger=PropertyChanged}"
-                                         Style="{StaticResource DarkBox}" Width="52" Height="30"
-                                         ToolTip="{DynamicResource TD_020}"/>
-                                <TextBlock Text="×" Foreground="{DynamicResource Muted}" FontSize="13"
-                                           VerticalAlignment="Center" Margin="4,0"/>
-                                <TextBox Text="{Binding CustomHeightMm, UpdateSourceTrigger=PropertyChanged}"
-                                         Style="{StaticResource DarkBox}" Width="52" Height="30"
-                                         ToolTip="{DynamicResource TD_021}"/>
-                                <TextBlock Text="{DynamicResource TD_022}" Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="10"
-                                           VerticalAlignment="Center" Margin="3,0,0,0"/>
+                        <!-- ── Fields ───────────────────────────────────────────
+                             Add a blank field, add the counter (the serial number this
+                             app exists for), delete, and the rest of the types behind
+                             "more".
+                        ── -->
+                        <StackPanel Margin="0,0,10,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Command="{Binding AddSlotCommand}"
+                                        Height="30" Padding="10,0" Margin="0,0,4,0"
+                                        Cursor="Hand" Template="{StaticResource BlueBtnTpl}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="➕" FontSize="12" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{DynamicResource TD_026}" Foreground="{DynamicResource OnAction}" FontSize="11" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Counter"
+                                        Style="{StaticResource FieldTypeBtn}" Height="30"
+                                        ToolTip="{DynamicResource TD_042}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{DynamicResource TD_043}" Foreground="{DynamicResource Action}" Style="{StaticResource BtnGlyph}"/>
+                                        <TextBlock Text="{DynamicResource TD_044}" Style="{StaticResource BtnLabel}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Command="{Binding DeleteSlotCommand}"
+                                        Height="30" Padding="8,0" Margin="0,0,4,0"
+                                        Cursor="Hand" Template="{StaticResource GhostBtnTpl}"
+                                        ToolTip="{DynamicResource TD_DelFieldTip}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="🗑️" Style="{StaticResource BtnGlyph}"/>
+                                        <TextBlock Text="{DynamicResource TD_DelField}"
+                                                   Foreground="{DynamicResource Stopped}"
+                                                   Style="{StaticResource BtnLabel}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <!-- More field types -->
+                                <ToggleButton x:Name="MoreTypesToggle" Height="30" Padding="10,0"
+                                              Cursor="Hand" Style="{StaticResource ToolMoreToggle}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{DynamicResource TD_Grp_More}" Foreground="{DynamicResource Muted}" FontSize="11" VerticalAlignment="Center"/>
+                                        <TextBlock Text="▾" Foreground="{DynamicResource Muted}" FontSize="11" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                    </StackPanel>
+                                </ToggleButton>
+                                <Popup IsOpen="{Binding IsChecked, ElementName=MoreTypesToggle, Mode=TwoWay}"
+                                       PlacementTarget="{Binding ElementName=MoreTypesToggle}"
+                                       Placement="Bottom" StaysOpen="False"
+                                       AllowsTransparency="True" PopupAnimation="Fade"
+                                       HorizontalOffset="0" VerticalOffset="4">
+                                    <Border Background="{DynamicResource Paper}" BorderBrush="{DynamicResource Border}"
+                                            BorderThickness="1" CornerRadius="6" Padding="8">
+                                        <StackPanel MinWidth="150">
+                                            <TextBlock Text="{DynamicResource TD_027}" Foreground="{DynamicResource Muted}"
+                                                       FontSize="10" Margin="2,0,2,6"/>
+
+                                            <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Text"
+                                                    Style="{StaticResource ToolMenuBtn}" ToolTip="{DynamicResource TD_028}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{DynamicResource TD_029}" Foreground="{DynamicResource Action}" Style="{StaticResource BtnGlyph}"/>
+                                                    <TextBlock Text="{DynamicResource TD_030}" Style="{StaticResource BtnLabel}"/>
+                                                </StackPanel>
+                                            </Button>
+
+                                            <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Number"
+                                                    Style="{StaticResource ToolMenuBtn}" ToolTip="{DynamicResource TD_031}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="#" Foreground="{DynamicResource Done}" Style="{StaticResource BtnGlyph}"/>
+                                                    <TextBlock Text="{DynamicResource TD_032}" Style="{StaticResource BtnLabel}"/>
+                                                </StackPanel>
+                                            </Button>
+
+                                            <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Date"
+                                                    Style="{StaticResource ToolMenuBtn}" ToolTip="{DynamicResource TD_033}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{DynamicResource TD_034}" Foreground="{DynamicResource Printing}" Style="{StaticResource BtnGlyph}"/>
+                                                    <TextBlock Text="{DynamicResource TD_035}" Style="{StaticResource BtnLabel}"/>
+                                                </StackPanel>
+                                            </Button>
+
+                                            <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Image"
+                                                    Style="{StaticResource ToolMenuBtn}" ToolTip="{DynamicResource TD_036}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{DynamicResource TD_037}" Foreground="{DynamicResource Action}" Style="{StaticResource BtnGlyph}"/>
+                                                    <TextBlock Text="{DynamicResource TD_038}" Style="{StaticResource BtnLabel}"/>
+                                                </StackPanel>
+                                            </Button>
+
+                                            <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="QrCode"
+                                                    Style="{StaticResource ToolMenuBtn}" ToolTip="{DynamicResource TD_039}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="▣" Foreground="{DynamicResource Stopped}" Style="{StaticResource BtnGlyph}"/>
+                                                    <TextBlock Text="{DynamicResource TD_039}" Style="{StaticResource BtnLabel}"/>
+                                                </StackPanel>
+                                            </Button>
+
+                                            <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Barcode"
+                                                    Style="{StaticResource ToolMenuBtn}" ToolTip="{DynamicResource TD_040}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="▌▌" Foreground="{DynamicResource Stopped}" Style="{StaticResource BtnGlyph}"/>
+                                                    <TextBlock Text="{DynamicResource TD_041}" Style="{StaticResource BtnLabel}"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </Border>
+                                </Popup>
                             </StackPanel>
-
-                            <Button Command="{Binding ApplyPageSizeCommand}"
-                                    Height="30" Padding="8,0" Margin="4,0,0,0"
-                                    Cursor="Hand" Template="{StaticResource GhostBtnTpl}">
-                                <TextBlock Text="{DynamicResource TD_023}" Foreground="{DynamicResource Muted}" FontSize="11"/>
-                            </Button>
+                            <TextBlock Text="{DynamicResource TD_Grp_Fields}" Style="{StaticResource ToolGroupLabel}"/>
                         </StackPanel>
 
-                        <!-- Separator -->
-                        <Border Width="1" Height="20" Background="{DynamicResource Hover}"
-                                VerticalAlignment="Center" Margin="4,0"/>
-
-                        <!-- Background upload -->
-                        <Button x:Name="BtnUploadBg" Height="30" Padding="10,0" Margin="6,0,4,0"
-                                Cursor="Hand" Template="{StaticResource GhostBtnTpl}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="🖼️" FontSize="13" VerticalAlignment="Center"/>
-                                <TextBlock Text="{DynamicResource TD_024}" Foreground="{DynamicResource Muted}" FontSize="11" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Command="{Binding RemoveBackgroundCommand}"
-                                Height="30" Padding="8,0" Margin="0,0,6,0"
-                                Cursor="Hand" Template="{StaticResource GhostBtnTpl}">
-                            <TextBlock Text="{DynamicResource TD_025}" Foreground="{DynamicResource Muted}" FontSize="11"/>
-                        </Button>
-
-                        <!-- Separator -->
-                        <Border Width="1" Height="20" Background="{DynamicResource Hover}"
-                                VerticalAlignment="Center" Margin="4,0"/>
-
-                        <!-- Add / Delete slot (generic) -->
-                        <Button Command="{Binding AddSlotCommand}"
-                                Height="30" Padding="10,0" Margin="6,0,4,0"
-                                Cursor="Hand" Template="{StaticResource BlueBtnTpl}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="➕" FontSize="12" VerticalAlignment="Center"/>
-                                <TextBlock Text="{DynamicResource TD_026}" Foreground="{DynamicResource OnAction}" FontSize="11" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Command="{Binding DeleteSlotCommand}"
-                                Height="30" Padding="8,0" Margin="0,0,4,0"
-                                Cursor="Hand" Template="{StaticResource GhostBtnTpl}"
-                                ToolTip="{DynamicResource TD_DelFieldTip}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="🗑️" Style="{StaticResource BtnGlyph}"/>
-                                <TextBlock Text="{DynamicResource TD_DelField}"
-                                           Foreground="{DynamicResource Stopped}"
-                                           Style="{StaticResource BtnLabel}"/>
-                            </StackPanel>
-                        </Button>
-
-                        <!-- Separator -->
-                        <Border Width="1" Height="20" Background="{DynamicResource Hover}"
-                                VerticalAlignment="Center" Margin="4,0"/>
-
-                        <!-- ── Field-type toolbar ─────────────────────────────────────────
-                             Each button adds a slot of the matching type directly to canvas.
-                             typeStr maps to SlotDataType enum names in AddFieldOfTypeCommand.
-                        ── -->
-                        <TextBlock Text="{DynamicResource TD_027}" Foreground="{DynamicResource Muted}" FontSize="11"
-                                   VerticalAlignment="Center" Margin="6,0,6,0"/>
-
-                        <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Text"
-                                Style="{StaticResource FieldTypeBtn}" ToolTip="{DynamicResource TD_028}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{DynamicResource TD_029}" Foreground="{DynamicResource Action}" Style="{StaticResource BtnGlyph}"/>
-                                <TextBlock Text="{DynamicResource TD_030}" Style="{StaticResource BtnLabel}"/>
-                            </StackPanel>
-                        </Button>
-
-                        <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Number"
-                                Style="{StaticResource FieldTypeBtn}" ToolTip="{DynamicResource TD_031}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="#" Foreground="{DynamicResource Done}" Style="{StaticResource BtnGlyph}"/>
-                                <TextBlock Text="{DynamicResource TD_032}" Style="{StaticResource BtnLabel}"/>
-                            </StackPanel>
-                        </Button>
-
-                        <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Date"
-                                Style="{StaticResource FieldTypeBtn}" ToolTip="{DynamicResource TD_033}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{DynamicResource TD_034}" Foreground="{DynamicResource Printing}" Style="{StaticResource BtnGlyph}"/>
-                                <TextBlock Text="{DynamicResource TD_035}" Style="{StaticResource BtnLabel}"/>
-                            </StackPanel>
-                        </Button>
-
-                        <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Image"
-                                Style="{StaticResource FieldTypeBtn}" ToolTip="{DynamicResource TD_036}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{DynamicResource TD_037}" Foreground="{DynamicResource Action}" Style="{StaticResource BtnGlyph}"/>
-                                <TextBlock Text="{DynamicResource TD_038}" Style="{StaticResource BtnLabel}"/>
-                            </StackPanel>
-                        </Button>
-
-                        <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="QrCode"
-                                Style="{StaticResource FieldTypeBtn}" ToolTip="{DynamicResource TD_039}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="QR" Foreground="{DynamicResource Stopped}" FontWeight="Bold" FontSize="11"/>
-                            </StackPanel>
-                        </Button>
-
-                        <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Barcode"
-                                Style="{StaticResource FieldTypeBtn}" ToolTip="{DynamicResource TD_040}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="▌▌" Foreground="{DynamicResource Stopped}" Style="{StaticResource BtnGlyph}"/>
-                                <TextBlock Text="{DynamicResource TD_041}" Style="{StaticResource BtnLabel}"/>
-                            </StackPanel>
-                        </Button>
-
-                        <Button Command="{Binding AddFieldOfTypeCommand}" CommandParameter="Counter"
-                                Style="{StaticResource FieldTypeBtn}" ToolTip="{DynamicResource TD_042}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{DynamicResource TD_043}" Foreground="{DynamicResource Action}" Style="{StaticResource BtnGlyph}"/>
-                                <TextBlock Text="{DynamicResource TD_044}" Style="{StaticResource BtnLabel}"/>
-                            </StackPanel>
-                        </Button>
-
-                        <!-- Separator -->
-                        <Border Width="1" Height="20" Background="{DynamicResource Hover}"
-                                VerticalAlignment="Center" Margin="6,0"/>
+                        <Border Style="{StaticResource ToolGroupRule}"/>
 
                         <!-- ── Ready (semantic) quick fields — pre-named, pre-styled, auto-map to Excel ── -->
-                        <TextBlock Text="{DynamicResource Des_QuickFields}" Foreground="{DynamicResource Muted}" FontSize="11"
-                                   VerticalAlignment="Center" Margin="0,0,6,0"/>
-                        <Button Command="{Binding AddQuickFieldCommand}" CommandParameter="Name" Style="{StaticResource FieldTypeBtn}">
-                            <TextBlock Text="{DynamicResource Des_QF_Name}" Style="{StaticResource BtnLabel}"/>
-                        </Button>
-                        <Button Command="{Binding AddQuickFieldCommand}" CommandParameter="Date" Style="{StaticResource FieldTypeBtn}">
-                            <TextBlock Text="{DynamicResource Des_QF_Date}" Style="{StaticResource BtnLabel}"/>
-                        </Button>
-                        <Button Command="{Binding AddQuickFieldCommand}" CommandParameter="Amount" Style="{StaticResource FieldTypeBtn}">
-                            <TextBlock Text="{DynamicResource Des_QF_Amount}" Style="{StaticResource BtnLabel}"/>
-                        </Button>
-                        <Button Command="{Binding AddQuickFieldCommand}" CommandParameter="Number" Style="{StaticResource FieldTypeBtn}">
-                            <TextBlock Text="{DynamicResource Des_QF_Number}" Style="{StaticResource BtnLabel}"/>
-                        </Button>
+                        <StackPanel Margin="0,0,10,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Command="{Binding AddQuickFieldCommand}" CommandParameter="Name" Style="{StaticResource FieldTypeBtn}" Height="30">
+                                    <TextBlock Text="{DynamicResource Des_QF_Name}" Style="{StaticResource BtnLabel}"/>
+                                </Button>
+                                <Button Command="{Binding AddQuickFieldCommand}" CommandParameter="Date" Style="{StaticResource FieldTypeBtn}" Height="30">
+                                    <TextBlock Text="{DynamicResource Des_QF_Date}" Style="{StaticResource BtnLabel}"/>
+                                </Button>
+                                <Button Command="{Binding AddQuickFieldCommand}" CommandParameter="Amount" Style="{StaticResource FieldTypeBtn}" Height="30">
+                                    <TextBlock Text="{DynamicResource Des_QF_Amount}" Style="{StaticResource BtnLabel}"/>
+                                </Button>
+                                <Button Command="{Binding AddQuickFieldCommand}" CommandParameter="Number" Style="{StaticResource FieldTypeBtn}" Height="30">
+                                    <TextBlock Text="{DynamicResource Des_QF_Number}" Style="{StaticResource BtnLabel}"/>
+                                </Button>
+                            </StackPanel>
+                            <TextBlock Text="{DynamicResource Des_QuickFields}" Style="{StaticResource ToolGroupLabel}"/>
+                        </StackPanel>
 
-                        <!-- Separator -->
-                        <Border Width="1" Height="20" Background="{DynamicResource Hover}"
-                                VerticalAlignment="Center" Margin="6,0"/>
+                        <Border Style="{StaticResource ToolGroupRule}"/>
 
-                        <!-- ── Zoom controls ──────────────────────────────────── -->
-                        <TextBlock Text="{DynamicResource TD_045}" Foreground="{DynamicResource Muted}" FontSize="11"
-                                   VerticalAlignment="Center" Margin="4,0,6,0"/>
-                        <Button Command="{Binding ZoomOutCommand}"
-                                Style="{StaticResource ZoomBtn}" Margin="0,0,3,0"
-                                ToolTip="{DynamicResource TD_046}">
-                            <TextBlock Text="&#x2212;" Foreground="{DynamicResource Ink}" FontSize="14" FontWeight="Bold"/>
-                        </Button>
-                        <Border Background="{DynamicResource Paper}" BorderBrush="{DynamicResource Border}" BorderThickness="1"
-                                CornerRadius="4" Padding="8,0" Height="28" Margin="0,0,3,0"
-                                ToolTip="{Binding ZoomBoostLabel}">
-                            <TextBlock Text="{Binding ZoomBoostLabel}" Foreground="{DynamicResource Ink}"
-                                       FontSize="11" VerticalAlignment="Center"
-                                       MinWidth="36" TextAlignment="Center"/>
-                        </Border>
-                        <Button Command="{Binding ZoomInCommand}"
-                                Style="{StaticResource ZoomBtn}" Margin="0,0,3,0"
-                                ToolTip="{DynamicResource TD_047}">
-                            <TextBlock Text="+" Foreground="{DynamicResource Ink}" FontSize="14" FontWeight="Bold"/>
-                        </Button>
-                        <Button Click="BtnFit_Click"
-                                Height="28" Padding="8,0" Cursor="Hand"
-                                Template="{StaticResource GhostBtnTpl}"
-                                ToolTip="{DynamicResource TD_048}">
-                            <TextBlock Text="{DynamicResource TD_049}" Foreground="{DynamicResource Muted}" FontSize="11"/>
-                        </Button>
+                        <!-- ── Page setup ───────────────────────────────────────
+                             Size, custom size and the artwork underneath. A page is
+                             set once when the template is born and then left alone,
+                             so it no longer holds a whole row of a toolbar that sits
+                             in a narrow column above a small canvas.
+                        ── -->
+                        <StackPanel Margin="0,0,10,0">
+                            <ToggleButton x:Name="PageSetupToggle" Height="30" Padding="10,0"
+                                          Cursor="Hand" Style="{StaticResource ToolMoreToggle}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{DynamicResource TD_Grp_Page}" Foreground="{DynamicResource Muted}" FontSize="11" VerticalAlignment="Center"/>
+                                    <TextBlock Text="▾" Foreground="{DynamicResource Muted}" FontSize="11" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                </StackPanel>
+                            </ToggleButton>
+                            <Popup IsOpen="{Binding IsChecked, ElementName=PageSetupToggle, Mode=TwoWay}"
+                                   PlacementTarget="{Binding ElementName=PageSetupToggle}"
+                                   Placement="Bottom" StaysOpen="False"
+                                   AllowsTransparency="True" PopupAnimation="Fade"
+                                   VerticalOffset="4">
+                                <Border Background="{DynamicResource Paper}" BorderBrush="{DynamicResource Border}"
+                                        BorderThickness="1" CornerRadius="6" Padding="10">
+                                    <StackPanel MinWidth="210">
+                                        <TextBlock Text="{DynamicResource TD_019}" Foreground="{DynamicResource Muted}"
+                                                   FontSize="10" Margin="2,0,2,5"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                            <ComboBox ItemsSource="{Binding PageSizePresets}"
+                                                      SelectedItem="{Binding SelectedPageSize}"
+                                                      Style="{StaticResource DarkCombo}"
+                                                      Width="110" Height="30"/>
+                                            <Button Command="{Binding ApplyPageSizeCommand}"
+                                                    Height="30" Padding="10,0" Margin="6,0,0,0"
+                                                    Cursor="Hand" Template="{StaticResource BlueBtnTpl}">
+                                                <TextBlock Text="{DynamicResource TD_023}" Foreground="{DynamicResource OnAction}" FontSize="11"/>
+                                            </Button>
+                                        </StackPanel>
 
-                        <!-- Separator -->
-                        <Border Width="1" Height="20" Background="{DynamicResource Hover}"
-                                VerticalAlignment="Center" Margin="6,0"/>
+                                        <!-- Custom width × height (shown only when "مخصص" is selected) -->
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,6"
+                                                    Visibility="{Binding IsCustomPageSize, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <TextBox Text="{Binding CustomWidthMm, UpdateSourceTrigger=PropertyChanged}"
+                                                     Style="{StaticResource DarkBox}" Width="52" Height="30"
+                                                     ToolTip="{DynamicResource TD_020}"/>
+                                            <TextBlock Text="×" Foreground="{DynamicResource Muted}" FontSize="13"
+                                                       VerticalAlignment="Center" Margin="4,0"/>
+                                            <TextBox Text="{Binding CustomHeightMm, UpdateSourceTrigger=PropertyChanged}"
+                                                     Style="{StaticResource DarkBox}" Width="52" Height="30"
+                                                     ToolTip="{DynamicResource TD_021}"/>
+                                            <TextBlock Text="{DynamicResource TD_022}" Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="10"
+                                                       VerticalAlignment="Center" Margin="3,0,0,0"/>
+                                        </StackPanel>
 
-                        <!-- Undo / Redo -->
-                        <Button Command="{Binding UndoCommand}"
-                                Style="{StaticResource ZoomBtn}" Margin="0,0,3,0"
-                                ToolTip="{DynamicResource TD_050}" IsEnabled="{Binding CanUndo}">
-                            <TextBlock Text="↩" Foreground="{DynamicResource Ink}" FontSize="14"/>
-                        </Button>
-                        <Button Command="{Binding RedoCommand}"
-                                Style="{StaticResource ZoomBtn}" Margin="0,0,3,0"
-                                ToolTip="{DynamicResource TD_051}" IsEnabled="{Binding CanRedo}">
-                            <TextBlock Text="↪" Foreground="{DynamicResource Ink}" FontSize="14"/>
-                        </Button>
+                                        <Border Height="1" Background="{DynamicResource Hover}" Margin="0,2,0,8"/>
 
-                        <!-- Separator -->
-                        <Border Width="1" Height="20" Background="{DynamicResource Hover}"
-                                VerticalAlignment="Center" Margin="6,0"/>
+                                        <Button x:Name="BtnUploadBg" Height="30" Padding="10,0" Margin="0,0,0,4"
+                                                Cursor="Hand" Template="{StaticResource GhostBtnTpl}"
+                                                HorizontalContentAlignment="Left">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="🖼️" FontSize="13" VerticalAlignment="Center"/>
+                                                <TextBlock Text="{DynamicResource TD_024}" Foreground="{DynamicResource Ink}" FontSize="11" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                        <Button Command="{Binding RemoveBackgroundCommand}"
+                                                Height="30" Padding="10,0"
+                                                Cursor="Hand" Template="{StaticResource GhostBtnTpl}"
+                                                HorizontalContentAlignment="Left">
+                                            <TextBlock Text="{DynamicResource TD_025}" Foreground="{DynamicResource Muted}" FontSize="11"/>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                            </Popup>
+                        </StackPanel>
 
-                        <!-- Grid snap -->
-                        <CheckBox IsChecked="{Binding IsSnapEnabled}"
-                                  Foreground="{DynamicResource Ink}" FontSize="11"
-                                  Content="{DynamicResource TD_052}" Margin="0,0,4,0"
-                                  VerticalAlignment="Center"
-                                  ToolTip="{DynamicResource TD_053}"/>
-                        <TextBox Text="{Binding GridSizeMm, UpdateSourceTrigger=PropertyChanged}"
-                                 Style="{StaticResource DarkBox}"
-                                 Width="40" Height="28"
-                                 ToolTip="{DynamicResource TD_054}"
-                                 Visibility="{Binding IsSnapEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                        <TextBlock Text="{DynamicResource TD_022}" Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="10"
-                                   VerticalAlignment="Center" Margin="3,0,0,0"
-                                   Visibility="{Binding IsSnapEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <Border Style="{StaticResource ToolGroupRule}"/>
 
-                        <!-- ── Alignment toolbar (visible when multi-select) ──── -->
-                        <Border Width="1" Height="20" Background="{DynamicResource Hover}"
-                                VerticalAlignment="Center" Margin="6,0"
+                        <!-- ── Undo / Redo ──────────────────────────────────── -->
+                        <StackPanel Margin="0,0,10,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Command="{Binding UndoCommand}"
+                                        Style="{StaticResource ZoomBtn}" Height="30" Margin="0,0,4,0"
+                                        ToolTip="{DynamicResource TD_050}" IsEnabled="{Binding CanUndo}">
+                                    <TextBlock Text="↩" Foreground="{DynamicResource Ink}" FontSize="14"/>
+                                </Button>
+                                <Button Command="{Binding RedoCommand}"
+                                        Style="{StaticResource ZoomBtn}" Height="30"
+                                        ToolTip="{DynamicResource TD_051}" IsEnabled="{Binding CanRedo}">
+                                    <TextBlock Text="↪" Foreground="{DynamicResource Ink}" FontSize="14"/>
+                                </Button>
+                            </StackPanel>
+                            <TextBlock Text="{DynamicResource TD_Grp_Undo}" Style="{StaticResource ToolGroupLabel}"/>
+                        </StackPanel>
+
+                        <Border Style="{StaticResource ToolGroupRule}"/>
+
+                        <!-- ── View: zoom, fit, grid ────────────────────────── -->
+                        <StackPanel Margin="0,0,10,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Command="{Binding ZoomOutCommand}"
+                                        Style="{StaticResource ZoomBtn}" Height="30" Margin="0,0,3,0"
+                                        ToolTip="{DynamicResource TD_046}">
+                                    <TextBlock Text="&#x2212;" Foreground="{DynamicResource Ink}" FontSize="14" FontWeight="Bold"/>
+                                </Button>
+                                <Border Background="{DynamicResource Paper}" BorderBrush="{DynamicResource Border}" BorderThickness="1"
+                                        CornerRadius="4" Padding="8,0" Height="30" Margin="0,0,3,0"
+                                        ToolTip="{Binding ZoomBoostLabel}">
+                                    <TextBlock Text="{Binding ZoomBoostLabel}" Foreground="{DynamicResource Ink}"
+                                               FontSize="11" VerticalAlignment="Center"
+                                               MinWidth="36" TextAlignment="Center"/>
+                                </Border>
+                                <Button Command="{Binding ZoomInCommand}"
+                                        Style="{StaticResource ZoomBtn}" Height="30" Margin="0,0,3,0"
+                                        ToolTip="{DynamicResource TD_047}">
+                                    <TextBlock Text="+" Foreground="{DynamicResource Ink}" FontSize="14" FontWeight="Bold"/>
+                                </Button>
+                                <Button Click="BtnFit_Click"
+                                        Height="30" Padding="8,0" Margin="0,0,8,0" Cursor="Hand"
+                                        Template="{StaticResource GhostBtnTpl}"
+                                        ToolTip="{DynamicResource TD_048}">
+                                    <TextBlock Text="{DynamicResource TD_049}" Foreground="{DynamicResource Muted}" FontSize="11"/>
+                                </Button>
+
+                                <CheckBox IsChecked="{Binding IsSnapEnabled}"
+                                          Foreground="{DynamicResource Ink}" FontSize="11"
+                                          Content="{DynamicResource TD_052}" Margin="0,0,4,0"
+                                          VerticalAlignment="Center"
+                                          ToolTip="{DynamicResource TD_053}"/>
+                                <TextBox Text="{Binding GridSizeMm, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource DarkBox}"
+                                         Width="40" Height="30"
+                                         ToolTip="{DynamicResource TD_054}"
+                                         Visibility="{Binding IsSnapEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                <TextBlock Text="{DynamicResource TD_022}" Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="10"
+                                           VerticalAlignment="Center" Margin="3,0,0,0"
+                                           Visibility="{Binding IsSnapEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            </StackPanel>
+                            <TextBlock Text="{DynamicResource TD_Grp_View}" Style="{StaticResource ToolGroupLabel}"/>
+                        </StackPanel>
+
+                        <!-- ── Alignment (only with more than one field selected) ── -->
+                        <Border Style="{StaticResource ToolGroupRule}"
                                 Visibility="{Binding HasMultiSelection, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-                        <StackPanel Orientation="Horizontal"
+                        <StackPanel Margin="0,0,10,0"
                                     Visibility="{Binding HasMultiSelection, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="{DynamicResource TD_055}" Foreground="{DynamicResource Muted}" FontSize="11"
-                                       VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Command="{Binding AlignSlotsLeftCommand}"
+                                        Style="{StaticResource ZoomBtn}" Height="30" Margin="0,0,2,0"
+                                        ToolTip="{DynamicResource TD_056}">
+                                    <TextBlock Text="⫷" Foreground="{DynamicResource Ink}" FontSize="13"/>
+                                </Button>
+                                <Button Command="{Binding AlignSlotsCenterHCommand}"
+                                        Style="{StaticResource ZoomBtn}" Height="30" Margin="0,0,2,0"
+                                        ToolTip="{DynamicResource TD_057}">
+                                    <TextBlock Text="⫼" Foreground="{DynamicResource Ink}" FontSize="13"/>
+                                </Button>
+                                <Button Command="{Binding AlignSlotsRightCommand}"
+                                        Style="{StaticResource ZoomBtn}" Height="30" Margin="0,0,2,0"
+                                        ToolTip="{DynamicResource TD_058}">
+                                    <TextBlock Text="⫸" Foreground="{DynamicResource Ink}" FontSize="13"/>
+                                </Button>
+                                <Button Command="{Binding AlignSlotsTopCommand}"
+                                        Style="{StaticResource ZoomBtn}" Height="30" Margin="0,0,2,0"
+                                        ToolTip="{DynamicResource TD_059}">
+                                    <TextBlock Text="⏶" Foreground="{DynamicResource Ink}" FontSize="13"/>
+                                </Button>
+                                <Button Command="{Binding AlignSlotsCenterVCommand}"
+                                        Style="{StaticResource ZoomBtn}" Height="30" Margin="0,0,2,0"
+                                        ToolTip="{DynamicResource TD_060}">
+                                    <TextBlock Text="⏸" Foreground="{DynamicResource Ink}" FontSize="13" RenderTransformOrigin="0.5,0.5">
+                                        <TextBlock.RenderTransform><RotateTransform Angle="90"/></TextBlock.RenderTransform>
+                                    </TextBlock>
+                                </Button>
+                                <Button Command="{Binding AlignSlotsBottomCommand}"
+                                        Style="{StaticResource ZoomBtn}" Height="30" Margin="0,0,2,0"
+                                        ToolTip="{DynamicResource TD_061}">
+                                    <TextBlock Text="⏷" Foreground="{DynamicResource Ink}" FontSize="13"/>
+                                </Button>
 
-                            <Button Command="{Binding AlignSlotsLeftCommand}"
-                                    Style="{StaticResource ZoomBtn}" Margin="0,0,2,0"
-                                    ToolTip="{DynamicResource TD_056}">
-                                <TextBlock Text="⫷" Foreground="{DynamicResource Ink}" FontSize="13"/>
-                            </Button>
-                            <Button Command="{Binding AlignSlotsCenterHCommand}"
-                                    Style="{StaticResource ZoomBtn}" Margin="0,0,2,0"
-                                    ToolTip="{DynamicResource TD_057}">
-                                <TextBlock Text="⫼" Foreground="{DynamicResource Ink}" FontSize="13"/>
-                            </Button>
-                            <Button Command="{Binding AlignSlotsRightCommand}"
-                                    Style="{StaticResource ZoomBtn}" Margin="0,0,2,0"
-                                    ToolTip="{DynamicResource TD_058}">
-                                <TextBlock Text="⫸" Foreground="{DynamicResource Ink}" FontSize="13"/>
-                            </Button>
-                            <Button Command="{Binding AlignSlotsTopCommand}"
-                                    Style="{StaticResource ZoomBtn}" Margin="0,0,2,0"
-                                    ToolTip="{DynamicResource TD_059}">
-                                <TextBlock Text="⏶" Foreground="{DynamicResource Ink}" FontSize="13"/>
-                            </Button>
-                            <Button Command="{Binding AlignSlotsCenterVCommand}"
-                                    Style="{StaticResource ZoomBtn}" Margin="0,0,2,0"
-                                    ToolTip="{DynamicResource TD_060}">
-                                <TextBlock Text="⏸" Foreground="{DynamicResource Ink}" FontSize="13" RenderTransformOrigin="0.5,0.5">
-                                    <TextBlock.RenderTransform><RotateTransform Angle="90"/></TextBlock.RenderTransform>
-                                </TextBlock>
-                            </Button>
-                            <Button Command="{Binding AlignSlotsBottomCommand}"
-                                    Style="{StaticResource ZoomBtn}" Margin="0,0,2,0"
-                                    ToolTip="{DynamicResource TD_061}">
-                                <TextBlock Text="⏷" Foreground="{DynamicResource Ink}" FontSize="13"/>
-                            </Button>
+                                <Border Width="1" Height="20" Background="{DynamicResource Hover}"
+                                        VerticalAlignment="Center" Margin="4,0"/>
 
-                            <Border Width="1" Height="16" Background="{DynamicResource Hover}"
-                                    VerticalAlignment="Center" Margin="4,0"/>
-
-                            <Button Command="{Binding DistributeSlotsHCommand}"
-                                    Style="{StaticResource ZoomBtn}" Margin="0,0,2,0"
-                                    ToolTip="{DynamicResource TD_062}">
-                                <TextBlock Text="⫦" Foreground="{DynamicResource Action}" FontSize="13"/>
-                            </Button>
-                            <Button Command="{Binding DistributeSlotsVCommand}"
-                                    Style="{StaticResource ZoomBtn}" Margin="0,0,2,0"
-                                    ToolTip="{DynamicResource TD_063}">
-                                <TextBlock Text="⫩" Foreground="{DynamicResource Action}" FontSize="13"/>
-                            </Button>
+                                <Button Command="{Binding DistributeSlotsHCommand}"
+                                        Style="{StaticResource ZoomBtn}" Height="30" Margin="0,0,2,0"
+                                        ToolTip="{DynamicResource TD_062}">
+                                    <TextBlock Text="⫦" Foreground="{DynamicResource Action}" FontSize="13"/>
+                                </Button>
+                                <Button Command="{Binding DistributeSlotsVCommand}"
+                                        Style="{StaticResource ZoomBtn}" Height="30" Margin="0,0,2,0"
+                                        ToolTip="{DynamicResource TD_063}">
+                                    <TextBlock Text="⫩" Foreground="{DynamicResource Action}" FontSize="13"/>
+                                </Button>
+                            </StackPanel>
+                            <TextBlock Text="{DynamicResource TD_Grp_Align}" Style="{StaticResource ToolGroupLabel}"/>
                         </StackPanel>
 
                     </WrapPanel>
