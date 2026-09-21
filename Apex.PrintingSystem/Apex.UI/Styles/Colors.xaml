@@ -24,7 +24,11 @@
 
     <!-- Disabled states. Deliberately NOT mapped to a readable token: a disabled control has
          to look disabled, and WCAG exempts it from the text-contrast minimum. -->
-    <Color x:Key="Color.Text.Disabled">#B7B2A8</Color>
+    <!-- #B7B2A8 on the disabled fill #DDD9D3 is a contrast ratio of about 1.5:1 —
+         the label on a disabled button, and every placeholder drawn in this colour,
+         was there but could not be read. This sits at about 3:1, which still reads
+         as "not available" without hiding what the button says. -->
+    <Color x:Key="Color.Text.Disabled">#7C7770</Color>
     <Color x:Key="Color.Disabled">#DDD9D3</Color>
     <Color x:Key="Color.Active">#B7B2A8</Color>
     <SolidColorBrush x:Key="Brush.Text.Disabled" Color="{StaticResource Color.Text.Disabled}"/>
