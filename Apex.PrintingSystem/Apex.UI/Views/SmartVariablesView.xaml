@@ -126,7 +126,7 @@
 
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="⚡" FontSize="20" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                    <TextBlock Text="المتغيرات الذكية — دمج البيانات"
+                    <TextBlock Text="{DynamicResource SV_V01}"
                                Foreground="{DynamicResource Ink}" FontSize="15" FontWeight="SemiBold"
                                VerticalAlignment="Center"/>
 
@@ -142,7 +142,7 @@
                      AncestorLevel=2 climbs past SmartVariablesView (level 1, DataContext=SmartVars)
                      up to TemplateDesignerView (level 2, DataContext=TemplateDesignerViewModel)
                      which owns the save. -->
-                <Button Grid.Column="1" Content="💾 حفظ المشروع"
+                <Button Grid.Column="1" Content="{DynamicResource SV_V02}"
                         Style="{StaticResource GhostBtn}"
                         Command="{Binding DataContext.SaveCurrentTemplateCommand,
                                           RelativeSource={RelativeSource AncestorType=UserControl,
@@ -181,7 +181,7 @@
             <!-- ═══════════════════════════════════════════════════════════════
                  TAB 0 — SMART PASTE
             ═══════════════════════════════════════════════════════════════ -->
-            <TabItem Header="📋 لصق البيانات">
+            <TabItem Header="{DynamicResource SV_V03}">
                 <Grid Margin="16">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -194,7 +194,7 @@
                     <!-- Instructions -->
                     <Border Grid.Row="0" Background="{DynamicResource Panel}" CornerRadius="6" Padding="12,10" Margin="0,0,0,12">
                         <TextBlock Foreground="{DynamicResource Muted}" FontSize="11" TextWrapping="Wrap"
-                                   Text="انسخ الجدول من Excel أو Google Sheets (Ctrl+C) ثم اضغط 'لصق من الحافظة' أو الصق مباشرة في الحقل أدناه. يتم اكتشاف الفاصل تلقائياً."/>
+                                   Text="{DynamicResource SV_V04}"/>
                     </Border>
 
                     <!-- Paste area -->
@@ -220,18 +220,18 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <Button Grid.Column="0" Content="📋 لصق من الحافظة"
+                        <Button Grid.Column="0" Content="{DynamicResource SV_V05}"
                                 Style="{StaticResource ActionBtn}"
                                 Command="{Binding PasteFromClipboardCommand}"
                                 Margin="0,0,8,0"/>
 
-                        <Button Grid.Column="1" Content="🧹 تطبيق التنظيف"
+                        <Button Grid.Column="1" Content="{DynamicResource SV_V06}"
                                 Style="{StaticResource GhostBtn}"
                                 Command="{Binding ApplyCleaningCommand}"
                                 IsEnabled="{Binding HasPastedData}"
                                 Margin="0,0,8,0"/>
 
-                        <Button Grid.Column="2" Content="✕ مسح"
+                        <Button Grid.Column="2" Content="{DynamicResource SV_V07}"
                                 Style="{StaticResource DangerBtn}"
                                 Command="{Binding ClearDataCommand}"
                                 IsEnabled="{Binding HasPastedData}"/>
@@ -253,16 +253,16 @@
 
                     <!-- Cleaning options -->
                     <Expander Grid.Row="3"
-                              Header="⚙ خيارات التنظيف"
+                              Header="{DynamicResource SV_V08}"
                               Foreground="{DynamicResource Muted}"
                               Margin="0,0,0,10">
                         <Border Background="{DynamicResource Panel}" CornerRadius="6" Padding="12,8">
                             <WrapPanel>
-                                <CheckBox Content="حذف المسافات الزائدة"    Style="{StaticResource CheckStyle}" IsChecked="{Binding CleanTrimWhitespace}"   Margin="0,4,16,4"/>
-                                <CheckBox Content="توحيد الأرقام العربية"    Style="{StaticResource CheckStyle}" IsChecked="{Binding CleanNormalizeNumbers}"  Margin="0,4,16,4"/>
-                                <CheckBox Content="توحيد الألف (أإآ → ا)"   Style="{StaticResource CheckStyle}" IsChecked="{Binding CleanNormalizeArabic}"   Margin="0,4,16,4"/>
-                                <CheckBox Content="حذف مسافات متعددة"       Style="{StaticResource CheckStyle}" IsChecked="{Binding CleanRemoveExtraSpaces}" Margin="0,4,16,4"/>
-                                <CheckBox Content="حذف التشكيل"             Style="{StaticResource CheckStyle}" IsChecked="{Binding CleanRemoveDiacritics}"  Margin="0,4,16,4"/>
+                                <CheckBox Content="{DynamicResource SV_V09}"    Style="{StaticResource CheckStyle}" IsChecked="{Binding CleanTrimWhitespace}"   Margin="0,4,16,4"/>
+                                <CheckBox Content="{DynamicResource SV_V10}"    Style="{StaticResource CheckStyle}" IsChecked="{Binding CleanNormalizeNumbers}"  Margin="0,4,16,4"/>
+                                <CheckBox Content="{DynamicResource SV_V11}"   Style="{StaticResource CheckStyle}" IsChecked="{Binding CleanNormalizeArabic}"   Margin="0,4,16,4"/>
+                                <CheckBox Content="{DynamicResource SV_V12}"       Style="{StaticResource CheckStyle}" IsChecked="{Binding CleanRemoveExtraSpaces}" Margin="0,4,16,4"/>
+                                <CheckBox Content="{DynamicResource SV_V13}"             Style="{StaticResource CheckStyle}" IsChecked="{Binding CleanRemoveDiacritics}"  Margin="0,4,16,4"/>
                             </WrapPanel>
                         </Border>
                     </Expander>
@@ -307,7 +307,7 @@
             <!-- ═══════════════════════════════════════════════════════════════
                  TAB 1 — VARIABLE MAPPING
             ═══════════════════════════════════════════════════════════════ -->
-            <TabItem Header="🔗 ربط المتغيرات">
+            <TabItem Header="{DynamicResource SV_V14}">
                 <Grid Margin="16">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -317,11 +317,11 @@
 
                     <!-- Toolbar -->
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
-                        <Button Content="✨ ربط تلقائي"
+                        <Button Content="{DynamicResource SV_V15}"
                                 Style="{StaticResource ActionBtn}"
                                 Command="{Binding AutoMapCommand}"
                                 Margin="0,0,8,0"/>
-                        <Button Content="✕ مسح الربط"
+                        <Button Content="{DynamicResource SV_V16}"
                                 Style="{StaticResource GhostBtn}"
                                 Command="{Binding ClearMappingsCommand}"/>
 
@@ -334,9 +334,9 @@
                         <Border Background="{DynamicResource Panel}" CornerRadius="4" Padding="8,4" VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding MappedCount}"   Foreground="{DynamicResource Done}" FontSize="12" FontWeight="Bold"/>
-                                <TextBlock Text=" مربوط · " Foreground="{DynamicResource Muted}" FontSize="12"/>
+                                <TextBlock Text="{DynamicResource SV_V17}" Foreground="{DynamicResource Muted}" FontSize="12"/>
                                 <TextBlock Text="{Binding UnmappedRequiredCount}" Foreground="{DynamicResource Stopped}" FontSize="12" FontWeight="Bold"/>
-                                <TextBlock Text=" مطلوب غير مربوط" Foreground="{DynamicResource Muted}" FontSize="12"/>
+                                <TextBlock Text="{DynamicResource SV_V18}" Foreground="{DynamicResource Muted}" FontSize="12"/>
                             </StackPanel>
                         </Border>
                     </StackPanel>
@@ -352,10 +352,10 @@
                                 <ColumnDefinition Width="80"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="⚑"  Foreground="{DynamicResource Muted}" FontSize="11"/>
-                            <TextBlock Grid.Column="1" Text="الحقل في القالب"         Foreground="{DynamicResource Muted}" FontSize="11" FontWeight="SemiBold"/>
-                            <TextBlock Grid.Column="2" Text="عمود البيانات"            Foreground="{DynamicResource Muted}" FontSize="11" FontWeight="SemiBold"/>
-                            <TextBlock Grid.Column="3" Text="القيمة الافتراضية"        Foreground="{DynamicResource Muted}" FontSize="11" FontWeight="SemiBold"/>
-                            <TextBlock Grid.Column="4" Text="ثقة الربط"                Foreground="{DynamicResource Muted}" FontSize="11" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="1" Text="{DynamicResource SV_V19}"         Foreground="{DynamicResource Muted}" FontSize="11" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="2" Text="{DynamicResource SV_V20}"            Foreground="{DynamicResource Muted}" FontSize="11" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="3" Text="{DynamicResource SV_V21}"        Foreground="{DynamicResource Muted}" FontSize="11" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="4" Text="{DynamicResource SV_V22}"                Foreground="{DynamicResource Muted}" FontSize="11" FontWeight="SemiBold"/>
                         </Grid>
                     </Border>
 
@@ -385,7 +385,7 @@
                                                            Foreground="{DynamicResource Ink}" FontSize="12"/>
                                                 <Border Background="{DynamicResource BrandSoft}" CornerRadius="3" Padding="4,1" Margin="8,0,0,0"
                                                         Visibility="{Binding IsRequired, Converter={StaticResource BoolToVis}}">
-                                                    <TextBlock Text="مطلوب" Foreground="{DynamicResource Action}" FontSize="10"/>
+                                                    <TextBlock Text="{DynamicResource SV_V23}" Foreground="{DynamicResource Action}" FontSize="10"/>
                                                 </Border>
                                             </StackPanel>
 
@@ -422,7 +422,7 @@
             <!-- ═══════════════════════════════════════════════════════════════
                  TAB 2 — IMAGE MANAGER
             ═══════════════════════════════════════════════════════════════ -->
-            <TabItem Header="🖼 مدير الصور">
+            <TabItem Header="{DynamicResource SV_V24}">
                 <Grid Margin="16">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -444,11 +444,11 @@
                                  Text="{Binding ImageFolderPath, UpdateSourceTrigger=PropertyChanged}"
                                  IsReadOnly="True"
                                  Margin="0,0,8,0"/>
-                        <Button Grid.Column="1" Content="📂 اختيار مجلد"
+                        <Button Grid.Column="1" Content="{DynamicResource SV_V25}"
                                 Style="{StaticResource GhostBtn}"
                                 Command="{Binding BrowseImageFolderCommand}"
                                 Margin="0,0,8,0"/>
-                        <Button Grid.Column="2" Content="🔄 مسح"
+                        <Button Grid.Column="2" Content="{DynamicResource SV_V26}"
                                 Style="{StaticResource ActionBtn}"
                                 Command="{Binding ScanImageFolderCommand}"
                                 IsEnabled="{Binding IsScanning, Converter={StaticResource InverseBool}}"/>
@@ -465,7 +465,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="0" Text="طريقة المطابقة:"
+                        <TextBlock Grid.Column="0" Text="{DynamicResource SV_V27}"
                                    Style="{StaticResource FieldLabel}"
                                    VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <ComboBox Grid.Column="1"
@@ -474,7 +474,7 @@
                                   SelectedItem="{Binding SelectedMatchMode}"
                                   Margin="0,0,12,0"/>
 
-                        <TextBlock Grid.Column="2" Text="عمود المفتاح:"
+                        <TextBlock Grid.Column="2" Text="{DynamicResource SV_V28}"
                                    Style="{StaticResource FieldLabel}"
                                    VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <ComboBox Grid.Column="3"
@@ -484,7 +484,7 @@
                                   SelectedItem="{Binding ImageKeyColumn}"
                                   Margin="0,0,12,0"/>
 
-                        <Button Grid.Column="5" Content="🔍 مطابقة"
+                        <Button Grid.Column="5" Content="{DynamicResource SV_V29}"
                                 Style="{StaticResource ActionBtn}"
                                 Command="{Binding ResolveImageMatchesCommand}"
                                 IsEnabled="{Binding HasPastedData}"/>
@@ -569,7 +569,7 @@
             <!-- ═══════════════════════════════════════════════════════════════
                  TAB 3 — PREVIEW
             ═══════════════════════════════════════════════════════════════ -->
-            <TabItem Header="👁 معاينة">
+            <TabItem Header="{DynamicResource SV_V30}">
                 <Grid Margin="16">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="260"/>
@@ -619,7 +619,7 @@
                         <!-- Image preview -->
                         <Border Grid.Row="1" Height="140" Background="{DynamicResource Panel}" CornerRadius="6" Margin="0,0,0,10"
                                 Visibility="{Binding PreviewImagePath, Converter={StaticResource NullToCollapsed}}">
-                            <TextBlock Text="[صورة السجل]" Foreground="{DynamicResource Muted}" FontSize="12"
+                            <TextBlock Text="{DynamicResource SV_V31}" Foreground="{DynamicResource Muted}" FontSize="12"
                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
 
@@ -674,10 +674,10 @@
                                         Visibility="{Binding CurrentRenderedTemplate,
                                                      Converter={StaticResource NullToVisible}}">
                                 <TextBlock Text="👁" FontSize="48" HorizontalAlignment="Center" Opacity="0.3"/>
-                                <TextBlock Text="معاينة القالب مع بيانات السجل الحالي"
+                                <TextBlock Text="{DynamicResource SV_V32}"
                                            Foreground="{DynamicResource Muted}" FontSize="13"
                                            HorizontalAlignment="Center" Margin="0,8,0,0"/>
-                                <TextBlock Text="(يتطلب ربط المتغيرات أولاً)"
+                                <TextBlock Text="{DynamicResource SV_V33}"
                                            Foreground="{DynamicResource Muted}" FontSize="11"
                                            HorizontalAlignment="Center" Margin="0,4,0,0"/>
                             </StackPanel>
@@ -686,7 +686,7 @@
                             <StackPanel Grid.Row="1" Orientation="Horizontal"
                                         HorizontalAlignment="Center" Margin="0,0,0,12">
                                 <Button x:Name="BtnExportPng"
-                                        Content="🖼 حفظ السجل الحالي PNG"
+                                        Content="{DynamicResource SV_V34}"
                                         Style="{StaticResource ActionBtn}"
                                         IsEnabled="{Binding CurrentRenderedTemplate,
                                                     Converter={StaticResource NotNullToBool}}"/>
@@ -703,7 +703,7 @@
             <!-- ═══════════════════════════════════════════════════════════════
                  TAB 4 — EXPORT (with the preflight check that precedes it)
             ═══════════════════════════════════════════════════════════════ -->
-            <TabItem Header="📤 التصدير">
+            <TabItem Header="{DynamicResource SV_V35}">
                 <ScrollViewer Margin="16" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
 
@@ -713,11 +713,11 @@
                          itself could only be reached by the tab strip. It belongs to
                          the export stage anyway - look before you print - so it opens
                          it. -->
-                    <TextBlock Text="الفحص المسبق" Style="{StaticResource SectionTitle}"/>
+                    <TextBlock Text="{DynamicResource SV_V36}" Style="{StaticResource SectionTitle}"/>
 
                     <!-- Run button + summary -->
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                        <Button Content="🔍 تشغيل الفحص"
+                        <Button Content="{DynamicResource SV_V37}"
                                 Style="{StaticResource ActionBtn}"
                                 Command="{Binding RunPreflightCommand}"
                                 Margin="0,0,12,0"/>
@@ -734,19 +734,19 @@
                         <Border Background="{DynamicResource Panel}" CornerRadius="6" Padding="12,6" Margin="0,0,8,0">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding ErrorCount}" Foreground="{DynamicResource Stopped}" FontSize="18" FontWeight="Bold"/>
-                                <TextBlock Text=" خطأ" Foreground="{DynamicResource Muted}" FontSize="12" VerticalAlignment="Bottom" Margin="4,0,0,2"/>
+                                <TextBlock Text="{DynamicResource SV_V38}" Foreground="{DynamicResource Muted}" FontSize="12" VerticalAlignment="Bottom" Margin="4,0,0,2"/>
                             </StackPanel>
                         </Border>
                         <Border Background="{DynamicResource Panel}" CornerRadius="6" Padding="12,6" Margin="0,0,8,0">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding WarningCount}" Foreground="{DynamicResource Printing}" FontSize="18" FontWeight="Bold"/>
-                                <TextBlock Text=" تحذير" Foreground="{DynamicResource Muted}" FontSize="12" VerticalAlignment="Bottom" Margin="4,0,0,2"/>
+                                <TextBlock Text="{DynamicResource SV_V39}" Foreground="{DynamicResource Muted}" FontSize="12" VerticalAlignment="Bottom" Margin="4,0,0,2"/>
                             </StackPanel>
                         </Border>
                         <Border Background="{DynamicResource Panel}" CornerRadius="6" Padding="12,6">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding InfoCount}" Foreground="{DynamicResource Action}" FontSize="18" FontWeight="Bold"/>
-                                <TextBlock Text=" ملاحظة" Foreground="{DynamicResource Muted}" FontSize="12" VerticalAlignment="Bottom" Margin="4,0,0,2"/>
+                                <TextBlock Text="{DynamicResource SV_V40}" Foreground="{DynamicResource Muted}" FontSize="12" VerticalAlignment="Bottom" Margin="4,0,0,2"/>
                             </StackPanel>
                         </Border>
                     </StackPanel>
@@ -796,20 +796,20 @@
                     <Border Height="1" Background="{DynamicResource Border}" Margin="0,16,0,16"/>
 
                         <!-- Scope + Format -->
-                        <TextBlock Text="نطاق التصدير" Style="{StaticResource SectionTitle}"/>
+                        <TextBlock Text="{DynamicResource SV_V41}" Style="{StaticResource SectionTitle}"/>
                         <Grid Margin="0,0,0,16">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                                <TextBlock Text="نطاق السجلات" Style="{StaticResource FieldLabel}"/>
+                                <TextBlock Text="{DynamicResource SV_V42}" Style="{StaticResource FieldLabel}"/>
                                 <ComboBox Style="{StaticResource DarkCombo}"
                                           ItemsSource="{Binding AllScopes}"
                                           SelectedItem="{Binding ExportSettings.Scope}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="تنسيق الملف" Style="{StaticResource FieldLabel}"/>
+                                <TextBlock Text="{DynamicResource SV_V43}" Style="{StaticResource FieldLabel}"/>
                                 <ComboBox Style="{StaticResource DarkCombo}"
                                           ItemsSource="{Binding AllFormats}"
                                           SelectedItem="{Binding ExportSettings.Format}"/>
@@ -817,7 +817,7 @@
                         </Grid>
 
                         <!-- Output folder -->
-                        <TextBlock Text="مجلد الحفظ" Style="{StaticResource SectionTitle}"/>
+                        <TextBlock Text="{DynamicResource SV_V44}" Style="{StaticResource SectionTitle}"/>
                         <Grid Margin="0,0,0,16">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -828,53 +828,53 @@
                                      Text="{Binding ExportSettings.OutputFolder}"
                                      IsReadOnly="True"
                                      Margin="0,0,8,0"/>
-                            <Button Grid.Column="1" Content="📂 اختيار"
+                            <Button Grid.Column="1" Content="{DynamicResource SV_V45}"
                                     Style="{StaticResource GhostBtn}"
                                     Command="{Binding BrowseOutputFolderCommand}"/>
                         </Grid>
 
                         <!-- Naming mode -->
-                        <TextBlock Text="تسمية الملفات" Style="{StaticResource SectionTitle}"/>
+                        <TextBlock Text="{DynamicResource SV_V46}" Style="{StaticResource SectionTitle}"/>
                         <Grid Margin="0,0,0,16">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                                <TextBlock Text="طريقة التسمية" Style="{StaticResource FieldLabel}"/>
+                                <TextBlock Text="{DynamicResource SV_V47}" Style="{StaticResource FieldLabel}"/>
                                 <ComboBox Style="{StaticResource DarkCombo}"
                                           ItemsSource="{Binding AllNamingModes}"
                                           SelectedItem="{Binding ExportSettings.NamingMode}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="صيغة المعادلة (للوضع ByFormula)" Style="{StaticResource FieldLabel}"/>
+                                <TextBlock Text="{DynamicResource SV_V48}" Style="{StaticResource FieldLabel}"/>
                                 <TextBox Style="{StaticResource DarkBox}"
                                          Text="{Binding ExportSettings.NamingFormula, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                         </Grid>
 
                         <!-- Quality -->
-                        <TextBlock Text="الجودة" Style="{StaticResource SectionTitle}"/>
+                        <TextBlock Text="{DynamicResource SV_V49}" Style="{StaticResource SectionTitle}"/>
                         <Grid Margin="0,0,0,16">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="120"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                                <TextBlock Text="دقة DPI" Style="{StaticResource FieldLabel}"/>
+                                <TextBlock Text="{DynamicResource SV_V50}" Style="{StaticResource FieldLabel}"/>
                                 <TextBox Style="{StaticResource DarkBox}"
                                          Text="{Binding ExportSettings.DpiResolution, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
-                                <CheckBox Content="تجاهل التحذيرات وتصدير فقط" Style="{StaticResource CheckStyle}"
+                                <CheckBox Content="{DynamicResource SV_V51}" Style="{StaticResource CheckStyle}"
                                           IsChecked="{Binding ExportSettings.IgnoreWarnings}"/>
-                                <CheckBox Content="تصدير السجلات الصحيحة فقط" Style="{StaticResource CheckStyle}"
+                                <CheckBox Content="{DynamicResource SV_V52}" Style="{StaticResource CheckStyle}"
                                           IsChecked="{Binding ExportSettings.ExportOnlyValid}"/>
                             </StackPanel>
                         </Grid>
 
                         <!-- Grid layout for multi-item -->
-                        <Expander Header="📐 تخطيط متعدد على الصفحة (بطاقات وملصقات)"
+                        <Expander Header="{DynamicResource SV_V53}"
                                   Foreground="{DynamicResource Muted}" Margin="0,0,0,16">
                             <Border Background="{DynamicResource Panel}" CornerRadius="6" Padding="14,12">
                                 <Grid>
@@ -890,28 +890,28 @@
                                     </Grid.RowDefinitions>
 
                                     <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                                        <TextBlock Text="عدد الأعمدة" Style="{StaticResource FieldLabel}"/>
+                                        <TextBlock Text="{DynamicResource SV_V54}" Style="{StaticResource FieldLabel}"/>
                                         <TextBox Style="{StaticResource DarkBox}"
                                                  Text="{Binding ExportSettings.GridColumns, UpdateSourceTrigger=PropertyChanged}"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Margin="0,0,8,0">
-                                        <TextBlock Text="عدد الصفوف" Style="{StaticResource FieldLabel}"/>
+                                        <TextBlock Text="{DynamicResource SV_V55}" Style="{StaticResource FieldLabel}"/>
                                         <TextBox Style="{StaticResource DarkBox}"
                                                  Text="{Binding ExportSettings.GridRows, UpdateSourceTrigger=PropertyChanged}"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="2" Margin="0,0,8,0">
-                                        <TextBlock Text="مسافة أفقية (mm)" Style="{StaticResource FieldLabel}"/>
+                                        <TextBlock Text="{DynamicResource SV_V56}" Style="{StaticResource FieldLabel}"/>
                                         <TextBox Style="{StaticResource DarkBox}"
                                                  Text="{Binding ExportSettings.SpacingHMm, UpdateSourceTrigger=PropertyChanged}"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="3">
-                                        <TextBlock Text="مسافة رأسية (mm)" Style="{StaticResource FieldLabel}"/>
+                                        <TextBlock Text="{DynamicResource SV_V57}" Style="{StaticResource FieldLabel}"/>
                                         <TextBox Style="{StaticResource DarkBox}"
                                                  Text="{Binding ExportSettings.SpacingVMm, UpdateSourceTrigger=PropertyChanged}"/>
                                     </StackPanel>
 
                                     <CheckBox Grid.Row="1" Grid.ColumnSpan="4"
-                                              Content="إظهار علامات القطع"
+                                              Content="{DynamicResource SV_V58}"
                                               Style="{StaticResource CheckStyle}"
                                               IsChecked="{Binding ExportSettings.ShowCutMarks}"
                                               Margin="0,8,0,0"/>
@@ -927,7 +927,7 @@
                                              Visibility="{Binding IsExporting, Converter={StaticResource BoolToVis}}"
                                              Margin="0,0,0,8"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Content="🚀 بدء التصدير"
+                                    <Button Content="{DynamicResource SV_V59}"
                                             Style="{StaticResource SuccessBtn}"
                                             Command="{Binding StartExportCommand}"
                                             IsEnabled="{Binding IsExporting, Converter={StaticResource InverseBool}}"
