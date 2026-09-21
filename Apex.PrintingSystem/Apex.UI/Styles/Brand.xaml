@@ -132,6 +132,35 @@
     <SolidColorBrush x:Key="SelectTint"       Color="{StaticResource SelectTintColor}"/>
     <SolidColorBrush x:Key="MultiSelectTint"  Color="{StaticResource MultiSelectTintColor}"/>
 
+    <!-- ══════════════════════════════════════════════════════════════════════════
+         أيقونات القائمة — بنفس لغة اللوجو.
+         Sidebar icons, drawn in the logo's language: the logo is a printer's crop
+         mark — two straight strokes meeting at a sharp corner — so every icon is
+         straight 16×16 line work with square ends and mitred corners. Colour is the
+         brand cyan only, as a gradient from Brand to BrandDeep: no new colours.
+         ══════════════════════════════════════════════════════════════════════════ -->
+    <Geometry x:Key="Icon.Dashboard">M1.5,1.5 H6.5 V6.5 H1.5 Z M9.5,1.5 H14.5 V6.5 H9.5 Z M1.5,9.5 H6.5 V14.5 H1.5 Z M9.5,9.5 H14.5 V14.5 H9.5 Z</Geometry>
+    <Geometry x:Key="Icon.Printing">M4.5,6.5 V1.5 H11.5 V6.5 M4.5,12.5 H1.5 V6.5 H14.5 V12.5 H11.5 M4.5,9.5 H11.5 V14.5 H4.5 Z</Geometry>
+    <Geometry x:Key="Icon.Designer">M2.5,1.5 H10.5 L13.5,4.5 V14.5 H2.5 Z M5.5,7.5 H10.5 M5.5,10.5 H8.5</Geometry>
+    <Geometry x:Key="Icon.Numbering">M6,1.5 L4.5,14.5 M11.5,1.5 L10,14.5 M1.5,5.5 H14.5 M1.5,10.5 H14.5</Geometry>
+    <Geometry x:Key="Icon.PageTools">M5.5,1.5 H14.5 V10.5 M1.5,4.5 H11.5 V14.5 H1.5 Z</Geometry>
+    <!-- A sheet laid out four-up, with crop marks at two corners — the logo's own mark. -->
+    <Geometry x:Key="Icon.Imposition">M4.5,4.5 H11.5 V11.5 H4.5 Z M8,4.5 V11.5 M4.5,8 H11.5 M0.5,4.5 H2.5 M4.5,0.5 V2.5 M13.5,11.5 H15.5 M11.5,13.5 V15.5</Geometry>
+    <Geometry x:Key="Icon.Performance">M1.5,14.5 H14.5 M4.5,12.5 V8.5 M8,12.5 V3.5 M11.5,12.5 V6.5</Geometry>
+    <Geometry x:Key="Icon.Settings">M1.5,4 H14.5 M1.5,8 H14.5 M1.5,12 H14.5 M5,2 V6 M11,6 V10 M7,10 V14</Geometry>
+    <Geometry x:Key="Icon.License">M3.5,8 A3,3 0 1 0 9.5,8 A3,3 0 1 0 3.5,8 Z M9.5,8 H14.5 M12.5,8 V11 M14.5,8 V10.5</Geometry>
+    <Geometry x:Key="Icon.Logs">M2.5,1.5 H13.5 V14.5 H2.5 Z M5.5,5 H10.5 M5.5,8 H10.5 M5.5,11 H8.5</Geometry>
+
+    <!-- The stroke of an idle icon, and the fill of the active item's tile. -->
+    <LinearGradientBrush x:Key="NavIconBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource BrandColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource BrandDeepColor}" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="NavTileActiveBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource BrandColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource ActionColor}" Offset="1"/>
+    </LinearGradientBrush>
+
     <!-- WhatsApp's own green: used for the WhatsApp button only. -->
     <Color x:Key="WhatsAppColor">#FF25D366</Color>
     <Color x:Key="WhatsAppDeepColor">#FF128C7E</Color>

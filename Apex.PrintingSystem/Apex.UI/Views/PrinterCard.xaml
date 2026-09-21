@@ -37,8 +37,8 @@
     <Border CornerRadius="16" Padding="20">
         <Border.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="{StaticResource PanelColor}" Offset="0"/>
-                <GradientStop Color="{StaticResource PaperColor}" Offset="1"/>
+                <GradientStop Color="{DynamicResource PanelColor}" Offset="0"/>
+                <GradientStop Color="{DynamicResource PaperColor}" Offset="1"/>
             </LinearGradientBrush>
         </Border.Background>
         <Border.Effect>

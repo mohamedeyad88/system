@@ -1652,4 +1652,7 @@
     <sys:String x:Key="Des_RoleBody">البرنامج ما بيرسمش التصميم — التصميم بييجي جاهز (PDF أو صورة) وإنت بتحط فوقه الحقول اللي بتتغيّر: الاسم، الرقم، التاريخ، الباركود.</sys:String>
     <sys:String x:Key="Des_NoArtworkTitle">الصفحة من غير تصميم تحتها</sys:String>
     <sys:String x:Key="Des_NoArtworkBody">حمّل ورقة العميل كخلفية، وبعدين رصّ الحقول فوقها.</sys:String>
+    <sys:String x:Key="Settings_Theme">المظهر</sys:String>
+    <sys:String x:Key="Settings_ThemeLight">فاتح</sys:String>
+    <sys:String x:Key="Settings_ThemeDark">غامق</sys:String>
 </ResourceDictionary>

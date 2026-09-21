@@ -1,0 +1,112 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ══════════════════════════════════════════════════════════════════════════
+         الوضع الغامق — Dark palette.
+
+         This is not a second design: it re-declares the keys of Brand.xaml (and the
+         disabled colours in Colors.xaml) with dark values. ThemeService merges it AFTER
+         Brand.xaml, so for every key it defines, lookups find this value first; take it
+         out and the light values are back. Every screen reads colours by name through
+         DynamicResource, so the switch happens live.
+
+         What deliberately does NOT change:
+         • Sheet — the paper. The canvas and every preview show what will be printed,
+           and paper is white, in either mode.
+         • Action — the filled button colour. White text on it is 5.4:1 in both modes.
+         • Shadows stay black; the field tints drawn on the sheet stay as they are,
+           because they are drawn on white paper.
+
+         Contrast, text on its usual surface (WCAG 2 ratios):
+           Ink   #ECEAE6 on Panel #1F2328 → 13.6:1    on Paper #16191D → 14.9:1
+           Muted #A8A29A on Panel         →  6.4:1
+           Brand #22B8D8 on Panel         →  7.2:1   (links, active states)
+           Done  #4CC58A · Stopped #F2766C · Printing #F0A443 on Panel → ≥ 6:1
+           Disabled text #8A857D on disabled fill #2C3036 → 3.5:1
+         ══════════════════════════════════════════════════════════════════════════ -->
+
+    <!-- Base -->
+    <Color x:Key="InkColor">#FFECEAE6</Color>
+    <Color x:Key="PaperColor">#FF16191D</Color>
+    <Color x:Key="PanelColor">#FF1F2328</Color>
+    <Color x:Key="BorderColor">#FF4A4640</Color>
+    <Color x:Key="MutedColor">#FFA8A29A</Color>
+
+    <Color x:Key="BrandColor">#FF22B8D8</Color>
+    <Color x:Key="BrandDeepColor">#FF0891B2</Color>
+    <Color x:Key="BrandSoftColor">#FF12343D</Color>
+
+    <Color x:Key="PrintingColor">#FFF0A443</Color>
+    <Color x:Key="DoneColor">#FF4CC58A</Color>
+    <Color x:Key="StoppedColor">#FFF2766C</Color>
+    <Color x:Key="WaitingColor">#FF9A958D</Color>
+
+    <SolidColorBrush x:Key="Ink"       Color="{StaticResource InkColor}"/>
+    <SolidColorBrush x:Key="Paper"     Color="{StaticResource PaperColor}"/>
+    <SolidColorBrush x:Key="Panel"     Color="{StaticResource PanelColor}"/>
+    <SolidColorBrush x:Key="Border"    Color="{StaticResource BorderColor}"/>
+    <SolidColorBrush x:Key="Muted"     Color="{StaticResource MutedColor}"/>
+    <SolidColorBrush x:Key="Brand"     Color="{StaticResource BrandColor}"/>
+    <SolidColorBrush x:Key="BrandDeep" Color="{StaticResource BrandDeepColor}"/>
+    <SolidColorBrush x:Key="BrandSoft" Color="{StaticResource BrandSoftColor}"/>
+    <SolidColorBrush x:Key="Printing"  Color="{StaticResource PrintingColor}"/>
+    <SolidColorBrush x:Key="Done"      Color="{StaticResource DoneColor}"/>
+    <SolidColorBrush x:Key="Stopped"   Color="{StaticResource StoppedColor}"/>
+    <SolidColorBrush x:Key="Waiting"   Color="{StaticResource WaitingColor}"/>
+
+    <!-- Filled buttons keep the light-mode action colour: white on it is 5.4:1. -->
+    <Color x:Key="ActionColor">#FF0E7490</Color>
+    <Color x:Key="ActionHoverColor">#FF1587A6</Color>
+    <SolidColorBrush x:Key="Action"      Color="{StaticResource ActionColor}"/>
+    <SolidColorBrush x:Key="ActionHover" Color="{StaticResource ActionHoverColor}"/>
+    <SolidColorBrush x:Key="OnAction"    Color="#FFFFFFFF"/>
+
+    <!-- Surfaces and state chips -->
+    <Color x:Key="HoverColor">#FF2C3036</Color>
+    <Color x:Key="PanelSunkColor">#FF1A1D21</Color>
+    <Color x:Key="DoneSoftColor">#FF15301F</Color>
+    <Color x:Key="StoppedSoftColor">#FF3A1F1D</Color>
+    <Color x:Key="PrintingSoftColor">#FF3A2C14</Color>
+    <SolidColorBrush x:Key="Hover"        Color="{StaticResource HoverColor}"/>
+    <SolidColorBrush x:Key="PanelSunk"    Color="{StaticResource PanelSunkColor}"/>
+    <SolidColorBrush x:Key="DoneSoft"     Color="{StaticResource DoneSoftColor}"/>
+    <SolidColorBrush x:Key="StoppedSoft"  Color="{StaticResource StoppedSoftColor}"/>
+    <SolidColorBrush x:Key="PrintingSoft" Color="{StaticResource PrintingSoftColor}"/>
+
+    <!-- Text on the cyan brand fill stays dark ink in both modes; the light palette
+         points OnBrand at InkColor, which here is near-white and would vanish. -->
+    <SolidColorBrush x:Key="OnBrand"        Color="#FF14181D"/>
+    <SolidColorBrush x:Key="OnBrandInverse" Color="#FFFFFFFF"/>
+
+    <SolidColorBrush x:Key="TrackColor" Color="#FF2C3036"/>
+
+    <!-- Around the sheet: dark, so the white page still stands out. -->
+    <Color x:Key="CanvasBackdropColor">#FF0F1114</Color>
+    <Color x:Key="CanvasBackdropAltColor">#FF121418</Color>
+
+    <Color x:Key="CardShadowColor">#FF000000</Color>
+
+    <Color x:Key="ScrimColor">#CC000000</Color>
+    <Color x:Key="OverlayPanelColor">#F21F2328</Color>
+    <SolidColorBrush x:Key="Scrim"        Color="{StaticResource ScrimColor}"/>
+    <SolidColorBrush x:Key="OverlayPanel" Color="{StaticResource OverlayPanelColor}"/>
+
+    <!-- Sidebar icons: same two cyans, re-declared so they pick up the dark Brand. -->
+    <LinearGradientBrush x:Key="NavIconBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource BrandColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource BrandDeepColor}" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="NavTileActiveBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource BrandColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource ActionColor}" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Disabled states (Colors.xaml) -->
+    <Color x:Key="Color.Text.Disabled">#FF8A857D</Color>
+    <Color x:Key="Color.Disabled">#FF2C3036</Color>
+    <Color x:Key="Color.Active">#FF4A4640</Color>
+    <SolidColorBrush x:Key="Brush.Text.Disabled" Color="{StaticResource Color.Text.Disabled}"/>
+    <SolidColorBrush x:Key="Brush.Disabled"      Color="{StaticResource Color.Disabled}"/>
+    <SolidColorBrush x:Key="Brush.Active"        Color="{StaticResource Color.Active}"/>
+
+</ResourceDictionary>

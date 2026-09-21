@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
     <!-- ══════════════════════════════════════════════════════════════════════════
@@ -16,7 +16,7 @@
         <Setter Property="Padding" Value="20"/>
         <Setter Property="Effect">
             <Setter.Value>
-                <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.08" Color="#FFFFFF"/>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.08" Color="{StaticResource ShadowColor}"/>
             </Setter.Value>
         </Setter>
     </Style>
@@ -32,7 +32,7 @@
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Effect">
                     <Setter.Value>
-                        <DropShadowEffect BlurRadius="25" ShadowDepth="6" Opacity="0.12" Color="#FFFFFF"/>
+                        <DropShadowEffect BlurRadius="25" ShadowDepth="6" Opacity="0.12" Color="{StaticResource ShadowColor}"/>
                     </Setter.Value>
                 </Setter>
             </Trigger>
@@ -45,7 +45,7 @@
         <Setter Property="Padding" Value="20"/>
         <Setter Property="Effect">
             <Setter.Value>
-                <DropShadowEffect BlurRadius="15" ShadowDepth="3" Opacity="0.06" Color="#FFFFFF"/>
+                <DropShadowEffect BlurRadius="15" ShadowDepth="3" Opacity="0.06" Color="{StaticResource ShadowColor}"/>
             </Setter.Value>
         </Setter>
     </Style>

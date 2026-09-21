@@ -18,14 +18,8 @@ namespace Apex.UI.Tests
     /// </summary>
     public class CommandBindingTests
     {
-        private static string RepoFile(params string[] parts)
-        {
-            var dir = new DirectoryInfo(AppContext.BaseDirectory);
-            while (dir != null && !Directory.Exists(Path.Combine(dir.FullName, "Apex.UI")))
-                dir = dir.Parent;
-            Assert.NotNull(dir);
-            return Path.Combine(new[] { dir!.FullName }.Concat(parts).ToArray());
-        }
+        private static string RepoFile(params string[] parts) =>
+            Path.Combine(new[] { RepoPaths.SolutionDir() }.Concat(parts).ToArray());
 
         private static IEnumerable<string> CommandNamesIn(string xamlPath)
         {

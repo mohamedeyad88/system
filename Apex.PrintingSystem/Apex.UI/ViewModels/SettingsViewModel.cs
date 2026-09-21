@@ -20,6 +20,22 @@ namespace Apex.UI.ViewModels
         [ObservableProperty] private string _backupPath = string.Empty;
         [ObservableProperty] private string _selectedLanguage = "en"; // "en" or "ar"
 
+        /// <summary>
+        /// "light" or "dark". Unlike the language it takes effect the moment it is
+        /// picked — the point of choosing a theme is to see it — and is remembered
+        /// straight away rather than waiting for "حفظ".
+        /// </summary>
+        [ObservableProperty] private string _selectedTheme = "light";
+
+        private bool _loadingTheme;
+
+        partial void OnSelectedThemeChanged(string value)
+        {
+            if (_loadingTheme) return;
+            Services.ThemeService.Instance.Apply(value);
+            _ = _settingsService.SetValueAsync(Services.ThemeService.ThemeSettingKey, value);
+        }
+
         public SettingsViewModel(ISettingsService settingsService)
         {
             _settingsService = settingsService ?? throw new System.ArgumentNullException(nameof(settingsService));
@@ -42,6 +58,11 @@ namespace Apex.UI.ViewModels
             // "Language" key (default "en"), while startup always opened in Arabic and the
             // sidebar toggle saved nothing — so an Arabic session showed "English" here.
             SelectedLanguage = Services.LocalizationService.Instance.IsArabicActive ? "ar" : "en";
+
+            // Show the theme that is actually on screen, without re-applying it.
+            _loadingTheme = true;
+            SelectedTheme = Services.ThemeService.Instance.IsDark ? "dark" : "light";
+            _loadingTheme = false;
         }
 
         [RelayCommand]

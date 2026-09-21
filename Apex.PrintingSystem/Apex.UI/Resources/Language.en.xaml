@@ -1645,4 +1645,7 @@ Close anyway?</sys:String>
     <sys:String x:Key="Des_RoleBody">This screen does not draw the artwork — it arrives ready, as a PDF or an image, and you place the parts that change on top of it: the name, the number, the date, the barcode.</sys:String>
     <sys:String x:Key="Des_NoArtworkTitle">No artwork under this page</sys:String>
     <sys:String x:Key="Des_NoArtworkBody">Load the customer's paper as the background, then place the fields on it.</sys:String>
+    <sys:String x:Key="Settings_Theme">Appearance</sys:String>
+    <sys:String x:Key="Settings_ThemeLight">Light</sys:String>
+    <sys:String x:Key="Settings_ThemeDark">Dark</sys:String>
 </ResourceDictionary>

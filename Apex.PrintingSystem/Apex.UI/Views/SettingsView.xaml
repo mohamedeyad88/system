@@ -184,6 +184,18 @@
                                         <ComboBoxItem Content="{DynamicResource SET2_001}" Tag="ar"/>
                                     </ComboBox>
                                 </Border>
+
+                                <!-- Light / dark: applied the moment it is picked. -->
+                                <TextBlock Text="{DynamicResource Settings_Theme}" Style="{StaticResource DarkFieldLabel}"
+                                           Margin="0,18,0,6"/>
+                                <Border Background="{DynamicResource Paper}" BorderBrush="{DynamicResource Border}" BorderThickness="1" CornerRadius="10" Padding="4">
+                                    <ComboBox SelectedValue="{Binding SelectedTheme}" SelectedValuePath="Tag"
+                                              BorderThickness="0" Background="Transparent" Foreground="{DynamicResource Ink}"
+                                              FontSize="14" Padding="10,8">
+                                        <ComboBoxItem Content="{DynamicResource Settings_ThemeLight}" Tag="light"/>
+                                        <ComboBoxItem Content="{DynamicResource Settings_ThemeDark}" Tag="dark"/>
+                                    </ComboBox>
+                                </Border>
                             </StackPanel>
                         </StackPanel>
 

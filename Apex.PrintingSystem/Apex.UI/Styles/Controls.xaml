@@ -993,8 +993,25 @@
                                  ACTIVE item (see IsActive trigger). No per-item colours. -->
                             <Border x:Name="iconTile" Width="36" Height="36" CornerRadius="10" Margin="0,0,12,0"
                                     Background="Transparent">
-                                <TextBlock Text="{TemplateBinding apexControls:NavAssist.Icon}" FontSize="16"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Grid>
+                                    <!-- Line icon in the logo's language (see Icon.* in Brand.xaml),
+                                         stroked with the brand-cyan gradient. -->
+                                    <Path x:Name="iconPath"
+                                          Data="{TemplateBinding apexControls:NavAssist.IconData}"
+                                          Width="16" Height="16" Stretch="None"
+                                          Stroke="{DynamicResource NavIconBrush}" StrokeThickness="1.6"
+                                          StrokeStartLineCap="Square" StrokeEndLineCap="Square"
+                                          StrokeLineJoin="Miter" SnapsToDevicePixels="True"
+                                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <!-- Fallback for an item still given an emoji. WPF draws emoji
+                                         as single-colour glyphs in the text colour; with no
+                                         Foreground they took the system black — invisible on the
+                                         dark sidebar. -->
+                                    <TextBlock x:Name="iconGlyph" Visibility="Collapsed"
+                                               Text="{TemplateBinding apexControls:NavAssist.Icon}" FontSize="16"
+                                               Foreground="{DynamicResource Ink}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
                             </Border>
                             <ContentPresenter Grid.Column="1" VerticalAlignment="Center"/>
                         </Grid>
@@ -1031,9 +1048,23 @@
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource BrandSoft}"/>
                         </Trigger>
+                        <Trigger Property="apexControls:NavAssist.IconData" Value="{x:Null}">
+                            <Setter TargetName="iconPath" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="iconGlyph" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <!-- Active: the tile fills with the brand gradient, the line turns
+                             white on it, and a soft cyan glow lifts it off the sidebar. -->
                         <Trigger Property="apexControls:NavAssist.IsActive" Value="True">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource BrandSoft}"/>
-                            <Setter TargetName="iconTile" Property="Background" Value="{DynamicResource Brand}"/>
+                            <Setter TargetName="iconTile" Property="Background" Value="{DynamicResource NavTileActiveBrush}"/>
+                            <Setter TargetName="iconTile" Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="{StaticResource BrandColor}" BlurRadius="14"
+                                                      ShadowDepth="0" Opacity="0.45"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="iconPath" Property="Stroke" Value="{DynamicResource OnAction}"/>
+                            <Setter TargetName="iconGlyph" Property="Foreground" Value="{DynamicResource OnBrand}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

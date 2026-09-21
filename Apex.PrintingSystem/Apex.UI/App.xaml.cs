@@ -170,12 +170,24 @@ namespace Apex.UI
                 }
                 catch { /* stay in Arabic */ }
 
+                // Reapply light or dark, whichever was chosen last (light until then).
+                try
+                {
+                    using var scope = scopeFactory.CreateScope();
+                    var settings = scope.ServiceProvider.GetRequiredService<Apex.Core.Interfaces.ISettingsService>();
+                    var theme = System.Threading.Tasks.Task.Run(() =>
+                        settings.GetValueAsync(Services.ThemeService.ThemeSettingKey, "light")).GetAwaiter().GetResult();
+                    Services.ThemeService.Instance.Apply(theme);
+                }
+                catch { /* stay light */ }
+
                 // Create and show main window
                 var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
                 Apex.Services.Logging.PrintLogger.Info("startup: 4 main VM created");
                 var mainWindow = _serviceProvider.GetService<MainWindow>() ?? new MainWindow();
                 Apex.Services.Logging.PrintLogger.Info("startup: 5 main window constructed");
                 mainWindow.DataContext = mainViewModel;
+                Services.ThemeService.Instance.ApplyTitleBar(mainWindow);
                 mainWindow.Show();
                 Apex.Services.Logging.PrintLogger.Info("startup: 6 main window shown");
 

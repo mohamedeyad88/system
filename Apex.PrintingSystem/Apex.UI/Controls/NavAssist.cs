@@ -18,6 +18,19 @@ namespace Apex.UI.Controls
         public static string GetIcon(DependencyObject obj) => (string)obj.GetValue(IconProperty);
         public static void SetIcon(DependencyObject obj, string value) => obj.SetValue(IconProperty, value);
 
+        /// <summary>
+        /// Line-art icon drawn in the logo's own language — a printer's crop mark:
+        /// straight 16×16 strokes, square ends, sharp corners. Replaces the emoji,
+        /// which Windows draws as single-colour system glyphs that neither matched
+        /// the brand nor followed the theme.
+        /// </summary>
+        public static readonly DependencyProperty IconDataProperty =
+            DependencyProperty.RegisterAttached(
+                "IconData", typeof(Geometry), typeof(NavAssist), new PropertyMetadata(null));
+
+        public static Geometry? GetIconData(DependencyObject obj) => (Geometry?)obj.GetValue(IconDataProperty);
+        public static void SetIconData(DependencyObject obj, Geometry? value) => obj.SetValue(IconDataProperty, value);
+
         public static readonly DependencyProperty IconBrushProperty =
             DependencyProperty.RegisterAttached(
                 "IconBrush", typeof(Brush), typeof(NavAssist), new PropertyMetadata(null));

@@ -23,7 +23,7 @@
             <Setter Property="Padding" Value="20"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect Color="{StaticResource CardShadowColor}" Opacity="0.45" BlurRadius="16" ShadowDepth="3" Direction="270"/>
+                    <DropShadowEffect Color="{DynamicResource CardShadowColor}" Opacity="0.45" BlurRadius="16" ShadowDepth="3" Direction="270"/>
                 </Setter.Value>
             </Setter>
         </Style>

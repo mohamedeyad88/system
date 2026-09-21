@@ -18,14 +18,7 @@ namespace Apex.UI.Tests
     /// </summary>
     public class ColourTokenTests
     {
-        private static string ViewsDir()
-        {
-            var dir = new DirectoryInfo(AppContext.BaseDirectory);
-            while (dir != null && !Directory.Exists(Path.Combine(dir.FullName, "Apex.UI")))
-                dir = dir.Parent;
-            Assert.NotNull(dir);
-            return Path.Combine(dir!.FullName, "Apex.UI", "Views");
-        }
+        private static string ViewsDir() => Path.Combine(RepoPaths.UiDir(), "Views");
 
         // A literal colour as an attribute value: #RGB … #AARRGGBB, or a named colour.
         // Transparent is allowed — it is the absence of a colour, not a choice of one.
@@ -37,7 +30,10 @@ namespace Apex.UI.Tests
         public void NoViewTypesAColourByHand()
         {
             var found = new List<string>();
-            foreach (var file in Directory.GetFiles(ViewsDir(), "*.xaml"))
+            var files = Directory.GetFiles(ViewsDir(), "*.xaml")
+                // The shell carries the sidebar, which is on screen all the time.
+                .Append(Path.Combine(Path.GetDirectoryName(ViewsDir())!, "MainWindow.xaml"));
+            foreach (var file in files)
             {
                 // Comments may quote the old values when they explain a change.
                 string xaml = Regex.Replace(File.ReadAllText(file), @"<!--[\s\S]*?-->", "");

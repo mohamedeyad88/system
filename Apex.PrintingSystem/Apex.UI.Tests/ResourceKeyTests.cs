@@ -15,14 +15,7 @@ namespace Apex.UI.Tests
     /// </summary>
     public class ResourceKeyTests
     {
-        private static DirectoryInfo UiRoot()
-        {
-            var dir = new DirectoryInfo(AppContext.BaseDirectory);
-            while (dir != null && !Directory.Exists(Path.Combine(dir.FullName, "Apex.UI")))
-                dir = dir.Parent;
-            Assert.NotNull(dir);
-            return new DirectoryInfo(Path.Combine(dir!.FullName, "Apex.UI"));
-        }
+        private static DirectoryInfo UiRoot() => new(RepoPaths.UiDir());
 
         private static HashSet<string> KeysIn(string file) =>
             Regex.Matches(File.ReadAllText(file), @"x:Key=""([^""]+)""")
