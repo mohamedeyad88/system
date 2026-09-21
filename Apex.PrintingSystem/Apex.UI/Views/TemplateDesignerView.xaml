@@ -1512,14 +1512,17 @@
                               PreviewMouseWheel="CanvasScrollViewer_PreviewMouseWheel">
                   <Grid>
 
-                    <!-- Empty state -->
-                    <TextBlock Text="{DynamicResource TD_064}"
-                               FlowDirection="LeftToRight"
-                               Foreground="{DynamicResource Muted}" FontSize="15"
-                               HorizontalAlignment="Center" VerticalAlignment="Center"
-                               Margin="0,80,0,0">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
+                    <!-- Empty state.
+                         It used to be one grey line — "choose a template or create a
+                         new one" — which never said what this screen is for. It does
+                         not draw invoices: the customer's paper comes in as a PDF or
+                         an image and the fields that change go on top of it. A shop
+                         that opens a blank page looking for a pen finds that out
+                         here, next to the button that does the right thing. -->
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                                MaxWidth="420" Margin="0,40,0,0">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding HasTemplate}" Value="False">
@@ -1527,8 +1530,71 @@
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
+                        </StackPanel.Style>
+
+                        <TextBlock Text="{DynamicResource Des_RoleTitle}"
+                                   Foreground="{DynamicResource Ink}" FontSize="16" FontWeight="SemiBold"
+                                   HorizontalAlignment="Center" TextAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource Des_RoleBody}"
+                                   Foreground="{DynamicResource Muted}" FontSize="12"
+                                   TextWrapping="Wrap" TextAlignment="Center"
+                                   Margin="0,8,0,16"/>
+
+                        <Button x:Name="BtnFromPaperEmpty"
+                                Height="36" Padding="16,0" Cursor="Hand"
+                                HorizontalAlignment="Center"
+                                Template="{StaticResource BlueBtnTpl}">
+                            <TextBlock Text="{DynamicResource Des_NewFromPaper}"
+                                       Foreground="{DynamicResource OnAction}" FontSize="12"
+                                       FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </Button>
+
+                        <TextBlock Text="{DynamicResource TD_064}"
+                                   Foreground="{DynamicResource Muted}" FontSize="11"
+                                   TextWrapping="Wrap" TextAlignment="Center"
+                                   Margin="0,12,0,0"/>
+                    </StackPanel>
+
+                    <!-- No artwork under the fields yet. It sits above the page
+                         rather than on it: a shop should be told, not have its work
+                         covered up. -->
+                    <Border Background="{DynamicResource Hover}" BorderBrush="{DynamicResource Border}"
+                            BorderThickness="1" CornerRadius="8" Padding="12,8"
+                            HorizontalAlignment="Center" VerticalAlignment="Top"
+                            Margin="0,10,0,0" Panel.ZIndex="5">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding HasTemplate}" Value="True"/>
+                                            <Condition Binding="{Binding HasBackground}" Value="False"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel VerticalAlignment="Center" Margin="0,0,12,0" MaxWidth="260">
+                                <TextBlock Text="{DynamicResource Des_NoArtworkTitle}"
+                                           Foreground="{DynamicResource Ink}" FontSize="12" FontWeight="SemiBold"
+                                           TextWrapping="Wrap"/>
+                                <TextBlock Text="{DynamicResource Des_NoArtworkBody}"
+                                           Foreground="{DynamicResource Muted}" FontSize="11"
+                                           TextWrapping="Wrap" Margin="0,2,0,0"/>
+                            </StackPanel>
+                            <Button x:Name="BtnUploadBgEmpty"
+                                    Height="30" Padding="12,0" Cursor="Hand"
+                                    VerticalAlignment="Center"
+                                    Template="{StaticResource BlueBtnTpl}">
+                                <TextBlock Text="{DynamicResource TD_024}"
+                                           Foreground="{DynamicResource OnAction}" FontSize="11"
+                                           VerticalAlignment="Center"/>
+                            </Button>
+                        </StackPanel>
+                    </Border>
 
                     <!-- Page Viewbox (only when template loaded).
                          VerticalAlignment must be Stretch: with Top the Viewbox is

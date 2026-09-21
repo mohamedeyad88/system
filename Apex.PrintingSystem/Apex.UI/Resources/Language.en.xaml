@@ -168,7 +168,7 @@
     <sys:String x:Key="CostCalc_SingleSide">Single-Side Printing</sys:String>
     <sys:String x:Key="Nav_Quotation">Quotation</sys:String>
     <sys:String x:Key="TD_058">Align right</sys:String>
-    <sys:String x:Key="Nav_TemplateDesigner_Desc">Create and edit .apext files</sys:String>
+    <sys:String x:Key="Nav_TemplateDesigner_Desc">Variable fields over ready artwork</sys:String>
     <sys:String x:Key="TD_064">→ Choose a template from the library or create a new one</sys:String>
     <sys:String x:Key="Distribution_PrinterName">PRINTER</sys:String>
     <sys:String x:Key="Nav_Dashboard">Dashboard</sys:String>
@@ -1641,4 +1641,8 @@ Close anyway?</sys:String>
     <sys:String x:Key="SV_V57">Vertical gap (mm)</sys:String>
     <sys:String x:Key="SV_V58">Show cut marks</sys:String>
     <sys:String x:Key="SV_V59">🚀 Start export</sys:String>
+    <sys:String x:Key="Des_RoleTitle">Variable fields over the customer's artwork</sys:String>
+    <sys:String x:Key="Des_RoleBody">This screen does not draw the artwork — it arrives ready, as a PDF or an image, and you place the parts that change on top of it: the name, the number, the date, the barcode.</sys:String>
+    <sys:String x:Key="Des_NoArtworkTitle">No artwork under this page</sys:String>
+    <sys:String x:Key="Des_NoArtworkBody">Load the customer's paper as the background, then place the fields on it.</sys:String>
 </ResourceDictionary>

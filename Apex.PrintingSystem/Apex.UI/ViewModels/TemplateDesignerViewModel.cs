@@ -170,6 +170,17 @@ namespace Apex.UI.ViewModels
         [ObservableProperty] private double _canvasHeightDip = 842;
         [ObservableProperty] private ImageSource? _backgroundSource;
 
+        /// <summary>
+        /// Whether there is artwork under the fields. This screen does not draw:
+        /// the customer's paper arrives as a PDF or an image and the fields go on
+        /// top of it, so a page with no artwork is usually an unfinished step
+        /// rather than a choice, and the canvas says so.
+        /// </summary>
+        public bool HasBackground => BackgroundSource != null;
+
+        partial void OnBackgroundSourceChanged(ImageSource? value)
+            => OnPropertyChanged(nameof(HasBackground));
+
         // ── Selected slot (driven from canvas selection) ──────────────────────
         [ObservableProperty] private TemplateSlotDefinition? _selectedSlot;
 

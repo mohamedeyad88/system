@@ -1013,7 +1013,7 @@
     <sys:String x:Key="Numbering_DesignProperties">خصائص التصميم</sys:String>
     <sys:String x:Key="FileName">اسم الملف</sys:String>
     <sys:String x:Key="Imp_SheetLabel">ورقة {0} / {1}</sys:String>
-    <sys:String x:Key="Nav_TemplateDesigner_Desc">إنشاء وتعديل ‎.apext‎</sys:String>
+    <sys:String x:Key="Nav_TemplateDesigner_Desc">حقول متغيّرة فوق تصميم جاهز</sys:String>
     <sys:String x:Key="Align_Centre">وسط</sys:String>
     <sys:String x:Key="Dashboard_ViewAll">← عرض الكل</sys:String>
     <sys:String x:Key="Num_LoadSavedError">خطأ في تحميل الحالات المحفوظة: {0}</sys:String>
@@ -1648,4 +1648,8 @@
     <sys:String x:Key="SV_V57">مسافة رأسية (mm)</sys:String>
     <sys:String x:Key="SV_V58">إظهار علامات القطع</sys:String>
     <sys:String x:Key="SV_V59">🚀 بدء التصدير</sys:String>
+    <sys:String x:Key="Des_RoleTitle">حقول متغيّرة فوق تصميم العميل</sys:String>
+    <sys:String x:Key="Des_RoleBody">البرنامج ما بيرسمش التصميم — التصميم بييجي جاهز (PDF أو صورة) وإنت بتحط فوقه الحقول اللي بتتغيّر: الاسم، الرقم، التاريخ، الباركود.</sys:String>
+    <sys:String x:Key="Des_NoArtworkTitle">الصفحة من غير تصميم تحتها</sys:String>
+    <sys:String x:Key="Des_NoArtworkBody">حمّل ورقة العميل كخلفية، وبعدين رصّ الحقول فوقها.</sys:String>
 </ResourceDictionary>

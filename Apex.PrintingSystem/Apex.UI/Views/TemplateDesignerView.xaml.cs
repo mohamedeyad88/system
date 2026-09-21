@@ -41,6 +41,11 @@ namespace Apex.UI.Views
             BtnImport.Click  += BtnImport_Click;
             BtnUploadBg.Click += BtnUploadBg_Click;
 
+            // The same two actions offered again where a shop actually meets the
+            // blankness: on the empty canvas, and on a page with no artwork.
+            BtnFromPaperEmpty.Click += BtnFromPaper_Click;
+            BtnUploadBgEmpty.Click += BtnUploadBg_Click;
+
             DataContextChanged += TemplateDesignerView_DataContextChanged;
             Loaded += (_, _) => SetupResizeHandles();
 
