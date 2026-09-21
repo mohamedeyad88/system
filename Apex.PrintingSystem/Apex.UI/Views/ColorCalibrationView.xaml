@@ -1,4 +1,4 @@
-<UserControl x:Class="Apex.UI.Views.ColorCalibrationView"
+﻿<UserControl x:Class="Apex.UI.Views.ColorCalibrationView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:Apex.UI.ViewModels"
@@ -114,7 +114,8 @@
                                                     <Setter TargetName="b" Property="Background" Value="{DynamicResource Hover}"/>
                                                 </Trigger>
                                                 <Trigger Property="IsSelected" Value="True">
-                                                    <Setter TargetName="b" Property="Background" Value="{DynamicResource ActionHover}"/>
+                                                    <Setter TargetName="b" Property="Background" Value="{DynamicResource ActionFillHover}"/>
+                                                    <Setter TargetName="b" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                                                     <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
@@ -317,13 +318,13 @@
                             </Grid.ColumnDefinitions>
                             <Button Grid.Column="0"
                                     Command="{Binding SaveCalibrationCommand}"
-                                    Height="40" Background="{DynamicResource Action}"
+                                    Height="40" Background="{DynamicResource ActionFill}"
                                     Foreground="{DynamicResource OnAction}" BorderThickness="0"
                                     FontSize="13" FontWeight="SemiBold"
                                     Content="💾 حفظ الإعدادات" Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border x:Name="b" Background="{DynamicResource Action}" CornerRadius="8"
+                                        <Border x:Name="b" Background="{DynamicResource ActionFill}" CornerRadius="8"
                                                 Height="40">
                                             <TextBlock Text="{TemplateBinding Content}"
                                                        Foreground="{DynamicResource OnAction}" FontSize="13" FontWeight="SemiBold"
@@ -331,7 +332,7 @@
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="b" Property="Background" Value="{DynamicResource Action}"/>
+                                                <Setter TargetName="b" Property="Background" Value="{DynamicResource ActionFill}"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>

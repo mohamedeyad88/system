@@ -16,7 +16,7 @@
         <!-- Light card surface: a hair of depth lifts the card off the paper so the
              screen reads layered, not flat — without adding any colour. -->
         <Style x:Key="LightCard" TargetType="Border">
-            <Setter Property="Background" Value="{DynamicResource Panel}"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceFill}"/>
             <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="14"/>
@@ -128,7 +128,7 @@
                         </StackPanel>
                     </Border>
                     <Button Command="{Binding RefreshDataCommand}" Cursor="Hand"
-                            Background="{DynamicResource Action}" Foreground="{DynamicResource OnAction}" BorderThickness="0"
+                            Background="{DynamicResource ActionFill}" Foreground="{DynamicResource OnAction}" BorderThickness="0"
                             Padding="16,10">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">

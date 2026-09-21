@@ -27,7 +27,7 @@
 
         <!-- Primary action button -->
         <Style x:Key="BtnPrimary" TargetType="Button">
-            <Setter Property="Background" Value="{DynamicResource Action}"/>
+            <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
             <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="FontSize" Value="14"/>
@@ -43,7 +43,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="{DynamicResource Action}"/>
+                                <Setter TargetName="b" Property="Background" Value="{DynamicResource ActionFill}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

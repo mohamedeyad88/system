@@ -52,7 +52,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="{DynamicResource Action}" HorizontalAlignment="Left" Margin="0,0,0,16">
+                    <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="{DynamicResource ActionFill}" HorizontalAlignment="Left" Margin="0,0,0,16">
                         <TextBlock Text="💾" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <TextBlock Grid.Row="1" Text="{DynamicResource Performance_MemoryUsage}" FontSize="13" Foreground="{DynamicResource Muted}" Margin="0,0,0,4"/>
@@ -109,7 +109,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="{DynamicResource Action}" HorizontalAlignment="Left" Margin="0,0,0,16">
+                    <Border Grid.Row="0" Width="48" Height="48" CornerRadius="12" Background="{DynamicResource ActionFill}" HorizontalAlignment="Left" Margin="0,0,0,16">
                         <TextBlock Text="⚡" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <TextBlock Grid.Row="1" Text="{DynamicResource Performance_CpuUsage}" FontSize="13" Foreground="{DynamicResource Muted}" Margin="0,0,0,4"/>

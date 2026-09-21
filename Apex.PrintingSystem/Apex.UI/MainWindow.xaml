@@ -43,7 +43,7 @@
 
         <!-- Professional Sidebar. A soft even shadow lifts it above the content on every
              screen — one edit that gives the whole app depth (works in LTR and RTL). -->
-        <Border Grid.Column="0" Background="{DynamicResource Panel}"
+        <Border Grid.Column="0" Background="{DynamicResource SidebarFill}"
                 BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0"
                 Panel.ZIndex="1">
             <Border.Effect>
@@ -331,7 +331,7 @@
                                                 <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource BrandSoft}"/>
                                             </Trigger>
                                             <DataTrigger Binding="{Binding Source={x:Static services:LocalizationService.Instance}, Path=IsEnglishActive}" Value="True">
-                                                <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource Action}"/>
+                                                <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource ActionFill}"/>
                                                 <Setter TargetName="langText" Property="TextElement.Foreground" Value="{DynamicResource OnAction}"/>
                                             </DataTrigger>
                                         </ControlTemplate.Triggers>
@@ -367,7 +367,7 @@
                                                 <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource BrandSoft}"/>
                                             </Trigger>
                                             <DataTrigger Binding="{Binding Source={x:Static services:LocalizationService.Instance}, Path=IsArabicActive}" Value="True">
-                                                <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource Action}"/>
+                                                <Setter TargetName="langBorder" Property="Background" Value="{DynamicResource ActionFill}"/>
                                                 <Setter TargetName="langText" Property="TextElement.Foreground" Value="{DynamicResource OnAction}"/>
                                             </DataTrigger>
                                         </ControlTemplate.Triggers>
@@ -391,7 +391,7 @@
             <StackPanel Grid.Row="0">
             <!-- Update-available notice (server-driven, dismissible). Action, not Brand:
                  white text on the identity cyan is 3.68:1. -->
-            <Border Background="{DynamicResource Action}" Padding="14,8"
+            <Border Background="{DynamicResource ActionFill}" Padding="14,8"
                     Visibility="{Binding UpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Grid>
                     <Grid.ColumnDefinitions>

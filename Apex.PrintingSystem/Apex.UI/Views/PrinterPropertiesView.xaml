@@ -160,7 +160,7 @@
                 <Button Content="🖨️ Print Test Page" 
                         Command="{Binding TestPrintCommand}" 
                         CommandParameter="{Binding PropertiesPrinter}"
-                        Height="40" Background="{DynamicResource Action}" Foreground="{DynamicResource OnAction}" BorderThickness="0" Margin="0,0,0,10">
+                        Height="40" Background="{DynamicResource ActionFill}" Foreground="{DynamicResource OnAction}" BorderThickness="0" Margin="0,0,0,10">
                     <Button.Resources>
                         <Style TargetType="Border">
                             <Setter Property="CornerRadius" Value="8"/>

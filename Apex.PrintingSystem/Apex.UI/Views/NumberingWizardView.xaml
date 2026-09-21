@@ -129,7 +129,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ActionHover}"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ActionFillHover}"/>
+                                <Setter TargetName="TabBorder" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                                 <Setter TargetName="TabBorder" Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                 <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                             </Trigger>
@@ -144,7 +145,8 @@
                                     <Condition Property="IsSelected" Value="True"/>
                                     <Condition Property="IsMouseOver" Value="True"/>
                                 </MultiTrigger.Conditions>
-                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ActionHover}"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ActionFillHover}"/>
+                                <Setter TargetName="TabBorder" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                             </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -181,7 +183,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ActionHover}"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ActionFillHover}"/>
+                                <Setter TargetName="TabBorder" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                                 <Setter TargetName="TabBorder" Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                 <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                             </Trigger>
@@ -196,7 +199,8 @@
                                     <Condition Property="IsChecked" Value="True"/>
                                     <Condition Property="IsMouseOver" Value="True"/>
                                 </MultiTrigger.Conditions>
-                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ActionHover}"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ActionFillHover}"/>
+                                <Setter TargetName="TabBorder" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                             </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -345,7 +349,7 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsPrepareMode}" Value="True">
-                                        <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                        <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
                                         <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                         <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                     </DataTrigger>
@@ -384,7 +388,7 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsLayoutMode}" Value="True">
-                                        <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                        <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
                                         <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                         <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                     </DataTrigger>
@@ -422,7 +426,7 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsExecuteMode}" Value="True">
-                                        <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                        <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
                                         <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                         <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                     </DataTrigger>
@@ -1221,7 +1225,7 @@
                                             </Setter>
                                             <Style.Triggers>
                                                 <Trigger Property="IsChecked" Value="True">
-                                                    <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                                    <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
                                                     <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                                     <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                 </Trigger>
@@ -1400,7 +1404,7 @@
                                                     </Setter.Value>
                                                 </Setter>
                                                 <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource Action}"/></Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource ActionFill}"/></Trigger>
                                                     <Trigger Property="IsEnabled" Value="False"><Setter Property="Background" Value="{DynamicResource Hover}"/></Trigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -1563,7 +1567,7 @@
                                                                 <Setter Property="Background" Value="{DynamicResource Hover}"/>
                                                             </Trigger>
                                                             <Trigger Property="IsSelected" Value="True">
-                                                                <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                                                <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
                                                                 <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                                             </Trigger>
                                                         </Style.Triggers>
@@ -2022,7 +2026,8 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="{DynamicResource ActionHover}"/>
+                                        <Setter Property="Background" Value="{DynamicResource ActionFillHover}"/>
+                                        <Setter Property="Effect" Value="{DynamicResource ActionGlow}"/>
                                         <Setter Property="Effect" Value="{StaticResource Shadow.ButtonHover}"/>
                                         <Trigger.EnterActions>
                                             <BeginStoryboard Storyboard="{StaticResource ButtonHoverStoryboard}"/>
@@ -2213,13 +2218,13 @@
                                                         <!-- Fill -->
                                                         <Border x:Name="PART_Indicator"
                                                                 HorizontalAlignment="Left"
-                                                                CornerRadius="5">
-                                                            <Border.Background>
-                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                                    <GradientStop Color="{StaticResource BrandColor}" Offset="0"/>
-                                                                    <GradientStop Color="{StaticResource BrandColor}" Offset="1"/>
-                                                                </LinearGradientBrush>
-                                                            </Border.Background>
+                                                                CornerRadius="5"
+                                                                Background="{DynamicResource ProgressFill}">
+                                                            <!-- A soft cyan glow under the running bar. -->
+                                                            <Border.Effect>
+                                                                <DropShadowEffect Color="{StaticResource BrandColor}" BlurRadius="10"
+                                                                                  ShadowDepth="0" Opacity="0.45"/>
+                                                            </Border.Effect>
                                                         </Border>
                                                     </Grid>
                                                 </ControlTemplate>
@@ -2739,7 +2744,7 @@
                                                     <Setter Property="Background" Value="{DynamicResource Hover}"/>
                                                 </Trigger>
                                                 <Trigger Property="IsSelected" Value="True">
-                                                    <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                                    <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
                                                     <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                                 </Trigger>
                                             </Style.Triggers>
@@ -2808,7 +2813,7 @@
                                             MouseLeftButtonDown="RegularWeight_Click">
                                         <Border.Style>
                                             <Style TargetType="Border">
-                                                <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                                <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
                                                 <Setter Property="TextElement.Foreground" Value="{DynamicResource OnAction}"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding SelectedSlot.IsBold}" Value="True">
@@ -2834,7 +2839,7 @@
                                                 <Setter Property="TextElement.Foreground" Value="{DynamicResource Ink}"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding SelectedSlot.IsBold}" Value="True">
-                                                        <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                                        <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
                                                         <Setter Property="TextElement.Foreground" Value="{DynamicResource OnAction}"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>

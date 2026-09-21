@@ -211,7 +211,7 @@
                                 <Setter Property="Background" Value="{DynamicResource Hover}"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
                                 <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                             </Trigger>
                         </Style.Triggers>
@@ -235,13 +235,13 @@
 
         <!-- Blue primary button -->
         <ControlTemplate x:Key="BlueBtnTpl" TargetType="Button">
-            <Border x:Name="b" Background="{DynamicResource Action}" CornerRadius="6"
+            <Border x:Name="b" Background="{DynamicResource ActionFill}" CornerRadius="6"
                     Padding="{TemplateBinding Padding}">
                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
             <ControlTemplate.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="b" Property="Background" Value="{DynamicResource Action}"/>
+                    <Setter TargetName="b" Property="Background" Value="{DynamicResource ActionFill}"/>
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
                     <Setter TargetName="b" Property="Background" Value="{DynamicResource BrandSoft}"/>
@@ -316,7 +316,7 @@
                     <TextBlock Text="{DynamicResource TD_001}" Foreground="{DynamicResource OnAction}"
                                FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
                     <!-- Loading indicator -->
-                    <Border Background="{DynamicResource Action}" CornerRadius="4" Padding="8,3" Margin="8,0,0,0"
+                    <Border Background="{DynamicResource ActionFill}" CornerRadius="4" Padding="8,3" Margin="8,0,0,0"
                             VerticalAlignment="Center">
                         <Border.Style>
                             <Style TargetType="Border">
@@ -408,7 +408,7 @@
                                             <Setter Property="BorderThickness" Value="2"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ActiveStep}" Value="0">
-                                                    <Setter Property="Background"      Value="{DynamicResource Action}"/>
+                                                    <Setter Property="Background"      Value="{DynamicResource ActionFill}"/>
                                                     <Setter Property="BorderBrush"     Value="{DynamicResource Action}"/>
                                                     <Setter Property="BorderThickness" Value="0"/>
                                                 </DataTrigger>
@@ -504,7 +504,7 @@
                                             <Setter Property="BorderThickness" Value="2"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ActiveStep}" Value="1">
-                                                    <Setter Property="Background"      Value="{DynamicResource Action}"/>
+                                                    <Setter Property="Background"      Value="{DynamicResource ActionFill}"/>
                                                     <Setter Property="BorderBrush"     Value="{DynamicResource Action}"/>
                                                     <Setter Property="BorderThickness" Value="0"/>
                                                 </DataTrigger>
@@ -600,7 +600,7 @@
                                             <Setter Property="BorderThickness" Value="2"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ActiveStep}" Value="2">
-                                                    <Setter Property="Background"      Value="{DynamicResource Action}"/>
+                                                    <Setter Property="Background"      Value="{DynamicResource ActionFill}"/>
                                                     <Setter Property="BorderBrush"     Value="{DynamicResource Action}"/>
                                                     <Setter Property="BorderThickness" Value="0"/>
                                                 </DataTrigger>
@@ -726,7 +726,7 @@
                                             <Setter Property="BorderThickness" Value="2"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ActiveStep}" Value="3">
-                                                    <Setter Property="Background"      Value="{DynamicResource Action}"/>
+                                                    <Setter Property="Background"      Value="{DynamicResource ActionFill}"/>
                                                     <Setter Property="BorderBrush"     Value="{DynamicResource Action}"/>
                                                     <Setter Property="BorderThickness" Value="0"/>
                                                 </DataTrigger>
@@ -837,7 +837,7 @@
                                             <Setter Property="BorderThickness" Value="2"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ActiveStep}" Value="4">
-                                                    <Setter Property="Background"      Value="{DynamicResource Action}"/>
+                                                    <Setter Property="Background"      Value="{DynamicResource ActionFill}"/>
                                                     <Setter Property="BorderBrush"     Value="{DynamicResource Action}"/>
                                                     <Setter Property="BorderThickness" Value="0"/>
                                                 </DataTrigger>
@@ -933,7 +933,7 @@
                                             <Setter Property="BorderThickness" Value="2"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ActiveStep}" Value="5">
-                                                    <Setter Property="Background"      Value="{DynamicResource Action}"/>
+                                                    <Setter Property="Background"      Value="{DynamicResource ActionFill}"/>
                                                     <Setter Property="BorderBrush"     Value="{DynamicResource Action}"/>
                                                     <Setter Property="BorderThickness" Value="0"/>
                                                 </DataTrigger>

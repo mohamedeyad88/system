@@ -55,7 +55,7 @@
          ═══════════════════════════════════════════════════════════════════ -->
     
     <Style x:Key="Button.Primary" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Action}"/>
+        <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
         <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="FontSize" Value="13"/>
@@ -71,10 +71,12 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionHover}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionFillHover}"/>
+                            <Setter TargetName="border" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionHover}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionFillHover}"/>
+                            <Setter TargetName="border" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                         </Trigger>
                         <!-- Was the Ink ground: every button waiting for a file showed as a black slab. -->
                         <Trigger Property="IsEnabled" Value="False">
@@ -424,7 +426,7 @@
     
     <!-- Dark Button Primary -->
     <Style x:Key="Button.Dark.Primary" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Action}"/>
+        <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
         <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="FontSize" Value="14"/>
@@ -439,7 +441,8 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionHover}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionFillHover}"/>
+                            <Setter TargetName="border" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource Muted}"/>

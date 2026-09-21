@@ -92,7 +92,7 @@
                 </Button.Template>
             </Button>
             <Button Content="Add Selected Printer" Click="Add_Click" Padding="20,12" Cursor="Hand"
-                    Background="{DynamicResource Action}" Foreground="{DynamicResource OnAction}" FontWeight="SemiBold" BorderThickness="0">
+                    Background="{DynamicResource ActionFill}" Foreground="{DynamicResource OnAction}" FontWeight="SemiBold" BorderThickness="0">
                 <Button.Template>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">

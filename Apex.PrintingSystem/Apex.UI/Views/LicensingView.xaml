@@ -177,7 +177,7 @@
                                  BorderBrush="{DynamicResource Border}" BorderThickness="1"/>
                         <Button Grid.Column="1" Command="{Binding ActivateWithSerialCommand}"
                                 IsEnabled="{Binding IsNotActivating}" Margin="10,0,0,0" Cursor="Hand"
-                                Padding="22,10" Background="{DynamicResource Action}" BorderThickness="0"
+                                Padding="22,10" Background="{DynamicResource ActionFill}" BorderThickness="0"
                                 Foreground="{DynamicResource OnAction}" FontWeight="SemiBold" Content="تفعيل"/>
                     </Grid>
                     <TextBlock Text="{Binding OnlineStatus}" Foreground="{Binding OnlineStatusColor}"

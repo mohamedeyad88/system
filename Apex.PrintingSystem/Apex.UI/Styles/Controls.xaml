@@ -42,7 +42,7 @@
     
     <!-- Primary Button -->
     <Style x:Key="Button.Primary" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Action}"/>
+        <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
         <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="24,12"/>
@@ -52,7 +52,8 @@
         <Setter Property="Template" Value="{StaticResource Template.Button.Base}"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource ActionHover}"/>
+                <Setter Property="Background" Value="{DynamicResource ActionFillHover}"/>
+                <Setter Property="Effect" Value="{DynamicResource ActionGlow}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -204,7 +205,7 @@
                             <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Action}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionFill}"/>
                             <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -245,7 +246,7 @@
     <!-- سيتم إزالتها في المستقبل - استخدم الأسماء الجديدة Button.* -->
     
     <Style x:Key="ActionButton" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Action}"/>
+        <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
         <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
         <Setter Property="Padding" Value="24,12"/>
         <Setter Property="Cursor" Value="Hand"/>
@@ -261,7 +262,7 @@
     </Style>
     
     <Style x:Key="PrimaryButton" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Action}"/>
+        <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
         <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
         <Setter Property="Padding" Value="24,12"/>
         <Setter Property="Cursor" Value="Hand"/>
@@ -366,7 +367,7 @@
     
     <!-- Card-specific buttons (legacy) -->
     <Style x:Key="PrimaryCardButton" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Action}"/>
+        <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
         <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
         <Setter Property="Padding" Value="12,8"/>
         <Setter Property="FontSize" Value="12"/>
@@ -406,7 +407,7 @@
     
     <!-- Base Card Style -->
     <Style x:Key="Card" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="Background" Value="{DynamicResource SurfaceFill}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
@@ -433,7 +434,7 @@
     
     <!-- Legacy Card Aliases -->
     <Style x:Key="CardStyle" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="Background" Value="{DynamicResource SurfaceFill}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
@@ -451,7 +452,7 @@
     </Style>
     
     <Style x:Key="MetricCard" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource Panel}"/>
+        <Setter Property="Background" Value="{DynamicResource SurfaceFill}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
@@ -668,11 +669,12 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ActionHover}"/>
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ActionFillHover}"/>
+                            <Setter TargetName="Bd" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                             <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Action}"/>
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ActionFill}"/>
                             <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                         </Trigger>
                         <MultiTrigger>
@@ -680,7 +682,7 @@
                                 <Condition Property="IsSelected"    Value="True"/>
                                 <Condition Property="IsHighlighted" Value="True"/>
                             </MultiTrigger.Conditions>
-                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Action}"/>
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ActionFill}"/>
                             <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                         </MultiTrigger>
                         <Trigger Property="IsEnabled" Value="False">
@@ -732,11 +734,12 @@
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsHighlighted" Value="True">
-                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ActionHover}"/>
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ActionFillHover}"/>
+                                        <Setter TargetName="Bd" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                                         <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                     </Trigger>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Action}"/>
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ActionFill}"/>
                                         <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                     </Trigger>
                                     <MultiTrigger>
@@ -744,7 +747,7 @@
                                             <Condition Property="IsSelected"    Value="True"/>
                                             <Condition Property="IsHighlighted" Value="True"/>
                                         </MultiTrigger.Conditions>
-                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Action}"/>
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ActionFill}"/>
                                         <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                     </MultiTrigger>
                                     <Trigger Property="IsEnabled" Value="False">
@@ -889,7 +892,7 @@
 
     <!-- Button.Dark.Primary - blue button for dark-theme views -->
     <Style x:Key="Button.Dark.Primary" TargetType="Button">
-        <Setter Property="Background" Value="{DynamicResource Action}"/>
+        <Setter Property="Background" Value="{DynamicResource ActionFill}"/>
         <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="500"/>
@@ -905,10 +908,11 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionHover}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionFillHover}"/>
+                            <Setter TargetName="border" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Action}"/>
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionFill}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

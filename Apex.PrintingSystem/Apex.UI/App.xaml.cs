@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using Apex.UI.ViewModels;
@@ -170,16 +170,17 @@ namespace Apex.UI
                 }
                 catch { /* stay in Arabic */ }
 
-                // Reapply light or dark, whichever was chosen last (light until then).
+                // Reapply light or dark, whichever was chosen last — dark until a choice
+                // is made: the owner made dark the default look (2026-09-21).
                 try
                 {
                     using var scope = scopeFactory.CreateScope();
                     var settings = scope.ServiceProvider.GetRequiredService<Apex.Core.Interfaces.ISettingsService>();
                     var theme = System.Threading.Tasks.Task.Run(() =>
-                        settings.GetValueAsync(Services.ThemeService.ThemeSettingKey, "light")).GetAwaiter().GetResult();
+                        settings.GetValueAsync(Services.ThemeService.ThemeSettingKey, "dark")).GetAwaiter().GetResult();
                     Services.ThemeService.Instance.Apply(theme);
                 }
-                catch { /* stay light */ }
+                catch { Services.ThemeService.Instance.Apply("dark"); }
 
                 // Create and show main window
                 var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();

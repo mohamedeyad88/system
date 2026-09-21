@@ -1,4 +1,4 @@
-<Window x:Class="Apex.UI.Views.Dialogs.ColorPaletteWindow"
+﻿<Window x:Class="Apex.UI.Views.Dialogs.ColorPaletteWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="{DynamicResource CPW_001}" Height="550" Width="450"
@@ -140,7 +140,7 @@
                 </Button>
                 
                 <Button Content="{DynamicResource CPW_005}" x:Name="BtnApply" Click="BtnApply_Click"
-                        Background="{DynamicResource Action}" Foreground="{DynamicResource OnAction}" BorderThickness="0"
+                        Background="{DynamicResource ActionFill}" Foreground="{DynamicResource OnAction}" BorderThickness="0"
                         Padding="16,10" Width="100" Cursor="Hand">
                     <Button.Style>
                         <Style TargetType="Button">

@@ -1,4 +1,4 @@
-<Window x:Class="Apex.UI.Views.Dialogs.EulaWindow"
+﻿<Window x:Class="Apex.UI.Views.Dialogs.EulaWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="{DynamicResource Eula_Title}"
@@ -33,7 +33,7 @@
                     Click="CloseButton_Click"
                     HorizontalAlignment="Right"
                     Padding="26,9" FontSize="14" FontWeight="SemiBold"
-                    Foreground="{DynamicResource OnAction}" Background="{DynamicResource Action}" BorderThickness="0"
+                    Foreground="{DynamicResource OnAction}" Background="{DynamicResource ActionFill}" BorderThickness="0"
                     Cursor="Hand"/>
         </Border>
     </Grid>

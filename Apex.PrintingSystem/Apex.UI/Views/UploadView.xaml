@@ -264,7 +264,7 @@
                 <!-- Title -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal"
                             VerticalAlignment="Center" Margin="0,0,24,0">
-                    <Border Background="{DynamicResource Action}" CornerRadius="9"
+                    <Border Background="{DynamicResource ActionFill}" CornerRadius="9"
                             Width="36" Height="36" Margin="0,0,10,0">
                         <TextBlock Text="⚡" FontSize="17"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -407,7 +407,7 @@
 
                                 <StackPanel Orientation="Horizontal">
                                     <Button Command="{Binding SelectAllPrintersCommand}"
-                                            Background="{DynamicResource Action}" Tag="5"
+                                            Background="{DynamicResource ActionFill}" Tag="5"
                                             Padding="10,4" Cursor="Hand" Margin="0,0,6,0"
                                             Template="{StaticResource FlatBtn}">
                                         <TextBlock Text="{DynamicResource PM_SelectAllShown}"
@@ -454,7 +454,7 @@
                     <!-- Start -->
                     <Button Command="{Binding CreateJobsCommand}"
                             IsEnabled="{Binding CanStartPrinting}"
-                            Background="{DynamicResource Action}" Tag="10"
+                            Background="{DynamicResource ActionFill}" Tag="10"
                             Padding="20,0" Height="36" Cursor="Hand"
                             Template="{StaticResource FlatBtn}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -495,7 +495,7 @@
                 <!-- Add Files -->
                 <Button Grid.Column="0"
                         Command="{Binding BrowseFilesCommand}"
-                        Background="{DynamicResource Action}" Tag="7"
+                        Background="{DynamicResource ActionFill}" Tag="7"
                         Padding="12,6" Cursor="Hand"
                         Template="{StaticResource FlatBtn}">
                     <StackPanel Orientation="Horizontal">
@@ -594,7 +594,7 @@
 
                 <Button Grid.Column="3"
                         Command="{Binding SavePresetCommand}"
-                        Background="{DynamicResource Action}" Tag="6"
+                        Background="{DynamicResource ActionFill}" Tag="6"
                         Padding="12,5" Cursor="Hand" Height="30"
                         Template="{StaticResource FlatBtn}">
                     <TextBlock Text="{DynamicResource UPL_007}" FontSize="12" FontWeight="SemiBold"

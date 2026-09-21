@@ -43,7 +43,7 @@
         </Style>
 
         <Style x:Key="ActionBtn" TargetType="Button">
-            <Setter Property="Background"   Value="{DynamicResource Action}"/>
+            <Setter Property="Background"   Value="{DynamicResource ActionFill}"/>
             <Setter Property="Foreground"   Value="{DynamicResource OnAction}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding"      Value="14,7"/>
@@ -59,7 +59,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource Action}"/>
+                                <Setter Property="Background" Value="{DynamicResource ActionFillHover}"/>
+                                <Setter Property="Effect" Value="{DynamicResource ActionGlow}"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.5"/>
