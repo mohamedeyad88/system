@@ -490,14 +490,38 @@ namespace Apex.UI.ViewModels
             finally { IsBusy = false; }
         }
 
+        /// <summary>
+        /// Open a fresh template on the canvas. It is a draft: nothing reaches the
+        /// library until it is saved. Pressing this used to write an empty template
+        /// to disk immediately, so a shop that pressed it and changed its mind kept
+        /// an empty "قالب جديد" in its library for ever — and three presses left
+        /// three identical rows with nothing to tell them apart.
+        /// </summary>
         [RelayCommand]
         private void AddNewTemplate()
         {
             var template = ApextFileFormat.CreateNew(L("Des_NewTemplate"), L("Des_General"));
             template.Description = L("Des_EmptyTemplate");
-            var entry = _library.Add(template);
-            Templates.Add(entry);
-            SelectedEntry = Templates.Last();
+
+            SelectedEntry = null;   // closes whatever was open, clears the canvas
+            _currentAssets = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
+            BackgroundSource = null;
+
+            CurrentTemplate = template;
+            CurrentPageIndex = 0;
+            TotalPages = template.Pages?.Count ?? 0;
+            CurrentPage = template.Pages?.FirstOrDefault();
+            HasTemplate = true;
+            SelectedSlot = null;
+            SelectedCanvasSlot = null;
+
+            EditTemplateName = template.Name;
+            EditTemplateCategory = template.Category;
+            EditTemplateDescription = template.Description ?? "";
+
+            RefreshCanvas();
+            ResetUndoHistory();
+            IsDirty = true;         // it is unsaved, and the header should say so
             SetSuccess(L("Des_NewCreated"));
         }
 
@@ -528,7 +552,27 @@ namespace Apex.UI.ViewModels
         [RelayCommand]
         private void DeleteTemplate()
         {
-            if (SelectedEntry == null) return;
+            // A draft that was never saved is not in the library; deleting it means
+            // closing it, and the button should not sit there doing nothing.
+            if (SelectedEntry == null)
+            {
+                if (!HasTemplate) return;
+                var discard = System.Windows.MessageBox.Show(
+                    Lf("Des_ConfirmDeleteTemplate", EditTemplateName),
+                    L("Des_ConfirmDeleteTitle"),
+                    System.Windows.MessageBoxButton.YesNo,
+                    System.Windows.MessageBoxImage.Question);
+                if (discard != System.Windows.MessageBoxResult.Yes) return;
+
+                CurrentTemplate = null;
+                CurrentPage = null;
+                HasTemplate = false;
+                IsDirty = false;
+                CanvasSlots.Clear();
+                BackgroundSource = null;
+                SetSuccess(L("Des_TemplateDeleted"));
+                return;
+            }
             var confirm = System.Windows.MessageBox.Show(
                 Lf("Des_ConfirmDeleteTemplate", SelectedEntry.Name),
                 L("Des_ConfirmDeleteTitle"),
@@ -734,13 +778,25 @@ namespace Apex.UI.ViewModels
 
                 var newEntry = _library.Add(CurrentTemplate, _currentAssets);
 
-                var idx = SelectedEntry != null ? Templates.IndexOf(SelectedEntry) : -1;
-                if (idx >= 0) Templates[idx] = newEntry;
-                SelectedEntry = Templates.ElementAtOrDefault(idx >= 0 ? idx : 0);
-
                 // Fold the smart-variable state (pasted data, column mapping) into the
                 // same .apext the library just wrote, so a project reopens complete.
+                // Done before re-selecting, which reloads the file from disk.
                 SaveSmartDataInto(newEntry.FilePath);
+
+                var idx = SelectedEntry != null ? Templates.IndexOf(SelectedEntry) : -1;
+                if (idx >= 0)
+                {
+                    Templates[idx] = newEntry;
+                }
+                else
+                {
+                    // First save of a draft: it joins the library here, and selecting
+                    // anything else would open a different template over the work that
+                    // was just saved.
+                    Templates.Add(newEntry);
+                    idx = Templates.Count - 1;
+                }
+                SelectedEntry = Templates[idx];
 
                 IsDirty = false;
                 Step0Complete = true;
