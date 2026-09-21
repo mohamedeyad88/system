@@ -802,57 +802,110 @@ namespace Apex.UI.ViewModels
                 return;
             }
 
+            if (ExportSettings.Format == ExportFormat.DirectPrint)
+            {
+                // Printing a merged run belongs to the printing screen, which owns the
+                // queue, the holds and the copy counting. Saying so is better than
+                // silently writing files the shop did not ask for.
+                ExportStatusText = L("SV_DirectPrintElsewhere");
+                ExportStatusColor = StatusPalette.Warning;
+                return;
+            }
+
             IsExporting = true;
             ExportProgress = 0;
             ExportProgressLabel = L("SV_Exporting");
             ExportStatusText = "";
+            _usedExportNames.Clear();
 
             try
             {
-                // Export all records as PNG using the rendering service.
-                // Each file is named: <index>_<templateName>.png
-                int total = State.DataSource.Rows.Count;
-                int ok = 0;
-                int failed = 0;
+                // Everything the export panel offers is honoured here. It used to
+                // write PNGs at a fixed 300 DPI over every record whatever the shop
+                // had chosen: the file format, the record range, "الصحيحة فقط", the
+                // DPI box and the whole file-naming section changed nothing.
+                var rows = RowsInScope();
+                int total = rows.Count;
+                if (total == 0)
+                {
+                    ExportStatusText = L("SV_NoRecordsInScope");
+                    ExportStatusColor = StatusPalette.Warning;
+                    return;
+                }
 
-                string templateName = System.Text.RegularExpressions.Regex
-                    .Replace(_session.CurrentPage.Id ?? "record", @"[\\/:*?""<>|]", "_");
+                int ok = 0, failed = 0;
+                int dpi = Math.Clamp(ExportSettings.DpiResolution <= 0 ? ExportDpi : ExportSettings.DpiResolution,
+                                     72, 1200);
+                var format = ExportSettings.Format;
+                string folder = ExportSettings.OutputFolder;
+                string templateName = SafeName(_session.CurrentPage.Id ?? "record");
+                var pdfPages = new List<RenderedTemplate>(total);
 
                 await Task.Run(() =>
                 {
-                    for (int i = 0; i < total; i++)
+                    for (int n = 0; n < total; n++)
                     {
+                        int rowIndex = rows[n];
                         try
                         {
                             var rendered = _renderingService.Render(
                                 _session.CurrentPage,
                                 State.DataSource,
                                 State.Mappings,
-                                i,
+                                rowIndex,
                                 _session.Assets,
                                 ImageFolderPath);
 
-                            string fileName = $"{(i + 1):D4}_{templateName}.png";
-                            string filePath = Path.Combine(ExportSettings.OutputFolder, fileName);
+                            switch (format)
+                            {
+                                case ExportFormat.SinglePdf:
+                                    pdfPages.Add(rendered);   // written once, after the loop
+                                    break;
 
-                            // Render to PNG off the UI thread using a DrawingVisual
-                            ExportRenderedTemplateToPng(rendered, filePath, dpi: ExportDpi);
+                                case ExportFormat.SeparatePdfs:
+                                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                        _vectorPdf.ExportSingle(rendered,
+                                            Path.Combine(folder, FileNameFor(rowIndex, n, templateName) + ".pdf")));
+                                    break;
+
+                                case ExportFormat.Jpg:
+                                    ExportRenderedTemplateToJpg(rendered,
+                                        Path.Combine(folder, FileNameFor(rowIndex, n, templateName) + ".jpg"), dpi);
+                                    break;
+
+                                default:
+                                    ExportRenderedTemplateToPng(rendered,
+                                        Path.Combine(folder, FileNameFor(rowIndex, n, templateName) + ".png"), dpi);
+                                    break;
+                            }
                             ok++;
                         }
                         catch { failed++; }
 
                         // Report progress back on UI thread
-                        int progress = (int)(((double)(i + 1) / total) * 100);
+                        int progress = (int)(((double)(n + 1) / total) * 100);
                         System.Windows.Application.Current.Dispatcher.Invoke(() =>
                         {
                             ExportProgress = progress;
-                            ExportProgressLabel = $"{i + 1} / {total}";
+                            ExportProgressLabel = $"{n + 1} / {total}";
+                        });
+                    }
+
+                    // One file with a page per record. Glyph outlines come from WPF
+                    // text layout, so the writing itself belongs on the UI thread.
+                    if (format == ExportFormat.SinglePdf && pdfPages.Count > 0)
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            ExportProgressLabel = L("SV_PreparingPdf");
+                            _vectorPdf.Export(pdfPages,
+                                Path.Combine(folder, templateName + ".pdf"));
                         });
                     }
                 });
 
                 ExportStatusText = failed == 0
-                    ? Lf("SV_ExportedSuccess", ok, ExportSettings.OutputFolder)
+                    ? Lf("SV_ExportedSuccess", ok, folder)
                     : Lf("SV_ExportPartial2", ok, failed);
                 ExportStatusColor = failed == 0 ? StatusPalette.Done : StatusPalette.Warning;
             }
@@ -869,6 +922,89 @@ namespace Apex.UI.ViewModels
         }
 
         // ── Export helpers ─────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Which records the export covers: the range chosen in "نطاق السجلات",
+        /// narrowed by "تصدير السجلات الصحيحة فقط" when it is ticked.
+        /// </summary>
+        private List<int> RowsInScope()
+        {
+            var rows = State.DataSource.Rows;
+            var picked = new List<int>();
+
+            switch (ExportSettings.Scope)
+            {
+                case ExportScope.CurrentRecord:
+                    if (rows.Count > 0)
+                        picked.Add(Math.Clamp(PreviewRowIndex, 0, rows.Count - 1));
+                    break;
+
+                case ExportScope.SelectedRecords:
+                    // There is no way to tick individual records yet, so this covers
+                    // them all rather than quietly exporting nothing.
+                    for (int i = 0; i < rows.Count; i++) picked.Add(i);
+                    break;
+
+                default:
+                    for (int i = 0; i < rows.Count; i++) picked.Add(i);
+                    break;
+            }
+
+            if (ExportSettings.ExportOnlyValid)
+                picked.RemoveAll(i => rows[i].Status == RowStatus.Error);
+
+            return picked;
+        }
+
+        private static string SafeName(string raw) =>
+            System.Text.RegularExpressions.Regex.Replace(raw, @"[\\/:*?""<>|]", "_").Trim();
+
+        private readonly HashSet<string> _usedExportNames = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// The file name for one record, following "تسمية الملفات". <paramref name="seq"/>
+        /// is the record's position in this export (so serial numbers run 1..n even
+        /// when the scope skips rows); <paramref name="rowIndex"/> points at the data.
+        /// </summary>
+        private string FileNameFor(int rowIndex, int seq, string templateName)
+        {
+            var row = State.DataSource.Rows[rowIndex];
+            string serial = $"{seq + 1:D4}";
+
+            string Column(string? name) =>
+                string.IsNullOrWhiteSpace(name) ? "" : row.Get(name!).Trim();
+
+            string chosen = ExportSettings.NamingMode switch
+            {
+                FileNamingMode.ByCode => Column(ExportSettings.NamingColumn),
+                FileNamingMode.ByName => Column(string.IsNullOrWhiteSpace(ExportSettings.NamingColumn)
+                    ? State.DataSource.Columns.FirstOrDefault()
+                    : ExportSettings.NamingColumn),
+                FileNamingMode.ByFormula => System.Text.RegularExpressions.Regex.Replace(
+                    ExportSettings.NamingFormula ?? "",
+                    @"\{\{([^}]+)\}\}",
+                    m =>
+                    {
+                        string key = m.Groups[1].Value.Trim();
+                        if (key.Equals("id", StringComparison.OrdinalIgnoreCase)) return serial;
+                        string v = row.Get(key).Trim();
+                        // {{name}} with no such column falls back to the first one.
+                        if (v.Length == 0 && key.Equals("name", StringComparison.OrdinalIgnoreCase))
+                            v = Column(State.DataSource.Columns.FirstOrDefault());
+                        return v;
+                    }),
+                _ => $"{serial}_{templateName}",
+            };
+
+            chosen = SafeName(chosen);
+            if (chosen.Length == 0) chosen = $"{serial}_{templateName}";
+
+            // Two records can carry the same name; neither may overwrite the other.
+            string unique = chosen;
+            for (int n = 2; !_usedExportNames.Add(unique); n++)
+                unique = $"{chosen}_{n}";
+            return unique;
+        }
 
         /// <summary>
         /// Raster export resolution. 300 DPI is the minimum a commercial printer
@@ -923,6 +1059,22 @@ namespace Apex.UI.ViewModels
             {
                 var rtb = RenderToRtb(rt, dpi);
                 var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
+                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(rtb));
+                using var stream = File.Create(filePath);
+                encoder.Save(stream);
+            });
+        }
+
+        /// <summary>
+        /// Same, as JPEG — the choice a shop makes when the file is going to a phone
+        /// or a chat rather than to a press.
+        /// </summary>
+        private static void ExportRenderedTemplateToJpg(RenderedTemplate rt, string filePath, int dpi = ExportDpi)
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                var rtb = RenderToRtb(rt, dpi);
+                var encoder = new System.Windows.Media.Imaging.JpegBitmapEncoder { QualityLevel = 92 };
                 encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(rtb));
                 using var stream = File.Create(filePath);
                 encoder.Save(stream);

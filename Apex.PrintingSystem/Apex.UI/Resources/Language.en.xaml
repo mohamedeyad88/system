@@ -515,6 +515,8 @@
     <sys:String x:Key="PT_012">➕ Insert blank pages</sys:String>
     <sys:String x:Key="Num_Cancelled">Cancelled</sys:String>
     <sys:String x:Key="Arabic">Arabic</sys:String>
+    <sys:String x:Key="SV_NoRecordsInScope">No records fall in the chosen range.</sys:String>
+    <sys:String x:Key="SV_DirectPrintElsewhere">Direct printing happens on the Printing screen — export a file here, or send the project to printing.</sys:String>
     <sys:String x:Key="SV_PreparingPdf">Preparing PDF...</sys:String>
     <sys:String x:Key="IMPX_001">Where pages sit on the sheet when they don't fill it</sys:String>
     <sys:String x:Key="CC_024">— Notes</sys:String>
@@ -730,7 +732,7 @@
     <sys:String x:Key="SV_ScanError">Scan error: {0}</sys:String>
     <sys:String x:Key="Imp_PrevSheet">◀ Prev</sys:String>
     <sys:String x:Key="Dashboard_JobsToday">Jobs Today</sys:String>
-    <sys:String x:Key="SV_PressCheck">Press 'Check' to start validation</sys:String>
+    <sys:String x:Key="SV_PressCheck">Press “Run check” before exporting</sys:String>
     <sys:String x:Key="Imp_SettingsExported">✅ Settings exported: {0}</sys:String>
     <sys:String x:Key="PT_033">Load a file and apply an operation to see the result before saving</sys:String>
     <sys:String x:Key="TD_027">Add:</sys:String>

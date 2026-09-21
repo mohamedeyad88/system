@@ -732,6 +732,8 @@
     <sys:String x:Key="Nav_Quotation_Desc">احسب تكلفة الطباعة</sys:String>
     <sys:String x:Key="PC_008">استخدام</sys:String>
     <sys:String x:Key="SV_ExportedTo">✅ تم تصدير {0} سجل → {1}</sys:String>
+    <sys:String x:Key="SV_NoRecordsInScope">لا توجد سجلات في النطاق المختار.</sys:String>
+    <sys:String x:Key="SV_DirectPrintElsewhere">الطباعة المباشرة تتم من شاشة «الطباعة» — صدّر ملفاً هنا أو ابعت المشروع للطباعة.</sys:String>
     <sys:String x:Key="SV_PreparingPdf">جارٍ تجهيز PDF...</sys:String>
     <sys:String x:Key="Monitor_Jobs">مهام</sys:String>
     <sys:String x:Key="TD_069">حذف الصفحة الحالية</sys:String>
@@ -853,7 +855,7 @@
     <sys:String x:Key="Distribution_Error">الخطأ</sys:String>
     <sys:String x:Key="SystemLogs">سجلات النظام</sys:String>
     <sys:String x:Key="SV_041">لا توجد قيم للعرض</sys:String>
-    <sys:String x:Key="SV_PressCheck">اضغط 'فحص' لبدء التحقق</sys:String>
+    <sys:String x:Key="SV_PressCheck">اضغط «تشغيل الفحص» قبل التصدير</sys:String>
     <sys:String x:Key="PT_028">صفحات</sys:String>
     <sys:String x:Key="Num_Paused">متوقف مؤقتاً</sys:String>
     <sys:String x:Key="CC_009">إعدادات الضبط اللوني</sys:String>
