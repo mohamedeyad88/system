@@ -92,6 +92,52 @@
     <SolidColorBrush x:Key="TrackColor" Color="#FFEDEAE5"/>
 
     <!-- ══════════════════════════════════════════════════════════════════════════
+         ألوان كانت مكتوبة بإيد جوه الشاشات — دلوقتي ليها أسامي هنا.
+         Colours that used to be typed into individual screens. Every colour a view
+         uses now has a name in this file, so a theme can be swapped by replacing
+         this one dictionary — which is what a dark mode needs.
+         ══════════════════════════════════════════════════════════════════════════ -->
+
+    <!-- The sheet of paper. It stays white in every theme: the canvas and the
+         previews show what will be printed, and paper is white. -->
+    <Color x:Key="SheetColor">#FFFFFFFF</Color>
+    <Color x:Key="SheetHintColor">#3314181D</Color>   <!-- faint text drawn ON the sheet -->
+    <SolidColorBrush x:Key="Sheet"     Color="{StaticResource SheetColor}"/>
+    <SolidColorBrush x:Key="SheetHint" Color="{StaticResource SheetHintColor}"/>
+
+    <!-- The backdrop around the sheet, so the white page stands out. -->
+    <Color x:Key="CanvasBackdropColor">#FFEAE7E1</Color>
+    <Color x:Key="CanvasBackdropAltColor">#FFE3DFD8</Color>
+
+    <!-- Shadows. -->
+    <Color x:Key="ShadowColor">#FF000000</Color>
+    <Color x:Key="ShadowSoftColor">#FF8A8783</Color>
+    <Color x:Key="CardShadowColor">#FFB7B2A8</Color>
+
+    <!-- A modal's backdrop, and the veil over a page while it renders. -->
+    <Color x:Key="ScrimColor">#B4231814</Color>
+    <Color x:Key="OverlayPanelColor">#F2FFFFFF</Color>
+    <SolidColorBrush x:Key="Scrim"        Color="{StaticResource ScrimColor}"/>
+    <SolidColorBrush x:Key="OverlayPanel" Color="{StaticResource OverlayPanelColor}"/>
+
+    <!-- Fields drawn on the sheet: fill and outline, plain / selected / multi. -->
+    <Color x:Key="BrandTintColor">#1F0891B2</Color>
+    <Color x:Key="BrandTintStrongColor">#380891B2</Color>
+    <Color x:Key="BrandLineColor">#800891B2</Color>
+    <Color x:Key="SelectTintColor">#33F59E0B</Color>
+    <Color x:Key="MultiSelectTintColor">#1938BDF8</Color>
+    <SolidColorBrush x:Key="BrandTint"        Color="{StaticResource BrandTintColor}"/>
+    <SolidColorBrush x:Key="BrandTintStrong"  Color="{StaticResource BrandTintStrongColor}"/>
+    <SolidColorBrush x:Key="BrandLine"        Color="{StaticResource BrandLineColor}"/>
+    <SolidColorBrush x:Key="SelectTint"       Color="{StaticResource SelectTintColor}"/>
+    <SolidColorBrush x:Key="MultiSelectTint"  Color="{StaticResource MultiSelectTintColor}"/>
+
+    <!-- WhatsApp's own green: used for the WhatsApp button only. -->
+    <Color x:Key="WhatsAppColor">#FF25D366</Color>
+    <Color x:Key="WhatsAppDeepColor">#FF128C7E</Color>
+    <SolidColorBrush x:Key="WhatsApp" Color="{StaticResource WhatsAppColor}"/>
+
+    <!-- ══════════════════════════════════════════════════════════════════════════
          الخطوط — Typography (IBM Plex)
          ملاحظة: ملفات الخطوط لازم تتضاف في مجلد /Fonts كـ Resource (تعليمات منفصلة).
          لحد ما تتضاف، WPF بيرجع تلقائياً للخط الاحتياطي (Segoe UI / Tahoma) من غير كسر.

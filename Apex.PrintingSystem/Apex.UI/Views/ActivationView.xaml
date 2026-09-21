@@ -1,4 +1,4 @@
-<Window x:Class="Apex.UI.Views.ActivationView"
+﻿<Window x:Class="Apex.UI.Views.ActivationView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:svc="clr-namespace:Apex.UI.Services"
@@ -53,7 +53,7 @@
 
         <!-- WhatsApp green button -->
         <Style x:Key="BtnWhatsApp" TargetType="Button" BasedOn="{StaticResource BtnPrimary}">
-            <Setter Property="Background" Value="#25D366"/>
+            <Setter Property="Background" Value="{DynamicResource WhatsApp}"/>
         </Style>
 
         <!-- Ghost / secondary button -->

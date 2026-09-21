@@ -402,7 +402,7 @@
                                 <ScaleTransform ScaleX="{Binding PreviewZoom}" ScaleY="{Binding PreviewZoom}"/>
                             </Border.LayoutTransform>
                             <Border.Effect>
-                                <DropShadowEffect BlurRadius="28" ShadowDepth="0" Opacity="0.55" Color="Black"/>
+                                <DropShadowEffect BlurRadius="28" ShadowDepth="0" Opacity="0.55" Color="{StaticResource ShadowColor}"/>
                             </Border.Effect>
                             <Image Source="{Binding PreviewImage}" MaxHeight="620" Stretch="Uniform"
                                    RenderOptions.BitmapScalingMode="HighQuality"/>

@@ -1630,7 +1630,7 @@
 
                             <!-- Drop shadow -->
                             <Grid.Effect>
-                                <DropShadowEffect Color="Black" Opacity="0.5"
+                                <DropShadowEffect Color="{StaticResource ShadowColor}" Opacity="0.5"
                                                   BlurRadius="20" ShadowDepth="4"
                                                   Direction="315"/>
                             </Grid.Effect>
@@ -1719,13 +1719,13 @@
                                                         <Trigger Property="IsSelected" Value="True">
                                                             <Setter TargetName="slotBorder" Property="BorderThickness" Value="2"/>
                                                             <Setter TargetName="slotBorder" Property="BorderBrush"     Value="{DynamicResource Printing}"/>
-                                                            <Setter TargetName="slotBorder" Property="Background"      Value="#33F59E0B"/>
+                                                            <Setter TargetName="slotBorder" Property="Background"      Value="{DynamicResource SelectTint}"/>
                                                         </Trigger>
                                                         <!-- Multi-select: sky-blue dashed border -->
                                                         <DataTrigger Binding="{Binding IsMultiSelected}" Value="True">
                                                             <Setter TargetName="slotBorder" Property="BorderThickness" Value="2"/>
                                                             <Setter TargetName="slotBorder" Property="BorderBrush"     Value="{DynamicResource Brand}"/>
-                                                            <Setter TargetName="slotBorder" Property="Background"      Value="#1938BDF8"/>
+                                                            <Setter TargetName="slotBorder" Property="Background"      Value="{DynamicResource MultiSelectTint}"/>
                                                         </DataTrigger>
                                                         <Trigger Property="IsMouseOver" Value="True">
                                                             <Setter TargetName="slotBorder" Property="BorderThickness" Value="2"/>
@@ -1743,7 +1743,7 @@
                                         <Grid>
                                             <ItemsPresenter/>
                                             <TextBlock Text="{DynamicResource TD_065}"
-                                                       Foreground="#14181D33" FontSize="10"
+                                                       Foreground="{DynamicResource SheetHint}" FontSize="10"
                                                        HorizontalAlignment="Center"
                                                        VerticalAlignment="Center">
                                                 <TextBlock.Style>

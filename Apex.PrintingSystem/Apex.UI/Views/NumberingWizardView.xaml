@@ -1,4 +1,4 @@
-<UserControl x:Class="Apex.UI.Views.NumberingWizardView"
+﻿<UserControl x:Class="Apex.UI.Views.NumberingWizardView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -73,9 +73,9 @@
         <!-- Canvas Background (Design Area) -->
         <!-- Canvas backdrop: a soft neutral (not black) so the white sheet stands out. -->
         <LinearGradientBrush x:Key="CanvasBackgroundGradient" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#EAE7E1" Offset="0"/>
-            <GradientStop Color="#E3DFD8" Offset="0.5"/>
-            <GradientStop Color="#EAE7E1" Offset="1"/>
+            <GradientStop Color="{StaticResource CanvasBackdropColor}" Offset="0"/>
+            <GradientStop Color="{StaticResource CanvasBackdropAltColor}" Offset="0.5"/>
+            <GradientStop Color="{StaticResource CanvasBackdropColor}" Offset="1"/>
         </LinearGradientBrush>
         
         <!-- Typography Panel Gradient -->
@@ -205,12 +205,12 @@
         </Style>
         
         <!-- Shadow Effects (Enhanced for Dark Theme) -->
-        <DropShadowEffect x:Key="Shadow.Small" BlurRadius="15" ShadowDepth="3" Opacity="0.3" Color="#000000"/>
-        <DropShadowEffect x:Key="Shadow.Medium" BlurRadius="25" ShadowDepth="6" Opacity="0.4" Color="#000000"/>
-        <DropShadowEffect x:Key="Shadow.Large" BlurRadius="35" ShadowDepth="8" Opacity="0.5" Color="#000000"/>
-        <DropShadowEffect x:Key="Shadow.Button" BlurRadius="12" ShadowDepth="4" Opacity="0.4" Color="#0891B2"/>
-        <DropShadowEffect x:Key="Shadow.ButtonHover" BlurRadius="20" ShadowDepth="6" Opacity="0.5" Color="#0891B2"/>
-        <DropShadowEffect x:Key="Shadow.Glow" BlurRadius="20" ShadowDepth="0" Opacity="0.3" Color="#0891B2"/>
+        <DropShadowEffect x:Key="Shadow.Small" BlurRadius="15" ShadowDepth="3" Opacity="0.3" Color="{StaticResource ShadowColor}"/>
+        <DropShadowEffect x:Key="Shadow.Medium" BlurRadius="25" ShadowDepth="6" Opacity="0.4" Color="{StaticResource ShadowColor}"/>
+        <DropShadowEffect x:Key="Shadow.Large" BlurRadius="35" ShadowDepth="8" Opacity="0.5" Color="{StaticResource ShadowColor}"/>
+        <DropShadowEffect x:Key="Shadow.Button" BlurRadius="12" ShadowDepth="4" Opacity="0.4" Color="{StaticResource BrandColor}"/>
+        <DropShadowEffect x:Key="Shadow.ButtonHover" BlurRadius="20" ShadowDepth="6" Opacity="0.5" Color="{StaticResource BrandColor}"/>
+        <DropShadowEffect x:Key="Shadow.Glow" BlurRadius="20" ShadowDepth="0" Opacity="0.3" Color="{StaticResource BrandColor}"/>
         
         <!-- Button Animations -->
         <Storyboard x:Key="ButtonHoverStoryboard">
@@ -567,7 +567,7 @@
                                                                 <BeginStoryboard>
                                                                     <Storyboard>
                                                                         <ColorAnimation Storyboard.TargetProperty="(TextBox.BorderBrush).(SolidColorBrush.Color)" 
-                                                                                       To="#0891B2" Duration="0:0:0.2"/>
+                                                                                       To="{StaticResource BrandColor}" Duration="0:0:0.2"/>
                                                                     </Storyboard>
                                                                 </BeginStoryboard>
                                                             </Trigger.EnterActions>
@@ -604,7 +604,7 @@
                                                                 <BeginStoryboard>
                                                                     <Storyboard>
                                                                         <ColorAnimation Storyboard.TargetProperty="(TextBox.BorderBrush).(SolidColorBrush.Color)" 
-                                                                                       To="#0E7490" Duration="0:0:0.2"/>
+                                                                                       To="{StaticResource ActionColor}" Duration="0:0:0.2"/>
                                                                     </Storyboard>
                                                                 </BeginStoryboard>
                                                             </Trigger.EnterActions>
@@ -2216,8 +2216,8 @@
                                                                 CornerRadius="5">
                                                             <Border.Background>
                                                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                                    <GradientStop Color="#0891B2" Offset="0"/>
-                                                                    <GradientStop Color="#0891B2" Offset="1"/>
+                                                                    <GradientStop Color="{StaticResource BrandColor}" Offset="0"/>
+                                                                    <GradientStop Color="{StaticResource BrandColor}" Offset="1"/>
                                                                 </LinearGradientBrush>
                                                             </Border.Background>
                                                         </Border>
@@ -2405,7 +2405,7 @@
                                 BorderBrush="{DynamicResource Border}"
                                 BorderThickness="1">
                             <Border.Effect>
-                                <DropShadowEffect BlurRadius="22" ShadowDepth="4" Opacity="0.22" Color="#8A8783"/>
+                                <DropShadowEffect BlurRadius="22" ShadowDepth="4" Opacity="0.22" Color="{StaticResource ShadowSoftColor}"/>
                             </Border.Effect>
                             <!-- Zoom via LayoutTransform (was RenderTransform + centre pivot).
                                  RenderTransform is visual-only: the ScrollViewer never saw the
@@ -2451,7 +2451,7 @@
                                        Visibility="{Binding LivePreviewImage, Converter={StaticResource NullToVisConverter}}"/>
 
                                 <!-- Generating Preview Spinner -->
-                                <Border Background="#F2FFFFFF"
+                                <Border Background="{DynamicResource OverlayPanel}"
                                         BorderBrush="{DynamicResource Border}" BorderThickness="1"
                                         CornerRadius="8"
                                         Padding="14,8"
@@ -2586,11 +2586,11 @@
                                                 Visibility="Visible">
                                             <Border.Style>
                                                 <Style TargetType="Border">
-                                                    <Setter Property="Background" Value="#1F0891B2"/>
-                                                    <Setter Property="BorderBrush" Value="#800891B2"/>
+                                                    <Setter Property="Background" Value="{DynamicResource BrandTint}"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource BrandLine}"/>
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                                            <Setter Property="Background" Value="#380891B2"/>
+                                                            <Setter Property="Background" Value="{DynamicResource BrandTintStrong}"/>
                                                             <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -2976,7 +2976,7 @@
              MEDIUM ① — Multi-page Preview Popup (4 pages)
              ════════════════════════════════════════════════════════════ -->
         <Grid Grid.Row="0" Grid.RowSpan="2"
-              Background="#B4231814"
+              Background="{DynamicResource Scrim}"
               Visibility="{Binding IsMultiPreviewOpen, Converter={StaticResource BooleanToVisibilityConverter}}"
               Panel.ZIndex="100">
             <Border Background="{DynamicResource Paper}"
@@ -2990,7 +2990,7 @@
                     VerticalAlignment="Stretch"
                     Padding="24">
                 <Border.Effect>
-                    <DropShadowEffect BlurRadius="40" ShadowDepth="8" Opacity="0.5" Color="#FAF9F7"/>
+                    <DropShadowEffect BlurRadius="40" ShadowDepth="8" Opacity="0.5" Color="{StaticResource PaperColor}"/>
                 </Border.Effect>
                 <Grid>
                     <Grid.RowDefinitions>
