@@ -115,7 +115,6 @@
                                                 </Trigger>
                                                 <Trigger Property="IsSelected" Value="True">
                                                     <Setter TargetName="b" Property="Background" Value="{DynamicResource ActionFillHover}"/>
-                                                    <Setter TargetName="b" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                                                     <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>

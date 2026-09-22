@@ -72,11 +72,9 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionFillHover}"/>
-                            <Setter TargetName="border" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionFillHover}"/>
-                            <Setter TargetName="border" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                         </Trigger>
                         <!-- Was the Ink ground: every button waiting for a file showed as a black slab. -->
                         <Trigger Property="IsEnabled" Value="False">
@@ -442,7 +440,6 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionFillHover}"/>
-                            <Setter TargetName="border" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource Muted}"/>

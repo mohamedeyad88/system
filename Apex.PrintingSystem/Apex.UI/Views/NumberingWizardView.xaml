@@ -130,7 +130,6 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ActionFillHover}"/>
-                                <Setter TargetName="TabBorder" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                                 <Setter TargetName="TabBorder" Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                 <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                             </Trigger>
@@ -146,7 +145,6 @@
                                     <Condition Property="IsMouseOver" Value="True"/>
                                 </MultiTrigger.Conditions>
                                 <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ActionFillHover}"/>
-                                <Setter TargetName="TabBorder" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                             </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -184,7 +182,6 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ActionFillHover}"/>
-                                <Setter TargetName="TabBorder" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                                 <Setter TargetName="TabBorder" Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                 <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                             </Trigger>
@@ -200,7 +197,6 @@
                                     <Condition Property="IsMouseOver" Value="True"/>
                                 </MultiTrigger.Conditions>
                                 <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ActionFillHover}"/>
-                                <Setter TargetName="TabBorder" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                             </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -474,6 +470,7 @@
                             <StackPanel>
                                 <TextBlock Text="{DynamicResource Numbering_Design}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
                                 <!-- Plain button to open file dialog (no printer dropdown) -->
+                                                                <StackPanel Orientation="Horizontal">
                                 <Button x:Name="InsertDesignButton"
                                         Command="{Binding LoadTemplateCommand}" 
                                         Foreground="{DynamicResource OnAction}"
@@ -504,6 +501,7 @@
                                         <TextBlock Text="{DynamicResource Numbering_InsertDesign}" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
+                                </StackPanel>
 
                                 <!-- Sits under Insert and appears only once a design is on the
                                      canvas. Loading a different design over the top used to be
@@ -913,6 +911,68 @@
                             </StackPanel>
                         </Border>
 
+                            <!-- Last, after every setting in the ribbon: design, numbering, copies,
+                             project. The ribbon reads as the steps of a job, and starting is the
+                             final one. The empty caption keeps it level with the other groups. -->
+                        <StackPanel Margin="0,0,0,14" VerticalAlignment="Top">
+                            <TextBlock Text=" " FontSize="11" Margin="0,0,0,8"/>
+                            <Button x:Name="StartLayoutButton"
+                                            Command="{Binding StartLayoutCommand}" 
+                                            PreviewMouseDown="StartLayoutButton_PreviewMouseDown"
+                                            Visibility="{Binding IsPrepareMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                            Foreground="{DynamicResource OnAction}"
+                                            Padding="20,10"
+                                            FontSize="13"
+                                            FontWeight="Bold"
+                                            BorderThickness="0"
+                                            Cursor="Hand"
+                                            Margin="0">
+                                        <Button.RenderTransform>
+                                            <ScaleTransform/>
+                                        </Button.RenderTransform>
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Background" Value="{StaticResource PrimaryButtonGradient}"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" 
+                                                                    CornerRadius="8" 
+                                                                    Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="{StaticResource PrimaryButtonHoverGradient}"/>
+                                                        <Trigger.EnterActions>
+                                                            <BeginStoryboard Storyboard="{StaticResource ButtonHoverStoryboard}"/>
+                                                        </Trigger.EnterActions>
+                                                        <Trigger.ExitActions>
+                                                            <BeginStoryboard Storyboard="{StaticResource ButtonExitStoryboard}"/>
+                                                        </Trigger.ExitActions>
+                                                    </Trigger>
+                                                    <Trigger Property="IsPressed" Value="True">
+                                                        <Trigger.EnterActions>
+                                                            <BeginStoryboard Storyboard="{StaticResource ButtonClickStoryboard}"/>
+                                                        </Trigger.EnterActions>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                        <StackPanel Orientation="Horizontal">
+                                            <!-- Was a sparkle emoji spinning forever around its corner, so it swung
+                                                 outside the button. A still line icon, in the sidebar icons' language. -->
+                                            <Path Data="M4.5,2.5 L13,8 L4.5,13.5 Z" Width="16" Height="16" Stretch="None"
+                                                  Stroke="{DynamicResource OnAction}" StrokeThickness="1.6"
+                                                  StrokeLineJoin="Miter" SnapsToDevicePixels="True"
+                                                  Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{DynamicResource Numbering_StartLayout}" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                        </StackPanel>
                         </WrapPanel>
 
                         <!-- LAYOUT Tab Content -->
@@ -1900,7 +1960,8 @@
                      the next step is directly under the last one instead of stranded on
                      the far side of an empty white strip. -->
                 <Border Grid.Row="2" Background="{DynamicResource Panel}"
-                        BorderBrush="{DynamicResource Border}" BorderThickness="0,1,0,0">
+                        BorderBrush="{DynamicResource Border}" BorderThickness="0,1,0,0"
+                        Visibility="{Binding IsPrepareMode, Converter={StaticResource InverseBoolConverter}}">
                 <StackPanel Margin="16,12,16,12" Orientation="Horizontal" HorizontalAlignment="Left">
                     <!-- Back Button (visible when not in Prepare mode) -->
                     <Button Command="{Binding NavigateBackCommand}"
@@ -1922,78 +1983,7 @@
                         </Button.Content>
                     </Button>
                     
-                    <!-- Start Design Button (visible in Prepare mode) -->
-                    <Button x:Name="StartLayoutButton"
-                            Command="{Binding StartLayoutCommand}" 
-                            PreviewMouseDown="StartLayoutButton_PreviewMouseDown"
-                            Visibility="{Binding IsPrepareMode, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Foreground="{DynamicResource OnAction}"
-                            Padding="28,12"
-                            FontSize="15"
-                            FontWeight="Bold"
-                            BorderThickness="0"
-                            Cursor="Hand">
-                        <Button.RenderTransform>
-                            <ScaleTransform/>
-                        </Button.RenderTransform>
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="{StaticResource PrimaryButtonGradient}"/>
-                                <Setter Property="Effect" Value="{StaticResource Shadow.Button}"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border Background="{TemplateBinding Background}" 
-                                                    CornerRadius="8" 
-                                                    Padding="{TemplateBinding Padding}"
-                                                    Effect="{TemplateBinding Effect}">
-                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="{StaticResource PrimaryButtonHoverGradient}"/>
-                                        <Setter Property="Effect" Value="{StaticResource Shadow.ButtonHover}"/>
-                                        <Trigger.EnterActions>
-                                            <BeginStoryboard Storyboard="{StaticResource ButtonHoverStoryboard}"/>
-                                        </Trigger.EnterActions>
-                                        <Trigger.ExitActions>
-                                            <BeginStoryboard Storyboard="{StaticResource ButtonExitStoryboard}"/>
-                                        </Trigger.ExitActions>
-                                    </Trigger>
-                                    <Trigger Property="IsPressed" Value="True">
-                                        <Trigger.EnterActions>
-                                            <BeginStoryboard Storyboard="{StaticResource ButtonClickStoryboard}"/>
-                                        </Trigger.EnterActions>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="✨" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center">
-                                <TextBlock.RenderTransform>
-                                    <RotateTransform Angle="0"/>
-                                </TextBlock.RenderTransform>
-                                <TextBlock.Triggers>
-                                    <EventTrigger RoutedEvent="{x:Static FrameworkElement.LoadedEvent}">
-                                        <BeginStoryboard>
-                                            <Storyboard RepeatBehavior="Forever">
-                                                <DoubleAnimation Storyboard.TargetProperty="(TextBlock.RenderTransform).(RotateTransform.Angle)" 
-                                                               From="0" To="360" Duration="0:0:3">
-                                                    <DoubleAnimation.EasingFunction>
-                                                        <PowerEase Power="1" EasingMode="EaseInOut"/>
-                                                    </DoubleAnimation.EasingFunction>
-                                                </DoubleAnimation>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </EventTrigger>
-                                </TextBlock.Triggers>
-                            </TextBlock>
-                            <TextBlock Text="{DynamicResource Numbering_StartLayout}" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+
                     
                     <!-- Continue Button (visible in Layout mode) -->
                     <Button Command="{Binding NavigateToExecuteCommand}" 
@@ -2011,14 +2001,12 @@
                             <Style TargetType="Button">
                                 <!-- Was green. "Done" is a status colour; the step forward is the primary action. -->
                                 <Setter Property="Background" Value="{StaticResource PrimaryButtonGradient}"/>
-                                <Setter Property="Effect" Value="{StaticResource Shadow.Button}"/>
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}" 
                                                     CornerRadius="8" 
-                                                    Padding="{TemplateBinding Padding}"
-                                                    Effect="{TemplateBinding Effect}">
+                                                    Padding="{TemplateBinding Padding}">
                                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                         </ControlTemplate>
@@ -2027,8 +2015,6 @@
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter Property="Background" Value="{DynamicResource ActionFillHover}"/>
-                                        <Setter Property="Effect" Value="{DynamicResource ActionGlow}"/>
-                                        <Setter Property="Effect" Value="{StaticResource Shadow.ButtonHover}"/>
                                         <Trigger.EnterActions>
                                             <BeginStoryboard Storyboard="{StaticResource ButtonHoverStoryboard}"/>
                                         </Trigger.EnterActions>
@@ -2096,14 +2082,12 @@
                                 <Button.Style>
                                     <Style TargetType="Button">
                                         <Setter Property="Background" Value="{StaticResource PrimaryButtonGradient}"/>
-                                        <Setter Property="Effect" Value="{StaticResource Shadow.Button}"/>
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="Button">
                                                     <Border Background="{TemplateBinding Background}" 
                                                             CornerRadius="8" 
-                                                            Padding="{TemplateBinding Padding}"
-                                                            Effect="{TemplateBinding Effect}">
+                                                            Padding="{TemplateBinding Padding}">
                                                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                     </Border>
                                                 </ControlTemplate>
@@ -2112,7 +2096,6 @@
                                         <Style.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter Property="Background" Value="{StaticResource PrimaryButtonHoverGradient}"/>
-                                                <Setter Property="Effect" Value="{StaticResource Shadow.ButtonHover}"/>
                                                 <Trigger.EnterActions>
                                                     <BeginStoryboard Storyboard="{StaticResource ButtonHoverStoryboard}"/>
                                                 </Trigger.EnterActions>
@@ -2220,11 +2203,6 @@
                                                                 HorizontalAlignment="Left"
                                                                 CornerRadius="5"
                                                                 Background="{DynamicResource ProgressFill}">
-                                                            <!-- A soft cyan glow under the running bar. -->
-                                                            <Border.Effect>
-                                                                <DropShadowEffect Color="{StaticResource BrandColor}" BlurRadius="10"
-                                                                                  ShadowDepth="0" Opacity="0.45"/>
-                                                            </Border.Effect>
                                                         </Border>
                                                     </Grid>
                                                 </ControlTemplate>

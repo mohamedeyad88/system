@@ -124,10 +124,6 @@
         <GradientStop Color="#FF0E7490" Offset="1"/>
     </LinearGradientBrush>
 
-    <!-- The glow a filled button gets under the pointer. -->
-    <DropShadowEffect x:Key="ActionGlow" Color="{StaticResource BrandColor}"
-                      BlurRadius="16" ShadowDepth="0" Opacity="0.5"/>
-
     <!-- Disabled states (Colors.xaml) -->
     <Color x:Key="Color.Text.Disabled">#FF8A857D</Color>
     <Color x:Key="Color.Disabled">#FF2C3036</Color>

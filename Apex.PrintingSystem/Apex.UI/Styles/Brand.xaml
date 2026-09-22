@@ -188,10 +188,6 @@
         <GradientStop Color="{StaticResource PanelSunkColor}" Offset="1"/>
     </LinearGradientBrush>
 
-    <!-- The glow a filled button gets under the pointer. -->
-    <DropShadowEffect x:Key="ActionGlow" Color="{StaticResource BrandColor}"
-                      BlurRadius="16" ShadowDepth="0" Opacity="0.5"/>
-
     <!-- Progress: the brand cyan running into the deep cyan along the bar. -->
     <LinearGradientBrush x:Key="ProgressFill" StartPoint="0,0" EndPoint="1,0">
         <GradientStop Color="{StaticResource BrandColor}" Offset="0"/>

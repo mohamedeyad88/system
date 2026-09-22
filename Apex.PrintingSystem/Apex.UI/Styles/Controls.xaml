@@ -53,7 +53,6 @@
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{DynamicResource ActionFillHover}"/>
-                <Setter Property="Effect" Value="{DynamicResource ActionGlow}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -670,7 +669,6 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="True">
                             <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ActionFillHover}"/>
-                            <Setter TargetName="Bd" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                             <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
@@ -735,7 +733,6 @@
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsHighlighted" Value="True">
                                         <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ActionFillHover}"/>
-                                        <Setter TargetName="Bd" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                                         <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
                                     </Trigger>
                                     <Trigger Property="IsSelected" Value="True">
@@ -909,7 +906,6 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionFillHover}"/>
-                            <Setter TargetName="border" Property="Effect" Value="{DynamicResource ActionGlow}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource ActionFill}"/>
@@ -1056,17 +1052,12 @@
                             <Setter TargetName="iconPath" Property="Visibility" Value="Collapsed"/>
                             <Setter TargetName="iconGlyph" Property="Visibility" Value="Visible"/>
                         </Trigger>
-                        <!-- Active: the tile fills with the brand gradient, the line turns
-                             white on it, and a soft cyan glow lifts it off the sidebar. -->
+                        <!-- Active: the tile fills with the brand gradient and the line turns
+                             white on it. (No glow: a blurred shadow bands visibly on the dark
+                             sidebar and read as pixelated.) -->
                         <Trigger Property="apexControls:NavAssist.IsActive" Value="True">
                             <Setter TargetName="border" Property="Background" Value="{DynamicResource BrandSoft}"/>
                             <Setter TargetName="iconTile" Property="Background" Value="{DynamicResource NavTileActiveBrush}"/>
-                            <Setter TargetName="iconTile" Property="Effect">
-                                <Setter.Value>
-                                    <DropShadowEffect Color="{StaticResource BrandColor}" BlurRadius="14"
-                                                      ShadowDepth="0" Opacity="0.45"/>
-                                </Setter.Value>
-                            </Setter>
                             <Setter TargetName="iconPath" Property="Stroke" Value="{DynamicResource OnAction}"/>
                             <Setter TargetName="iconGlyph" Property="Foreground" Value="{DynamicResource OnBrand}"/>
                         </Trigger>
