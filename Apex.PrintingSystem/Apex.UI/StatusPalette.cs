@@ -1,4 +1,4 @@
-namespace Apex.UI
+﻿namespace Apex.UI
 {
     /// <summary>
     /// Status colours for text a ViewModel sets at runtime — "saved", "not found", "scanning".
@@ -23,16 +23,16 @@ namespace Apex.UI
         /// <summary>Worth a look but not blocking. 5.02:1 on white.</summary>
         public const string Warning = "#B45309";
 
-        /// <summary>Neutral progress — "scanning", a hint. 5.36:1 on white.</summary>
-        public const string Info = "#0E7490";
+        /// <summary>Neutral progress — "scanning", a hint. 5.48:1 on white.</summary>
+        public const string Info = "#047857";
 
         /// <summary>Not reached yet (step indicators). A boundary colour, 3.52:1 on white.</summary>
         public const string Pending = "#8F887A";
 
-        /// <summary>The identity cyan for outlines and selection. 3.68:1 on white — never text.</summary>
-        public const string Brand = "#0891B2";
+        /// <summary>The identity accent (deep emerald since 2026-09-22) for outlines and selection.</summary>
+        public const string Brand = "#047857";
 
         /// <summary>A ~10% Brand tint for a selected area's fill.</summary>
-        public const string BrandTint = "#190891B2";
+        public const string BrandTint = "#19047857";
     }
 }

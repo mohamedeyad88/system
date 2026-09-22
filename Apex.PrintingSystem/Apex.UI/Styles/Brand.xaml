@@ -24,9 +24,12 @@
     <Color x:Key="MutedColor">#FF57534E</Color>    <!-- النص الثانوي والتسميات -->
 
     <!-- ── لون العلامة الوحيد — Brand (single accent) ────────────────────── -->
-    <Color x:Key="BrandColor">#FF0891B2</Color>     <!-- سماوي — أزرار، تحديد، روابط، الحالة النشطة -->
-    <Color x:Key="BrandDeepColor">#FF0E7490</Color> <!-- حالة الضغط (pressed) -->
-    <Color x:Key="BrandSoftColor">#FFE6F3F6</Color> <!-- خلفية خفيفة للتحديد/الإبراز -->
+    <!-- 2026-09-22: the accent moved from turquoise (0891B2) to a deep emerald at
+         customers' request. Emerald leans blue, so it stays apart from the forest
+         green of "Done" (166B40), which leans yellow. On white: 5.48:1. -->
+    <Color x:Key="BrandColor">#FF047857</Color>     <!-- أخضر زمرّدي — أزرار، تحديد، روابط، الحالة النشطة -->
+    <Color x:Key="BrandDeepColor">#FF065F46</Color> <!-- حالة الضغط (pressed) -->
+    <Color x:Key="BrandSoftColor">#FFE6F4EE</Color> <!-- خلفية خفيفة للتحديد/الإبراز -->
 
     <!-- ── ألوان الحالة — Status (أهم ألوان في البرنامج) ─────────────────── -->
     <!-- E08A00 -> B45309. As text the old amber measured 2.56:1 on paper — "printing"
@@ -60,8 +63,8 @@
          identity cyan for selection, focus and highlights, but white on it is only 3.68:1,
          so every white-labelled button failed. 0E7490 gives 5.36:1, and 0B5C72 on hover
          7.53:1. Not used for ink text: ink on 0E7490 is 3.33:1 — ink belongs on Brand. -->
-    <Color x:Key="ActionColor">#FF0E7490</Color>
-    <Color x:Key="ActionHoverColor">#FF0B5C72</Color>
+    <Color x:Key="ActionColor">#FF047857</Color>
+    <Color x:Key="ActionHoverColor">#FF065F46</Color>
     <SolidColorBrush x:Key="Action"      Color="{StaticResource ActionColor}"/>
     <SolidColorBrush x:Key="ActionHover" Color="{StaticResource ActionHoverColor}"/>
     <SolidColorBrush x:Key="OnAction"    Color="#FFFFFFFF"/>
@@ -85,7 +88,7 @@
 
     <!-- نص على العلامة: أبيض تباينه ضعيف (~3.3:1) فوق السماوي؛ الحبر أوضح.
          نستخدم الحبر كنص افتراضي على الأزرار السماوية، ونحتفظ بأبيض للحالات الغامقة. -->
-    <SolidColorBrush x:Key="OnBrand"       Color="{StaticResource InkColor}"/>
+    <SolidColorBrush x:Key="OnBrand"       Color="#FFFFFFFF"/>
     <SolidColorBrush x:Key="OnBrandInverse" Color="#FFFFFFFF"/>
 
     <!-- خلفية مسار شريط التقدم -->
@@ -121,9 +124,9 @@
     <SolidColorBrush x:Key="OverlayPanel" Color="{StaticResource OverlayPanelColor}"/>
 
     <!-- Fields drawn on the sheet: fill and outline, plain / selected / multi. -->
-    <Color x:Key="BrandTintColor">#1F0891B2</Color>
-    <Color x:Key="BrandTintStrongColor">#380891B2</Color>
-    <Color x:Key="BrandLineColor">#800891B2</Color>
+    <Color x:Key="BrandTintColor">#1F047857</Color>
+    <Color x:Key="BrandTintStrongColor">#38047857</Color>
+    <Color x:Key="BrandLineColor">#80047857</Color>
     <Color x:Key="SelectTintColor">#33F59E0B</Color>
     <Color x:Key="MultiSelectTintColor">#1938BDF8</Color>
     <SolidColorBrush x:Key="BrandTint"        Color="{StaticResource BrandTintColor}"/>
@@ -153,11 +156,11 @@
 
     <!-- The stroke of an idle icon, and the fill of the active item's tile. -->
     <LinearGradientBrush x:Key="NavIconBrush" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="{StaticResource BrandColor}" Offset="0"/>
+        <GradientStop Color="#FF059669" Offset="0"/>
         <GradientStop Color="{StaticResource BrandDeepColor}" Offset="1"/>
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="NavTileActiveBrush" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="{StaticResource BrandColor}" Offset="0"/>
+        <GradientStop Color="#FF059669" Offset="0"/>
         <GradientStop Color="{StaticResource ActionColor}" Offset="1"/>
     </LinearGradientBrush>
 
@@ -165,7 +168,7 @@
          عمق من غير ألوان جديدة — Depth, without new colours.
          Every gradient here runs between colours already in this palette. The
          lightest point of each filled gradient still carries white text at ≥ 4.5:1
-         (#0F7F9D is the lightest used: 4.65:1).
+         (#05866A is the lightest used: 4.55:1).
          ══════════════════════════════════════════════════════════════════════════ -->
     <!-- Filled buttons and active tabs: lit at the top, settling into the deeper
          cyan at the bottom — reads as a raised button instead of a flat block. -->
@@ -174,7 +177,7 @@
         <GradientStop Color="{StaticResource ActionHoverColor}" Offset="1"/>
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="ActionFillHover" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#FF0F7F9D" Offset="0"/>
+        <GradientStop Color="#FF05866A" Offset="0"/>
         <GradientStop Color="{StaticResource ActionColor}" Offset="1"/>
     </LinearGradientBrush>
 
@@ -190,7 +193,7 @@
 
     <!-- Progress: the brand cyan running into the deep cyan along the bar. -->
     <LinearGradientBrush x:Key="ProgressFill" StartPoint="0,0" EndPoint="1,0">
-        <GradientStop Color="{StaticResource BrandColor}" Offset="0"/>
+        <GradientStop Color="#FF10B981" Offset="0"/>
         <GradientStop Color="{StaticResource ActionColor}" Offset="1"/>
     </LinearGradientBrush>
 

@@ -13,15 +13,16 @@
          What deliberately does NOT change:
          • Sheet — the paper. The canvas and every preview show what will be printed,
            and paper is white, in either mode.
-         • Action — the filled button colour. White text on it is 5.4:1 in both modes.
+         • Action — the filled button colour. White text on it is 5.5:1 in both modes.
          • Shadows stay black; the field tints drawn on the sheet stay as they are,
            because they are drawn on white paper.
 
          Contrast, text on its usual surface (WCAG 2 ratios):
            Ink   #ECEAE6 on Panel #1F2328 → 13.6:1    on Paper #16191D → 14.9:1
            Muted #A8A29A on Panel         →  6.4:1
-           Brand #22B8D8 on Panel         →  7.2:1   (links, active states)
-           Done  #4CC58A · Stopped #F2766C · Printing #F0A443 on Panel → ≥ 6:1
+           Brand #34D399 on Panel         →  8.3:1   (links, active states)
+           Done  #8BCB5A (leans lime, apart from the emerald accent) · Stopped #F2766C ·
+           Printing #F0A443 on Panel → ≥ 6:1
            Disabled text #8A857D on disabled fill #2C3036 → 3.5:1
          ══════════════════════════════════════════════════════════════════════════ -->
 
@@ -32,12 +33,12 @@
     <Color x:Key="BorderColor">#FF4A4640</Color>
     <Color x:Key="MutedColor">#FFA8A29A</Color>
 
-    <Color x:Key="BrandColor">#FF22B8D8</Color>
-    <Color x:Key="BrandDeepColor">#FF0891B2</Color>
-    <Color x:Key="BrandSoftColor">#FF12343D</Color>
+    <Color x:Key="BrandColor">#FF34D399</Color>
+    <Color x:Key="BrandDeepColor">#FF10B981</Color>
+    <Color x:Key="BrandSoftColor">#FF10302A</Color>
 
     <Color x:Key="PrintingColor">#FFF0A443</Color>
-    <Color x:Key="DoneColor">#FF4CC58A</Color>
+    <Color x:Key="DoneColor">#FF8BCB5A</Color>
     <Color x:Key="StoppedColor">#FFF2766C</Color>
     <Color x:Key="WaitingColor">#FF9A958D</Color>
 
@@ -55,8 +56,8 @@
     <SolidColorBrush x:Key="Waiting"   Color="{StaticResource WaitingColor}"/>
 
     <!-- Filled buttons keep the light-mode action colour: white on it is 5.4:1. -->
-    <Color x:Key="ActionColor">#FF0E7490</Color>
-    <Color x:Key="ActionHoverColor">#FF1587A6</Color>
+    <Color x:Key="ActionColor">#FF047857</Color>
+    <Color x:Key="ActionHoverColor">#FF05866A</Color>
     <SolidColorBrush x:Key="Action"      Color="{StaticResource ActionColor}"/>
     <SolidColorBrush x:Key="ActionHover" Color="{StaticResource ActionHoverColor}"/>
     <SolidColorBrush x:Key="OnAction"    Color="#FFFFFFFF"/>
@@ -97,19 +98,19 @@
         <GradientStop Color="{StaticResource BrandDeepColor}" Offset="1"/>
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="NavTileActiveBrush" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="{StaticResource BrandColor}" Offset="0"/>
+        <GradientStop Color="#FF059669" Offset="0"/>
         <GradientStop Color="{StaticResource ActionColor}" Offset="1"/>
     </LinearGradientBrush>
 
     <!-- Depth (Brand.xaml has the reasoning). Filled gradients use the light-mode
          cyans so white text keeps ≥ 4.5:1; surfaces use the dark panels. -->
     <LinearGradientBrush x:Key="ActionFill" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#FF0E7490" Offset="0"/>
-        <GradientStop Color="#FF0B5C72" Offset="1"/>
+        <GradientStop Color="#FF047857" Offset="0"/>
+        <GradientStop Color="#FF065F46" Offset="1"/>
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="ActionFillHover" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#FF0F7F9D" Offset="0"/>
-        <GradientStop Color="#FF0E7490" Offset="1"/>
+        <GradientStop Color="#FF05866A" Offset="0"/>
+        <GradientStop Color="#FF047857" Offset="1"/>
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="SurfaceFill" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Color="{StaticResource PanelColor}" Offset="0"/>
@@ -121,7 +122,7 @@
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="ProgressFill" StartPoint="0,0" EndPoint="1,0">
         <GradientStop Color="{StaticResource BrandColor}" Offset="0"/>
-        <GradientStop Color="#FF0E7490" Offset="1"/>
+        <GradientStop Color="#FF047857" Offset="1"/>
     </LinearGradientBrush>
 
     <!-- Disabled states (Colors.xaml) -->
