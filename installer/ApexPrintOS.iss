@@ -11,7 +11,7 @@
 ; ============================================================================
 
 #ifndef MyAppVersion
-  #define MyAppVersion "2.2.0"
+  #define MyAppVersion "2.9.0"
 #endif
 
 ; Folder that holds the published application (ApexPrintOS.exe + dependencies).
