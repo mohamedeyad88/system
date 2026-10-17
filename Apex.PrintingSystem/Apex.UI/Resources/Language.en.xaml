@@ -96,6 +96,7 @@
 
     <!-- Held copies: waiting for a person, not a failure -->
     <sys:String x:Key="PM_ReportHeldCopies">{0} copy/copies waiting — these printers need attention:</sys:String>
+    <sys:String x:Key="PM_ReportPrintedRemoved">✓ {0} file(s) printed and removed from the list. What remains has not printed yet — retry it.</sys:String>
     <sys:String x:Key="PM_HeldBannerTitle">Waiting for you</sys:String>
     <sys:String x:Key="PM_HeldSkip">Skip this printer</sys:String>
     <sys:String x:Key="PM_HeldPurge">Clear queue</sys:String>

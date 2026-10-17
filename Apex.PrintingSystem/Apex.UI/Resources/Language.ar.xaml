@@ -917,6 +917,7 @@
 
     <!-- نسخ محجوزة: بانتظار تدخّل، وليست فشلًا -->
     <sys:String x:Key="PM_ReportHeldCopies">{0} نسخة بانتظار التدخّل — هذه الطابعات تحتاج إليك:</sys:String>
+    <sys:String x:Key="PM_ReportPrintedRemoved">✓ طُبع {0} ملف وأُزيل من القائمة. المتبقّي لم يُطبع بعد — أعِد المحاولة عليه.</sys:String>
     <sys:String x:Key="PM_HeldBannerTitle">بانتظارك</sys:String>
     <sys:String x:Key="PM_HeldSkip">تخطَّ هذه الطابعة</sys:String>
     <sys:String x:Key="PM_HeldPurge">تفريغ الطابور</sys:String>

@@ -990,6 +990,18 @@ namespace Apex.UI.ViewModels
                 }
             }
 
+            // A partly-successful run used to leave EVERY file on the list — including
+            // the ones that printed fine — so the operator had to pick the finished
+            // ones out by hand before the next job, and a slip reprinted them. Drop
+            // the files that fully printed and keep only what failed or is still held,
+            // so the list becomes the retry queue. Never touches the files on disk.
+            int removed = PruneSuccessfullyPrinted(r);
+            if (removed > 0)
+            {
+                lines.AppendLine();
+                lines.AppendLine(Lf("PM_ReportPrintedRemoved", removed));
+            }
+
             StatusMessage = Lf("PM_ReportCopies", r.CopiesPrinted, r.CopiesTotal);
 
             MessageBox.Show(lines.ToString(), L("Dlg_Warning"),
@@ -997,6 +1009,34 @@ namespace Apex.UI.ViewModels
                 // Partly printed is a warning; nothing at all is an error. Treating
                 // both as errors trains the operator to dismiss the dialog unread.
                 r.NothingPrinted ? MessageBoxImage.Error : MessageBoxImage.Warning);
+        }
+
+        /// <summary>
+        /// After a partly-successful run, removes from the queue every file that printed
+        /// in full, keeping any that failed or is still held so the list is the retry set.
+        /// Returns how many were removed. Matches by file NAME because that is all the
+        /// batch result carries; if two queued files share a name and that name failed or
+        /// held, both are kept (we never silently drop a file that might not have printed).
+        /// Files on disk are untouched — this only empties the in-app list.
+        /// </summary>
+        private int PruneSuccessfullyPrinted(Apex.Services.Printing.BatchResult r)
+        {
+            var keep = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var f in r.Failures) keep.Add(f.FileName);
+            foreach (var h in r.HeldCopies) keep.Add(h.FileName);
+
+            var printed = IngestedFiles
+                .Where(it => !keep.Contains(Path.GetFileName(it.FullPath)))
+                .ToList();
+
+            foreach (var it in printed)
+            {
+                FilesToPrint.Remove(it.FullPath);
+                IngestedFiles.Remove(it);
+            }
+
+            if (printed.Count > 0) RefreshIndexes();
+            return printed.Count;
         }
 
         [RelayCommand]
