@@ -51,6 +51,17 @@ namespace Apex.UI
             }
 
             vm.AbandonPrintRunForShutdown();
+
+            // Close anything still open — a stray popup or a message box left over from a
+            // background thread — so the shell's close really ends the session instead of
+            // leaving orphan windows (and, under the old shutdown mode, a lingering process).
+            foreach (Window w in Application.Current.Windows)
+            {
+                if (!ReferenceEquals(w, this))
+                {
+                    try { w.Close(); } catch { /* a modal box mid-dismiss can refuse; ignore */ }
+                }
+            }
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)

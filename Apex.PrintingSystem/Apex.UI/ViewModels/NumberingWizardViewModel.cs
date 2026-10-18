@@ -445,6 +445,37 @@ namespace Apex.UI.ViewModels
         [RelayCommand]
         private void UseNextAvailableNumber() => StartNumber = SuggestedNextNumber;
 
+        /// <summary>
+        /// Opens the selected printer's Windows Properties dialog. The numbering screen's
+        /// "Printer Properties" button was bound to this command, but it existed only on the
+        /// Print-Manager view-model, so here the binding resolved to nothing and the button
+        /// did nothing when clicked. Same behaviour as the Print-Manager one: it shells out to
+        /// the system printer UI (printui.dll) for the chosen printer.
+        /// </summary>
+        [RelayCommand]
+        private void OpenPrinterProperties()
+        {
+            if (string.IsNullOrEmpty(SelectedPrinter))
+            {
+                MessageBox.Show(L("PM_SelectPrinterFirst"), L("PM_PrinterProps"),
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("rundll32.exe")
+                {
+                    Arguments = $"printui.dll,PrintUIEntry /e /n \"{SelectedPrinter}\"",
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(Lf("PM_PropsOpenError", ex.Message), L("Dlg_Error"),
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         // ── Issued-numbers register (audit view) ─────────────────────────────
 
         /// <summary>Ranges already issued in the current series, newest first.</summary>

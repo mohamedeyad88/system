@@ -65,7 +65,12 @@ namespace Apex.UI
                 return;
             }
 
-            ShutdownMode = ShutdownMode.OnLastWindowClose;
+            // End the process when the MAIN window closes, not when the last window does.
+            // Under OnLastWindowClose a leftover popup or a message box opened from a
+            // background thread kept the app alive after the operator closed the main
+            // window — it "did not fully close and left messages open". OnMainWindowClose
+            // tears the whole app down with the shell window.
+            ShutdownMode = ShutdownMode.OnMainWindowClose;
             InstallGlobalExceptionHandlers();
 
             // Did the last session die? A native crash never reaches the handlers above,

@@ -26,8 +26,15 @@ namespace Apex.NumberedBooksEngine.Core
         /// </param>
         public SKImage GeneratePatch(string text, SlotSpec slot, CopyStyle? copyStyle, float dpiScale = 1f)
         {
-            // Determine color and opacity
-            var colorHex = copyStyle?.ColorHex ?? "#000000";
+            // Determine color and opacity.
+            // A copy-style colour wins when set; otherwise the slot's own FontColorHex.
+            // This path renders the ON-SCREEN preview, and it used to read ONLY the copy
+            // style and fall back to black — so a number given a colour showed black on the
+            // canvas while the print path (which reads the slot colour) came out coloured.
+            // Honouring slot.FontColorHex here makes the preview match the paper.
+            var colorHex = !string.IsNullOrWhiteSpace(copyStyle?.ColorHex) ? copyStyle!.ColorHex
+                         : !string.IsNullOrWhiteSpace(slot.FontColorHex) ? slot.FontColorHex
+                         : "#000000";
             var opacity  = copyStyle?.Opacity ?? 1.0f;
 
             if (!SKColor.TryParse(colorHex, out var color))

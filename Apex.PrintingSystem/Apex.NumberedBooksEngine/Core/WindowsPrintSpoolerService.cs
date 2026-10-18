@@ -568,6 +568,23 @@ namespace Apex.NumberedBooksEngine.Core
             // ═══════════════════════════════════════════════════════════════════
 
             // ═══════════════════════════════════════════════════════════════════
+            // STOP pressed: honour cancellation. This loop used to check only the
+            // queue and _jobEnded and never the token, so "Stop"/"Cancel" did nothing
+            // until every already-spooled page had printed — the run looked frozen and
+            // kept feeding paper. Drop whatever is still queued and end the GDI job now.
+            // ═══════════════════════════════════════════════════════════════════
+            if (_ct.IsCancellationRequested || Status.IsCancelled)
+            {
+                Status.IsCancelled = true;
+                while (_pageQueue.TryDequeue(out var leftover)) leftover?.Image?.Dispose();
+                _currentPage?.Image?.Dispose();
+                _currentPage = null;
+                e.HasMorePages = false;
+                System.Diagnostics.Debug.WriteLine("[NUMBERING] PrintPage - cancellation observed; ending job.");
+                return;
+            }
+
+            // ═══════════════════════════════════════════════════════════════════
             // FAIL-FAST: If no page available (QueryPageSettings couldn't get one), end gracefully
             // ═══════════════════════════════════════════════════════════════════
             if (_currentPage == null)
@@ -689,6 +706,24 @@ namespace Apex.NumberedBooksEngine.Core
                 LogTray($"  Page Size: {pageWidthInches:F2} x {pageHeightInches:F2} inches");
                 LogTray($"  Drawing at: (0, 0) with size ({imageWidthInches:F2}, {imageHeightInches:F2}) inches");
                 LogTray($"═══════════════════════════════════════════════════════════");
+
+                // STEP 6b: Fit-to-page. By default the sheet prints at its true physical
+                // size (1:1 above). When the operator chose "fit to page" it used to do
+                // nothing — the draw below always used the image's physical inches and the
+                // scale mode was never read here. Apply it as a Graphics transform (in inches,
+                // matching PageUnit) BEFORE drawing, so the background AND the number overlays
+                // scale and centre together and the numbers stay locked to their artwork.
+                if (_settings.ScaleMode == PrintScaleMode.FitToPage
+                    && imageWidthInches > 0.01f && imageHeightInches > 0.01f)
+                {
+                    float fit = Math.Min(pageWidthInches / imageWidthInches,
+                                         pageHeightInches / imageHeightInches);
+                    float offX = (pageWidthInches - imageWidthInches * fit) / 2f;
+                    float offY = (pageHeightInches - imageHeightInches * fit) / 2f;
+                    e.Graphics.TranslateTransform(offX, offY);
+                    e.Graphics.ScaleTransform(fit, fit);
+                    LogTray($"  FitToPage: scale={fit:F3}, offset=({offX:F2},{offY:F2}) in");
+                }
 
                 // Draw the image at exact physical size in inches
                 // RectangleF uses float for precise inch measurements
