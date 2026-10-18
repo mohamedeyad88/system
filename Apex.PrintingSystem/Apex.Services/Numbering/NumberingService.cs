@@ -71,7 +71,14 @@ namespace Apex.Services.Numbering
             var options = new NumberedPrintJobOptions(
                 PrinterName: printerName,
                 TemplatePath: templatePath,
-                Dpi: 300,
+                // Rasterise the sheet at 600 DPI, not 300. The floor reported the print
+                // came out softer than the original artwork — at 300 DPI a crisp design
+                // (especially a vector PDF) loses edge detail on paper. 600 is the next
+                // value the printer's DPI auto-detect recognises (72/96/150/200/300/600),
+                // so the sheet still maps to its true physical size; it just prints sharper.
+                // The shared background is one bitmap reused for the whole job, and the
+                // number overlays scale with it, so the cost is one larger background raster.
+                Dpi: 600,
                 StartNumber: startNumber,
                 TotalNumbers: totalNumbers,
                 CopiesPerPage: copiesPerPage,

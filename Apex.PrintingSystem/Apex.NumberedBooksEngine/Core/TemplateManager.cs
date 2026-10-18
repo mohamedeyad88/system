@@ -232,7 +232,23 @@ namespace Apex.NumberedBooksEngine.Core
 
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] PDF loaded: {doc.PageCount} pages");
 
-                using var rendered = doc.Render(0, dpi, dpi, PdfiumViewer.PdfRenderFlags.Annotations);
+                // Render at the TARGET resolution. The old call — Render(0, dpi, dpi, flags)
+                // — did not scale by DPI at all: it came out at the page's point size (~72 DPI,
+                // e.g. 841x595 for A4), which is why a crisp PDF design printed soft and the
+                // floor said "the program lowers the quality". Compute the pixel size from the
+                // page's physical size (points → inches) × the requested DPI and render to that,
+                // with ForPrinting so PDFium uses its print-quality path.
+                var pageSize = doc.PageSizes[0];                 // SizeF in points (1/72 inch)
+                int targetWidth  = System.Math.Max(1, (int)System.Math.Round(pageSize.Width  / 72f * dpi));
+                int targetHeight = System.Math.Max(1, (int)System.Math.Round(pageSize.Height / 72f * dpi));
+
+                // Use the 6-arg overload (width, height, dpiX, dpiY, flags). In this PdfiumViewer
+                // build the shorter overloads ignore the size/DPI and always render at the page's
+                // point size (~72 DPI) — that was the real cause of the soft print. This one honours
+                // the explicit pixel size.
+                using var rendered = doc.Render(
+                    0, targetWidth, targetHeight, (float)dpi, (float)dpi,
+                    PdfiumViewer.PdfRenderFlags.ForPrinting | PdfiumViewer.PdfRenderFlags.Annotations);
 
                 if (rendered == null)
                 {

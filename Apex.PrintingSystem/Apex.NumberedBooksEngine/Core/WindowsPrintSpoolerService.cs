@@ -568,6 +568,23 @@ namespace Apex.NumberedBooksEngine.Core
             // ═══════════════════════════════════════════════════════════════════
 
             // ═══════════════════════════════════════════════════════════════════
+            // PAPER-OUT / JAM HOLD. Field report: on paper-out or a jam the run
+            // carried on from another tray instead of stopping. GDI hands pages to
+            // the spooler, which lets the driver pick another source, so the job
+            // never paused. Before feeding this page, hold while the printer reports
+            // it cannot take the next sheet (no/low paper, jam, door open, offline),
+            // re-checking until it clears or the operator cancels. Fail-safe: a status
+            // read error returns "not held", so a healthy printer is never stalled.
+            // ═══════════════════════════════════════════════════════════════════
+            while (!_ct.IsCancellationRequested && !Status.IsCancelled
+                   && TryGetPrinterHoldReason(out var holdReason))
+            {
+                Status.Status = $"Paused — {holdReason}";
+                OnStatusChanged();
+                System.Threading.Thread.Sleep(1500);
+            }
+
+            // ═══════════════════════════════════════════════════════════════════
             // STOP pressed: honour cancellation. This loop used to check only the
             // queue and _jobEnded and never the token, so "Stop"/"Cancel" did nothing
             // until every already-spooled page had printed — the run looked frozen and
@@ -912,6 +929,75 @@ namespace Apex.NumberedBooksEngine.Core
                 }
             }
         }
+
+        // ── Paper-out / jam detection (best-effort; validate on real hardware) ──
+        private DateTime _lastHoldCheckUtc = DateTime.MinValue;
+        private string? _cachedHoldReason;
+
+        /// <summary>
+        /// Asks the printer (WMI Win32_Printer) whether it is in a state that should hold
+        /// the run — no/low paper, a jam, a door open, a paper problem, or offline — so the
+        /// job waits instead of carrying on from another tray. The read is throttled to once
+        /// every ~1.5s so a fast job pays almost nothing, and ANY failure returns false so a
+        /// healthy printer is never stalled by this check. Reports a short reason when held.
+        /// </summary>
+        private bool TryGetPrinterHoldReason(out string reason)
+        {
+            reason = "";
+            try
+            {
+                if ((DateTime.UtcNow - _lastHoldCheckUtc).TotalMilliseconds < 1500)
+                {
+                    reason = _cachedHoldReason ?? "";
+                    return !string.IsNullOrEmpty(reason);
+                }
+                _lastHoldCheckUtc = DateTime.UtcNow;
+
+                var name = _settings.PrinterName ?? "";
+                if (string.IsNullOrWhiteSpace(name)) { _cachedHoldReason = null; return false; }
+                var escaped = name.Replace("\\", "\\\\").Replace("'", "\\'");
+
+                using var searcher = new System.Management.ManagementObjectSearcher(
+                    "root\\cimv2",
+                    $"SELECT DetectedErrorState, PrinterStatus, WorkOffline FROM Win32_Printer WHERE Name = '{escaped}'");
+                foreach (var o in searcher.Get())
+                {
+                    using var printer = (System.Management.ManagementObject)o;
+                    int err = ToInt(printer["DetectedErrorState"]);
+                    int status = ToInt(printer["PrinterStatus"]);
+                    bool offline = printer["WorkOffline"] is bool b && b;
+
+                    // Win32_Printer.DetectedErrorState: 3 Low Paper, 4 No Paper,
+                    // 7 Door Open, 8 Jammed, 11 Paper Problem.
+                    string? r = err switch
+                    {
+                        3  => "low paper",
+                        4  => "out of paper",
+                        7  => "cover open",
+                        8  => "paper jam",
+                        11 => "paper problem",
+                        _  => null,
+                    };
+                    if (r == null && (offline || status == 7)) r = "printer offline";
+
+                    _cachedHoldReason = r;
+                    reason = r ?? "";
+                    return r != null;
+                }
+
+                _cachedHoldReason = null;
+                return false;
+            }
+            catch
+            {
+                // Fail-safe: a status-read failure must never pause a working printer.
+                _cachedHoldReason = null;
+                return false;
+            }
+        }
+
+        private static int ToInt(object? v) =>
+            v != null && int.TryParse(v.ToString(), out var i) ? i : 0;
 
         private static Color ParseColor(string? hex, float opacity)
         {
