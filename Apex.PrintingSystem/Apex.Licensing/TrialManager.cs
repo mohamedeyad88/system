@@ -154,6 +154,61 @@ namespace Apex.Licensing
         /// <summary>Returns true if a trial state already exists (i.e., not first run).</summary>
         public static bool TrialExists() => LoadConsensusState() != null;
 
+        /// <summary>
+        /// The locally recorded trial start for this device, or null if there is no
+        /// (current-epoch) trial state yet. The startup flow reports this to the server so
+        /// an honest older start is preserved.
+        /// </summary>
+        public static DateTime? GetLocalStartUtc()
+        {
+            var s = LoadConsensusState();
+            return (s != null && s.Epoch == TrialEpoch) ? s.StartUtc : (DateTime?)null;
+        }
+
+        /// <summary>
+        /// Pins the trial start to the server-authoritative value so a reinstall or a wiped
+        /// local file cannot reset the trial. The start is only ever moved EARLIER (and never
+        /// into the future), so this can shorten a reset-to-now trial back to its true age but
+        /// never extend it. Best-effort and fail-safe: any problem leaves the local clock as-is,
+        /// so an offline machine is never affected. Call only after a successful server claim.
+        /// </summary>
+        public static void PinServerStart(DateTime serverStartUtc)
+        {
+            try
+            {
+                var now = DateTime.UtcNow;
+                // Never trust a start in the future (server clock skew) — it would trip the
+                // clock-rollback guard on the next check.
+                var pin = serverStartUtc > now ? now : serverStartUtc;
+
+                var state = LoadConsensusState();
+                if (state != null && state.Epoch != TrialEpoch) state = null;
+
+                if (state == null)
+                {
+                    state = new TrialState
+                    {
+                        StartUtc = pin,
+                        LastSeenUtc = now,
+                        DeviceId = MachineIdentity.GetDeviceId(),
+                        Epoch = TrialEpoch
+                    };
+                }
+                else if (pin < state.StartUtc)
+                {
+                    state.StartUtc = pin;
+                }
+                else
+                {
+                    return; // server start is not earlier — nothing to pin
+                }
+
+                state.Hmac = LicenseCrypto.ComputeTrialHmac(state);
+                SaveAllLocations(state);
+            }
+            catch { /* best-effort; must never block or crash startup */ }
+        }
+
         // ──────────────────────────────────────────────────────────────────
         //  Multi-location persistence
         // ──────────────────────────────────────────────────────────────────

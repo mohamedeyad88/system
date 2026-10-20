@@ -30,7 +30,19 @@ namespace Apex.Services.Imposition
                     throw new InvalidOperationException("الملف لا يحتوي على صفحات.");
 
                 int idx = Math.Clamp(page0, 0, doc.PageCount - 1);
-                using var img = doc.Render(idx, dpi, dpi, false);
+
+                // Render at the page's true pixel size for the requested DPI.
+                //
+                // doc.Render(idx, dpi, dpi, false) looks like a DPI call but binds to the
+                // Render(page, int WIDTH, int HEIGHT, bool) overload — dpi is an int — so it
+                // produced a dpi×dpi image (110×110 px) that the UI then stretched to fill the
+                // preview: every section looked pixelated no matter the page size. Compute the
+                // real pixel dimensions from the page size (points → inches × dpi) instead, the
+                // same way the print rasterizer was fixed.
+                var sizePt = doc.PageSizes[idx];                 // points (1/72")
+                int width  = Math.Max(1, (int)Math.Round(sizePt.Width  / 72.0 * dpi));
+                int height = Math.Max(1, (int)Math.Round(sizePt.Height / 72.0 * dpi));
+                using var img = doc.Render(idx, width, height, false);
                 using var png = new MemoryStream();
                 img.Save(png, ImageFormat.Png);
                 return png.ToArray();

@@ -400,8 +400,17 @@ namespace Apex.Services.Imposition
                 double gridW = cols * cardW + (cols - 1) * gutter;
                 double gridH = rows * cardH + (rows - 1) * gutter;
                 if (gridW > sheetW + 0.5 || gridH > sheetH + 0.5)
+                {
+                    // Tell the user the biggest grid that DOES fit this sheet, so they can
+                    // fix it in one go instead of guessing numbers until it stops failing.
+                    int maxCols = Math.Max(0, (int)Math.Floor((sheetW + gutter) / (cardW + gutter) + 1e-6));
+                    int maxRows = Math.Max(0, (int)Math.Floor((sheetH + gutter) / (cardH + gutter) + 1e-6));
+                    string fit = (maxCols >= 1 && maxRows >= 1)
+                        ? $" الأقصى اللي يركب على الفرخ ده: {maxCols}×{maxRows}."
+                        : " التصميم نفسه أكبر من الفرخ — كبّر مقاس الفرخ أو صغّر التصميم.";
                     throw new InvalidOperationException(
-                        $"التصميم {cols}×{rows} أكبر من الفرخ — قلّل العدد أو كبّر مقاس الفرخ.");
+                        $"التصميم {cols}×{rows} أكبر من الفرخ.{fit}");
+                }
 
                 double offX = (sheetW - gridW) / 2;
                 double offY = (sheetH - gridH) / 2;
@@ -537,8 +546,43 @@ namespace Apex.Services.Imposition
         private static string Stage(byte[] pdf)
         {
             string tmp = Path.Combine(Path.GetTempPath(), $"apex_ptool_{Guid.NewGuid():N}.pdf");
-            File.WriteAllBytes(tmp, pdf);
+            File.WriteAllBytes(tmp, FlattenCropToMedia(pdf));
             return tmp;
+        }
+
+        /// <summary>
+        /// Bakes each page's CropBox into its MediaBox before the page is re-embedded
+        /// as an <see cref="XPdfForm"/>. A file cropped by another tool carries a smaller
+        /// /CropBox over a larger /MediaBox; PdfSharp's form rendering honours only the
+        /// MediaBox, so the trimmed-away part would "come back" the moment printer marks
+        /// (or any staged tool) re-draw the page. Making MediaBox = CropBox first means
+        /// every page tool sees — and keeps — the cropped region only. Fail-safe: any
+        /// problem returns the bytes unchanged, so a tricky PDF never breaks the tool.
+        /// </summary>
+        private static byte[] FlattenCropToMedia(byte[] pdf)
+        {
+            try
+            {
+                using var doc = PdfReader.Open(new MemoryStream(pdf), PdfDocumentOpenMode.Modify);
+                bool changed = false;
+                foreach (PdfPage page in doc.Pages)
+                {
+                    if (!page.Elements.ContainsKey("/CropBox")) continue;
+                    var crop = page.CropBox;
+                    if (crop == null || crop.IsEmpty) continue;
+                    var media = page.MediaBox;
+                    if (crop.X1 == media.X1 && crop.Y1 == media.Y1 &&
+                        crop.X2 == media.X2 && crop.Y2 == media.Y2) continue;
+                    page.MediaBox = crop;
+                    page.Elements.Remove("/CropBox");
+                    changed = true;
+                }
+                if (!changed) return pdf;
+                using var ms = new MemoryStream();
+                doc.Save(ms, closeStream: false);
+                return ms.ToArray();
+            }
+            catch { return pdf; }
         }
 
         private static void TryDelete(string path) { try { File.Delete(path); } catch { /* best effort */ } }

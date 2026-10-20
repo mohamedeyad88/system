@@ -30,6 +30,9 @@ namespace Apex.NumberedBooksEngine.Core
         // copy index → the printer's own source id (PaperSource.RawKind), not a
         // PaperSourceKind: see PrintJobSettings.CopyTrayMapping.
         Dictionary<int, int>? CopyTrayMapping = null,
+        // copy index → operator-declared sheets loaded in that tray; the engine holds for a
+        // refill before over-drawing a tray (firmware-independent). See TrayLoadSheets.
+        Dictionary<int, int>? TrayLoadSheets = null,
         PrintScaleMode? ScaleMode = null,
         NumberingMode? NumberingMode = null,
         bool UseSmartPrinting = true,
@@ -224,6 +227,7 @@ namespace Apex.NumberedBooksEngine.Core
                     Copies = 1,
                     Dpi = options.Dpi,
                     CopyTrayMapping = options.CopyTrayMapping,
+                    TrayLoadSheets = options.TrayLoadSheets,
                     ScaleMode = options.ScaleMode ?? PrintScaleMode.ActualSize,  // Use ScaleMode from options, default to ActualSize
                     FitToPage = (options.ScaleMode ?? PrintScaleMode.ActualSize) == PrintScaleMode.FitToPage  // Backward compatibility
                 }, ct);

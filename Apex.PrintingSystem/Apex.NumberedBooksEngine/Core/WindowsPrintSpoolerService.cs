@@ -102,6 +102,14 @@ namespace Apex.NumberedBooksEngine.Core
         private CancellationToken _ct;
         private ManualResetEventSlim _pauseEvent = new(true);
 
+        // Firmware-independent paper-out safeguard: we count the sheets fed to each tray
+        // (keyed by copy index) and hold for a refill before a tray's declared load is
+        // exceeded. Only the print thread mutates _sheetsSentByCopy; the UI thread signals a
+        // refill-resume with the volatile flag, which the print thread then acts on.
+        private readonly System.Collections.Generic.Dictionary<int, int> _sheetsSentByCopy = new();
+        private int _refillPendingCopy = -1;
+        private volatile bool _refillResumeRequested;
+
         // ═══════════════════════════════════════════════════════════════════
         // CRITICAL FIX: Use a queue to hold all pages for printing
         // Each entry stores (Image, CopyIndex) to ensure correct tray selection
@@ -158,6 +166,9 @@ namespace Apex.NumberedBooksEngine.Core
             _pagesProcessed = 0;
             _totalPagesQueued = 0;
             _currentCopyIndex = 0;
+            _sheetsSentByCopy.Clear();
+            _refillPendingCopy = -1;
+            _refillResumeRequested = false;
             _jobEnded = false;
             _printStarted = false;
             _printTask = null;
@@ -576,12 +587,14 @@ namespace Apex.NumberedBooksEngine.Core
             // re-checking until it clears or the operator cancels. Fail-safe: a status
             // read error returns "not held", so a healthy printer is never stalled.
             // ═══════════════════════════════════════════════════════════════════
+            // The refill check is first and is fully firmware-independent: it holds based on
+            // OUR own per-tray sheet count, not on anything the printer reports.
             while (!_ct.IsCancellationRequested && !Status.IsCancelled
-                   && TryGetPrinterHoldReason(out var holdReason))
+                   && (TryGetRefillHold(out var holdReason) || TryGetPrinterHoldReason(out holdReason)))
             {
                 Status.Status = $"Paused — {holdReason}";
                 OnStatusChanged();
-                System.Threading.Thread.Sleep(1500);
+                System.Threading.Thread.Sleep(500);
             }
 
             // ═══════════════════════════════════════════════════════════════════
@@ -762,6 +775,14 @@ namespace Apex.NumberedBooksEngine.Core
 
                 // Update page count
                 _pagesProcessed++;
+
+                // Count this sheet against its tray's declared load (print thread only).
+                if (_settings.TrayLoadSheets != null && _settings.TrayLoadSheets.Count > 0)
+                {
+                    _sheetsSentByCopy.TryGetValue(_currentPageCopyIndex, out var sentSoFar);
+                    _sheetsSentByCopy[_currentPageCopyIndex] = sentSoFar + 1;
+                }
+
                 Status.CurrentPage = _pagesProcessed;
                 Status.PagesPerSecond = _pagesProcessed / Math.Max(_stopwatch.Elapsed.TotalSeconds, 0.001);
                 Status.ElapsedTime = _stopwatch.Elapsed;
@@ -980,9 +1001,26 @@ namespace Apex.NumberedBooksEngine.Core
                     };
                     if (r == null && (offline || status == 7)) r = "printer offline";
 
-                    _cachedHoldReason = r;
-                    reason = r ?? "";
-                    return r != null;
+                    if (r != null)
+                    {
+                        _cachedHoldReason = r;
+                        reason = r;
+                        return true;
+                    }
+
+                    // No printer-level fault — but a two-tray job can still be silently
+                    // pulling from the one loaded tray after the other ran dry (firmware tray
+                    // substitution). Check per-tray paper over SNMP and hold if a tray is
+                    // positively empty. Fail-open: any doubt does not pause the run.
+                    if (TryGetTrayEmptyHold(out var trayReason))
+                    {
+                        _cachedHoldReason = trayReason;
+                        reason = trayReason;
+                        return true;
+                    }
+
+                    _cachedHoldReason = null;
+                    return false;
                 }
 
                 _cachedHoldReason = null;
@@ -994,6 +1032,133 @@ namespace Apex.NumberedBooksEngine.Core
                 _cachedHoldReason = null;
                 return false;
             }
+        }
+
+        // ── Firmware-independent refill hold (operator-declared sheets per tray) ──
+        /// <summary>
+        /// Holds the run when the next page's tray has already been fed its full declared load
+        /// (<see cref="PrintJobSettings.TrayLoadSheets"/>), so a tray can never be over-drawn and
+        /// silently fall back to the other loaded tray. This decides purely from OUR own sheet
+        /// count — it never reads or trusts the printer — so it works regardless of the firmware.
+        /// The operator refills and presses the normal Resume button, which clears the hold and
+        /// resets that tray's count. Returns false (no hold) whenever counting is not configured.
+        /// </summary>
+        private bool TryGetRefillHold(out string reason)
+        {
+            reason = "";
+            try
+            {
+                var loads = _settings.TrayLoadSheets;
+                if (loads == null || loads.Count == 0) return false;
+
+                int c = _currentPageCopyIndex;
+                if (!loads.TryGetValue(c, out var limit) || limit <= 0) return false;
+
+                _sheetsSentByCopy.TryGetValue(c, out var sent);
+                if (sent < limit) return false;   // this tray still has loaded sheets
+
+                if (_refillPendingCopy != c)
+                {
+                    // Just reached this tray's load — enter the refill hold. Ignore any stale
+                    // Resume press from before, so the operator must press it now, after refilling.
+                    _refillPendingCopy = c;
+                    _refillResumeRequested = false;
+                    Status.IsPaused = true;
+                    reason = BuildRefillReason(c, limit);
+                    return true;
+                }
+
+                if (_refillResumeRequested)
+                {
+                    // Operator refilled and pressed Resume → reset this tray's count and go on.
+                    _refillResumeRequested = false;
+                    _sheetsSentByCopy[c] = 0;
+                    _refillPendingCopy = -1;
+                    Status.IsPaused = false;
+                    return false;
+                }
+
+                reason = BuildRefillReason(c, limit);
+                return true;
+            }
+            catch { return false; }   // never let the safeguard itself break a run
+        }
+
+        private static string BuildRefillReason(int copyIndex, int limit)
+        {
+            string label = copyIndex == 0 ? "درج الأصل"
+                         : copyIndex == 1 ? "درج الصورة"
+                         : $"درج النسخة {copyIndex}";
+            return $"{label} فرغ ({limit} ورقة) — أعِد تحميل الورق ثم اضغط «استئناف»";
+        }
+
+        // ── Per-tray paper hold (SNMP, network printers, multi-tray jobs only) ──
+        private string? _trayHost;             // null = not resolved yet; "" = no SNMP host
+        private DateTime _lastTrayCheckUtc = DateTime.MinValue;
+        private bool _cachedTrayEmpty;
+
+        /// <summary>
+        /// True when this is a two-tray (original/copy) job and SNMP positively reports an
+        /// input tray empty — the case where the firmware would otherwise keep printing from
+        /// the still-loaded tray. Throttled to ~2.5s so print speed is barely affected, and
+        /// fail-open (single-tray jobs, non-network printers, or any SNMP doubt → no hold).
+        /// </summary>
+        private bool TryGetTrayEmptyHold(out string reason)
+        {
+            reason = "";
+            try
+            {
+                var mapping = _settings.CopyTrayMapping;
+                if (mapping == null || mapping.Count == 0) return false;
+                // Only meaningful when the job deliberately spans more than one tray.
+                if (new System.Collections.Generic.HashSet<int>(mapping.Values).Count < 2) return false;
+
+                if (_trayHost == null) _trayHost = ResolvePrinterHost(_settings.PrinterName) ?? "";
+                if (string.IsNullOrEmpty(_trayHost)) return false;
+
+                if ((DateTime.UtcNow - _lastTrayCheckUtc).TotalMilliseconds >= 2500)
+                {
+                    _lastTrayCheckUtc = DateTime.UtcNow;
+                    _cachedTrayEmpty = PrinterTrayStatus.AnyInputTrayEmpty(_trayHost, timeoutMs: 350);
+                }
+                if (_cachedTrayEmpty) { reason = "tray out of paper"; return true; }
+                return false;
+            }
+            catch { return false; }
+        }
+
+        /// <summary>Resolves a printer's network host (IP/hostname) from its TCP/IP port, or
+        /// null for a non-network printer. Best-effort; never throws.</summary>
+        private static string? ResolvePrinterHost(string? printerName)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(printerName)) return null;
+                var escaped = printerName!.Replace("\\", "\\\\").Replace("'", "\\'");
+
+                string? port = null;
+                using (var s = new System.Management.ManagementObjectSearcher("root\\cimv2",
+                    $"SELECT PortName FROM Win32_Printer WHERE Name = '{escaped}'"))
+                    foreach (var o in s.Get())
+                    { using var m = (System.Management.ManagementObject)o; port = m["PortName"]?.ToString(); break; }
+
+                if (string.IsNullOrWhiteSpace(port)) return null;
+
+                var pe = port!.Replace("\\", "\\\\").Replace("'", "\\'");
+                using (var s2 = new System.Management.ManagementObjectSearcher("root\\cimv2",
+                    $"SELECT HostAddress FROM Win32_TCPIPPrinterPort WHERE Name = '{pe}'"))
+                    foreach (var o in s2.Get())
+                    {
+                        using var m = (System.Management.ManagementObject)o;
+                        var h = m["HostAddress"]?.ToString();
+                        if (!string.IsNullOrWhiteSpace(h)) return h;
+                    }
+
+                // Some drivers name the port after the IP/host itself (e.g. "192.168.1.50").
+                if (System.Net.IPAddress.TryParse(port, out _)) return port;
+                return null;
+            }
+            catch { return null; }
         }
 
         private static int ToInt(object? v) =>
@@ -1112,6 +1277,10 @@ namespace Apex.NumberedBooksEngine.Core
 
         public void Resume()
         {
+            // Also acts as the "I refilled the tray" confirmation: if the run is held because a
+            // tray hit its declared load, the print thread sees this flag and resets that tray's
+            // count before carrying on (the dictionary is mutated only on the print thread).
+            _refillResumeRequested = true;
             _pauseEvent.Set();
             Status.IsPaused = false;
             Status.Status = "Printing";

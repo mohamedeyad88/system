@@ -1147,6 +1147,29 @@ namespace Apex.UI.ViewModels
 
                 var trayMapping = BuildTrayMapping();
 
+                // Firmware-independent paper-out safeguard: for a real multi-tray job, ask how
+                // many sheets are loaded in each tray so the engine can hold for a refill before
+                // a tray runs dry — instead of the printer silently pulling from the other tray.
+                Dictionary<int, int>? trayLoadSheets = null;
+                if (trayMapping != null &&
+                    new System.Collections.Generic.HashSet<int>(trayMapping.Values).Count >= 2)
+                {
+                    var trays = trayMapping.Keys.OrderBy(k => k)
+                        .Select(k => (copyIndex: k,
+                            label: k == 0 ? "درج الأصل" : k == 1 ? "درج الصورة" : $"درج النسخة {k}"))
+                        .ToList();
+                    var trayDlg = new Apex.UI.Views.Dialogs.TrayLoadDialog(trays)
+                    {
+                        Owner = Application.Current.MainWindow
+                    };
+                    if (trayDlg.ShowDialog() != true)
+                    {
+                        PrintStatus = L("Num_PrintCancelled");
+                        return;
+                    }
+                    trayLoadSheets = trayDlg.TrayLoads;
+                }
+
                 // Determine NumberingMode based on IsLinearMode/IsImposedMode
                 NumberingMode numberingMode = NumberingMode.Auto;
                 if (IsLinearMode)
@@ -1177,7 +1200,8 @@ namespace Apex.UI.ViewModels
                     numberingMode,
                     useSmartPrinting: UseSmartTrayPrinting,
                     useArabicDigits:  UseArabicDigits,
-                    numberFormat: CurrentNumberFormat);
+                    numberFormat: CurrentNumberFormat,
+                    trayLoadSheets: trayLoadSheets);
 
                 if (result.Success)
                 {

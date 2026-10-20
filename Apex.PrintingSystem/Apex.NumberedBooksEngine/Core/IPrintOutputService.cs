@@ -28,6 +28,16 @@ namespace Apex.NumberedBooksEngine.Core
         public Dictionary<int, int>? CopyTrayMapping { get; set; }
 
         /// <summary>
+        /// Operator-declared sheets loaded in each copy's tray (index 0 = Original, 1 = Copy 1,
+        /// …), for the firmware-independent paper-out safeguard. The engine counts the sheets it
+        /// sends to each tray and, before it would exceed this load, holds the run and asks the
+        /// operator to refill — so a two-tray job can never silently keep printing from the one
+        /// loaded tray after the other ran dry, no matter what the printer firmware does. Null or
+        /// an entry ≤ 0 disables counting for that tray.
+        /// </summary>
+        public Dictionary<int, int>? TrayLoadSheets { get; set; }
+
+        /// <summary>
         /// Fit to page - scales the content to fit the printable area of the page.
         /// </summary>
         [Obsolete("Use ScaleMode instead")]

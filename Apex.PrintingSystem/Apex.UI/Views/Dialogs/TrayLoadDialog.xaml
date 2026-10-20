@@ -1,0 +1,52 @@
+<Window x:Class="Apex.UI.Views.Dialogs.TrayLoadDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="عدد الأوراق في الأدراج"
+        FlowDirection="RightToLeft"
+        Width="460" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize" ShowInTaskbar="False"
+        Background="#faf9f7" FontFamily="Segoe UI">
+    <Window.Resources>
+        <Style x:Key="PrimaryBtn" TargetType="Button">
+            <Setter Property="Background" Value="#047857"/>
+            <Setter Property="Foreground" Value="#ffffff"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="18,9"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="9" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="GhostBtn" TargetType="Button" BasedOn="{StaticResource PrimaryBtn}">
+            <Setter Property="Background" Value="#ffffff"/>
+            <Setter Property="Foreground" Value="#14181d"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+    </Window.Resources>
+
+    <Border Padding="24">
+        <StackPanel>
+            <TextBlock Text="قبل الطباعة — كم ورقة محمّلة في كل درج؟"
+                       FontSize="17" FontWeight="Bold" Foreground="#14181d" TextWrapping="Wrap"/>
+            <TextBlock Text="البرنامج هيعدّ الأوراق ويوقف يطلب التعبئة قبل ما أي درج يفضى — من غير الاعتماد على الطابعة."
+                       FontSize="12.5" Foreground="#6b6864" TextWrapping="Wrap" Margin="0,8,0,16"/>
+
+            <StackPanel x:Name="RowsPanel"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,20,0,0">
+                <Button Content="ابدأ الطباعة" Style="{StaticResource PrimaryBtn}" Click="Ok_Click" MinWidth="120" Margin="0,0,8,0"/>
+                <Button Content="بدون تنبيه" Style="{StaticResource GhostBtn}" Click="Skip_Click" MinWidth="100" Margin="0,0,8,0"/>
+                <Button Content="إلغاء" Style="{StaticResource GhostBtn}" Click="Cancel_Click" MinWidth="80"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

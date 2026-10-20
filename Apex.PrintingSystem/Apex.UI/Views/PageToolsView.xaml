@@ -61,6 +61,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Text="{DynamicResource PT_001}"
@@ -358,9 +359,6 @@
                         </StackPanel>
                     </Border>
 
-                    <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource Done}" FontSize="13" Margin="2,4,0,0" TextWrapping="Wrap"/>
-                    <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Stopped}" FontSize="13" Margin="2,4,0,0" TextWrapping="Wrap"
-                               Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 </StackPanel>
             </ScrollViewer>
 
@@ -430,5 +428,36 @@
                 </Grid>
             </Border>
         </Grid>
+
+        <!-- Always-visible action + status bar. The operation result used to sit at the
+             very bottom of the scrolling tool list, so after applying a tool you had to
+             scroll to the end to learn whether it succeeded — and undo lived at the top,
+             out of sight. This fixed bar keeps the status (and undo/redo) in view from
+             anywhere, so progress and pass/fail are never hidden. -->
+        <Border Grid.Row="2" Margin="0,14,0,0" Padding="14,10" CornerRadius="10"
+                Background="{DynamicResource PanelSunk}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="{DynamicResource PT_Undo}" Command="{Binding UndoCommand}"
+                            Style="{StaticResource Btn}" IsEnabled="{Binding CanUndo}" MinWidth="72" Margin="0,0,6,0"/>
+                    <Button Content="{DynamicResource PT_Redo}" Command="{Binding RedoCommand}"
+                            Style="{StaticResource Btn}" IsEnabled="{Binding CanRedo}" MinWidth="72"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="14,0,0,0">
+                    <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource Done}"
+                               FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"
+                               Visibility="{Binding HasError, Converter={StaticResource InverseBoolConverter}}"/>
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Stopped}"
+                               FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"
+                               Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>

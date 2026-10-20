@@ -1,4 +1,5 @@
 using Apex.Services.Imposition;
+using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
 
@@ -18,7 +19,35 @@ public class PrinterMarksAndSplitTests
         return ms.ToArray();
     }
 
+    /// <summary>A page whose visible area was cropped (smaller /CropBox over the /MediaBox),
+    /// as a pre-cropped customer file arrives.</summary>
+    private static byte[] CroppedDoc(double wmm = 210, double hmm = 297, double insetMm = 20)
+    {
+        using var doc = new PdfDocument();
+        var p = doc.AddPage();
+        p.Width = Mm(wmm); p.Height = Mm(hmm);
+        p.CropBox = new PdfRectangle(
+            new XPoint(Mm(insetMm), Mm(insetMm)),
+            new XPoint(Mm(wmm - insetMm), Mm(hmm - insetMm)));
+        using var ms = new MemoryStream();
+        doc.Save(ms, false);
+        return ms.ToArray();
+    }
+
     private readonly PdfPageToolsService _svc = new();
+
+    [Fact]
+    public void PrinterMarks_RespectsCropBox_DoesNotRestoreTrimmedArea()
+    {
+        // 210×297 cropped 20mm on every side → visible 170×257. With marks (10mm margin)
+        // the sheet must be 190×277 (crop + 2×10), NOT 230×317 — proving the trimmed-away
+        // part is not resurrected when the page is re-embedded as a form.
+        var marked = _svc.AddPrinterMarks(CroppedDoc(210, 297, 20), marginMm: 10);
+
+        using var doc = PdfReader.Open(new MemoryStream(marked), PdfDocumentOpenMode.InformationOnly);
+        Assert.Equal(190, System.Math.Round(doc.Pages[0].Width.Millimeter));
+        Assert.Equal(277, System.Math.Round(doc.Pages[0].Height.Millimeter));
+    }
 
     [Fact]
     public void PrinterMarks_EnlargeEachPageByTheMargin_KeepingCount()

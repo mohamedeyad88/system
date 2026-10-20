@@ -55,7 +55,8 @@ namespace Apex.Services.Numbering
             NumberingMode? numberingMode = null,
             bool useSmartPrinting = true,
             bool useArabicDigits = false,
-            NumberFormatOptions? numberFormat = null)
+            NumberFormatOptions? numberFormat = null,
+            Dictionary<int, int>? trayLoadSheets = null)
         {
             var copyTypes = new List<CopyType> { CopyType.Original };
             for (int i = 1; i < copiesPerPage; i++)
@@ -88,6 +89,7 @@ namespace Apex.Services.Numbering
                 CheckpointEvery: 100,
                 CopyTypes: copyTypes,
                 CopyTrayMapping: copyTrayMappingDict,
+                TrayLoadSheets: trayLoadSheets,
                 ScaleMode: scaleMode,
                 NumberingMode: mode,
                 UseSmartPrinting: useSmartPrinting,

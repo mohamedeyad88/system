@@ -485,7 +485,9 @@ namespace Apex.UI.ViewModels
             IsPreviewLoading = true;
             try
             {
-                byte[] png = await Task.Run(() => _tools.RenderPagePng(pdf, page, 110));
+                // 150 DPI (not 110): the preview is zoomable, so render a little denser than
+                // 1:1 so it stays crisp when the user zooms in rather than softening.
+                byte[] png = await Task.Run(() => _tools.RenderPagePng(pdf, page, 150));
                 if (reqId != _previewRequestId) return;   // dropped: a newer request started
                 PreviewImage = LoadFrozenBitmap(png);
             }

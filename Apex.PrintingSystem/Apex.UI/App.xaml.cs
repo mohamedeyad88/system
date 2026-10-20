@@ -128,6 +128,32 @@ namespace Apex.UI
 
                 // ── License / Trial check ──
                 var licenseResult = LicenseManager.Validate();
+
+                // ── Server-authoritative trial (anti-reset) ──
+                // Only in trial mode: bind the 7-day trial to this device on the server so a
+                // reinstall or a wiped local file can no longer reset it. The server can only
+                // move the start EARLIER, never later. Bounded + fail-open: offline/slow never
+                // blocks startup and never locks the machine out (the offline promise holds).
+                if (licenseResult.IsValid && licenseResult.Type == LicenseType.Trial)
+                {
+                    try
+                    {
+                        var trialDeviceId = LicenseManager.GetLicensedDeviceId();
+                        var localStart = TrialManager.GetLocalStartUtc() ?? DateTime.UtcNow;
+                        using var tcts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(5));
+                        var serverStart = System.Threading.Tasks.Task.Run(
+                            () => new Apex.UI.Services.TrialServerService()
+                                .ClaimAsync(trialDeviceId, localStart, tcts.Token)).GetAwaiter().GetResult();
+                        if (serverStart.HasValue)
+                        {
+                            TrialManager.PinServerStart(serverStart.Value);
+                            licenseResult = LicenseManager.Validate();   // re-check against the pinned start
+                        }
+                    }
+                    catch { /* trial reconciliation must never block or crash startup */ }
+                    try { Apex.Services.Logging.PrintLogger.Info("startup: 1b trial reconciled"); } catch { }
+                }
+
                 if (!licenseResult.IsValid)
                 {
                     var activationVm = new ActivationViewModel { ValidationResult = licenseResult };
