@@ -413,6 +413,12 @@ namespace Apex.UI.ViewModels
                 }
                 HasError = false;
 
+                // Show the loaded file immediately so the operator (and the customer at the
+                // counter) can SEE it right away — the imposed-sheet preview only appears after
+                // "نفّذ المونتاج", which left the panel on the empty placeholder until then and
+                // read in the field as "the file isn't showing".
+                _ = RenderSourcePreviewAsync(bytes);
+
                 // Check the file BEFORE any paper is committed to the job.
                 _ = RunPreflightAsync(path);
             }
@@ -517,6 +523,32 @@ namespace Apex.UI.ViewModels
         }
 
         private int _previewRequestId;
+
+        /// <summary>
+        /// Renders the loaded source file's first page straight after it is opened, so the panel
+        /// shows the real artwork instead of the empty placeholder before any imposition is run.
+        /// Superseded by the imposed-sheet preview once "نفّذ المونتاج" runs (shared request id).
+        /// </summary>
+        private async Task RenderSourcePreviewAsync(byte[] sourceBytes)
+        {
+            int reqId = ++_previewRequestId;
+            IsPreviewLoading = true;
+            try
+            {
+                byte[] png = await Task.Run(() =>
+                    Apex.Services.Imposition.PdfRasterizer.RenderPng(sourceBytes, 0, 150));
+                if (reqId != _previewRequestId) return;   // a newer preview started; drop this one
+                PreviewImage = LoadFrozenBitmap(png);
+            }
+            catch
+            {
+                if (reqId == _previewRequestId) PreviewImage = null;   // best-effort; load unaffected
+            }
+            finally
+            {
+                if (reqId == _previewRequestId) IsPreviewLoading = false;
+            }
+        }
 
         private static System.Windows.Media.Imaging.BitmapImage LoadFrozenBitmap(byte[] png)
         {
