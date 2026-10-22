@@ -43,6 +43,17 @@ namespace Apex.Services.Imposition
                 int width  = Math.Max(1, (int)Math.Round(sizePt.Width  / 72.0 * dpi));
                 int height = Math.Max(1, (int)Math.Round(sizePt.Height / 72.0 * dpi));
                 using var img = doc.Render(idx, width, height, false);
+
+                // Force a uniform 96×96 DPI on the bitmap before saving. Pdfium stamps the
+                // rendered page with a NON-square DPI (e.g. 827×1169 for A4) whose x:y ratio
+                // equals the page's aspect. WPF then reads that DPI to size the image, so a
+                // correct 595×841-pixel A4 came out SQUARE on screen ("مطة"): the pixels were
+                // right but the device-independent size was 1:1. Normalising the DPI makes WPF
+                // display the image at its true pixel aspect. (Preview only — the print path
+                // uses a different rasteriser and is unaffected.)
+                if (img is System.Drawing.Bitmap bmp)
+                    bmp.SetResolution(96f, 96f);
+
                 using var png = new MemoryStream();
                 img.Save(png, ImageFormat.Png);
                 return png.ToArray();
