@@ -521,7 +521,11 @@ namespace Apex.UI.ViewModels
         {
             if (_lastResult == null || !HasSource || !File.Exists(SourcePath) || _lastResult.Sheets.Count == 0)
             {
-                ClearPreviewPages();
+                // No imposed result yet — LEAVE the loaded-file (source) preview in place. This
+                // handler also fires on settings changes (page size, sides…) during load, and
+                // clearing here wiped the source pages RenderSourcePreviewAsync was streaming in,
+                // which left the panel empty after loading a file. The source preview owns the
+                // pages until a plan runs; the plan path below replaces them.
                 return;
             }
 
