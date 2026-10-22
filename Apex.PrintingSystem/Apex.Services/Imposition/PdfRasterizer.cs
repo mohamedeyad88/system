@@ -59,5 +59,42 @@ namespace Apex.Services.Imposition
                 return png.ToArray();
             }
         }
+
+        /// <summary>
+        /// Renders up to <paramref name="maxPages"/> pages, loading the PDF <b>once</b> (not once
+        /// per page — reloading a multi-MB file 25 times made a 25-page preview crawl or appear to
+        /// hang). Each rendered page's PNG is handed to <paramref name="onPage"/> as it is ready so
+        /// the UI can show pages progressively. A page that fails to render is skipped, never fatal;
+        /// rendering stops early when <paramref name="cancelled"/> returns true.
+        /// </summary>
+        public static void RenderPagesStreaming(byte[] pdf, int maxPages, int dpi,
+            Action<byte[]> onPage, Func<bool>? cancelled = null)
+        {
+            if (pdf == null || pdf.Length == 0 || onPage == null) return;
+            if (dpi <= 0) dpi = 110;
+
+            lock (RenderLock)
+            {
+                using var stream = new MemoryStream(pdf);
+                using var doc = PdfDocument.Load(stream);
+                int n = Math.Min(doc.PageCount, Math.Max(0, maxPages));
+                for (int i = 0; i < n; i++)
+                {
+                    if (cancelled != null && cancelled()) return;
+                    try
+                    {
+                        var sizePt = doc.PageSizes[i];
+                        int w = Math.Max(1, (int)Math.Round(sizePt.Width / 72.0 * dpi));
+                        int h = Math.Max(1, (int)Math.Round(sizePt.Height / 72.0 * dpi));
+                        using var img = doc.Render(i, w, h, false);
+                        if (img is System.Drawing.Bitmap bmp) bmp.SetResolution(96f, 96f);
+                        using var ms = new MemoryStream();
+                        img.Save(ms, ImageFormat.Png);
+                        onPage(ms.ToArray());
+                    }
+                    catch { /* skip this page, keep going */ }
+                }
+            }
+        }
     }
 }

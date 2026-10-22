@@ -44,6 +44,7 @@ namespace Apex.UI.ViewModels
         public override async Task InitializeAsync()
         {
             await LoadSettings();
+            _ = CheckForUpdateSilentAsync();   // badge appears on its own if a newer build exists
         }
 
         [RelayCommand]
@@ -107,6 +108,76 @@ namespace Apex.UI.ViewModels
                 result.Success ? "النسخ الاحتياطي" : "خطأ في النسخ الاحتياطي",
                 MessageBoxButton.OK,
                 result.Success ? MessageBoxImage.Information : MessageBoxImage.Error);
+        }
+
+        // ── Update check ──────────────────────────────────────────────────────
+        /// <summary>The running build, e.g. "2.9.9".</summary>
+        public string CurrentVersion =>
+            System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.0.0";
+
+        [ObservableProperty] private bool _isCheckingUpdate;
+        [ObservableProperty] private string _updateStatus = "";
+        [ObservableProperty] private bool _updateAvailable;   // → the notification badge on the button
+        [ObservableProperty] private string _latestVersion = "";
+        private string _updateDownloadUrl = "";
+
+        /// <summary>Silent check on opening Settings, so the badge shows up on its own when a
+        /// newer build was published — without the operator having to press the button.</summary>
+        private async Task CheckForUpdateSilentAsync()
+        {
+            try
+            {
+                var info = await new Services.UpdateCheckService().CheckAsync(CurrentVersion);
+                if (info?.Available == true)
+                {
+                    UpdateAvailable = true;
+                    LatestVersion = info.LatestVersion;
+                    _updateDownloadUrl = info.DownloadUrl;
+                    UpdateStatus = $"يوجد تحديث جديد: النسخة {info.LatestVersion} (نسختك {CurrentVersion}).";
+                }
+            }
+            catch { /* best-effort; the manual button still works */ }
+        }
+
+        [RelayCommand]
+        private async Task CheckForUpdate()
+        {
+            if (IsCheckingUpdate) return;
+            IsCheckingUpdate = true;
+            UpdateAvailable = false;
+            UpdateStatus = "جارٍ البحث عن تحديث…";
+            try
+            {
+                var info = await new Services.UpdateCheckService().CheckAsync(CurrentVersion);
+                if (info == null)
+                    UpdateStatus = "تعذّر الاتصال بالخادم. تأكد من الإنترنت وحاول تاني.";
+                else if (info.Available)
+                {
+                    UpdateAvailable = true;
+                    LatestVersion = info.LatestVersion;
+                    _updateDownloadUrl = info.DownloadUrl;
+                    UpdateStatus = $"يوجد تحديث جديد: النسخة {info.LatestVersion} (نسختك {CurrentVersion}).";
+                }
+                else
+                    UpdateStatus = $"أنت على أحدث نسخة ({CurrentVersion}).";
+            }
+            catch { UpdateStatus = "حصل خطأ أثناء البحث عن التحديث."; }
+            finally { IsCheckingUpdate = false; }
+        }
+
+        [RelayCommand]
+        private void DownloadUpdate()
+        {
+            if (string.IsNullOrWhiteSpace(_updateDownloadUrl)) return;
+            try
+            {
+                System.Diagnostics.Process.Start(
+                    new System.Diagnostics.ProcessStartInfo(_updateDownloadUrl) { UseShellExecute = true });
+            }
+            catch
+            {
+                MessageBox.Show("تعذّر فتح رابط التحميل.", "تحديث", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
     }
 }

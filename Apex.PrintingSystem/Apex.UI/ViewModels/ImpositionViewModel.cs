@@ -539,17 +539,11 @@ namespace Apex.UI.ViewModels
                 // job no longer sits on the empty placeholder while all pages render up front.
                 byte[] pdf = await Task.Run(() => _engine.Generate(plan, source, marks));
                 if (reqId != _previewRequestId) return;
-                int pages = System.Math.Min(System.Math.Max(1, _pdfOps.GetPageCount(pdf)), PreviewPageCap);
 
-                for (int i = 0; i < pages; i++)
-                {
-                    int page = i;
-                    byte[]? png = null;
-                    try { png = await Task.Run(() => Apex.Services.Imposition.PdfRasterizer.RenderPng(pdf, page, 110)); }
-                    catch { /* skip a bad page, keep the rest */ }
-                    if (reqId != _previewRequestId) return;   // superseded by a newer request
-                    if (png != null) { PreviewPages.Add(LoadFrozenBitmap(png)); HasPreviewPages = true; }
-                }
+                // Rasterize the imposed PDF with ONE load, streaming each page to the UI as it is
+                // ready (loading the file once per page made a big job crawl).
+                await Task.Run(() => Apex.Services.Imposition.PdfRasterizer.RenderPagesStreaming(
+                    pdf, PreviewPageCap, 110, PreviewPageSink(reqId), () => reqId != _previewRequestId));
             }
             catch
             {
@@ -564,6 +558,19 @@ namespace Apex.UI.ViewModels
         private int _previewRequestId;
 
         /// <summary>
+        /// A sink that adds each streamed page PNG to <see cref="PreviewPages"/> on the UI thread
+        /// (non-blocking BeginInvoke so the render thread never waits), dropping pages once a newer
+        /// request (<paramref name="reqId"/>) has superseded this one.
+        /// </summary>
+        private Action<byte[]> PreviewPageSink(int reqId) => png =>
+            System.Windows.Application.Current?.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (reqId != _previewRequestId) return;
+                PreviewPages.Add(LoadFrozenBitmap(png));
+                HasPreviewPages = true;
+            }));
+
+        /// <summary>
         /// Renders the loaded source file's first page straight after it is opened, so the panel
         /// shows the real artwork instead of the empty placeholder before any imposition is run.
         /// Superseded by the imposed-sheet preview once "نفّذ المونتاج" runs (shared request id).
@@ -576,18 +583,11 @@ namespace Apex.UI.ViewModels
             ClearPreviewPages();   // placeholder until the first page lands
             try
             {
-                // Render page-by-page and show each as soon as it is ready, so a 25-page file's
-                // first page appears in a moment instead of the panel sitting empty until every
-                // page has rendered ("المعاينة لم تكتمل"). A bad page is skipped, not fatal.
-                for (int i = 0; i < count; i++)
-                {
-                    int page = i;
-                    byte[]? png = null;
-                    try { png = await Task.Run(() => Apex.Services.Imposition.PdfRasterizer.RenderPng(sourceBytes, page, 130)); }
-                    catch { /* skip a bad page, keep the rest */ }
-                    if (reqId != _previewRequestId) return;   // a newer preview started; drop this one
-                    if (png != null) { PreviewPages.Add(LoadFrozenBitmap(png)); HasPreviewPages = true; }
-                }
+                // Load the file ONCE and stream every page as it renders, so a 25-page file's first
+                // page appears in a moment instead of the panel sitting empty while it reloads the
+                // whole file per page ("المعاينة لم تكتمل").
+                await Task.Run(() => Apex.Services.Imposition.PdfRasterizer.RenderPagesStreaming(
+                    sourceBytes, count, 110, PreviewPageSink(reqId), () => reqId != _previewRequestId));
             }
             finally
             {

@@ -501,20 +501,23 @@ namespace Apex.UI.ViewModels
             ClearPreviewPages();   // placeholder until the first page lands
             try
             {
-                // Render page-by-page and show each as soon as it is ready, so the first page
-                // appears at once instead of the panel sitting empty until all pages render.
-                for (int i = 0; i < cap; i++)
-                {
-                    int page = i;
-                    byte[]? png = null;
-                    try { png = await Task.Run(() => _tools.RenderPagePng(pdf, page, 130)); }
-                    catch { /* skip a bad page, keep the rest */ }
-                    if (reqId != _previewRequestId) return;
-                    if (png != null) { PreviewPages.Add(LoadFrozenBitmap(png)); HasPreviewPages = true; }
-                }
+                // Load the document ONCE and stream each page as it renders, so the first page
+                // appears at once instead of the panel sitting empty while the file reloads per page.
+                await Task.Run(() => Apex.Services.Imposition.PdfRasterizer.RenderPagesStreaming(
+                    pdf, cap, 130, PreviewPageSink(reqId), () => reqId != _previewRequestId));
             }
             finally { if (reqId == _previewRequestId) IsPreviewLoading = false; }
         }
+
+        /// <summary>Adds each streamed page PNG to the preview on the UI thread (non-blocking),
+        /// dropping pages once a newer request has superseded this one.</summary>
+        private Action<byte[]> PreviewPageSink(int reqId) => png =>
+            System.Windows.Application.Current?.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (reqId != _previewRequestId) return;
+                PreviewPages.Add(LoadFrozenBitmap(png));
+                HasPreviewPages = true;
+            }));
 
         private int _previewRequestId;
 
