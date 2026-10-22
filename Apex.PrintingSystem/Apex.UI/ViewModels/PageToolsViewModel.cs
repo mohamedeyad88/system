@@ -498,19 +498,21 @@ namespace Apex.UI.ViewModels
             int cap = System.Math.Min(count, PreviewPageCap);
             int reqId = ++_previewRequestId;
             IsPreviewLoading = true;
+            ClearPreviewPages();   // placeholder until the first page lands
             try
             {
-                // Render every page so the operator scrolls through the whole document.
-                var pngs = await Task.Run(() =>
+                // Render page-by-page and show each as soon as it is ready, so the first page
+                // appears at once instead of the panel sitting empty until all pages render.
+                for (int i = 0; i < cap; i++)
                 {
-                    var list = new System.Collections.Generic.List<byte[]>(cap);
-                    for (int i = 0; i < cap; i++) list.Add(_tools.RenderPagePng(pdf, i, 150));
-                    return list;
-                });
-                if (reqId != _previewRequestId) return;
-                SetPreviewPages(pngs);
+                    int page = i;
+                    byte[]? png = null;
+                    try { png = await Task.Run(() => _tools.RenderPagePng(pdf, page, 130)); }
+                    catch { /* skip a bad page, keep the rest */ }
+                    if (reqId != _previewRequestId) return;
+                    if (png != null) { PreviewPages.Add(LoadFrozenBitmap(png)); HasPreviewPages = true; }
+                }
             }
-            catch { if (reqId == _previewRequestId) ClearPreviewPages(); }
             finally { if (reqId == _previewRequestId) IsPreviewLoading = false; }
         }
 
