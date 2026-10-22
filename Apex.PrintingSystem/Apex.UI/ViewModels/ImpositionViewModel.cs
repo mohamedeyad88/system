@@ -528,18 +528,22 @@ namespace Apex.UI.ViewModels
             var plan = _lastResult;
             var source = SourcePath;
             var marks = BuildMarks();
-            int count = System.Math.Min(plan.Sheets.Count, PreviewPageCap);
             int reqId = ++_previewRequestId;   // supersede any in-flight preview
 
             IsPreviewLoading = true;
             try
             {
-                // Render every imposed sheet so the operator scrolls through the whole job.
+                // Build the whole imposed PDF once and rasterize every page: for a duplex job
+                // Generate emits each sheet's FRONT then its BACK, so scrolling the pages shows
+                // front and back of every sheet in order. (One Generate beats one-per-sheet.)
                 var pngs = await Task.Run(() =>
                 {
-                    var list = new System.Collections.Generic.List<byte[]>(count);
-                    for (int s = 0; s < count; s++)
-                        list.Add(_engine.RenderSheetPng(plan, source, marks, s, dpi: 110));
+                    byte[] pdf = _engine.Generate(plan, source, marks);
+                    int pages = System.Math.Max(1, _pdfOps.GetPageCount(pdf));
+                    int cap = System.Math.Min(pages, PreviewPageCap);
+                    var list = new System.Collections.Generic.List<byte[]>(cap);
+                    for (int i = 0; i < cap; i++)
+                        list.Add(Apex.Services.Imposition.PdfRasterizer.RenderPng(pdf, i, 110));
                     return list;
                 });
                 if (reqId != _previewRequestId) return;   // a newer request started; drop this stale result
