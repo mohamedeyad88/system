@@ -141,6 +141,26 @@ namespace Apex.UI.ViewModels
         public string PreviewPageLabel => PreviewPageCount == 0 ? "—" : Lf("Msg_PageXofY", CurrentPage + 1, PreviewPageCount);
         public bool CanNavigate => PreviewPageCount > 1;
 
+        // Every preview scrolls vertically through ALL pages instead of a prev/next
+        // one-at-a-time view.
+        public System.Collections.ObjectModel.ObservableCollection<System.Windows.Media.Imaging.BitmapSource> PreviewPages { get; }
+            = new();
+        [ObservableProperty] private bool _hasPreviewPages;
+        private const int PreviewPageCap = 40;
+
+        private void SetPreviewPages(System.Collections.Generic.List<byte[]> pngs)
+        {
+            PreviewPages.Clear();
+            foreach (var p in pngs) PreviewPages.Add(LoadFrozenBitmap(p));
+            HasPreviewPages = PreviewPages.Count > 0;
+        }
+
+        private void ClearPreviewPages()
+        {
+            PreviewPages.Clear();
+            HasPreviewPages = false;
+        }
+
         partial void OnPreviewImageChanged(System.Windows.Media.Imaging.BitmapSource? value)
             => OnPropertyChanged(nameof(HasPreviewImage));
         partial void OnPreviewPageCountChanged(int value)
@@ -469,9 +489,29 @@ namespace Apex.UI.ViewModels
         private async Task ShowPreviewAsync(byte[] pdf)
         {
             _previewPdf = pdf;
-            try { PreviewPageCount = _tools.GetPageCount(pdf); } catch { PreviewPageCount = 0; }
+            int count;
+            try { count = _tools.GetPageCount(pdf); } catch { count = 0; }
+            PreviewPageCount = count;
             CurrentPage = 0;
-            await RenderCurrentPageAsync();
+            if (count <= 0) { ClearPreviewPages(); return; }
+
+            int cap = System.Math.Min(count, PreviewPageCap);
+            int reqId = ++_previewRequestId;
+            IsPreviewLoading = true;
+            try
+            {
+                // Render every page so the operator scrolls through the whole document.
+                var pngs = await Task.Run(() =>
+                {
+                    var list = new System.Collections.Generic.List<byte[]>(cap);
+                    for (int i = 0; i < cap; i++) list.Add(_tools.RenderPagePng(pdf, i, 150));
+                    return list;
+                });
+                if (reqId != _previewRequestId) return;
+                SetPreviewPages(pngs);
+            }
+            catch { if (reqId == _previewRequestId) ClearPreviewPages(); }
+            finally { if (reqId == _previewRequestId) IsPreviewLoading = false; }
         }
 
         private int _previewRequestId;

@@ -370,20 +370,12 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Result page navigation -->
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,12"
-                                Visibility="{Binding CanNavigate, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Button Content="{DynamicResource PT_030}" Command="{Binding PrevPageCommand}" Style="{StaticResource Btn}" MinWidth="90" Margin="0,0,8,0"/>
-                        <Border Background="{DynamicResource Paper}" CornerRadius="6" Padding="12,6" VerticalAlignment="Center">
-                            <TextBlock Text="{Binding PreviewPageLabel}" Foreground="{DynamicResource Brand}" FontSize="12" FontWeight="SemiBold"/>
-                        </Border>
-                        <Button Content="{DynamicResource PT_031}" Command="{Binding NextPageCommand}" Style="{StaticResource Btn}" MinWidth="90" Margin="8,0,0,0"/>
-                    </StackPanel>
+                    <!-- No prev/next: all pages scroll vertically in the preview below. -->
 
                     <Grid Grid.Row="1">
                     <!-- Placeholder -->
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
-                                Visibility="{Binding HasPreviewImage, Converter={StaticResource InverseBoolConverter}}">
+                                Visibility="{Binding HasPreviewPages, Converter={StaticResource InverseBoolConverter}}">
                         <TextBlock Text="👁" FontSize="40" Foreground="{DynamicResource Brush.Text.Disabled}" HorizontalAlignment="Center"/>
                         <TextBlock Text="{DynamicResource PT_032}" Foreground="{DynamicResource Muted}" FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,8,0,0"/>
                         <TextBlock Text="{DynamicResource PT_033}" Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="12" HorizontalAlignment="Center" Margin="0,4,0,0"/>
@@ -392,25 +384,34 @@
                     <!-- Rendered page as paper with soft shadow, inside a zoomable + pannable viewport.
                          Ctrl+Wheel zooms; scrollbars appear when the zoomed page exceeds the area. -->
                     <ScrollViewer x:Name="PtPreviewScroll"
-                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
-                                  Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                  HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+                                  Visibility="{Binding HasPreviewPages, Converter={StaticResource BooleanToVisibilityConverter}}"
                                   PreviewMouseWheel="PtPreview_PreviewMouseWheel">
-                        <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="{DynamicResource Panel}" Margin="8">
-                            <Border.LayoutTransform>
+                        <ItemsControl ItemsSource="{Binding PreviewPages}" HorizontalAlignment="Center">
+                            <ItemsControl.LayoutTransform>
                                 <ScaleTransform ScaleX="{Binding PreviewZoom}" ScaleY="{Binding PreviewZoom}"/>
-                            </Border.LayoutTransform>
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="28" ShadowDepth="0" Opacity="0.55" Color="{StaticResource ShadowColor}"/>
-                            </Border.Effect>
-                            <Image Source="{Binding PreviewImage}" MaxHeight="620" Stretch="Uniform"
-                                   RenderOptions.BitmapScalingMode="HighQuality"/>
-                        </Border>
+                            </ItemsControl.LayoutTransform>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate><StackPanel Orientation="Vertical"/></ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border HorizontalAlignment="Center" Background="{DynamicResource Panel}" Margin="8,8,8,16">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="24" ShadowDepth="0" Opacity="0.5" Color="{StaticResource ShadowColor}"/>
+                                        </Border.Effect>
+                                        <Image Source="{Binding}" MaxWidth="560" Stretch="Uniform"
+                                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </ScrollViewer>
 
                     <!-- Zoom controls (top-right overlay) -->
                     <Border VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,4,4,0"
                             Background="{DynamicResource Paper}" CornerRadius="8" Padding="4"
-                            Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            Visibility="{Binding HasPreviewPages, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel Orientation="Horizontal">
                             <Button Content="−" Command="{Binding PreviewZoomOutCommand}" Style="{StaticResource Btn}" MinWidth="32" Margin="0,0,4,0"/>
                             <TextBlock Text="{Binding PreviewZoomLabel}" Foreground="{DynamicResource Muted}" MinWidth="44" TextAlignment="Center" VerticalAlignment="Center" FontSize="12"/>

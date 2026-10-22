@@ -523,27 +523,18 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="{DynamicResource Imp_Preview}" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource OnAction}" VerticalAlignment="Center"/>
                                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                    <Button Command="{Binding PrevSheetCommand}" Content="{DynamicResource Imp_PrevSheet}"
-                                            Style="{StaticResource SecondaryBtn}" Padding="10,5" FontSize="11" Margin="0,0,6,0"/>
-                                    <Border Background="{DynamicResource Paper}" CornerRadius="6" Padding="10,5" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding CurrentSheetLabel}" Foreground="{DynamicResource Brand}" FontSize="12" FontWeight="SemiBold"/>
-                                    </Border>
-                                    <Button Command="{Binding NextSheetCommand}" Content="{DynamicResource Imp_NextSheet}"
-                                            Style="{StaticResource SecondaryBtn}" Padding="10,5" FontSize="11" Margin="6,0,0,0"/>
-                                    <Button Command="{Binding ToggleSideCommand}" Content="{DynamicResource Imp_ToggleSide}"
-                                            Style="{StaticResource SecondaryBtn}" Padding="10,5" FontSize="11" Margin="6,0,0,0"
-                                            Visibility="{Binding CanShowBack, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                    <!-- Zoom controls (visible once a rendered sheet is available) -->
+                                    <!-- Vertical scroll replaces prev/next page navigation — the
+                                         operator just scrolls through every sheet. -->
                                     <Button Command="{Binding PreviewZoomOutCommand}" Content="−"
-                                            Style="{StaticResource SecondaryBtn}" Padding="10,5" FontSize="11" Margin="12,0,0,0"
-                                            Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            Style="{StaticResource SecondaryBtn}" Padding="10,5" FontSize="11"
+                                            Visibility="{Binding HasPreviewPages, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                     <Border Background="{DynamicResource Paper}" CornerRadius="6" Padding="8,5" VerticalAlignment="Center" Margin="4,0,0,0"
-                                            Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            Visibility="{Binding HasPreviewPages, Converter={StaticResource BooleanToVisibilityConverter}}">
                                         <TextBlock Text="{Binding PreviewZoomLabel}" Foreground="{DynamicResource Brand}" FontSize="12" FontWeight="SemiBold" MinWidth="40" TextAlignment="Center"/>
                                     </Border>
                                     <Button Command="{Binding PreviewZoomInCommand}" Content="+"
                                             Style="{StaticResource SecondaryBtn}" Padding="10,5" FontSize="11" Margin="4,0,0,0"
-                                            Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            Visibility="{Binding HasPreviewPages, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                 </StackPanel>
                             </Grid>
                             <Border Background="{DynamicResource PanelSunk}" CornerRadius="10" Padding="20">
@@ -558,24 +549,33 @@
                                         Slots="{Binding PreviewRects}"
                                         EmptyHint="{DynamicResource Imp_PreviewHint}"
                                         HorizontalAlignment="Center" VerticalAlignment="Center"
-                                        Visibility="{Binding HasPreviewImage, Converter={StaticResource InverseBoolConverter}}"/>
+                                        Visibility="{Binding HasPreviewPages, Converter={StaticResource InverseBoolConverter}}"/>
 
-                                    <!-- Real rendered sheet as paper, inside a zoomable + pannable viewport.
-                                         Ctrl+Wheel zooms; scrollbars appear once the zoomed sheet overflows. -->
+                                    <!-- All pages/sheets stacked as paper, scrolled vertically (top-to-
+                                         bottom) — no prev/next. Ctrl+Wheel zooms the whole stack. -->
                                     <ScrollViewer x:Name="ImpPreviewScroll" MaxHeight="600"
-                                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
-                                                  Visibility="{Binding HasPreviewImage, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                  HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+                                                  Visibility="{Binding HasPreviewPages, Converter={StaticResource BooleanToVisibilityConverter}}"
                                                   PreviewMouseWheel="ImpPreview_PreviewMouseWheel">
-                                        <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="{DynamicResource Panel}" Margin="8">
-                                            <Border.LayoutTransform>
+                                        <ItemsControl ItemsSource="{Binding PreviewPages}" HorizontalAlignment="Center">
+                                            <ItemsControl.LayoutTransform>
                                                 <ScaleTransform ScaleX="{Binding PreviewZoom}" ScaleY="{Binding PreviewZoom}"/>
-                                            </Border.LayoutTransform>
-                                            <Border.Effect>
-                                                <DropShadowEffect BlurRadius="28" ShadowDepth="0" Opacity="0.55" Color="{StaticResource ShadowColor}"/>
-                                            </Border.Effect>
-                                            <Image Source="{Binding PreviewImage}" MaxHeight="560" Stretch="Uniform"
-                                                   RenderOptions.BitmapScalingMode="HighQuality"/>
-                                        </Border>
+                                            </ItemsControl.LayoutTransform>
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate><StackPanel Orientation="Vertical"/></ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border HorizontalAlignment="Center" Background="{DynamicResource Panel}" Margin="8,8,8,16">
+                                                        <Border.Effect>
+                                                            <DropShadowEffect BlurRadius="24" ShadowDepth="0" Opacity="0.5" Color="{StaticResource ShadowColor}"/>
+                                                        </Border.Effect>
+                                                        <Image Source="{Binding}" MaxWidth="520" Stretch="Uniform"
+                                                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
                                     </ScrollViewer>
 
                                     <!-- Loading state -->

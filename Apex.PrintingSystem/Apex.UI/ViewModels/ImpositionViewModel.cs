@@ -475,6 +475,28 @@ namespace Apex.UI.ViewModels
         partial void OnPreviewImageChanged(System.Windows.Media.Imaging.BitmapSource? value)
             => OnPropertyChanged(nameof(HasPreviewImage));
 
+        // ── Scrollable multi-page preview ────────────────────────────────────
+        // Every preview in the app scrolls vertically through ALL pages/sheets instead of
+        // a prev/next one-at-a-time view: the operator (and the customer at the counter)
+        // just scrolls the whole file top-to-bottom. These hold the loaded source's pages
+        // while planning, then the imposed sheets after "نفّذ المونتاج".
+        public System.Collections.ObjectModel.ObservableCollection<System.Windows.Media.Imaging.BitmapSource> PreviewPages { get; }
+            = new();
+        [ObservableProperty] private bool _hasPreviewPages;
+
+        private void SetPreviewPages(System.Collections.Generic.List<byte[]> pngs)
+        {
+            PreviewPages.Clear();
+            foreach (var p in pngs) PreviewPages.Add(LoadFrozenBitmap(p));
+            HasPreviewPages = PreviewPages.Count > 0;
+        }
+
+        private void ClearPreviewPages()
+        {
+            PreviewPages.Clear();
+            HasPreviewPages = false;
+        }
+
         // ── Preview zoom ─────────────────────────────────────────────────────
         // A press operator has to be able to zoom into the imposed sheet to check
         // registration marks, gutters and slot placement before committing a run.
@@ -491,30 +513,41 @@ namespace Apex.UI.ViewModels
         public void ApplyPreviewWheelZoom(int delta)
             => PreviewZoom = System.Math.Round(System.Math.Max(0.25, System.Math.Min(3.0, PreviewZoom + (delta > 0 ? 0.25 : -0.25))), 2);
 
+        // Cap how many sheets/pages the preview rasterizes so a huge job never stalls the UI
+        // building images the operator would only scroll past; the export itself is unaffected.
+        private const int PreviewPageCap = 40;
+
         private async Task RenderPreviewAsync()
         {
             if (_lastResult == null || !HasSource || !File.Exists(SourcePath) || _lastResult.Sheets.Count == 0)
             {
-                PreviewImage = null;
+                ClearPreviewPages();
                 return;
             }
 
             var plan = _lastResult;
             var source = SourcePath;
             var marks = BuildMarks();
-            int sheetIndex = CurrentSheetIndex;
+            int count = System.Math.Min(plan.Sheets.Count, PreviewPageCap);
             int reqId = ++_previewRequestId;   // supersede any in-flight preview
 
             IsPreviewLoading = true;
             try
             {
-                byte[] png = await Task.Run(() => _engine.RenderSheetPng(plan, source, marks, sheetIndex, dpi: 110));
+                // Render every imposed sheet so the operator scrolls through the whole job.
+                var pngs = await Task.Run(() =>
+                {
+                    var list = new System.Collections.Generic.List<byte[]>(count);
+                    for (int s = 0; s < count; s++)
+                        list.Add(_engine.RenderSheetPng(plan, source, marks, s, dpi: 110));
+                    return list;
+                });
                 if (reqId != _previewRequestId) return;   // a newer request started; drop this stale result
-                PreviewImage = LoadFrozenBitmap(png);
+                SetPreviewPages(pngs);
             }
             catch
             {
-                if (reqId == _previewRequestId) PreviewImage = null; // best-effort; export unaffected
+                if (reqId == _previewRequestId) ClearPreviewPages(); // best-effort; export unaffected
             }
             finally
             {
@@ -532,17 +565,25 @@ namespace Apex.UI.ViewModels
         private async Task RenderSourcePreviewAsync(byte[] sourceBytes)
         {
             int reqId = ++_previewRequestId;
+            int count = System.Math.Min(System.Math.Max(1, SourcePageCount), PreviewPageCap);
             IsPreviewLoading = true;
             try
             {
-                byte[] png = await Task.Run(() =>
-                    Apex.Services.Imposition.PdfRasterizer.RenderPng(sourceBytes, 0, 150));
+                // Render every page of the loaded file so the operator scrolls through the
+                // whole PDF — not just the first page.
+                var pngs = await Task.Run(() =>
+                {
+                    var list = new System.Collections.Generic.List<byte[]>(count);
+                    for (int i = 0; i < count; i++)
+                        list.Add(Apex.Services.Imposition.PdfRasterizer.RenderPng(sourceBytes, i, 150));
+                    return list;
+                });
                 if (reqId != _previewRequestId) return;   // a newer preview started; drop this one
-                PreviewImage = LoadFrozenBitmap(png);
+                SetPreviewPages(pngs);
             }
             catch
             {
-                if (reqId == _previewRequestId) PreviewImage = null;   // best-effort; load unaffected
+                if (reqId == _previewRequestId) ClearPreviewPages();   // best-effort; load unaffected
             }
             finally
             {
