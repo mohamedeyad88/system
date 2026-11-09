@@ -59,6 +59,11 @@ namespace Apex.UI.ViewModels
         // ما يتقفل"). This re-checks while the app is open and locks it once the
         // trial/subscription expires — but never in the middle of a print run.
         private System.Windows.Threading.DispatcherTimer? _licenseEnforceTimer;
+        // Ticks the visible day/hour/minute countdown down every minute WITHOUT re-reading
+        // the trial files — so the operator sees it moving (the "stuck on 7 days" report was
+        // really the old whole-days badge not changing for the first 24h). The heavier
+        // re-validation and the expiry lock stay on _licenseEnforceTimer below.
+        private System.Windows.Threading.DispatcherTimer? _trialTickTimer;
         private bool _licenseLockShown;
 
         private void StartLicenseEnforcement()
@@ -72,6 +77,14 @@ namespace Apex.UI.ViewModels
                 _licenseEnforceTimer.Tick += (_, _) => EnforceLicense();
                 _licenseEnforceTimer.Start();
                 EnforceLicense();   // set the trial counter and check immediately
+
+                // Light, I/O-free refresh of the countdown text once a minute.
+                _trialTickTimer = new System.Windows.Threading.DispatcherTimer
+                {
+                    Interval = TimeSpan.FromMinutes(1)
+                };
+                _trialTickTimer.Tick += (_, _) => RefreshTrialCountdown();
+                _trialTickTimer.Start();
             }
             catch { /* enforcement must never crash the shell */ }
         }
@@ -84,18 +97,46 @@ namespace Apex.UI.ViewModels
         [ObservableProperty] private string _trialBadgeText = "";
         [ObservableProperty] private bool _trialBadgeUrgent;   // last 2 days → red
 
+        // When this trial ends (UTC). Kept so the per-minute tick can recompute the
+        // countdown without touching the trial files. Null when not on a trial.
+        private DateTime? _trialExpiresUtc;
+
         private void UpdateTrialBadge(Apex.Licensing.ValidationResult r)
         {
             if (r.IsValid && r.Type == Apex.Licensing.LicenseType.Trial)
             {
                 IsTrialActive = true;
-                TrialBadgeText = Lf("Trial_DaysLeft", Math.Max(1, r.DaysRemaining));
-                TrialBadgeUrgent = r.DaysRemaining <= 2;
+                // Prefer the real expiry instant; fall back to whole days from now if the
+                // validator did not carry one, so the badge still shows something sensible.
+                _trialExpiresUtc = r.ExpiresUtc ?? DateTime.UtcNow.AddDays(Math.Max(0, r.DaysRemaining));
+                RefreshTrialCountdown();
             }
             else
             {
                 IsTrialActive = false;   // activated / perpetual → no badge
+                _trialExpiresUtc = null;
             }
+        }
+
+        /// <summary>
+        /// Rebuilds the sidebar countdown ("…باقي 6 يوم و23 ساعة و45 دقيقة") from the stored
+        /// expiry. Runs once a minute so the operator watches it count down — day, hour AND
+        /// minute — instead of a whole-days number that sits unchanged for a full day. Red in
+        /// the last two days. Cheap and I/O-free; the expiry lock stays on the 30-min timer.
+        /// </summary>
+        private void RefreshTrialCountdown()
+        {
+            if (!IsTrialActive || _trialExpiresUtc == null) return;
+
+            var remaining = _trialExpiresUtc.Value - DateTime.UtcNow;
+            if (remaining < TimeSpan.Zero) remaining = TimeSpan.Zero;
+
+            int days = remaining.Days;
+            int hours = remaining.Hours;
+            int minutes = remaining.Minutes;
+
+            TrialBadgeText = Lf("Trial_Countdown", days, hours, minutes);
+            TrialBadgeUrgent = remaining.TotalDays <= 2;
         }
 
         private void EnforceLicense()

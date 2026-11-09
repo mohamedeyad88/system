@@ -44,6 +44,17 @@ namespace Apex.NumberedBooksEngine.Core
     [SupportedOSPlatform("windows")]
     public class JobOrchestrator
     {
+        /// <summary>
+        /// Cap on the background sheet's raster resolution for streaming numbering jobs.
+        /// The sheet is reused on every page and the numbers are device text, so a higher
+        /// raster only bloats each spooled page (≈40 MB/page at 600 dpi → the printer stalls)
+        /// without making the printed digits any sharper. 200 dpi keeps line-art artwork clean
+        /// at a fraction of the spool size. Override for a specific shop with APEX_BG_DPI.
+        /// </summary>
+        private static int MaxBackgroundRasterDpi =>
+            int.TryParse(Environment.GetEnvironmentVariable("APEX_BG_DPI"), out var d) && d >= 96 && d <= 600
+                ? d : 200;
+
         private readonly Composer _composer;
         private readonly TemplateManager _templateManager;
         private readonly PrinterCapabilityDetector _capabilityDetector;
@@ -160,9 +171,20 @@ namespace Apex.NumberedBooksEngine.Core
                 // 2. Detect printer capabilities
                 var capabilities = _capabilityDetector.Detect(options.PrinterName);
 
-                // 3. Rasterize template ONCE
-                System.Diagnostics.Debug.WriteLine($"[NUMBERING] Loading template...");
-                var (templateImage, checksum) = _templateManager.RasterizeTemplate(options.TemplatePath, options.Dpi);
+                // 3. Rasterize template ONCE.
+                //
+                // The background sheet is line art that is reused UNCHANGED on every page, and
+                // the NUMBERS are drawn separately as device text (crisp at the printer's own
+                // resolution, below). Rasterising this background at the full job DPI (600)
+                // made each spooled page a ~40 MB full-page bitmap: a field run spooled ~450 MB
+                // for 11 pages and the printer stalled without printing a single sheet. So the
+                // background only needs enough pixels to look clean as line art — cap it low —
+                // while PrintJobSettings.Dpi (the printer's OUTPUT resolution, set in step 6)
+                // stays at the chosen quality so the digits print sharp. Physical size is
+                // preserved: the sheet is drawn to its true inches regardless of raster DPI.
+                int backgroundDpi = Math.Min(options.Dpi, MaxBackgroundRasterDpi);
+                System.Diagnostics.Debug.WriteLine($"[NUMBERING] Loading template... (background raster {backgroundDpi} dpi, printer output {options.Dpi} dpi)");
+                var (templateImage, checksum) = _templateManager.RasterizeTemplate(options.TemplatePath, backgroundDpi);
 
                 if (templateImage == null)
                 {

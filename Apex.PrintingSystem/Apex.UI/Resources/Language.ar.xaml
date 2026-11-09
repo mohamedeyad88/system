@@ -535,6 +535,7 @@
     <sys:String x:Key="Update_Download">تحميل التحديث</sys:String>
     <sys:String x:Key="Notice_TrialEnding">التجربة المجانية بتنتهي خلال {0} يوم. اشترِ دلوقتي علشان الشغل مايقفش.</sys:String>
     <sys:String x:Key="Trial_DaysLeft">نسخة تجريبية — باقي {0} يوم</sys:String>
+    <sys:String x:Key="Trial_Countdown">نسخة تجريبية — باقي {0} يوم و{1} ساعة و{2} دقيقة</sys:String>
     <sys:String x:Key="Notice_LicenseEnding">اشتراكك بينتهي خلال {0} يوم ({1}). جدّد قبلها علشان البرنامج مايقفش.</sys:String>
     <sys:String x:Key="Notice_Buy">اشترِ الآن</sys:String>
     <sys:String x:Key="Notice_Renew">جدّد الاشتراك</sys:String>

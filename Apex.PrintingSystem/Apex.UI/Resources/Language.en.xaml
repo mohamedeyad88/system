@@ -237,6 +237,7 @@
     <sys:String x:Key="Update_Download">Download update</sys:String>
     <sys:String x:Key="Notice_TrialEnding">Your free trial ends in {0} day(s). Buy now so work does not stop.</sys:String>
     <sys:String x:Key="Trial_DaysLeft">Trial — {0} days left</sys:String>
+    <sys:String x:Key="Trial_Countdown">Trial — {0}d {1}h {2}m left</sys:String>
     <sys:String x:Key="Notice_LicenseEnding">Your subscription ends in {0} day(s) ({1}). Renew before then so the program keeps running.</sys:String>
     <sys:String x:Key="Notice_Buy">Buy now</sys:String>
     <sys:String x:Key="Notice_Renew">Renew</sys:String>
