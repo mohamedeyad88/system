@@ -38,6 +38,32 @@ namespace Apex.Licensing
         private static readonly TimeSpan BackdateTolerance = TimeSpan.FromDays(1);
 
         // ──────────────────────────────────────────────────────────────────
+        //  Diagnostics
+        // ──────────────────────────────────────────────────────────────────
+        // Field report: on one offline shop machine the trial restarts at 7 days on every
+        // launch — i.e. the saved state is not being read back. The cause is environmental
+        // (the code persists to three places), so this records, per launch, which locations
+        // loaded and which branch was taken, to a plain-text log the operator can send. Fully
+        // best-effort: logging never affects the trial result. Clears itself past ~64 KB.
+        private static string TrialLogPath =>
+            Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                AppFolder, "trial_debug.log");
+
+        private static void LogTrial(string message)
+        {
+            try
+            {
+                var path = TrialLogPath;
+                var dir = Path.GetDirectoryName(path);
+                if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+                try { if (File.Exists(path) && new FileInfo(path).Length > 64 * 1024) File.Delete(path); } catch { }
+                File.AppendAllText(path, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {message}{Environment.NewLine}", Encoding.UTF8);
+            }
+            catch { /* diagnostics must never affect the trial */ }
+        }
+
+        // ──────────────────────────────────────────────────────────────────
         //  Storage paths
         // ──────────────────────────────────────────────────────────────────
 
@@ -72,10 +98,14 @@ namespace Apex.Licensing
 
                 // Discard states written by an older trial epoch → fresh trial.
                 if (state != null && state.Epoch != TrialEpoch)
+                {
+                    LogTrial($"epoch mismatch: stored={state.Epoch} expected={TrialEpoch} → discarding (fresh trial)");
                     state = null;
+                }
 
                 if (state == null)
                 {
+                    LogTrial($"NO stored state loaded → starting FRESH 7-day trial now. device={Short(deviceId)}");
                     // First run – initialise trial
                     var newState = new TrialState
                     {
@@ -86,6 +116,7 @@ namespace Apex.Licensing
                     };
                     newState.Hmac = LicenseCrypto.ComputeTrialHmac(newState);
                     SaveAllLocations(newState);
+                    LogTrial("fresh trial saved; verifying it reads back next…");
 
                     return new ValidationResult
                     {
@@ -120,6 +151,8 @@ namespace Apex.Licensing
                     return Error(LicenseStatus.ClockTampered,
                         "تم اكتشاف تغيير في ساعة النظام (clock rollback).");
                 }
+
+                LogTrial($"stored state LOADED: start={state.StartUtc:u} lastSeen={state.LastSeenUtc:u} epoch={state.Epoch} device={Short(state.DeviceId)}");
 
                 // ── 5. Expiry check ──
                 var daysUsed = (now - state.StartUtc).TotalDays;
@@ -218,15 +251,17 @@ namespace Apex.Licensing
             var json = JsonSerializer.Serialize(state);
             var enc = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
 
-            // AppData
-            SafeWriteFile(AppDataPath, enc);
+            bool app = SafeWriteFile(AppDataPath, enc);
+            bool prog = SafeWriteFile(ProgramDataPath, enc);     // may fail without admin rights – that's OK
+            bool reg = SafeWriteRegistry(enc);
 
-            // ProgramData (may fail without admin rights – that's OK)
-            SafeWriteFile(ProgramDataPath, enc);
-
-            // Registry HKCU
-            SafeWriteRegistry(enc);
+            LogTrial($"SAVE: appData={(app ? "ok" : "FAIL")} programData={(prog ? "ok" : "FAIL")} registry={(reg ? "ok" : "FAIL")}");
+            if (!app && !prog && !reg)
+                LogTrial("⚠️ ALL THREE save locations FAILED → the trial WILL reset on next launch. Likely permissions or an antivirus wiping the files.");
         }
+
+        private static string Short(string? id) =>
+            string.IsNullOrEmpty(id) ? "(empty)" : (id.Length <= 8 ? id : id.Substring(0, 8));
 
         /// <summary>
         /// Loads from all three locations; returns the state that appears most frequently
@@ -236,9 +271,11 @@ namespace Apex.Licensing
         {
             var candidates = new System.Collections.Generic.List<TrialState>();
 
-            TryLoad(AppDataPath, candidates);
-            TryLoad(ProgramDataPath, candidates);
-            TryLoadRegistry(candidates);
+            bool app = TryLoad(AppDataPath, candidates);
+            bool prog = TryLoad(ProgramDataPath, candidates);
+            bool reg = TryLoadRegistry(candidates);
+
+            LogTrial($"LOAD: appData={(app ? "ok" : "–")} programData={(prog ? "ok" : "–")} registry={(reg ? "ok" : "–")} (candidates={candidates.Count})");
 
             if (candidates.Count == 0)
                 return null;
@@ -257,56 +294,61 @@ namespace Apex.Licensing
         //  File helpers
         // ──────────────────────────────────────────────────────────────────
 
-        private static void SafeWriteFile(string path, string encoded)
+        private static bool SafeWriteFile(string path, string encoded)
         {
             try
             {
                 var dir = Path.GetDirectoryName(path)!;
                 Directory.CreateDirectory(dir);
                 File.WriteAllText(path, encoded, Encoding.UTF8);
+                return true;
             }
-            catch { /* non-critical */ }
+            catch (Exception ex) { LogTrial($"write FAIL {path}: {ex.GetType().Name} {ex.Message}"); return false; }
         }
 
-        private static void TryLoad(string path, System.Collections.Generic.List<TrialState> list)
+        private static bool TryLoad(string path, System.Collections.Generic.List<TrialState> list)
         {
             try
             {
-                if (!File.Exists(path)) return;
+                if (!File.Exists(path)) return false;
                 var enc = File.ReadAllText(path, Encoding.UTF8).Trim();
                 var json = Encoding.UTF8.GetString(Convert.FromBase64String(enc));
                 var state = JsonSerializer.Deserialize<TrialState>(json);
-                if (state != null) list.Add(state);
+                if (state != null) { list.Add(state); return true; }
+                return false;
             }
-            catch { }
+            catch (Exception ex) { LogTrial($"read FAIL {path}: {ex.GetType().Name} {ex.Message}"); return false; }
         }
 
         // ──────────────────────────────────────────────────────────────────
         //  Registry helpers
         // ──────────────────────────────────────────────────────────────────
 
-        private static void SafeWriteRegistry(string encoded)
+        private static bool SafeWriteRegistry(string encoded)
         {
             try
             {
                 using var key = Registry.CurrentUser.CreateSubKey(RegistrySubKey, writable: true);
-                key?.SetValue("State", encoded, RegistryValueKind.String);
+                if (key == null) return false;
+                key.SetValue("State", encoded, RegistryValueKind.String);
+                return true;
             }
-            catch { }
+            catch (Exception ex) { LogTrial($"registry write FAIL: {ex.GetType().Name} {ex.Message}"); return false; }
         }
 
-        private static void TryLoadRegistry(System.Collections.Generic.List<TrialState> list)
+        private static bool TryLoadRegistry(System.Collections.Generic.List<TrialState> list)
         {
             try
             {
                 using var key = Registry.CurrentUser.OpenSubKey(RegistrySubKey, writable: false);
                 var enc = key?.GetValue("State")?.ToString();
-                if (string.IsNullOrEmpty(enc)) return;
+                if (string.IsNullOrEmpty(enc)) return false;
                 var json = Encoding.UTF8.GetString(Convert.FromBase64String(enc));
                 var state = JsonSerializer.Deserialize<TrialState>(json);
-                if (state != null) list.Add(state);
+                if (state != null) { list.Add(state); return true; }
+                return false;
             }
-            catch { }
+            catch (Exception ex) { LogTrial($"registry read FAIL: {ex.GetType().Name} {ex.Message}"); return false; }
         }
 
         // ──────────────────────────────────────────────────────────────────

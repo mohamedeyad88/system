@@ -192,6 +192,15 @@ namespace Apex.NumberedBooksEngine.Core
                 }
                 System.Diagnostics.Debug.WriteLine($"[NUMBERING] ✅ Template loaded - Size: {templateImage.Width}x{templateImage.Height}");
 
+                // Tray-refill runs print as one GDI job PER tray load, so each batch physically
+                // prints BEFORE the operator is asked to refill. A single streaming job (the path
+                // below) does not release anything to the printer until the whole run finishes, so
+                // a mid-run refill hold left the printer idle and «استئناف» had nothing to resume.
+                if (options.TrayLoadSheets != null && options.TrayLoadSheets.Values.Any(v => v > 0))
+                {
+                    return await RunBatchedRefillJobAsync(options, templateImage, jobId, progress, ct, onControlReady);
+                }
+
                 // 4. Create appropriate printer implementation
                 using var printer = new GdiSpoolPrinter(); // Fallback mode (universal)
 
@@ -492,6 +501,161 @@ namespace Apex.NumberedBooksEngine.Core
 
                 return new JobResult(jobId, false, "", 0, errors);
             }
+        }
+
+        /// <summary>
+        /// Tray-refill printing: splits the run into one GDI print job per tray load, so each
+        /// batch finishes and the printer physically prints it, THEN the run holds for a refill
+        /// between jobs (nothing spooling, the sheets are already out) until the operator presses
+        /// «استئناف». This is the fix for "the printer only starts after the program finishes, so
+        /// Resume does nothing": the old path streamed the whole run as one job and paused
+        /// mid-spool, before a single sheet had printed.
+        ///
+        /// <para>The per-batch spooler settings deliberately drop TrayLoadSheets — the batch
+        /// boundary IS the refill point now, so the in-job count hold must not also fire. Tray
+        /// routing (CopyTrayMapping) and the real printer-status safety hold stay on.</para>
+        /// </summary>
+        private async Task<JobResult> RunBatchedRefillJobAsync(
+            NumberedPrintJobOptions options,
+            SKImage templateImage,
+            string jobId,
+            IProgress<ProgressInfo> progress,
+            CancellationToken ct,
+            Action<IStreamingPrintControl>? onControlReady)
+        {
+            var errors = new List<string>();
+
+            // Pause before ANY tray is over-drawn: the smallest declared load bounds the batch.
+            int batchPages = options.TrayLoadSheets!.Values.Where(v => v > 0).DefaultIfEmpty(int.MaxValue).Min();
+            if (batchPages <= 0) batchPages = int.MaxValue;
+
+            var copyTypes = options.CopyTypes ?? new[] { CopyType.Original };
+            var numberingMode = options.NumberingMode ?? NumberingMode.Auto;
+
+            var bookOptions = new BookJobOptions(
+                TemplateStream: null,
+                TemplatePath: options.TemplatePath,
+                TemplateFormat: TemplateFormat.Image,
+                Layout: LayoutSpec.A4,
+                Slots: options.Slots.ToList(),
+                StartNumber: options.StartNumber,
+                TotalNumbers: options.TotalNumbers,
+                PagesPerBook: 1,
+                CopiesPerPage: options.CopiesPerPage,
+                Mode: numberingMode,
+                LowResourceMode: options.LowResourceMode,
+                DegreeOfParallelism: 1,
+                CheckpointEvery: options.CheckpointEvery,
+                OutputMode: "DirectPrint",
+                OutputPath: "");
+
+            var strategy = NumberingStrategyFactory.Create(bookOptions);
+            long totalPages = (options.TotalNumbers / Math.Max(options.Slots.Count, 1)) * options.CopiesPerPage;
+            long pagesGenerated = 0;
+
+            using var printer = new GdiSpoolPrinter();
+            printer.ResetForNewJob();
+            printer.ConfigureNumberFormat(options.NumberFormat, options.UseArabicDigits);
+            printer.SetCachedTemplate(templateImage);
+            if (!printer.IsTemplateReady)
+                throw new InvalidOperationException("فشل في تحضير القالب للطباعة. حدث خطأ في معالجة الصورة.");
+
+            // Hand the controls to the UI once, up front; they survive across the batch jobs.
+            onControlReady?.Invoke(printer);
+
+            PrintJobSettings BatchSettings() => new PrintJobSettings
+            {
+                PrinterName = options.PrinterName,
+                Copies = 1,
+                Dpi = options.Dpi,
+                CopyTrayMapping = options.CopyTrayMapping,
+                TrayLoadSheets = null, // the batch boundary is the refill point; no in-job count hold
+                ScaleMode = options.ScaleMode ?? PrintScaleMode.ActualSize,
+                FitToPage = (options.ScaleMode ?? PrintScaleMode.ActualSize) == PrintScaleMode.FitToPage
+            };
+
+            string refillReason = BuildBatchRefillReason(options, batchPages);
+
+            System.Diagnostics.Debug.WriteLine($"[NUMBERING] BATCHED tray-refill: {batchPages} page(s)/batch, {copyTypes.Count} copy(ies)");
+
+            using var pages = strategy.GeneratePageNumbers(bookOptions).GetEnumerator();
+            bool hasPage = pages.MoveNext();
+
+            while (hasPage && !ct.IsCancellationRequested)
+            {
+                // ── One batch == one complete print job ──
+                await printer.StartJobAsync(BatchSettings(), ct);
+
+                int pagesInBatch = 0;
+                while (hasPage && pagesInBatch < batchPages && !ct.IsCancellationRequested)
+                {
+                    var pageNumbers = pages.Current;
+
+                    int copyIndex = 0;
+                    foreach (var copyType in copyTypes)
+                    {
+                        if (ct.IsCancellationRequested) break;
+                        printer.SetCurrentCopyIndex(copyIndex);
+                        await printer.PrintPageWithOverlaysAsync(new GdiPagePrintCommand
+                        {
+                            PageNumbers = pageNumbers,
+                            Slots = options.Slots,
+                            CopyType = copyType
+                        });
+                        pagesGenerated++;
+                        copyIndex++;
+                    }
+
+                    var lastNumber = pageNumbers.LastOrDefault(n => n > 0);
+                    await _checkpointManager.SaveCheckpointIfNeeded(jobId, lastNumber, pagesGenerated);
+
+                    if (pagesGenerated % 10 == 0)
+                    {
+                        var pct = (int)((double)pagesGenerated / Math.Max(totalPages, 1) * 100);
+                        progress?.Report(new ProgressInfo(pagesGenerated, totalPages, pct, lastNumber));
+                    }
+
+                    pagesInBatch++;
+                    hasPage = pages.MoveNext();
+                }
+
+                // Flush THIS batch — the printer prints it now, before any refill prompt.
+                try
+                {
+                    await printer.EndJobAsync();
+                }
+                catch (Exception endEx) when (ct.IsCancellationRequested)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[NUMBERING] Batch end during cancel: {endEx.Message}");
+                    break;
+                }
+
+                // More pages remain → hold for a refill BETWEEN jobs, then resume on «استئناف».
+                if (hasPage && !ct.IsCancellationRequested)
+                {
+                    printer.BeginRefillHold(refillReason);
+                    await printer.WaitForRefillAsync(ct);
+                }
+            }
+
+            if (ct.IsCancellationRequested)
+            {
+                return new JobResult(jobId, false, "", pagesGenerated, errors);
+            }
+
+            _checkpointManager.DeleteCheckpoint(jobId);
+            System.Diagnostics.Debug.WriteLine($"[NUMBERING] ✅ BATCHED JOB COMPLETED — {pagesGenerated} pages");
+            return new JobResult(jobId, true, "", pagesGenerated, errors);
+        }
+
+        /// <summary>A refill prompt for the gap between batch jobs.</summary>
+        private static string BuildBatchRefillReason(NumberedPrintJobOptions options, int batchPages)
+        {
+            bool twoTray = options.CopyTrayMapping != null &&
+                           new HashSet<int>(options.CopyTrayMapping.Values).Count >= 2;
+            return twoTray
+                ? $"تمت طباعة {batchPages} ورقة من كل درج — أعِد تحميل الورق في الأدراج ثم اضغط «استئناف»"
+                : $"تمت طباعة {batchPages} ورقة — أعِد تحميل الورق ثم اضغط «استئناف»";
         }
 
         /// <summary>

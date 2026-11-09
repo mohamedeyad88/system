@@ -102,6 +102,14 @@ namespace Apex.NumberedBooksEngine.Core
         private CancellationToken _ct;
         private ManualResetEventSlim _pauseEvent = new(true);
 
+        // Gate for the orchestrator's BETWEEN-batch refill hold. With tray-refill, the run is
+        // split into one GDI job per tray load: each job finishes and the printer physically
+        // prints it, THEN the run waits on this gate (nothing spooling, the sheets are already
+        // out) until the operator refills and presses Resume. This is what makes «استئناف»
+        // mean something — the old single-job hold paused mid-spool, so the printer had not
+        // started and there was nothing to resume. Starts open; only BeginBatchHold closes it.
+        private readonly ManualResetEventSlim _batchGate = new(true);
+
         // Firmware-independent paper-out safeguard: we count the sheets fed to each tray
         // (keyed by copy index) and hold for a refill before a tray's declared load is
         // exceeded. Only the print thread mutates _sheetsSentByCopy; the UI thread signals a
@@ -182,6 +190,9 @@ namespace Apex.NumberedBooksEngine.Core
 
             // Reset pause event to allow printing
             _pauseEvent.Set();
+            // A fresh batch job always starts un-held; the between-batch hold is armed only
+            // after a batch finishes (BeginBatchHold), never carried into the next job.
+            _batchGate.Set();
 
             // Dispose previous print document if any
             if (_printDocument != null)
@@ -1282,10 +1293,32 @@ namespace Apex.NumberedBooksEngine.Core
             // count before carrying on (the dictionary is mutated only on the print thread).
             _refillResumeRequested = true;
             _pauseEvent.Set();
+            _batchGate.Set();   // release a between-batch refill hold (batched tray-refill path)
             Status.IsPaused = false;
             Status.Status = "Printing";
             OnStatusChanged();
         }
+
+        /// <summary>
+        /// Arms the between-batch refill hold: marks the job paused with a reason (so the UI shows
+        /// its refill banner) and closes the gate. Called by the orchestrator AFTER a batch job has
+        /// finished and printed, so the operator is refilling while nothing is spooling.
+        /// </summary>
+        public void BeginBatchHold(string reason)
+        {
+            Status.IsPaused = true;
+            Status.Status = $"Paused — {reason}";
+            _batchGate.Reset();
+            OnStatusChanged();
+        }
+
+        /// <summary>
+        /// Awaits a between-batch refill hold off the UI thread, so the shell stays responsive
+        /// while the operator refills and the «استئناف» button (UI thread) calls Resume().
+        /// Returns immediately when no hold is armed.
+        /// </summary>
+        public Task WaitBatchAsync(CancellationToken ct) =>
+            Task.Run(() => { try { _batchGate.Wait(ct); } catch (OperationCanceledException) { } }, ct);
 
         public void Cancel()
         {

@@ -20,6 +20,12 @@ namespace Apex.NumberedBooksEngine.Core
         // Resume doubles as the "tray refilled" confirmation on the spooler's print thread.
         public void Resume() => _spoolerService.Resume();
         public void Pause() => _spoolerService.Pause();
+
+        // Between-batch refill hold, used by the orchestrator's batched tray-refill path: a batch
+        // job finishes and prints, then BeginRefillHold shows the banner and WaitForRefillAsync
+        // blocks (off the UI thread) until the operator presses Resume.
+        public void BeginRefillHold(string reason) => _spoolerService.BeginBatchHold(reason);
+        public Task WaitForRefillAsync(CancellationToken ct) => _spoolerService.WaitBatchAsync(ct);
         public bool IsPaused => _spoolerService.Status.IsPaused;
         public string? HoldReason => _spoolerService.Status.IsPaused ? _spoolerService.Status.Status : null;
         public event EventHandler<PrintJobStatus>? StatusChanged
