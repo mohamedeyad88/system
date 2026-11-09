@@ -117,6 +117,8 @@
     <sys:String x:Key="PM_DistributionMode">Distribution</sys:String>
     <sys:String x:Key="PM_SelectedPrinters">printer(s) selected</sys:String>
     <sys:String x:Key="Num_BarcodeType">Barcode type</sys:String>
+    <sys:String x:Key="Num_TicketGroup">Ticket group (stub)</sys:String>
+    <sys:String x:Key="Num_TicketGroupHint">Boxes with the same number print the same serial (stub + ticket on one sheet). 0 = independent number.</sys:String>
     <sys:String x:Key="Numbering_Prefix">Prefix</sys:String>
     <sys:String x:Key="Numbering_Digits">Digits</sys:String>
     <sys:String x:Key="Numbering_Suffix">Suffix</sys:String>

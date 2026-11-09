@@ -243,12 +243,16 @@ namespace Apex.NumberedBooksEngine.Core
                     OutputPath: ""
                 );
 
-                var strategy = NumberingStrategyFactory.Create(bookOptions);
+                // Group ticket/stub slots so linked boxes share one serial (see
+                // GroupedNumberingStrategy). No groups → behaves exactly as before, and the
+                // page count is driven by the number of UNITS per sheet, not raw slot count.
+                var strategy = new GroupedNumberingStrategy(
+                    NumberingStrategyFactory.Create(bookOptions), options.Slots);
                 // ═══════════════════════════════════════════════════════════════════
                 // CRITICAL FIX: Use CopiesPerPage for accurate total pages calculation
                 // This ensures correct progress tracking regardless of CopyTypes state
                 // ═══════════════════════════════════════════════════════════════════
-                long totalPages = (options.TotalNumbers / Math.Max(options.Slots.Count, 1))
+                long totalPages = (options.TotalNumbers / Math.Max(strategy.UnitCount, 1))
                     * options.CopiesPerPage;
                 long pagesGenerated = 0;
 
@@ -549,8 +553,9 @@ namespace Apex.NumberedBooksEngine.Core
                 OutputMode: "DirectPrint",
                 OutputPath: "");
 
-            var strategy = NumberingStrategyFactory.Create(bookOptions);
-            long totalPages = (options.TotalNumbers / Math.Max(options.Slots.Count, 1)) * options.CopiesPerPage;
+            var strategy = new GroupedNumberingStrategy(
+                NumberingStrategyFactory.Create(bookOptions), options.Slots);
+            long totalPages = (options.TotalNumbers / Math.Max(strategy.UnitCount, 1)) * options.CopiesPerPage;
             long pagesGenerated = 0;
 
             using var printer = new GdiSpoolPrinter();

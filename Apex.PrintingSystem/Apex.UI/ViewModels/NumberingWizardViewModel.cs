@@ -872,7 +872,9 @@ namespace Apex.UI.ViewModels
             // Formula: (TotalNumbers / SlotsPerPage) * CopiesCount
             // This ensures accurate page count for both Linear and Cutting modes
             // ═══════════════════════════════════════════════════════════════════
-            int slotsPerPage = Slots?.Count ?? 1;
+            // Numbers per sheet = distinct numbering UNITS, not raw field count: a ticket's
+            // stub and body share one serial, so two grouped boxes count as one number.
+            int slotsPerPage = DistinctUnitCount();
             if (slotsPerPage == 0) slotsPerPage = 1; // Prevent division by zero
 
             long pagesPerCopy = (long)Math.Ceiling((double)TotalNumbers / slotsPerPage);
@@ -2140,6 +2142,36 @@ namespace Apex.UI.ViewModels
         }
 
         /// <summary>
+        /// The numbering UNIT index of a slot and the total unit count. Slots sharing a group
+        /// number (&gt; 0) are one unit (a ticket's stub + body print the same serial); every
+        /// ungrouped slot is its own unit. Units are numbered in order of first appearance, so
+        /// with no groups this is just the slot index and slot count — unchanged behaviour.
+        /// </summary>
+        private int SlotUnitIndex(int slotIndex, out int unitCount)
+        {
+            var keyToUnit = new Dictionary<string, int>();
+            int next = 0, result = 0;
+            for (int i = 0; i < Slots.Count; i++)
+            {
+                string key = Slots[i].GroupId > 0 ? "g" + Slots[i].GroupId : "s" + i;
+                if (!keyToUnit.TryGetValue(key, out int u)) { u = next++; keyToUnit[key] = u; }
+                if (i == slotIndex) result = u;
+            }
+            unitCount = next;
+            return result;
+        }
+
+        /// <summary>Distinct numbering units on a sheet — the "numbers per sheet" for page-count math.</summary>
+        private int DistinctUnitCount()
+        {
+            if (Slots == null || Slots.Count == 0) return 0;
+            var keys = new HashSet<string>();
+            for (int i = 0; i < Slots.Count; i++)
+                keys.Add(Slots[i].GroupId > 0 ? "g" + Slots[i].GroupId : "s" + i);
+            return keys.Count;
+        }
+
+        /// <summary>
         /// Calculates preview number for a slot based on numbering mode
         /// For preview, we show the first page (pageIndex = 0)
         /// </summary>
@@ -2147,14 +2179,17 @@ namespace Apex.UI.ViewModels
         {
             long previewNum;
 
-            // Get actual slot count (use at least 1 to avoid division by zero)
-            int slotCount = Math.Max(Slots?.Count ?? 1, 1);
+            // Ticket/stub grouping: linked boxes share one serial, so the preview is driven by
+            // the box's numbering UNIT (grouped boxes = one unit) and the number of units per
+            // sheet — not the raw slot index/count. No groups → unit index == slot index.
+            int unitIndex = SlotUnitIndex(slotIndex, out int unitCount);
+            int slotCount = Math.Max(unitCount, 1);
 
             if (IsLinearMode)
             {
                 // Linear mode: sequential numbers (1, 2, 3, 4...)
                 // Page 1: [1, 2, 3, 4]
-                previewNum = startNumber + slotIndex;
+                previewNum = startNumber + unitIndex;
             }
             else if (IsImposedMode)
             {
@@ -2170,7 +2205,7 @@ namespace Apex.UI.ViewModels
                 // ═══════════════════════════════════════════════════════════════════
                 long totalSheets = (long)Math.Ceiling((double)TotalNumbers / slotCount);
                 long sheetIndex = 0; // Preview shows first sheet
-                previewNum = startNumber + sheetIndex + (slotIndex * totalSheets);
+                previewNum = startNumber + sheetIndex + (unitIndex * totalSheets);
 
                 // Ensure preview number doesn't exceed the valid range
                 if (previewNum >= startNumber + TotalNumbers)
@@ -2181,7 +2216,7 @@ namespace Apex.UI.ViewModels
             else
             {
                 // Default: sequential
-                previewNum = startNumber + slotIndex;
+                previewNum = startNumber + unitIndex;
             }
 
             // Format: return empty string for invalid numbers
@@ -2432,6 +2467,17 @@ namespace Apex.UI.ViewModels
         /// </summary>
         private void OnSlotPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            // Linking boxes into a ticket group changes which serial each box shows AND the
+            // numbers-per-sheet (so the page count), so refresh both plus the rendered sheet.
+            if (e.PropertyName == nameof(NumberSlot.GroupId))
+            {
+                RefreshAllPreviewNumbers();
+                UpdateComputedValues();
+                LivePreviewImage = null;
+                SchedulePreviewUpdate();
+                return;
+            }
+
             if (e.PropertyName == null || !SlotLookProperties.Contains(e.PropertyName)) return;
 
             // Type size, weight, family or kind changed → the box follows the number.

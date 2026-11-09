@@ -960,6 +960,8 @@
     <sys:String x:Key="PM_DistributionMode">طريقة التوزيع</sys:String>
     <sys:String x:Key="PM_SelectedPrinters">طابعات محددة</sys:String>
     <sys:String x:Key="Num_BarcodeType">نوع الباركود</sys:String>
+    <sys:String x:Key="Num_TicketGroup">مجموعة التذكرة (الكعب)</sys:String>
+    <sys:String x:Key="Num_TicketGroupHint">الخانات اللي ليها نفس الرقم تطبع نفس السيريال (الكعب + التذكرة على نفس الورقة). 0 = خانة مستقلة بترقيمها.</sys:String>
     <sys:String x:Key="Numbering_Prefix">بادئة</sys:String>
     <sys:String x:Key="Numbering_Digits">خانات</sys:String>
     <sys:String x:Key="Numbering_Suffix">لاحقة</sys:String>

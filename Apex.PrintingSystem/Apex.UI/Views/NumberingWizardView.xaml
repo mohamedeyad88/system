@@ -2802,6 +2802,16 @@
                                               Padding="8,4"/>
                                 </StackPanel>
 
+                                <!-- Ticket group: boxes with the SAME number print the SAME serial (stub + ticket). 0 = independent. -->
+                                <TextBlock Text="{DynamicResource Num_TicketGroup}"
+                                           Foreground="{DynamicResource Muted}" FontSize="12" FontWeight="SemiBold"
+                                           Margin="0,0,0,8"/>
+                                <TextBox Text="{Binding SelectedSlot.GroupId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}"
+                                         Padding="8,4" Margin="0,0,0,4"/>
+                                <TextBlock Text="{DynamicResource Num_TicketGroupHint}"
+                                           Foreground="{DynamicResource Muted}" FontSize="10" TextWrapping="Wrap"
+                                           Margin="0,0,0,16"/>
+
                                 <!-- Font Size -->
                                 <TextBlock Text="{DynamicResource Numbering_FontSizeLabel}"
                                            Foreground="{DynamicResource Muted}"

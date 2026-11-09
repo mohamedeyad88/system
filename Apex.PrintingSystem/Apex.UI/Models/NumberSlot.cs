@@ -29,6 +29,10 @@ namespace Apex.UI.Models
         [ObservableProperty] private string slotKind = "Text";       // Text | Barcode | QrCode
         [ObservableProperty] private string barcodeType = "CODE128";
 
+        // Ticket/stub ("كعب") grouping: boxes with the SAME group number (> 0) print the SAME
+        // serial — e.g. the stub and the ticket of one booklet. 0 = ungrouped (own number).
+        [ObservableProperty] private int groupId;
+
         /// <summary>Kinds offered in the designer.</summary>
         public static string[] AvailableKinds { get; } = { "Text", "Barcode", "QrCode" };
 
@@ -67,7 +71,8 @@ namespace Apex.UI.Models
                     "qrcode" or "qr" => Apex.NumberedBooksEngine.Core.SlotKind.QrCode,
                     _ => Apex.NumberedBooksEngine.Core.SlotKind.Text
                 },
-                BarcodeType: BarcodeType);
+                BarcodeType: BarcodeType,
+                GroupId: GroupId);
         }
 
         public static NumberSlot FromSlotSpec(SlotSpec spec)
@@ -98,7 +103,8 @@ namespace Apex.UI.Models
                     Apex.NumberedBooksEngine.Core.SlotKind.QrCode => "QrCode",
                     _ => "Text"
                 },
-                BarcodeType = spec.BarcodeType ?? "CODE128"
+                BarcodeType = spec.BarcodeType ?? "CODE128",
+                GroupId = spec.GroupId
             };
         }
     }

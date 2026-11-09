@@ -342,7 +342,9 @@ namespace Apex.Services.Numbering
         public static IReadOnlyList<long[]> PreviewPageNumbers(BookJobOptions options, int pageCount)
         {
             if (options.Slots.Count == 0 || pageCount <= 0) return Array.Empty<long[]>();
-            return NumberingStrategyFactory.Create(options)
+            // Group ticket/stub slots so the preview shows the same serial in both halves.
+            return new Apex.NumberedBooksEngine.Core.GroupedNumberingStrategy(
+                    NumberingStrategyFactory.Create(options), options.Slots)
                 .GeneratePageNumbers(options)
                 .Take(pageCount)
                 .ToList();

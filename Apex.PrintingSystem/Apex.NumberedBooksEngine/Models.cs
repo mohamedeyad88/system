@@ -59,7 +59,12 @@ namespace Apex.NumberedBooksEngine.Models
         string? BarcodeType = null,
         // Which counter this slot draws from. Null or empty means the job's primary
         // series, so every template built before multi-series support behaves as before.
-        string? SeriesId = null
+        string? SeriesId = null,
+        // Ticket/stub ("كعب") linking: slots that share a GroupId > 0 are ONE numbering
+        // unit and print the SAME serial (the counterfoil and the ticket on the same sheet
+        // carry one number). 0 (the default) means ungrouped — the slot keeps a unit of its
+        // own, so every template built before this behaves exactly as before.
+        int GroupId = 0
     );
 
     public enum TemplateFormat { Image, Pdf }
