@@ -1375,8 +1375,23 @@
                                             </Style>
                                         </Button.Style>
                                     </Button>
-                                    <Button Content="🗑️" 
-                                            Command="{Binding DeleteSelectedSlotCommand}" 
+                                    <!-- One tap drops a linked stub+ticket pair (same serial) = one booklet. -->
+                                    <Button Command="{Binding AddTicketPairCommand}"
+                                            Height="36" Margin="0,0,6,0"
+                                            Background="{DynamicResource Brand}" Foreground="{DynamicResource OnBrand}"
+                                            BorderThickness="0" FontSize="13" FontWeight="SemiBold" Cursor="Hand"
+                                            ToolTip="{DynamicResource Num_AddTicketPairToolTip}">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="12,0">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <TextBlock Text="{DynamicResource Num_AddTicketPair}" VerticalAlignment="Center"/>
+                                    </Button>
+                                    <Button Content="🗑️"
+                                            Command="{Binding DeleteSelectedSlotCommand}"
                                             Width="38" 
                                             Height="36"
                                             Background="{DynamicResource Stopped}"

@@ -117,6 +117,8 @@
     <sys:String x:Key="PM_DistributionMode">Distribution</sys:String>
     <sys:String x:Key="PM_SelectedPrinters">printer(s) selected</sys:String>
     <sys:String x:Key="Num_BarcodeType">Barcode type</sys:String>
+    <sys:String x:Key="Num_AddTicketPair">🎟 Ticket + stub</sys:String>
+    <sys:String x:Key="Num_AddTicketPairToolTip">Adds a ticket and its stub (two boxes, same serial, one sheet). Each click = a new booklet. Drag the two boxes onto the design.</sys:String>
     <sys:String x:Key="Num_TicketGroup">Ticket group (stub)</sys:String>
     <sys:String x:Key="Num_TicketGroupHint">Boxes with the same number print the same serial (stub + ticket on one sheet). 0 = independent number.</sys:String>
     <sys:String x:Key="Numbering_Prefix">Prefix</sys:String>

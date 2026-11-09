@@ -851,6 +851,7 @@ namespace Apex.UI.ViewModels
             OnPropertyChanged(nameof(HasTemplate));
             OnPropertyChanged(nameof(CanEditDesign));
             AddSlotCommand.NotifyCanExecuteChanged();
+            AddTicketPairCommand.NotifyCanExecuteChanged();
             StartLayoutCommand.NotifyCanExecuteChanged();
             NavigateToLayoutCommand.NotifyCanExecuteChanged();
         }
@@ -1815,6 +1816,61 @@ namespace Apex.UI.ViewModels
             {
                 OnPropertyChanged(nameof(Slots));
             }), System.Windows.Threading.DispatcherPriority.Loaded);
+        }
+
+        /// <summary>
+        /// Adds a ticket WITH its stub: two linked number boxes that share a new group number,
+        /// so they print the SAME serial — the stub stays in the booklet, the ticket goes to the
+        /// customer. Each call starts a new booklet (group 1, then 2, then 3…), so 3–4 taps lay
+        /// out a 3–4-up ticket sheet. This is the discoverable entry point for the box-grouping
+        /// feature; fine control still lives in the field's «مجموعة التذكرة» property.
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(CanEditDesign))]
+        private void AddTicketPair()
+        {
+            if (!CanEditDesign) return;
+            if (Slots == null) Slots = new ObservableCollection<NumberSlot>();
+
+            SaveUndoState();
+
+            int nextGroup = Slots.Where(s => s.GroupId > 0).Select(s => s.GroupId).DefaultIfEmpty(0).Max() + 1;
+            var style = SelectedSlot ?? Slots.LastOrDefault();
+            const float defaultHeight = 0.08f;
+            float y = 0.12f + ((nextGroup - 1) * 0.16f) % 0.66f;
+
+            NumberSlot Make(string role, float x) => new NumberSlot
+            {
+                Id = $"T{nextGroup}-{role}",
+                X = x,
+                Y = y,
+                Width = style?.Width ?? 0.3f,
+                Height = style?.Height ?? defaultHeight,
+                FontFamily = style?.FontFamily ?? "Arial",
+                FontSize = style?.FontSize ?? DefaultSlotFontSize(defaultHeight),
+                FontColor = style?.FontColor ?? "#000000",
+                IsBold = style?.IsBold ?? false,
+                Rotation = style?.Rotation ?? 0,
+                Opacity = style?.Opacity ?? 1.0,
+                Alignment = style?.Alignment ?? "Center",
+                SlotKind = "Text",
+                GroupId = nextGroup,
+                PreviewNumber = "0000"
+            };
+
+            // Stub on the left, ticket on the right — the operator drags them onto the design.
+            var stub = Make("stub", 0.08f);
+            var ticket = Make("ticket", 0.55f);
+            AutoFitSlot(stub, keepAnchor: false);
+            AutoFitSlot(ticket, keepAnchor: false);
+
+            Slots.Add(stub);
+            Slots.Add(ticket);
+            SelectedSlot = stub;
+
+            RefreshAllPreviewNumbers();
+            UpdateComputedValues();
+            OnPropertyChanged(nameof(Slots));
+            OnPropertyChanged(nameof(SelectedSlot));
         }
 
         /// <summary>
