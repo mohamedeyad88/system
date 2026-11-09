@@ -236,6 +236,7 @@
     <sys:String x:Key="Update_Available">A new version is available —</sys:String>
     <sys:String x:Key="Update_Download">Download update</sys:String>
     <sys:String x:Key="Notice_TrialEnding">Your free trial ends in {0} day(s). Buy now so work does not stop.</sys:String>
+    <sys:String x:Key="Trial_DaysLeft">Trial — {0} days left</sys:String>
     <sys:String x:Key="Notice_LicenseEnding">Your subscription ends in {0} day(s) ({1}). Renew before then so the program keeps running.</sys:String>
     <sys:String x:Key="Notice_Buy">Buy now</sys:String>
     <sys:String x:Key="Notice_Renew">Renew</sys:String>
@@ -421,6 +422,12 @@
     <sys:String x:Key="TD_073">Category</sys:String>
     <sys:String x:Key="PrintExecution_SmartRules">Smart Print Rules</sys:String>
     <sys:String x:Key="Numbering_ResumeButton">Resume</sys:String>
+    <sys:String x:Key="Num_RefillHold">Printing paused — check the paper in the tray</sys:String>
+    <sys:String x:Key="Num_ResumeRefillBtn">Refilled — resume printing</sys:String>
+    <sys:String x:Key="Num_QualityLabel">Quality &amp; speed</sys:String>
+    <sys:String x:Key="Num_HighQuality">High quality (sharper)</sys:String>
+    <sys:String x:Key="Num_FastPrint">Fast print</sys:String>
+    <sys:String x:Key="Num_QualityHint">High quality is sharper but slower. Fast suits large runs and line/number work.</sys:String>
     <sys:String x:Key="Distribution_Timeout">Timeout (seconds)</sys:String>
     <sys:String x:Key="English">English</sys:String>
     <sys:String x:Key="SV_025">Default value</sys:String>
@@ -1210,6 +1217,20 @@
     <sys:String x:Key="Nav_Quotation_Desc">Calculate print cost</sys:String>
     <sys:String x:Key="PaperCutting_PrePress">Pre-press Settings</sys:String>
     <sys:String x:Key="Imp_Title">Smart Imposition &amp; Finishing</sys:String>
+    <!-- Side-panel tab labels (kept short to fit the segmented strip) -->
+    <sys:String x:Key="ImpTab_File">File</sys:String>
+    <sys:String x:Key="ImpTab_Size">Size</sys:String>
+    <sys:String x:Key="ImpTab_Scheme">Layout</sys:String>
+    <sys:String x:Key="ImpTab_Marks">Marks</sys:String>
+    <sys:String x:Key="ImpTab_Export">Export</sys:String>
+    <!-- Page Tools side-panel tab labels -->
+    <sys:String x:Key="PtTab_File">File</sys:String>
+    <sys:String x:Key="PtTab_Pages">Pages</sys:String>
+    <sys:String x:Key="PtTab_Repeat">Repeat</sys:String>
+    <sys:String x:Key="PtTab_Tools">Tools</sys:String>
+    <sys:String x:Key="PtTab_Output">Output</sys:String>
+    <!-- Action-bar header (the prominent pinned buttons bar) -->
+    <sys:String x:Key="ActionsBar">Actions</sys:String>
     <sys:String x:Key="CPW_002">Preset colors</sys:String>
     <sys:String x:Key="Num_ElapsedSec">{0:D2}s</sys:String>
     <sys:String x:Key="UPL_011">Size</sys:String>
@@ -1390,6 +1411,9 @@
     <sys:String x:Key="PM_FileFilter">All files|*.*|PDF|*.pdf|Images|*.png;*.jpg;*.jpeg;*.bmp|Documents|*.docx;*.xlsx;*.pptx</sys:String>
     <sys:String x:Key="PM_ChooseAnyInFolder">Choose any file inside the target folder</sys:String>
     <sys:String x:Key="PM_AllFilesFilter">All files|*.*</sys:String>
+    <sys:String x:Key="PM_ChooseFolder">Choose a folder</sys:String>
+    <sys:String x:Key="PM_NoPrintableInFolder">No printable files in this folder.</sys:String>
+    <sys:String x:Key="PM_FolderReadFailed">Couldn't read the folder: {0}</sys:String>
     <sys:String x:Key="PM_DupSkipped">⚠  Skipped {0} duplicate file(s)</sys:String>
     <sys:String x:Key="PM_PreviewError">Preview error: {0}</sys:String>
     <sys:String x:Key="PM_TemplateSaved">✓ Template saved: {0}</sys:String>

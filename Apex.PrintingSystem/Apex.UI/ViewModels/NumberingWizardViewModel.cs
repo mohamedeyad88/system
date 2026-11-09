@@ -308,6 +308,26 @@ namespace Apex.UI.ViewModels
         [ObservableProperty]
         private double _printProgress = 0;
 
+        // ── Refill hold (operator-declared sheets per tray) ──
+        // When a tray reaches the sheet count the operator loaded, the press holds for a
+        // refill instead of silently pulling from another tray. This streaming screen used to
+        // show nothing and had no way to continue, so the hold read as "printed N and stopped".
+        // These surface the hold as a banner with a working «استئناف» button.
+        // Fast mode rasterises the sheet at 300 DPI instead of 600 — ~4× less data per page,
+        // so big runs print much faster at a small cost to edge sharpness. Default off keeps
+        // the high-quality 600 DPI the shop asked for; the operator opts into speed per job.
+        [ObservableProperty]
+        private bool _fastPrintMode;
+
+        [ObservableProperty]
+        private bool _refillHoldActive;
+
+        [ObservableProperty]
+        private string _refillHoldReason = "";
+
+        // The running job's live controls, handed up from the print engine while it runs.
+        private Apex.NumberedBooksEngine.Core.IStreamingPrintControl? _printControl;
+
         // The serial coming off the press right now — the hero readout during a run,
         // fed live from ProgressInfo.LastNumber so an operator can glance from across
         // the shop and know exactly where the job is.
@@ -1123,6 +1143,8 @@ namespace Apex.UI.ViewModels
 
             PrintStatus = L("Num_Printing");
             PrintProgress = 0;
+            RefillHoldActive = false;
+            RefillHoldReason = "";
             CurrentNumberDisplay = Apex.NumberedBooksEngine.Core.NumberFormatter.Format(StartNumber, CurrentNumberFormat);
 
             try
@@ -1201,7 +1223,9 @@ namespace Apex.UI.ViewModels
                     useSmartPrinting: UseSmartTrayPrinting,
                     useArabicDigits:  UseArabicDigits,
                     numberFormat: CurrentNumberFormat,
-                    trayLoadSheets: trayLoadSheets);
+                    trayLoadSheets: trayLoadSheets,
+                    onControlReady: OnPrintControlReady,
+                    dpi: FastPrintMode ? 300 : 600);
 
                 if (result.Success)
                 {
@@ -1228,6 +1252,64 @@ namespace Apex.UI.ViewModels
                 MessageBox.Show(Lf("Num_PrintErrorDuring", ex.Message), L("Num_PrintErrorTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
                 // Don't re-throw - handle error gracefully without crashing
             }
+            finally
+            {
+                // The run is over (done, cancelled or failed) — stop listening and drop the
+                // hold banner so a finished job never looks like it is waiting for paper.
+                DetachPrintControl();
+            }
+        }
+
+        /// <summary>
+        /// Captures the running job's live controls and starts listening for a refill hold,
+        /// so this screen can show the hold and offer a working «استئناف».
+        /// </summary>
+        private void OnPrintControlReady(Apex.NumberedBooksEngine.Core.IStreamingPrintControl control)
+        {
+            _printControl = control;
+            control.StatusChanged += OnPrintStatusChanged;
+        }
+
+        /// <summary>
+        /// Reflects a refill/printer hold into the banner. Fired on the print thread, so every
+        /// bound write is marshalled to the UI thread first.
+        /// </summary>
+        private void OnPrintStatusChanged(object? sender, Apex.NumberedBooksEngine.Core.PrintJobStatus status)
+        {
+            bool held = status.IsPaused;
+            string reason = status.Status ?? "";
+            const string prefix = "Paused — ";
+            if (reason.StartsWith(prefix, StringComparison.Ordinal)) reason = reason.Substring(prefix.Length);
+
+            Application.Current?.Dispatcher.Invoke(() =>
+            {
+                RefillHoldActive = held;
+                RefillHoldReason = held
+                    ? (string.IsNullOrWhiteSpace(reason) ? L("Num_RefillHold") : reason)
+                    : "";
+            });
+        }
+
+        private void DetachPrintControl()
+        {
+            if (_printControl != null)
+            {
+                _printControl.StatusChanged -= OnPrintStatusChanged;
+                _printControl = null;
+            }
+            RefillHoldActive = false;
+            RefillHoldReason = "";
+        }
+
+        /// <summary>
+        /// Operator refilled the tray and pressed «استئناف»: release the hold and carry on.
+        /// Resume also tells the engine to reset that tray's sheet count before continuing.
+        /// </summary>
+        [RelayCommand]
+        private void ResumeRefill()
+        {
+            RefillHoldActive = false;
+            _printControl?.Resume();
         }
 
         private async Task ExecuteCyclePrintJob()
@@ -2329,6 +2411,13 @@ namespace Apex.UI.ViewModels
             {
                 if (_watchedSlots.Add(slot)) slot.PropertyChanged += OnSlotPropertyChanged;
             }
+
+            // The page count is (numbers ÷ fields-per-sheet) × copies, so the number of fields
+            // is part of it. Adding or removing a field used to leave TotalPagesComputed on its
+            // previous value: set the range and copies with one field, then add the second, and
+            // the screen still read the one-field count (e.g. 200 instead of 100) even though the
+            // press imposed two-up correctly. Recompute whenever the field set changes.
+            UpdateComputedValues();
         }
 
         /// <summary>

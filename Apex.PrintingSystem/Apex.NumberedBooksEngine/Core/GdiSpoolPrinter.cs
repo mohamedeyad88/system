@@ -11,9 +11,22 @@ namespace Apex.NumberedBooksEngine.Core
     /// GDI-based printer wrapper for cycle-based printing.
     /// Uses WindowsPrintSpoolerService internally with template caching support.
     /// </summary>
-    public class GdiSpoolPrinter : IDisposable
+    public class GdiSpoolPrinter : IDisposable, IStreamingPrintControl
     {
         private readonly WindowsPrintSpoolerService _spoolerService;
+
+        // ── Streaming print controls (IStreamingPrintControl) ──
+        // Forwarded straight to the spooler so the UI can see a refill hold and release it.
+        // Resume doubles as the "tray refilled" confirmation on the spooler's print thread.
+        public void Resume() => _spoolerService.Resume();
+        public void Pause() => _spoolerService.Pause();
+        public bool IsPaused => _spoolerService.Status.IsPaused;
+        public string? HoldReason => _spoolerService.Status.IsPaused ? _spoolerService.Status.Status : null;
+        public event EventHandler<PrintJobStatus>? StatusChanged
+        {
+            add => _spoolerService.StatusChanged += value;
+            remove => _spoolerService.StatusChanged -= value;
+        }
 
         // One composer for the whole job. It used to be constructed per page — a fresh
         // TemplateLoader and PatchGenerator for every sheet — and, worse, with default

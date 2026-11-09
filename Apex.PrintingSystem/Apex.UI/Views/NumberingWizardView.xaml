@@ -563,16 +563,13 @@
                                                             <Setter Property="BorderBrush" Value="{DynamicResource Muted}"/>
                                                         </Trigger>
                                                         <Trigger Property="IsFocused" Value="True">
+                                                            <!-- The Setter below already recolours the border on focus.
+                                                                 A ColorAnimation on (BorderBrush).(Color) crashed here:
+                                                                 BorderBrush is a shared DynamicResource brush (frozen/immutable),
+                                                                 and WPF cannot animate a frozen brush ("Cannot animate '(0).(1)'
+                                                                 on an immutable object instance"). Setter alone is crash-free. -->
                                                             <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                             <Setter Property="BorderThickness" Value="2"/>
-                                                            <Trigger.EnterActions>
-                                                                <BeginStoryboard>
-                                                                    <Storyboard>
-                                                                        <ColorAnimation Storyboard.TargetProperty="(TextBox.BorderBrush).(SolidColorBrush.Color)" 
-                                                                                       To="{StaticResource BrandColor}" Duration="0:0:0.2"/>
-                                                                    </Storyboard>
-                                                                </BeginStoryboard>
-                                                            </Trigger.EnterActions>
                                                         </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -600,16 +597,10 @@
                                                             <Setter Property="BorderBrush" Value="{DynamicResource Brand}"/>
                                                         </Trigger>
                                                         <Trigger Property="IsFocused" Value="True">
+                                                            <!-- ColorAnimation removed: BorderBrush is a frozen shared brush,
+                                                                 animating its Color crashed ("Cannot animate '(0).(1)'"). -->
                                                             <Setter Property="BorderBrush" Value="{DynamicResource Action}"/>
                                                             <Setter Property="BorderThickness" Value="2"/>
-                                                            <Trigger.EnterActions>
-                                                                <BeginStoryboard>
-                                                                    <Storyboard>
-                                                                        <ColorAnimation Storyboard.TargetProperty="(TextBox.BorderBrush).(SolidColorBrush.Color)" 
-                                                                                       To="{StaticResource ActionColor}" Duration="0:0:0.2"/>
-                                                                    </Storyboard>
-                                                                </BeginStoryboard>
-                                                            </Trigger.EnterActions>
                                                         </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -1946,6 +1937,27 @@
                                            Margin="0,8,0,0"/>
                             </StackPanel>
                         </Border>
+
+                        <!-- Quality / speed. 600 DPI prints sharper but spools ~4× the data
+                             per page; 300 is the fast mode for big runs. -->
+                        <Border BorderThickness="0" Padding="0" Margin="0,0,16,14" MinHeight="74" VerticalAlignment="Top">
+                            <StackPanel MaxWidth="250">
+                                <TextBlock Text="{DynamicResource Num_QualityLabel}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton Content="{DynamicResource Num_HighQuality}"
+                                                 IsChecked="{Binding FastPrintMode, Converter={StaticResource InverseBoolConverter}}"
+                                                 GroupName="PrintQuality"
+                                                 Margin="0,0,12,0" FontSize="12" VerticalAlignment="Center"/>
+                                    <RadioButton Content="{DynamicResource Num_FastPrint}"
+                                                 IsChecked="{Binding FastPrintMode}"
+                                                 GroupName="PrintQuality"
+                                                 FontSize="12" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock Text="{DynamicResource Num_QualityHint}"
+                                           FontSize="11" Foreground="{DynamicResource Muted}"
+                                           TextWrapping="Wrap" MaxWidth="250" LineHeight="16" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
                     </WrapPanel>
 
                         <!-- Print Button (moved to Grid.Row="2" in parent Grid) -->
@@ -2157,6 +2169,49 @@
                         Padding="24,12"
                         Visibility="{Binding IsPrinting,
                                      Converter={StaticResource BooleanToVisibilityConverter}}">
+                  <StackPanel>
+                    <!-- ═══ REFILL / PRINTER HOLD BANNER ═══
+                         Shown when the press is held because a tray reached its declared sheet
+                         count (or the printer reports it cannot take the next sheet). This is the
+                         «استئناف» the streaming job never had: without it the hold read, from the
+                         floor, as a silent stop after exactly N sheets. -->
+                    <Border Background="{DynamicResource StoppedSoft}"
+                            BorderBrush="{DynamicResource Stopped}" BorderThickness="1"
+                            CornerRadius="10" Padding="16,10" Margin="0,0,0,12"
+                            Visibility="{Binding RefillHoldActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="⏸" FontSize="18" VerticalAlignment="Center" Margin="0,0,10,0"
+                                           Foreground="{DynamicResource Stopped}"/>
+                                <TextBlock Text="{Binding RefillHoldReason, Mode=OneWay}"
+                                           FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"
+                                           VerticalAlignment="Center" MaxWidth="620"
+                                           Foreground="{DynamicResource Ink}"/>
+                            </StackPanel>
+                            <Button Grid.Column="1" Command="{Binding ResumeRefillCommand}"
+                                    Cursor="Hand" Margin="12,0,0,0" FontSize="13" FontWeight="Bold">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="bg" Background="{DynamicResource Done}"
+                                                CornerRadius="7" Padding="18,8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="bg" Property="Opacity" Value="0.88"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                                <TextBlock Text="{DynamicResource Num_ResumeRefillBtn}" Foreground="White"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>  <!-- Icon + Status   -->
@@ -2320,6 +2375,7 @@
                             </Button>
                         </StackPanel>
                     </Grid>
+                  </StackPanel>
                 </Border>
 
             </Grid>

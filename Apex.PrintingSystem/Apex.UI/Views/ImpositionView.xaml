@@ -101,13 +101,34 @@
         </Grid.ColumnDefinitions>
 
         <!-- ═══════════ LEFT — Inputs ═══════════ -->
+        <!-- Two-row layout: the options scroll in the top row, the action buttons are
+             PINNED in the bottom row. The field report was that you had to scroll to the
+             very end of a long option list to reach "نفّذ المونتاج"; now it is always in
+             view, and the less-used option groups are collapsible (Expanders below) so the
+             list itself is short. -->
         <Border Grid.Column="0" Background="{DynamicResource Panel}">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="20">
-                    <StackPanel Margin="0,0,0,18">
-                        <TextBlock Text="{DynamicResource Imp_Title}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource OnAction}"/>
-                        <TextBlock Text="{DynamicResource Imp_Subtitle}" FontSize="12" Foreground="{DynamicResource Muted}" Margin="0,4,0,0" TextWrapping="Wrap"/>
-                    </StackPanel>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Title -->
+                <StackPanel Grid.Row="0" Margin="20,20,20,12">
+                    <TextBlock Text="{DynamicResource Imp_Title}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource OnAction}"/>
+                    <TextBlock Text="{DynamicResource Imp_Subtitle}" FontSize="12" Foreground="{DynamicResource Muted}" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <!-- Tabbed settings: only the chosen group shows, so the panel stays short and
+                     uncluttered and there is no long scroll to reach the action buttons
+                     (field report: the side menu scrolled a lot and felt busy). -->
+                <TabControl Grid.Row="1" Style="{StaticResource PanelTabControl}" Margin="20,0,20,0">
+
+                    <!-- ═══ Tab: File (source · resize · preflight) ═══ -->
+                    <TabItem Header="{DynamicResource ImpTab_File}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,0,6">
+                            <StackPanel>
 
                     <!-- Source -->
                     <Border Style="{StaticResource LocalCard}">
@@ -169,6 +190,35 @@
                         </StackPanel>
                     </Border>
 
+                    <!-- Preflight for the loaded file (lives in the File tab). -->
+                    <Border Style="{StaticResource LocalCard}"
+                            Visibility="{Binding HasSource, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Imp_PreflightTitle}" Style="{StaticResource SectionTitle}"/>
+                            <TextBlock Text="{Binding PreflightSummary}"
+                                       Foreground="{Binding PreflightSummaryColor}"
+                                       FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                            <ItemsControl ItemsSource="{Binding PreflightFindings}" Margin="0,6,0,0"
+                                          Visibility="{Binding HasPreflightFindings, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" FontSize="11" TextWrapping="Wrap"
+                                                   Foreground="{DynamicResource Muted}" Margin="0,0,0,3"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!-- ═══ Tab: Size (page · sheet) ═══ -->
+                    <TabItem Header="{DynamicResource ImpTab_Size}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,0,6">
+                            <StackPanel>
+
                     <!-- Page size -->
                     <Border Style="{StaticResource LocalCard}">
                         <StackPanel>
@@ -211,6 +261,15 @@
                             </Grid>
                         </StackPanel>
                     </Border>
+
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!-- ═══ Tab: Scheme (imposition type) ═══ -->
+                    <TabItem Header="{DynamicResource ImpTab_Scheme}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,0,6">
+                            <StackPanel>
 
                     <!-- Scheme -->
                     <Border Style="{StaticResource LocalCard}">
@@ -256,7 +315,16 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- Pre-press -->
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!-- ═══ Tab: Marks (prepress · bleed · printer's marks) ═══ -->
+                    <TabItem Header="{DynamicResource ImpTab_Marks}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,0,6">
+                            <StackPanel>
+
+                    <!-- Pre-press / marks -->
                     <Border Style="{StaticResource LocalCard}">
                         <StackPanel>
                             <TextBlock Text="{DynamicResource Imp_Marks}" Style="{StaticResource SectionTitle}"/>
@@ -277,30 +345,6 @@
                                     <TextBox Text="{Binding Gutter, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LocalInput}"/>
                                 </StackPanel>
                             </Grid>
-
-                            <!-- Preflight findings for the loaded source file -->
-                            <Border Background="{DynamicResource Paper}" CornerRadius="8" Padding="12"
-                                    Margin="0,0,0,10"
-                                    Visibility="{Binding HasSource, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <StackPanel>
-                                    <TextBlock Text="{DynamicResource Imp_PreflightTitle}"
-                                               FontSize="12" FontWeight="SemiBold"
-                                               Foreground="{DynamicResource Muted}" Margin="0,0,0,6"/>
-                                    <TextBlock Text="{Binding PreflightSummary}"
-                                               Foreground="{Binding PreflightSummaryColor}"
-                                               FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap"/>
-                                    <ItemsControl ItemsSource="{Binding PreflightFindings}" Margin="0,6,0,0"
-                                                  Visibility="{Binding HasPreflightFindings, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding}" FontSize="11" TextWrapping="Wrap"
-                                                           Foreground="{DynamicResource Muted}"
-                                                           Margin="0,0,0,3"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </Border>
 
                             <!-- Per-edge margins / split gutters (gripper edge) -->
                             <CheckBox IsChecked="{Binding UseAdvancedSpacing}"
@@ -370,6 +414,15 @@
                         </StackPanel>
                     </Border>
 
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!-- ═══ Tab: Export (templates · format) ═══ -->
+                    <TabItem Header="{DynamicResource ImpTab_Export}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,0,6">
+                            <StackPanel>
+
                     <!-- Templates & settings -->
                     <Border Style="{StaticResource LocalCard}">
                         <StackPanel>
@@ -419,24 +472,39 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- Buttons -->
-                    <Button Command="{Binding PlanCommand}" Content="{DynamicResource Imp_Plan}"
-                            Style="{StaticResource PrimaryBtn}" HorizontalAlignment="Stretch" Margin="0,0,0,8"/>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Command="{Binding ExportCommand}" Content="{DynamicResource Imp_Export}"
-                                Style="{StaticResource SecondaryBtn}" IsEnabled="{Binding HasResult}"/>
-                        <Button Grid.Column="2" Command="{Binding ResetCommand}" Content="{DynamicResource Imp_Reset}"
-                                Style="{StaticResource SecondaryBtn}"/>
-                    </Grid>
-                    <!-- Workflow chain: send the imposed sheet straight to the print queue. -->
-                    <Button Command="{Binding SendToPrintingCommand}" Content="{DynamicResource PT_SendToPrint}"
-                            Style="{StaticResource PrimaryBtn}" HorizontalAlignment="Stretch"
-                            IsEnabled="{Binding HasResult}" Margin="0,8,0,0"/>
-                </StackPanel>
-            </ScrollViewer>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                </TabControl>
+
+                <!-- Prominent pinned action bar: a distinct sunk tray with a brand accent on
+                     top and a label, so the main buttons clearly stand apart from the settings
+                     above and are always in view. -->
+                <Border Grid.Row="2" Background="{DynamicResource PanelSunk}"
+                        BorderBrush="{DynamicResource Brand}" BorderThickness="0,2,0,0"
+                        Padding="20,12,20,16">
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource ActionsBar}" Foreground="{DynamicResource Muted}"
+                                   FontSize="11" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <Button Command="{Binding PlanCommand}" Content="{DynamicResource Imp_Plan}"
+                                Style="{StaticResource PrimaryBtn}" HorizontalAlignment="Stretch" Margin="0,0,0,8"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Command="{Binding ExportCommand}" Content="{DynamicResource Imp_Export}"
+                                    Style="{StaticResource SecondaryBtn}" IsEnabled="{Binding HasResult}"/>
+                            <Button Grid.Column="2" Command="{Binding ResetCommand}" Content="{DynamicResource Imp_Reset}"
+                                    Style="{StaticResource SecondaryBtn}"/>
+                        </Grid>
+                        <!-- Workflow chain: send the imposed sheet straight to the print queue. -->
+                        <Button Command="{Binding SendToPrintingCommand}" Content="{DynamicResource PT_SendToPrint}"
+                                Style="{StaticResource PrimaryBtn}" HorizontalAlignment="Stretch"
+                                IsEnabled="{Binding HasResult}" Margin="0,8,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
         </Border>
 
         <!-- ═══════════ RIGHT — Results + Preview ═══════════ -->
@@ -458,9 +526,10 @@
                     <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource Done}" FontSize="13" TextWrapping="Wrap"/>
                 </Border>
 
-                <!-- Placeholder -->
+                <!-- Placeholder — only when there is genuinely nothing to show (no loaded-file
+                     preview AND no imposed result). -->
                 <Border CornerRadius="12" Padding="40" Background="{DynamicResource Panel}"
-                        Visibility="{Binding HasResult, Converter={StaticResource InverseBoolConverter}}">
+                        Visibility="{Binding ShowPreviewArea, Converter={StaticResource InverseBoolConverter}}">
                     <StackPanel HorizontalAlignment="Center">
                         <TextBlock Text="📐" FontSize="48" HorizontalAlignment="Center" Foreground="{DynamicResource Brush.Text.Disabled}" Margin="0,0,0,16"/>
                         <TextBlock Text="{DynamicResource Imp_PlaceholderTitle}" Foreground="{DynamicResource Muted}" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center"/>
@@ -468,10 +537,13 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Results -->
-                <StackPanel Visibility="{Binding HasResult, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <!-- Results. The summary/report cards still appear only after a plan runs
+                     (HasResult); the PREVIEW card appears as soon as there are pages to show
+                     (ShowPreviewArea), so a freshly loaded file is visible before planning. -->
+                <StackPanel>
 
-                    <Border Style="{StaticResource LocalCard}">
+                    <Border Style="{StaticResource LocalCard}"
+                            Visibility="{Binding HasResult, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel>
                             <TextBlock Text="{DynamicResource Imp_SummaryTitle}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource OnAction}" Margin="0,0,0,16"/>
                             <Grid>
@@ -513,8 +585,9 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- Preview -->
-                    <Border Style="{StaticResource LocalCard}">
+                    <!-- Preview — visible whenever there are pages (loaded source or imposed sheets). -->
+                    <Border Style="{StaticResource LocalCard}"
+                            Visibility="{Binding ShowPreviewArea, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel>
                             <Grid Margin="0,0,0,12">
                                 <Grid.ColumnDefinitions>
@@ -590,7 +663,8 @@
                     </Border>
 
                     <!-- Full report -->
-                    <Border Style="{StaticResource LocalCard}">
+                    <Border Style="{StaticResource LocalCard}"
+                            Visibility="{Binding HasResult, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel>
                             <TextBlock Text="{DynamicResource Imp_FullReport}" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource OnAction}" Margin="0,0,0,12"/>
                             <Border Background="{DynamicResource Paper}" CornerRadius="8" Padding="16">

@@ -131,7 +131,8 @@ namespace Apex.NumberedBooksEngine.Core
         public async Task<JobResult> RunStreamingPrintJobAsync(
             NumberedPrintJobOptions options,
             IProgress<ProgressInfo> progress,
-            CancellationToken ct)
+            CancellationToken ct,
+            Action<IStreamingPrintControl>? onControlReady = null)
         {
             var jobId = JobIdentity(options);
             var errors = new List<string>();
@@ -231,6 +232,12 @@ namespace Apex.NumberedBooksEngine.Core
                     ScaleMode = options.ScaleMode ?? PrintScaleMode.ActualSize,  // Use ScaleMode from options, default to ActualSize
                     FitToPage = (options.ScaleMode ?? PrintScaleMode.ActualSize) == PrintScaleMode.FitToPage  // Backward compatibility
                 }, ct);
+
+                // Hand the running job's controls to the caller (the UI) so a refill hold can
+                // be shown and released. Without this the streaming job blocks on the print
+                // thread with no way for the operator to see or resume it — it reads as a
+                // silent stop after the tray's declared sheet count.
+                onControlReady?.Invoke(printer);
 
                 // 7. Stream pages with multi-copy support
                 var copyTypes = options.CopyTypes ?? new[] { CopyType.Original };

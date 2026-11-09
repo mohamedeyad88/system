@@ -56,7 +56,9 @@ namespace Apex.Services.Numbering
             bool useSmartPrinting = true,
             bool useArabicDigits = false,
             NumberFormatOptions? numberFormat = null,
-            Dictionary<int, int>? trayLoadSheets = null)
+            Dictionary<int, int>? trayLoadSheets = null,
+            Action<IStreamingPrintControl>? onControlReady = null,
+            int dpi = 600)
         {
             var copyTypes = new List<CopyType> { CopyType.Original };
             for (int i = 1; i < copiesPerPage; i++)
@@ -72,14 +74,13 @@ namespace Apex.Services.Numbering
             var options = new NumberedPrintJobOptions(
                 PrinterName: printerName,
                 TemplatePath: templatePath,
-                // Rasterise the sheet at 600 DPI, not 300. The floor reported the print
-                // came out softer than the original artwork — at 300 DPI a crisp design
-                // (especially a vector PDF) loses edge detail on paper. 600 is the next
-                // value the printer's DPI auto-detect recognises (72/96/150/200/300/600),
-                // so the sheet still maps to its true physical size; it just prints sharper.
-                // The shared background is one bitmap reused for the whole job, and the
-                // number overlays scale with it, so the cost is one larger background raster.
-                Dpi: 600,
+                // Rasterise the sheet at the chosen quality. 600 DPI is sharp (the floor
+                // reported 300 looked softer than the artwork) but spools ~4× the data per
+                // page, so a large run is slow; 300 is the "fast" mode the operator can pick.
+                // Both are values the printer's DPI auto-detect recognises (…/300/600), so the
+                // sheet still maps to its true physical size. The background raster is built
+                // once and reused for the whole job; the number overlays scale with it.
+                Dpi: dpi,
                 StartNumber: startNumber,
                 TotalNumbers: totalNumbers,
                 CopiesPerPage: copiesPerPage,
@@ -97,7 +98,7 @@ namespace Apex.Services.Numbering
                 NumberFormat: numberFormat
             );
 
-            return await _orchestrator.RunStreamingPrintJobAsync(options, progress, ct);
+            return await _orchestrator.RunStreamingPrintJobAsync(options, progress, ct, onControlReady);
         }
 
         /// <summary>

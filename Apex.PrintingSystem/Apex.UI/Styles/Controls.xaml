@@ -458,9 +458,169 @@
         <Setter Property="Padding" Value="16"/>
         <Setter Property="Effect" Value="{DynamicResource Shadow.Small}"/>
     </Style>
-    
+
+    <!-- ==================== COLLAPSIBLE GROUP (Expander) ==================== -->
+    <!-- Card-styled accordion section for long settings panels. Tapping the titled
+         header opens/closes the group, so a tall stack of option cards collapses to a
+         short list of headers: the operator reaches the action buttons below without a
+         long scroll (field report: "بيعمل اسكرول كتير عشان يوصل لاخر القائمة"). The
+         header carries a chevron that flips when open. RTL-safe (title leads, chevron
+         trails). Content keeps card padding; the inner section title is dropped because
+         the header now names the group. -->
+    <!-- Matches CardStyle exactly (same SurfaceFill, border, shadow, and the muted
+         SemiBold section title) so a collapsible group is indistinguishable from a
+         normal card except for the chevron — the panel reads as ONE consistent stack
+         of cards, not a mix of flat cards and differently-coloured expanders. -->
+    <Style x:Key="CardExpander" TargetType="Expander">
+        <Setter Property="Background" Value="{DynamicResource SurfaceFill}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Margin" Value="0,0,0,12"/>
+        <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
+        <Setter Property="HeaderTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" FontSize="12" FontWeight="SemiBold"
+                               Foreground="{DynamicResource Muted}" TextWrapping="Wrap"/>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Expander">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="12" Effect="{DynamicResource Shadow.Small}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Header row. The title + chevron are the ToggleButton's CONTENT,
+                                 authored here in the Expander's template namescope, so the
+                                 ContentPresenter's ContentSource="Header" resolves against the
+                                 Expander (which HAS a Header). Putting that presenter inside the
+                                 ToggleButton's own template instead threw at load — ToggleButton
+                                 has no Header property (compiled-BAML AutoAliasContentPresenter). -->
+                            <ToggleButton Grid.Row="0" Focusable="False" Cursor="Hand"
+                                          Background="Transparent"
+                                          IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border x:Name="HeadBg" Background="{TemplateBinding Background}"
+                                                Padding="20,14" CornerRadius="12">
+                                            <ContentPresenter/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="HeadBg" Property="Background" Value="{DynamicResource Hover}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ContentPresenter Grid.Column="0" VerticalAlignment="Center"
+                                                      ContentSource="Header" RecognizesAccessKey="True"/>
+                                    <Path x:Name="Chevron" Grid.Column="1" VerticalAlignment="Center"
+                                          Margin="10,0,0,0"
+                                          Data="M 0 0 L 6 6 L 12 0" Stroke="{DynamicResource Muted}"
+                                          StrokeThickness="2" StrokeEndLineCap="Round" StrokeStartLineCap="Round"
+                                          RenderTransformOrigin="0.5,0.5">
+                                        <Path.RenderTransform>
+                                            <RotateTransform Angle="0"/>
+                                        </Path.RenderTransform>
+                                    </Path>
+                                </Grid>
+                            </ToggleButton>
+
+                            <Border x:Name="ContentArea" Grid.Row="1" Visibility="Collapsed" Padding="20,0,20,16">
+                                <ContentPresenter/>
+                            </Border>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="ContentArea" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="Chevron" Property="RenderTransform">
+                                <Setter.Value>
+                                    <RotateTransform Angle="180"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ==================== PANEL TABS (segmented) ==================== -->
+    <!-- A compact segmented tab strip for a settings panel: the groups become tabs, so
+         only the chosen group's controls show and there is no long scroll. The strip sits
+         in a sunk rounded track; the selected tab is a filled brand pill. Tabs wrap to a
+         second row when they don't fit the panel width. RTL-safe. -->
+    <Style x:Key="PanelTabItem" TargetType="TabItem">
+        <Setter Property="Foreground" Value="{DynamicResource Muted}"/>
+        <Setter Property="FontSize" Value="11.5"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Border x:Name="Pill" Background="Transparent" CornerRadius="7" Margin="1.5" Padding="4,7">
+                        <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Pill" Property="Background" Value="{DynamicResource Brand}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource OnAction}"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="False"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="Pill" Property="Background" Value="{DynamicResource Hover}"/>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PanelTabControl" TargetType="TabControl">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="ItemContainerStyle" Value="{StaticResource PanelTabItem}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabControl">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0" Background="{DynamicResource PanelSunk}" CornerRadius="10"
+                                Padding="3" Margin="0,0,0,12">
+                            <!-- UniformGrid (not the default TabPanel): one equal-width row that never
+                                 wraps or reshuffles the selected tab to another row — a clean segmented
+                                 control. Rows=1 lays the tabs out in a single strip. -->
+                            <UniformGrid Rows="1" IsItemsHost="True"/>
+                        </Border>
+                        <ContentPresenter Grid.Row="1" ContentSource="SelectedContent"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- ==================== TYPOGRAPHY - الطباعة ==================== -->
-    
+
     <!-- Page Title - Also defined here as fallback for StaticResource references -->
     <Style x:Key="Text.PageTitle" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{DynamicResource Ink}"/>

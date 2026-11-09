@@ -81,9 +81,14 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- ══ Controls (right, RTL col 0) ══ -->
-            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
-                <StackPanel>
+            <!-- ══ Controls (right, RTL col 0) — grouped into tabs so only the chosen
+                 group shows: no long scroll and the panel stays uncluttered. ══ -->
+            <TabControl Grid.Column="0" Style="{StaticResource PanelTabControl}">
+
+                    <!-- ═══ Tab: File (source · pipeline · preflight) ═══ -->
+                    <TabItem Header="{DynamicResource PtTab_File}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,6,6">
+                            <StackPanel>
 
                     <!-- Source + Save -->
                     <Border Style="{StaticResource LocalCard}">
@@ -102,20 +107,8 @@
                                        Visibility="{Binding HasResult, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Run Text="{DynamicResource PT_Pipeline}"/><Run Text=" "/><Run Text="{Binding PipelineLabel}" Foreground="{DynamicResource Ink}"/>
                             </TextBlock>
-                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                                <Button Content="{DynamicResource PT_Undo}" Command="{Binding UndoCommand}"
-                                        Style="{StaticResource Btn}" IsEnabled="{Binding CanUndo}" MinWidth="64" Margin="0,0,6,0"/>
-                                <Button Content="{DynamicResource PT_Redo}" Command="{Binding RedoCommand}"
-                                        Style="{StaticResource Btn}" IsEnabled="{Binding CanRedo}" MinWidth="64" Margin="0,0,6,0"/>
-                                <Button Content="{DynamicResource PT_ResetPipeline}" Command="{Binding ResetPipelineCommand}"
-                                        Style="{StaticResource Btn}" IsEnabled="{Binding HasResult}" MinWidth="64"/>
-                            </StackPanel>
-
-                            <Button Content="{DynamicResource PT_005}" Command="{Binding SaveResultCommand}"
-                                    Style="{StaticResource SaveBtn}" IsEnabled="{Binding HasResult}" Margin="0,10,0,0"/>
-                            <!-- Workflow chain: hand the result straight to the print queue. -->
-                            <Button Content="{DynamicResource PT_SendToPrint}" Command="{Binding SendToPrintingCommand}"
-                                    Style="{StaticResource Btn}" IsEnabled="{Binding HasResult}" Margin="0,8,0,0"/>
+                            <!-- Undo/redo/reset, Save and Send now live in the prominent action
+                                 bar pinned at the bottom (always visible) instead of here. -->
                         </StackPanel>
                     </Border>
 
@@ -173,9 +166,16 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- Page management (core prep: reverse, interleave, insert, join,
-                         tile, bleed, trim) — placed right after Preflight because these
-                         are the everyday operations; the niche tools follow. -->
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!-- ═══ Tab: Pages (everyday page operations) ═══ -->
+                    <TabItem Header="{DynamicResource PtTab_Pages}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,6,6">
+                            <StackPanel>
+
+                    <!-- Page management (reverse, interleave, insert, join, tile, bleed, trim) -->
                     <Border Style="{StaticResource LocalCard}">
                         <StackPanel>
                             <TextBlock Text="{DynamicResource PT_006}" Style="{StaticResource Section}"/>
@@ -225,6 +225,15 @@
                         </StackPanel>
                     </Border>
 
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!-- ═══ Tab: Repeat (step & repeat, many-up) ═══ -->
+                    <TabItem Header="{DynamicResource PtTab_Repeat}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,6,6">
+                            <StackPanel>
+
                     <!-- Step & Repeat — cards / stickers many-up -->
                     <Border Style="{StaticResource LocalCard}">
                         <StackPanel>
@@ -250,6 +259,15 @@
                             </StackPanel>
                         </StackPanel>
                     </Border>
+
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!-- ═══ Tab: Tools (watermark · mask · range · printer's marks) ═══ -->
+                    <TabItem Header="{DynamicResource PtTab_Tools}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,6,6">
+                            <StackPanel>
 
                     <!-- Watermark / stamp -->
                     <Border Style="{StaticResource LocalCard}">
@@ -331,6 +349,15 @@
                         </StackPanel>
                     </Border>
 
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!-- ═══ Tab: Output (split · sample) ═══ -->
+                    <TabItem Header="{DynamicResource PtTab_Output}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,6,6">
+                            <StackPanel>
+
                     <!-- Split into files -->
                     <Border Style="{StaticResource LocalCard}">
                         <StackPanel>
@@ -359,8 +386,11 @@
                         </StackPanel>
                     </Border>
 
-                </StackPanel>
-            </ScrollViewer>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+            </TabControl>
 
             <!-- ══ Live preview (left, RTL col 2) ══ -->
             <Border Grid.Column="2" Background="{DynamicResource PanelSunk}" CornerRadius="12" Padding="16">
@@ -430,35 +460,52 @@
             </Border>
         </Grid>
 
-        <!-- Always-visible action + status bar. The operation result used to sit at the
-             very bottom of the scrolling tool list, so after applying a tool you had to
-             scroll to the end to learn whether it succeeded — and undo lived at the top,
-             out of sight. This fixed bar keeps the status (and undo/redo) in view from
-             anywhere, so progress and pass/fail are never hidden. -->
-        <Border Grid.Row="2" Margin="0,14,0,0" Padding="14,10" CornerRadius="10"
-                Background="{DynamicResource PanelSunk}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+        <!-- Prominent pinned action bar: a distinct sunk tray with a brand accent on top and
+             a label. The main actions — undo/redo/reset, save, and send to print — plus the
+             operation status all live here, always in view, so they clearly stand apart from
+             the tool tabs above (field request: make the buttons bar prominent and clear). -->
+        <Border Grid.Row="2" Margin="0,14,0,0" Padding="18,12" CornerRadius="12"
+                Background="{DynamicResource PanelSunk}"
+                BorderBrush="{DynamicResource Brand}" BorderThickness="0,2,0,0">
+            <StackPanel>
+                <TextBlock Text="{DynamicResource ActionsBar}" Foreground="{DynamicResource Muted}"
+                           FontSize="11" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Content="{DynamicResource PT_Undo}" Command="{Binding UndoCommand}"
-                            Style="{StaticResource Btn}" IsEnabled="{Binding CanUndo}" MinWidth="72" Margin="0,0,6,0"/>
-                    <Button Content="{DynamicResource PT_Redo}" Command="{Binding RedoCommand}"
-                            Style="{StaticResource Btn}" IsEnabled="{Binding CanRedo}" MinWidth="72"/>
-                </StackPanel>
+                    <!-- Undo / redo / reset -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Content="{DynamicResource PT_Undo}" Command="{Binding UndoCommand}"
+                                Style="{StaticResource Btn}" IsEnabled="{Binding CanUndo}" MinWidth="60" Margin="0,0,6,0"/>
+                        <Button Content="{DynamicResource PT_Redo}" Command="{Binding RedoCommand}"
+                                Style="{StaticResource Btn}" IsEnabled="{Binding CanRedo}" MinWidth="60" Margin="0,0,6,0"/>
+                        <Button Content="{DynamicResource PT_ResetPipeline}" Command="{Binding ResetPipelineCommand}"
+                                Style="{StaticResource Btn}" IsEnabled="{Binding HasResult}" MinWidth="60"/>
+                    </StackPanel>
 
-                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="14,0,0,0">
-                    <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource Done}"
-                               FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"
-                               Visibility="{Binding HasError, Converter={StaticResource InverseBoolConverter}}"/>
-                    <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Stopped}"
-                               FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"
-                               Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                </StackPanel>
-            </Grid>
+                    <!-- Status / error -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="14,0,14,0">
+                        <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource Done}"
+                                   FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"
+                                   Visibility="{Binding HasError, Converter={StaticResource InverseBoolConverter}}"/>
+                        <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Stopped}"
+                                   FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"
+                                   Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </StackPanel>
+
+                    <!-- Terminal actions: save result + send to print -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Content="{DynamicResource PT_005}" Command="{Binding SaveResultCommand}"
+                                Style="{StaticResource SaveBtn}" IsEnabled="{Binding HasResult}" MinWidth="130" Margin="0,0,8,0"/>
+                        <Button Content="{DynamicResource PT_SendToPrint}" Command="{Binding SendToPrintingCommand}"
+                                Style="{StaticResource Btn}" IsEnabled="{Binding HasResult}" MinWidth="130"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
         </Border>
     </Grid>
 </UserControl>

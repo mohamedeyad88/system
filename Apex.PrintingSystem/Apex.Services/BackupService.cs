@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 
 namespace Apex.Services
 {
@@ -64,6 +65,44 @@ namespace Apex.Services
         {
             try { return File.Exists(DbFile) ? new FileInfo(DbFile).Length / 1024.0 : -1; }
             catch { return -1; }
+        }
+
+        /// <summary>
+        /// Automatic backup: copies the live database to <paramref name="backupDirectory"/> at
+        /// most once per calendar day, then keeps only the newest <paramref name="keepLast"/>
+        /// auto-backups (older ones are deleted). This bounds data loss to about a day without
+        /// the operator having to remember the manual button, and without filling the folder.
+        /// Best-effort — it never throws, so a backup can never block or crash the app; it does
+        /// nothing when no folder is configured. (Auto-backups use a distinct
+        /// <c>apex_autobackup_*</c> prefix so they never clash with manual <c>apex_backup_*</c>
+        /// files or rotate them away.)
+        /// </summary>
+        public void RunAutoBackup(string backupDirectory, int keepLast = 15)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(backupDirectory) || !File.Exists(DbFile)) return;
+                Directory.CreateDirectory(backupDirectory);
+
+                // One automatic backup per day is enough to bound loss to ~24h.
+                var today = DateTime.Now.ToString("yyyy-MM-dd");
+                if (Directory.EnumerateFiles(backupDirectory, $"apex_autobackup_{today}_*.db").Any())
+                    return;
+
+                var stamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+                var destPath = Path.Combine(backupDirectory, $"apex_autobackup_{stamp}.db");
+                File.Copy(DbFile, destPath, overwrite: false);
+
+                // Rotation: keep only the newest N auto-backups, delete the rest.
+                var all = new DirectoryInfo(backupDirectory).GetFiles("apex_autobackup_*.db")
+                    .OrderByDescending(f => f.LastWriteTimeUtc)
+                    .ToArray();
+                for (int i = keepLast; i < all.Length; i++)
+                {
+                    try { all[i].Delete(); } catch { /* skip a locked file */ }
+                }
+            }
+            catch { /* backups are best-effort; never block or crash the app */ }
         }
     }
 

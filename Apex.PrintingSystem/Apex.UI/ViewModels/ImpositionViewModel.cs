@@ -484,6 +484,18 @@ namespace Apex.UI.ViewModels
             = new();
         [ObservableProperty] private bool _hasPreviewPages;
 
+        /// <summary>
+        /// The preview card is shown whenever there is anything to show — streamed source
+        /// pages (right after a file is loaded) OR an imposed result. It used to live inside
+        /// a panel gated on <see cref="HasResult"/> alone, so the source preview rendered on
+        /// load was placed in a collapsed container: the pages existed but were never visible,
+        /// which read in the field as "the preview is empty after loading a file". The empty
+        /// placeholder is the exact inverse.
+        /// </summary>
+        public bool ShowPreviewArea => HasPreviewPages || HasResult;
+        partial void OnHasPreviewPagesChanged(bool value) => OnPropertyChanged(nameof(ShowPreviewArea));
+        partial void OnHasResultChanged(bool value) => OnPropertyChanged(nameof(ShowPreviewArea));
+
         private void SetPreviewPages(System.Collections.Generic.List<byte[]> pngs)
         {
             PreviewPages.Clear();

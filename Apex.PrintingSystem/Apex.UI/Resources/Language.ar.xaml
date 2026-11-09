@@ -329,6 +329,20 @@
     <sys:String x:Key="CostCalc_FinalPrice">السعر النهائي</sys:String>
     <sys:String x:Key="PaperCutting_Unit_cm">سنتيمتر (cm)</sys:String>
     <sys:String x:Key="Imp_Title">المونتاج والتشطيب الذكي</sys:String>
+    <!-- Side-panel tab labels (kept short to fit the segmented strip) -->
+    <sys:String x:Key="ImpTab_File">الملف</sys:String>
+    <sys:String x:Key="ImpTab_Size">المقاس</sys:String>
+    <sys:String x:Key="ImpTab_Scheme">المخطط</sys:String>
+    <sys:String x:Key="ImpTab_Marks">العلامات</sys:String>
+    <sys:String x:Key="ImpTab_Export">التصدير</sys:String>
+    <!-- Page Tools side-panel tab labels -->
+    <sys:String x:Key="PtTab_File">الملف</sys:String>
+    <sys:String x:Key="PtTab_Pages">الصفحات</sys:String>
+    <sys:String x:Key="PtTab_Repeat">التكرار</sys:String>
+    <sys:String x:Key="PtTab_Tools">الأدوات</sys:String>
+    <sys:String x:Key="PtTab_Output">الإخراج</sys:String>
+    <!-- Action-bar header (the prominent pinned buttons bar) -->
+    <sys:String x:Key="ActionsBar">الإجراءات</sys:String>
     <sys:String x:Key="TD_107">✓ مربوط</sys:String>
     <sys:String x:Key="Numbering_FitToPage">ملاءمة للصفحة</sys:String>
     <sys:String x:Key="SV_FolderFilter">مجلد|*.none</sys:String>
@@ -520,6 +534,7 @@
     <sys:String x:Key="Update_Available">تحديث جديد متاح — الإصدار</sys:String>
     <sys:String x:Key="Update_Download">تحميل التحديث</sys:String>
     <sys:String x:Key="Notice_TrialEnding">التجربة المجانية بتنتهي خلال {0} يوم. اشترِ دلوقتي علشان الشغل مايقفش.</sys:String>
+    <sys:String x:Key="Trial_DaysLeft">نسخة تجريبية — باقي {0} يوم</sys:String>
     <sys:String x:Key="Notice_LicenseEnding">اشتراكك بينتهي خلال {0} يوم ({1}). جدّد قبلها علشان البرنامج مايقفش.</sys:String>
     <sys:String x:Key="Notice_Buy">اشترِ الآن</sys:String>
     <sys:String x:Key="Notice_Renew">جدّد الاشتراك</sys:String>
@@ -838,6 +853,12 @@
     <sys:String x:Key="Nav_Section_Printing">الطباعة</sys:String>
     <sys:String x:Key="Num_DesignImported">✅ تم استيراد {0} عنصر من: {1}</sys:String>
     <sys:String x:Key="Numbering_ResumeButton">استمرار</sys:String>
+    <sys:String x:Key="Num_RefillHold">الطباعة متوقفة مؤقتًا — راجِع الورق في الدرج</sys:String>
+    <sys:String x:Key="Num_ResumeRefillBtn">عبّأت الورق — استئناف الطباعة</sys:String>
+    <sys:String x:Key="Num_QualityLabel">الجودة والسرعة</sys:String>
+    <sys:String x:Key="Num_HighQuality">جودة عالية (أوضح)</sys:String>
+    <sys:String x:Key="Num_FastPrint">طباعة سريعة</sys:String>
+    <sys:String x:Key="Num_QualityHint">الجودة العالية أوضح لكن أبطأ. السريعة مناسبة للطلبات الكبيرة والأرقام والخطوط.</sys:String>
     <sys:String x:Key="Numbering_SmartPrint">دفتر مترتب تلقائيًا</sys:String>
     <sys:String x:Key="TD_001">مصمم القوالب</sys:String>
     <sys:String x:Key="SV_003">📋 لصق البيانات</sys:String>
@@ -1397,6 +1418,9 @@
     <sys:String x:Key="PM_FileFilter">كل الملفات|*.*|PDF|*.pdf|صور|*.png;*.jpg;*.jpeg;*.bmp|مستندات|*.docx;*.xlsx;*.pptx</sys:String>
     <sys:String x:Key="PM_ChooseAnyInFolder">اختر أي ملف داخل المجلد المطلوب</sys:String>
     <sys:String x:Key="PM_AllFilesFilter">كل الملفات|*.*</sys:String>
+    <sys:String x:Key="PM_ChooseFolder">اختر مجلد الملفات</sys:String>
+    <sys:String x:Key="PM_NoPrintableInFolder">مفيش ملفات قابلة للطباعة في المجلد ده.</sys:String>
+    <sys:String x:Key="PM_FolderReadFailed">تعذّر قراءة المجلد: {0}</sys:String>
     <sys:String x:Key="PM_DupSkipped">⚠  تم تخطي {0} ملف مكرر</sys:String>
     <sys:String x:Key="PM_PreviewError">خطأ في المعاينة: {0}</sys:String>
     <sys:String x:Key="PM_TemplateSaved">✓ تم حفظ القالب: {0}</sys:String>

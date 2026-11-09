@@ -49,6 +49,86 @@ namespace Apex.UI.ViewModels
             _handoff.SendToPrintingRequested += OnSendToPrinting;
             _ = CheckForUpdatesAsync();   // fire-and-forget; never blocks startup
             CheckLicenseNotice();
+            StartLicenseEnforcement();
+        }
+
+        // ── Runtime licence enforcement ──────────────────────────────────────
+        // The licence/trial was validated ONLY at startup (App.OnStartup). A shop
+        // that never closes the app ran the trial past its 7 days without ever
+        // being asked to activate ("البرنامج شغّال على طول وعدّت الـ7 أيام من غير
+        // ما يتقفل"). This re-checks while the app is open and locks it once the
+        // trial/subscription expires — but never in the middle of a print run.
+        private System.Windows.Threading.DispatcherTimer? _licenseEnforceTimer;
+        private bool _licenseLockShown;
+
+        private void StartLicenseEnforcement()
+        {
+            try
+            {
+                _licenseEnforceTimer = new System.Windows.Threading.DispatcherTimer
+                {
+                    Interval = TimeSpan.FromMinutes(30)
+                };
+                _licenseEnforceTimer.Tick += (_, _) => EnforceLicense();
+                _licenseEnforceTimer.Start();
+                EnforceLicense();   // set the trial counter and check immediately
+            }
+            catch { /* enforcement must never crash the shell */ }
+        }
+
+        // ── Always-visible trial counter (sidebar) ───────────────────────────
+        // The "X days left" used to surface only in the last two days. The operator
+        // (and the customer at the counter) now sees the trial countdown the whole
+        // time, so there is no surprise lock and a clear nudge to activate.
+        [ObservableProperty] private bool _isTrialActive;
+        [ObservableProperty] private string _trialBadgeText = "";
+        [ObservableProperty] private bool _trialBadgeUrgent;   // last 2 days → red
+
+        private void UpdateTrialBadge(Apex.Licensing.ValidationResult r)
+        {
+            if (r.IsValid && r.Type == Apex.Licensing.LicenseType.Trial)
+            {
+                IsTrialActive = true;
+                TrialBadgeText = Lf("Trial_DaysLeft", Math.Max(1, r.DaysRemaining));
+                TrialBadgeUrgent = r.DaysRemaining <= 2;
+            }
+            else
+            {
+                IsTrialActive = false;   // activated / perpetual → no badge
+            }
+        }
+
+        private void EnforceLicense()
+        {
+            try
+            {
+                var r = Apex.Licensing.LicenseManager.Validate();
+                UpdateTrialBadge(r);
+                if (r.IsValid) return;
+                // Don't interrupt a run in progress — lock on a later tick once idle.
+                if (IsPrintingGlobally) return;
+                if (_licenseLockShown) return;
+                _licenseLockShown = true;
+                _licenseEnforceTimer?.Stop();
+
+                var dispatcher = System.Windows.Application.Current?.Dispatcher;
+                if (dispatcher == null) return;
+                dispatcher.Invoke(() =>
+                {
+                    try
+                    {
+                        var vm = new ActivationViewModel { ValidationResult = r };
+                        var win = new Views.ActivationView(vm);
+                        win.ShowDialog();
+                    }
+                    catch { /* show best-effort */ }
+                    finally
+                    {
+                        System.Windows.Application.Current?.Shutdown();
+                    }
+                });
+            }
+            catch { /* never crash on a licence check */ }
         }
 
         // ── A sidebar that fits the screen in front of the operator ──────────

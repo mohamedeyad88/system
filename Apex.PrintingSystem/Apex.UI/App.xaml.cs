@@ -213,6 +213,22 @@ namespace Apex.UI
                 }
                 catch { Services.ThemeService.Instance.Apply("dark"); }
 
+                // Automatic daily database backup (best-effort). The numbering ledger and
+                // settings live in apex.db; backing it up only via a manual button risked
+                // data loss if a field machine failed. Runs at most once a day to the folder
+                // the operator set in Settings, off the UI thread so it never delays startup.
+                try
+                {
+                    using var scope = scopeFactory.CreateScope();
+                    var settings = scope.ServiceProvider.GetRequiredService<Apex.Core.Interfaces.ISettingsService>();
+                    var backupDir = System.Threading.Tasks.Task.Run(() =>
+                        settings.GetValueAsync("BackupPath", "")).GetAwaiter().GetResult();
+                    if (!string.IsNullOrWhiteSpace(backupDir))
+                        _ = System.Threading.Tasks.Task.Run(() =>
+                            Apex.Services.BackupService.Instance.RunAutoBackup(backupDir));
+                }
+                catch { /* backup must never block or crash startup */ }
+
                 // Create and show main window
                 var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
                 Apex.Services.Logging.PrintLogger.Info("startup: 4 main VM created");
@@ -348,15 +364,46 @@ namespace Apex.UI
             }), System.Windows.Threading.DispatcherPriority.Background);
         }
 
+        // A fault inside the layout pass repeats every single frame. Writing the full stack
+        // trace each time ballooned crash_log.txt to hundreds of MB (seen at 156 MB), which
+        // could fill a field machine's disk. Two guards below keep it bounded.
+        private const long CrashLogMaxBytes = 4 * 1024 * 1024;   // ~4 MB, then roll over
+        private static string? _lastCrashSignature;
+        private static DateTime _lastCrashWriteUtc = DateTime.MinValue;
+
         private static void WriteCrashLog(string fileName, string source, Exception? ex)
         {
             try
             {
+                // 1) Drop an identical consecutive entry within a short window — that is the
+                //    per-frame loop writing the same stack thousands of times.
+                var signature = source + "|" + (ex?.ToString() ?? "");
+                var now = DateTime.UtcNow;
+                if (signature == _lastCrashSignature && (now - _lastCrashWriteUtc) < TimeSpan.FromSeconds(5))
+                    return;
+                _lastCrashSignature = signature;
+                _lastCrashWriteUtc = now;
+
                 var dir = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ApexPrintingSystem");
                 Directory.CreateDirectory(dir);
                 var path = Path.Combine(dir, fileName);
+
+                // 2) Cap the file size: once over the limit, roll it to a single ".old" copy
+                //    and start fresh, so the log can never grow without bound.
+                try
+                {
+                    var fi = new FileInfo(path);
+                    if (fi.Exists && fi.Length > CrashLogMaxBytes)
+                    {
+                        var old = path + ".old";
+                        try { if (File.Exists(old)) File.Delete(old); } catch { }
+                        try { File.Move(path, old); } catch { try { File.Delete(path); } catch { } }
+                    }
+                }
+                catch { }
+
                 File.AppendAllText(path,
                     $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {source}\n{ex}\n\n");
             }

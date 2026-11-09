@@ -510,24 +510,45 @@ namespace Apex.UI.ViewModels
             WarnDuplicates();
         }
 
+        /// <summary>Printable extensions imported when adding a whole folder — matches the
+        /// file-picker filter (PDF, images, Office docs). Non-printable files are skipped.</summary>
+        private static readonly System.Collections.Generic.HashSet<string> PrintableExtensions =
+            new(StringComparer.OrdinalIgnoreCase)
+            { ".pdf", ".png", ".jpg", ".jpeg", ".bmp", ".docx", ".xlsx", ".pptx" };
+
         [RelayCommand]
         private void BrowseFolder()
         {
             _duplicatesSkipped = 0;
-            var dialog = new OpenFileDialog
+
+            // A real folder picker (.NET 8 OpenFolderDialog) — the operator just chooses the
+            // folder. The old version made them "pick any file inside the folder" and then
+            // added EVERY file in it, printable or not. Now we import only the printable files
+            // in name order.
+            var dialog = new OpenFolderDialog { Title = L("PM_ChooseFolder") };
+            if (dialog.ShowDialog() != true || string.IsNullOrEmpty(dialog.FolderName)) return;
+
+            System.Collections.Generic.List<string> files;
+            try
             {
-                Title = L("PM_ChooseAnyInFolder"),
-                Filter = L("PM_AllFilesFilter"),
-                Multiselect = true
-            };
-            if (dialog.ShowDialog() != true || dialog.FileNames.Length == 0) return;
+                files = Directory.GetFiles(dialog.FolderName, "*.*", SearchOption.TopDirectoryOnly)
+                    .Where(f => PrintableExtensions.Contains(Path.GetExtension(f)))
+                    .OrderBy(f => f, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = Lf("PM_FolderReadFailed", ex.Message);
+                return;
+            }
 
-            var folder = Path.GetDirectoryName(dialog.FileName);
-            if (string.IsNullOrEmpty(folder)) return;
+            if (files.Count == 0)
+            {
+                StatusMessage = L("PM_NoPrintableInFolder");
+                return;
+            }
 
-            foreach (var f in Directory.GetFiles(folder, "*.*", SearchOption.TopDirectoryOnly))
-                AddFileToList(f);
-
+            foreach (var f in files) AddFileToList(f);
             UpdateStatus();
             WarnDuplicates();
         }

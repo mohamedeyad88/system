@@ -18,6 +18,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "D:\\Apex\\websits", "run", "dev"],
       "port": 3000
+    },
+    {
+      "name": "apexprint-web-webpack",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd /d D:\\Apex\\websits && npx next dev --webpack -p 3001"],
+      "port": 3001
     }
   ]
 }
