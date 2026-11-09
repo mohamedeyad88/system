@@ -1834,6 +1834,12 @@ namespace Apex.UI.ViewModels
             SaveUndoState();
 
             int nextGroup = Slots.Where(s => s.GroupId > 0).Select(s => s.GroupId).DefaultIfEmpty(0).Max() + 1;
+
+            // Ticket booklets ARE cut-and-stack: the serials must be divided across the booklets
+            // (4 booklets of a 100-ticket order → 1–25, 26–50, 51–75, 76–100), not run 1,2,3…
+            // down the sheet. So starting a ticket job switches to «ترقيم القص (مطبوعة)». Done
+            // only for the first ticket, so the operator can still override the mode afterwards.
+            if (nextGroup == 1) IsImposedMode = true;
             var style = SelectedSlot ?? Slots.LastOrDefault();
             const float defaultHeight = 0.08f;
             float y = 0.12f + ((nextGroup - 1) * 0.16f) % 0.66f;
