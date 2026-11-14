@@ -1074,9 +1074,8 @@
                                                 <TextBlock Text="{Binding Category}"
                                                            Foreground="{DynamicResource Action}" FontSize="9"/>
                                             </Border>
-                                            <TextBlock Text="{Binding PageCount, StringFormat=' · {0} ص'}"
-                                                       Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="9"
-                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Foreground="{DynamicResource Brush.Text.Disabled}" FontSize="9"
+                                                       VerticalAlignment="Center"><Run Text="{Binding PageCount, StringFormat=' · {0} '}"/><Run Text="{DynamicResource Unit_PagesShort}"/></TextBlock>
                                             <TextBlock Text="{Binding ModifiedAt, StringFormat=' · {0:dd/MM/yy}'}"
                                                        Foreground="{DynamicResource Muted}" FontSize="9"
                                                        VerticalAlignment="Center"/>

@@ -539,17 +539,22 @@ namespace Apex.UI.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Apex.Services.Templates.SlotDataType dt)
-                return dt switch
+            {
+                // Localized via the active Language dictionary (en/ar) instead of hardcoded Arabic.
+                var key = dt switch
                 {
-                    Apex.Services.Templates.SlotDataType.Text => "نص",
-                    Apex.Services.Templates.SlotDataType.Number => "رقم",
-                    Apex.Services.Templates.SlotDataType.Date => "تاريخ",
-                    Apex.Services.Templates.SlotDataType.Image => "صورة",
-                    Apex.Services.Templates.SlotDataType.Barcode => "باركود",
-                    Apex.Services.Templates.SlotDataType.QrCode => "QR كود",
-                    Apex.Services.Templates.SlotDataType.Counter => "مسلسل تلقائي",
-                    _ => value.ToString() ?? "",
+                    Apex.Services.Templates.SlotDataType.Text => "FieldType_Text",
+                    Apex.Services.Templates.SlotDataType.Number => "FieldType_Number",
+                    Apex.Services.Templates.SlotDataType.Date => "FieldType_Date",
+                    Apex.Services.Templates.SlotDataType.Image => "FieldType_Image",
+                    Apex.Services.Templates.SlotDataType.Barcode => "FieldType_Barcode",
+                    Apex.Services.Templates.SlotDataType.QrCode => "FieldType_QrCode",
+                    Apex.Services.Templates.SlotDataType.Counter => "FieldType_Counter",
+                    _ => null,
                 };
+                if (key != null)
+                    return System.Windows.Application.Current?.TryFindResource(key) as string ?? value.ToString() ?? "";
+            }
             return value?.ToString() ?? "";
         }
 

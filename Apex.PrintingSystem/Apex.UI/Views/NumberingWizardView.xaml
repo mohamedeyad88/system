@@ -3402,7 +3402,7 @@
                                                 <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
                                                     <TextBlock Text="{Binding Printer}" FontSize="10" Foreground="{DynamicResource Muted}" TextTrimming="CharacterEllipsis" MaxWidth="140"/>
                                                     <TextBlock Text=" · " FontSize="10" Foreground="{DynamicResource Muted}"/>
-                                                    <TextBlock Text="{Binding PagesCount, StringFormat='{}{0:N0} صفحة'}" FontSize="10" Foreground="{DynamicResource Muted}"/>
+                                                    <TextBlock FontSize="10" Foreground="{DynamicResource Muted}"><Run Text="{Binding PagesCount, StringFormat='{}{0:N0} '}"/><Run Text="{DynamicResource Unit_Pages}"/></TextBlock>
                                                 </StackPanel>
                                             </StackPanel>
                                             <StackPanel Grid.Column="1" HorizontalAlignment="Right">

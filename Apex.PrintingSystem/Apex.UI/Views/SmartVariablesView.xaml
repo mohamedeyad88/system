@@ -133,8 +133,7 @@
                     <!-- Data summary badge -->
                     <Border Background="{DynamicResource BrandSoft}" CornerRadius="4" Padding="8,3" Margin="16,0,0,0"
                             Visibility="{Binding HasPastedData, Converter={StaticResource BoolToVis}}">
-                        <TextBlock Foreground="{DynamicResource Action}" FontSize="11"
-                                   Text="{Binding TotalRowCount, StringFormat='{}{0} سجل'}"/>
+                        <TextBlock Foreground="{DynamicResource Action}" FontSize="11"><Run Text="{Binding TotalRowCount, StringFormat='{}{0} '}"/><Run Text="{DynamicResource Unit_Records}"/></TextBlock>
                     </Border>
                 </StackPanel>
 
@@ -245,10 +244,9 @@
 
                         <!-- Separator label -->
                         <TextBlock Grid.Column="4"
-                                   Text="{Binding DetectedSeparatorLabel, StringFormat='فاصل: {0}'}"
                                    Foreground="{DynamicResource Muted}" FontSize="11"
                                    VerticalAlignment="Center"
-                                   Visibility="{Binding HasPastedData, Converter={StaticResource BoolToVis}}"/>
+                                   Visibility="{Binding HasPastedData, Converter={StaticResource BoolToVis}}"><Run Text="{DynamicResource SV_SeparatorLabel}"/><Run Text="{Binding DetectedSeparatorLabel}"/></TextBlock>
                     </Grid>
 
                     <!-- Cleaning options -->

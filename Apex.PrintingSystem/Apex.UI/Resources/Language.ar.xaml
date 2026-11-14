@@ -1731,4 +1731,15 @@
     <sys:String x:Key="TRAY_Start">ابدأ الطباعة</sys:String>
     <sys:String x:Key="TRAY_NoAlert">بدون تنبيه</sys:String>
     <sys:String x:Key="TRAY_Cancel">إلغاء</sys:String>
+    <sys:String x:Key="Unit_Pages">صفحة</sys:String>
+    <sys:String x:Key="Unit_Records">سجل</sys:String>
+    <sys:String x:Key="SV_SeparatorLabel" xml:space="preserve">فاصل: </sys:String>
+    <sys:String x:Key="Unit_PagesShort">ص</sys:String>
+    <sys:String x:Key="FieldType_Text">نص</sys:String>
+    <sys:String x:Key="FieldType_Number">رقم</sys:String>
+    <sys:String x:Key="FieldType_Date">تاريخ</sys:String>
+    <sys:String x:Key="FieldType_Image">صورة</sys:String>
+    <sys:String x:Key="FieldType_Barcode">باركود</sys:String>
+    <sys:String x:Key="FieldType_QrCode">QR كود</sys:String>
+    <sys:String x:Key="FieldType_Counter">مسلسل تلقائي</sys:String>
 </ResourceDictionary>
