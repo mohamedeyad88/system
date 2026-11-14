@@ -538,6 +538,43 @@ namespace Apex.Services.Templates
                 }
             };
             Add(receipt);
+
+            // Remember which UI language these built-in samples were created in.
+            try { File.WriteAllText(SampleLangFilePath, AppLocalizer.L("Lang_Code")); } catch { }
+        }
+
+        private string SampleLangFilePath => Path.Combine(LibraryPath, ".sample-lang");
+
+        /// <summary>
+        /// If the UI language changed since the built-in samples were seeded, delete just the
+        /// Apex-authored samples (user templates are kept) and re-create them in the new language.
+        /// No-op until a marker exists — first-run seeding is handled by the caller.
+        /// </summary>
+        public void EnsureSampleLanguage()
+        {
+            string current = AppLocalizer.L("Lang_Code");
+            string seeded;
+            try { seeded = File.Exists(SampleLangFilePath) ? File.ReadAllText(SampleLangFilePath).Trim() : ""; }
+            catch { return; }
+
+            if (string.IsNullOrEmpty(seeded) || seeded == current) return;
+
+            try
+            {
+                foreach (string file in Directory.GetFiles(LibraryPath, $"*{ApextFileFormat.FileExtension}", SearchOption.TopDirectoryOnly))
+                {
+                    try
+                    {
+                        (ApextTemplate tpl, _) = ApextFileFormat.Load(file);
+                        if (tpl.Author == "Apex PrintingSystem") File.Delete(file);
+                    }
+                    catch { /* skip corrupted */ }
+                }
+            }
+            catch { return; }
+
+            CreateSampleTemplates();
+            Refresh();
         }
 
         // ── Private helpers ───────────────────────────────────────────────────────

@@ -1742,4 +1742,5 @@
     <sys:String x:Key="FieldType_Barcode">باركود</sys:String>
     <sys:String x:Key="FieldType_QrCode">QR كود</sys:String>
     <sys:String x:Key="FieldType_Counter">مسلسل تلقائي</sys:String>
+    <sys:String x:Key="Lang_Code">ar</sys:String>
 </ResourceDictionary>

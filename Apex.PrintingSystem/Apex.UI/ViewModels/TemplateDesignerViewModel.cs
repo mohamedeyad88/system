@@ -477,6 +477,9 @@ namespace Apex.UI.ViewModels
                     // Rebuild index from disk, skipping any corrupted / non-ZIP .apext files
                     _library.Refresh();
 
+                    // If the UI language changed, re-seed the built-in samples in the new language.
+                    _library.EnsureSampleLanguage();
+
                     var all = _library.GetAll();
                     if (!all.Any())
                     {

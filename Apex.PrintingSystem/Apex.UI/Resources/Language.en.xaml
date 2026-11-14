@@ -1735,4 +1735,5 @@ Close anyway?</sys:String>
     <sys:String x:Key="FieldType_Barcode">Barcode</sys:String>
     <sys:String x:Key="FieldType_QrCode">QR code</sys:String>
     <sys:String x:Key="FieldType_Counter">Auto counter</sys:String>
+    <sys:String x:Key="Lang_Code">en</sys:String>
 </ResourceDictionary>
