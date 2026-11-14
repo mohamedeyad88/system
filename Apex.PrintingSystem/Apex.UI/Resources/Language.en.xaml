@@ -1678,4 +1678,50 @@ Close anyway?</sys:String>
     <sys:String x:Key="Settings_Theme">Appearance</sys:String>
     <sys:String x:Key="Settings_ThemeLight">Light</sys:String>
     <sys:String x:Key="Settings_ThemeDark">Dark</sys:String>
+    <sys:String x:Key="Settings_UpdatesTitle">Updates</sys:String>
+    <sys:String x:Key="Settings_UpdateAvailable">Update available</sys:String>
+    <sys:String x:Key="Settings_CurrentVersion">Current version: </sys:String>
+    <sys:String x:Key="Settings_CheckUpdate">Check for update</sys:String>
+    <sys:String x:Key="Settings_DownloadUpdate">⬇️ Download update</sys:String>
+    <sys:String x:Key="License_InstantActivation">Instant activation with a serial</sys:String>
+    <sys:String x:Key="License_SerialHint">Enter your serial (APX-XXXXX-XXXXX-XXXXX) to activate instantly, without waiting for the trial to end.</sys:String>
+    <sys:String x:Key="License_OrHaveFile">Or have a licence file (.apex):</sys:String>
+    <sys:String x:Key="License_Activate">Activate</sys:String>
+    <sys:String x:Key="ACT_TrialLeftLabel" xml:space="preserve">Trial days left: </sys:String>
+    <sys:String x:Key="ACT_DaysUnit" xml:space="preserve"> days</sys:String>
+    <sys:String x:Key="ACT_DeviceId">Device ID</sys:String>
+    <sys:String x:Key="ACT_DeviceIdHint">The staff member needs this device ID to activate. Copy it and send it to request your licence.</sys:String>
+    <sys:String x:Key="ACT_Copy">Copy</sys:String>
+    <sys:String x:Key="ACT_Options">🔑 Activation options</sys:String>
+    <sys:String x:Key="ACT_BySerial">Activate with a serial (online)</sys:String>
+    <sys:String x:Key="ACT_IAgree" xml:space="preserve">I agree to </sys:String>
+    <sys:String x:Key="ACT_LicenseAgreement">the licence agreement</sys:String>
+    <sys:String x:Key="ACT_ActivateOnline">Activate online</sys:String>
+    <sys:String x:Key="ACT_Or">or</sys:String>
+    <sys:String x:Key="ACT_WhatsApp">Contact us on WhatsApp to activate</sys:String>
+    <sys:String x:Key="ACT_WhatsAppHint">A chat with support will open automatically</sys:String>
+    <sys:String x:Key="ACT_InstallFile">Install a licence file (.apex)</sys:String>
+    <sys:String x:Key="ACT_ChooseFile">Choose the licence file support sent you</sys:String>
+    <sys:String x:Key="CC_Printers">Printers</sys:String>
+    <sys:String x:Key="CC_IccFile">ICC profile:</sys:String>
+    <sys:String x:Key="CC_PickPrinter">← Pick a printer from the list</sys:String>
+    <sys:String x:Key="CC_Title">Colour calibration settings</sys:String>
+    <sys:String x:Key="CC_PrinterLabel" xml:space="preserve">Printer: </sys:String>
+    <sys:String x:Key="CC_ImageAdjust">— Image adjustment</sys:String>
+    <sys:String x:Key="CC_Brightness">Brightness</sys:String>
+    <sys:String x:Key="CC_Contrast">Contrast</sys:String>
+    <sys:String x:Key="CC_Saturation">Saturation</sys:String>
+    <sys:String x:Key="CC_CmykOffset">— CMYK offset</sys:String>
+    <sys:String x:Key="CC_Cyan">Cyan</sys:String>
+    <sys:String x:Key="CC_Magenta">Magenta</sys:String>
+    <sys:String x:Key="CC_Yellow">Yellow</sys:String>
+    <sys:String x:Key="CC_Black">Black</sys:String>
+    <sys:String x:Key="CC_Save">💾 Save settings</sys:String>
+    <sys:String x:Key="CC_Reset">↺ Reset</sys:String>
+    <sys:String x:Key="TRAY_Title">Sheets loaded in trays</sys:String>
+    <sys:String x:Key="TRAY_Question">Before printing — how many sheets are loaded in each tray?</sys:String>
+    <sys:String x:Key="TRAY_Hint">Apex counts the sheets and pauses to ask for a refill before any tray runs empty — without relying on the printer.</sys:String>
+    <sys:String x:Key="TRAY_Start">Start printing</sys:String>
+    <sys:String x:Key="TRAY_NoAlert">No alert</sys:String>
+    <sys:String x:Key="TRAY_Cancel">Cancel</sys:String>
 </ResourceDictionary>

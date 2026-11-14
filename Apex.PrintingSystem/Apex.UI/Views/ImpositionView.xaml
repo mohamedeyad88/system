@@ -515,7 +515,7 @@
                 <Border Background="{DynamicResource StoppedSoft}" CornerRadius="10" Padding="16,12" Margin="0,0,0,16"
                         Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="âڑ " Foreground="{DynamicResource Stopped}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="⚠" Foreground="{DynamicResource Stopped}" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
                         <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Stopped}" FontSize="13" TextWrapping="Wrap" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Border>

@@ -108,9 +108,9 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                             Margin="0,12,0,0"
                             Visibility="{Binding ShowTrialInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <TextBlock Text="الأيام المتبقية في التجربة: " FontSize="14" Foreground="{DynamicResource Muted}"/>
+                    <TextBlock Text="{DynamicResource ACT_TrialLeftLabel}" FontSize="14" Foreground="{DynamicResource Muted}"/>
                     <TextBlock Text="{Binding TrialDaysRemaining}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource Printing}"/>
-                    <TextBlock Text=" يوم" FontSize="14" Foreground="{DynamicResource Muted}" Margin="4,0,0,0"/>
+                    <TextBlock Text="{DynamicResource ACT_DaysUnit}" FontSize="14" Foreground="{DynamicResource Muted}" Margin="4,0,0,0"/>
                 </StackPanel>
             </StackPanel>
         </Border>
@@ -122,10 +122,10 @@
             <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                     <TextBlock Text="💻" FontSize="16" Margin="0,0,10,0"/>
-                    <TextBlock Text="رقم تعريف الجهاز" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
+                    <TextBlock Text="{DynamicResource ACT_DeviceId}" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"/>
                 </StackPanel>
 
-                <TextBlock Text="يحتاج الموظف للتفعيل إلى رقم الجهاز هذا. انسخه وأرسله لطلب الترخيص."
+                <TextBlock Text="{DynamicResource ACT_DeviceIdHint}"
                            FontSize="12" Foreground="{DynamicResource Muted}" TextWrapping="Wrap" Margin="0,0,0,12"/>
 
                 <!-- Device ID display -->
@@ -149,7 +149,7 @@
                                 Padding="14,8" Margin="12,0,0,0">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="📋" Margin="0,0,6,0"/>
-                                <TextBlock Text="نسخ"/>
+                                <TextBlock Text="{DynamicResource ACT_Copy}"/>
                             </StackPanel>
                         </Button>
                     </Grid>
@@ -162,12 +162,12 @@
              ══════════════════════════════════════════ -->
         <Border Grid.Row="3" Style="{StaticResource Card}">
             <StackPanel>
-                <TextBlock Text="🔑 خيارات التفعيل"
+                <TextBlock Text="{DynamicResource ACT_Options}"
                            FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"
                            Margin="0,0,0,16"/>
 
                 <!-- Online activation (serial code) — the primary path -->
-                <TextBlock Text="فعّل بكود السيريال (أونلاين)"
+                <TextBlock Text="{DynamicResource ACT_BySerial}"
                            FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Ink}"
                            Margin="0,0,0,8"/>
                 <TextBox Text="{Binding SerialKey, UpdateSourceTrigger=PropertyChanged}"
@@ -182,15 +182,15 @@
                 <CheckBox IsChecked="{Binding IsEulaAccepted}"
                           Foreground="{DynamicResource Muted}" Margin="0,0,0,12" VerticalContentAlignment="Center">
                     <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource Muted}" FontSize="12">
-                        <Run Text="أوافق على "/><Hyperlink Command="{Binding ShowEulaCommand}"
-                            Foreground="{DynamicResource Action}"><Run Text="اتفاقية الترخيص"/></Hyperlink>
+                        <Run Text="{DynamicResource ACT_IAgree}"/><Hyperlink Command="{Binding ShowEulaCommand}"
+                            Foreground="{DynamicResource Action}"><Run Text="{DynamicResource ACT_LicenseAgreement}"/></Hyperlink>
                     </TextBlock>
                 </CheckBox>
 
                 <Button Command="{Binding ActivateOnlineCommand}"
                         IsEnabled="{Binding CanActivate}"
                         Style="{StaticResource BtnPrimary}" Margin="0,0,0,8">
-                    <TextBlock Text="تفعيل أونلاين" FontWeight="SemiBold" FontSize="14"/>
+                    <TextBlock Text="{DynamicResource ACT_ActivateOnline}" FontWeight="SemiBold" FontSize="14"/>
                 </Button>
 
                 <TextBlock Text="{Binding OnlineStatus}"
@@ -208,7 +208,7 @@
                 <Grid Margin="0,8,0,12">
                     <Rectangle Height="1" Fill="{DynamicResource Hover}" VerticalAlignment="Center"/>
                     <Border Background="{DynamicResource Panel}" HorizontalAlignment="Center" Padding="12,0">
-                        <TextBlock Text="أو" FontSize="12" Foreground="{DynamicResource Muted}"/>
+                        <TextBlock Text="{DynamicResource ACT_Or}" FontSize="12" Foreground="{DynamicResource Muted}"/>
                     </Border>
                 </Grid>
 
@@ -219,8 +219,8 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="💬" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
                         <StackPanel>
-                            <TextBlock Text="تواصل عبر واتساب للتفعيل" FontWeight="SemiBold" FontSize="14"/>
-                            <TextBlock Text="سيتم فتح محادثة مع الدعم الفني تلقائياً" FontSize="11" Opacity="0.85"/>
+                            <TextBlock Text="{DynamicResource ACT_WhatsApp}" FontWeight="SemiBold" FontSize="14"/>
+                            <TextBlock Text="{DynamicResource ACT_WhatsAppHint}" FontSize="11" Opacity="0.85"/>
                         </StackPanel>
                     </StackPanel>
                 </Button>
@@ -229,7 +229,7 @@
                 <Grid Margin="0,4,0,12">
                     <Rectangle Height="1" Fill="{DynamicResource Hover}" VerticalAlignment="Center"/>
                     <Border Background="{DynamicResource Panel}" HorizontalAlignment="Center" Padding="12,0">
-                        <TextBlock Text="أو" FontSize="12" Foreground="{DynamicResource Muted}"/>
+                        <TextBlock Text="{DynamicResource ACT_Or}" FontSize="12" Foreground="{DynamicResource Muted}"/>
                     </Border>
                 </Grid>
 
@@ -239,8 +239,8 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="📁" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
                         <StackPanel>
-                            <TextBlock Text="تثبيت ملف الترخيص (.apex)" FontWeight="SemiBold" FontSize="14"/>
-                            <TextBlock Text="اختر ملف الترخيص الذي أرسله الدعم الفني" FontSize="11" Opacity="0.85"/>
+                            <TextBlock Text="{DynamicResource ACT_InstallFile}" FontWeight="SemiBold" FontSize="14"/>
+                            <TextBlock Text="{DynamicResource ACT_ChooseFile}" FontSize="11" Opacity="0.85"/>
                         </StackPanel>
                     </StackPanel>
                 </Button>

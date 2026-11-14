@@ -89,7 +89,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Text="الطابعات" Foreground="{DynamicResource OnAction}"
+                    <TextBlock Grid.Row="0" Text="{DynamicResource CC_Printers}" Foreground="{DynamicResource OnAction}"
                                FontSize="13" FontWeight="SemiBold" Margin="16,16,16,8"/>
 
                     <ListBox Grid.Row="1"
@@ -129,7 +129,7 @@
                     <Border Grid.Row="2" Padding="16,12"
                             BorderBrush="{DynamicResource Border}" BorderThickness="0,1,0,0">
                         <StackPanel>
-                            <TextBlock Text="ملف ICC:" Foreground="{DynamicResource Muted}" FontSize="10"/>
+                            <TextBlock Text="{DynamicResource CC_IccFile}" Foreground="{DynamicResource Muted}" FontSize="10"/>
                             <TextBlock Foreground="{DynamicResource Muted}" FontSize="11" TextWrapping="Wrap"
                                        Margin="0,2,0,0">
                                 <TextBlock.Style>
@@ -151,7 +151,7 @@
             <!-- Right: Calibration Controls -->
             <Grid Grid.Column="1">
                 <!-- No printer selected -->
-                <TextBlock Text="← اختر طابعة من القائمة"
+                <TextBlock Text="{DynamicResource CC_PickPrinter}"
                            Foreground="{DynamicResource Muted}" FontSize="16"
                            HorizontalAlignment="Center" VerticalAlignment="Center">
                     <TextBlock.Style>
@@ -181,15 +181,15 @@
                     <StackPanel>
 
                         <!-- Title -->
-                        <TextBlock Text="إعدادات الضبط اللوني" Foreground="{DynamicResource OnAction}"
+                        <TextBlock Text="{DynamicResource CC_Title}" Foreground="{DynamicResource OnAction}"
                                    FontSize="15" FontWeight="Bold" Margin="0,0,0,4"/>
                         <TextBlock Foreground="{DynamicResource Muted}" FontSize="11" Margin="0,0,0,16">
-                            <Run Text="الطابعة: "/>
+                            <Run Text="{DynamicResource CC_PrinterLabel}"/>
                             <Run Text="{Binding SelectedPrinterName}" Foreground="{DynamicResource Muted}"/>
                         </TextBlock>
 
                         <!-- RGB Adjustments -->
-                        <TextBlock Text="— ضبط الصورة" Style="{StaticResource GroupTitle}"
+                        <TextBlock Text="{DynamicResource CC_ImageAdjust}" Style="{StaticResource GroupTitle}"
                                    Foreground="{DynamicResource Action}"/>
 
                         <!-- Brightness -->
@@ -199,7 +199,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="48"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="السطوع"
+                            <TextBlock Grid.Column="0" Text="{DynamicResource CC_Brightness}"
                                        Style="{StaticResource SliderLabel}"/>
                             <Slider Grid.Column="1" Value="{Binding Brightness}"
                                     Style="{StaticResource SliderStyle}" Margin="8,0"/>
@@ -215,7 +215,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="48"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="التباين"
+                            <TextBlock Grid.Column="0" Text="{DynamicResource CC_Contrast}"
                                        Style="{StaticResource SliderLabel}"/>
                             <Slider Grid.Column="1" Value="{Binding Contrast}"
                                     Style="{StaticResource SliderStyle}" Margin="8,0"/>
@@ -231,7 +231,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="48"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="التشبع"
+                            <TextBlock Grid.Column="0" Text="{DynamicResource CC_Saturation}"
                                        Style="{StaticResource SliderLabel}"/>
                             <Slider Grid.Column="1" Value="{Binding Saturation}"
                                     Style="{StaticResource SliderStyle}" Margin="8,0"/>
@@ -241,7 +241,7 @@
                         </Grid>
 
                         <!-- CMYK -->
-                        <TextBlock Text="— إزاحة CMYK" Style="{StaticResource GroupTitle}"
+                        <TextBlock Text="{DynamicResource CC_CmykOffset}" Style="{StaticResource GroupTitle}"
                                    Foreground="{DynamicResource Printing}"/>
 
                         <!-- Cyan -->
@@ -251,7 +251,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="48"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="سيان"
+                            <TextBlock Grid.Column="0" Text="{DynamicResource CC_Cyan}"
                                        Style="{StaticResource SliderLabel}"/>
                             <Slider Grid.Column="1" Value="{Binding CyanOffset}"
                                     Style="{StaticResource SliderStyle}" Margin="8,0"/>
@@ -267,7 +267,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="48"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="ماجنتا"
+                            <TextBlock Grid.Column="0" Text="{DynamicResource CC_Magenta}"
                                        Style="{StaticResource SliderLabel}"/>
                             <Slider Grid.Column="1" Value="{Binding MagentaOffset}"
                                     Style="{StaticResource SliderStyle}" Margin="8,0"/>
@@ -283,7 +283,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="48"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="أصفر"
+                            <TextBlock Grid.Column="0" Text="{DynamicResource CC_Yellow}"
                                        Style="{StaticResource SliderLabel}"/>
                             <Slider Grid.Column="1" Value="{Binding YellowOffset}"
                                     Style="{StaticResource SliderStyle}" Margin="8,0"/>
@@ -299,7 +299,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="48"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="أسود"
+                            <TextBlock Grid.Column="0" Text="{DynamicResource CC_Black}"
                                        Style="{StaticResource SliderLabel}"/>
                             <Slider Grid.Column="1" Value="{Binding BlackOffset}"
                                     Style="{StaticResource SliderStyle}" Margin="8,0"/>
@@ -320,7 +320,7 @@
                                     Height="40" Background="{DynamicResource ActionFill}"
                                     Foreground="{DynamicResource OnAction}" BorderThickness="0"
                                     FontSize="13" FontWeight="SemiBold"
-                                    Content="💾 حفظ الإعدادات" Cursor="Hand">
+                                    Content="{DynamicResource CC_Save}" Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
                                         <Border x:Name="b" Background="{DynamicResource ActionFill}" CornerRadius="8"
@@ -339,7 +339,7 @@
                             </Button>
                             <Button Grid.Column="2"
                                     Command="{Binding ResetCalibrationCommand}"
-                                    Height="40" Content="↺ إعادة ضبط" Cursor="Hand">
+                                    Height="40" Content="{DynamicResource CC_Reset}" Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
                                         <Border x:Name="b" Background="Transparent" CornerRadius="8"

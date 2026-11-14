@@ -1685,4 +1685,50 @@
     <sys:String x:Key="Settings_Theme">المظهر</sys:String>
     <sys:String x:Key="Settings_ThemeLight">فاتح</sys:String>
     <sys:String x:Key="Settings_ThemeDark">غامق</sys:String>
+    <sys:String x:Key="Settings_UpdatesTitle">التحديثات</sys:String>
+    <sys:String x:Key="Settings_UpdateAvailable">تحديث متاح</sys:String>
+    <sys:String x:Key="Settings_CurrentVersion">النسخة الحالية: </sys:String>
+    <sys:String x:Key="Settings_CheckUpdate">بحث عن تحديث</sys:String>
+    <sys:String x:Key="Settings_DownloadUpdate">⬇️ تحميل التحديث</sys:String>
+    <sys:String x:Key="License_InstantActivation">تفعيل فوري برقم السيريال</sys:String>
+    <sys:String x:Key="License_SerialHint">أدخل السيريال (APX-XXXXX-XXXXX-XXXXX) للتفعيل مباشرةً دون انتظار انتهاء الفترة التجريبية.</sys:String>
+    <sys:String x:Key="License_OrHaveFile">أو لديك ملف ترخيص (.apex):</sys:String>
+    <sys:String x:Key="License_Activate">تفعيل</sys:String>
+    <sys:String x:Key="ACT_TrialLeftLabel" xml:space="preserve">الأيام المتبقية في التجربة: </sys:String>
+    <sys:String x:Key="ACT_DaysUnit" xml:space="preserve"> يوم</sys:String>
+    <sys:String x:Key="ACT_DeviceId">رقم تعريف الجهاز</sys:String>
+    <sys:String x:Key="ACT_DeviceIdHint">يحتاج الموظف للتفعيل إلى رقم الجهاز هذا. انسخه وأرسله لطلب الترخيص.</sys:String>
+    <sys:String x:Key="ACT_Copy">نسخ</sys:String>
+    <sys:String x:Key="ACT_Options">🔑 خيارات التفعيل</sys:String>
+    <sys:String x:Key="ACT_BySerial">فعّل بكود السيريال (أونلاين)</sys:String>
+    <sys:String x:Key="ACT_IAgree" xml:space="preserve">أوافق على </sys:String>
+    <sys:String x:Key="ACT_LicenseAgreement">اتفاقية الترخيص</sys:String>
+    <sys:String x:Key="ACT_ActivateOnline">تفعيل أونلاين</sys:String>
+    <sys:String x:Key="ACT_Or">أو</sys:String>
+    <sys:String x:Key="ACT_WhatsApp">تواصل عبر واتساب للتفعيل</sys:String>
+    <sys:String x:Key="ACT_WhatsAppHint">سيتم فتح محادثة مع الدعم الفني تلقائياً</sys:String>
+    <sys:String x:Key="ACT_InstallFile">تثبيت ملف الترخيص (.apex)</sys:String>
+    <sys:String x:Key="ACT_ChooseFile">اختر ملف الترخيص الذي أرسله الدعم الفني</sys:String>
+    <sys:String x:Key="CC_Printers">الطابعات</sys:String>
+    <sys:String x:Key="CC_IccFile">ملف ICC:</sys:String>
+    <sys:String x:Key="CC_PickPrinter">← اختر طابعة من القائمة</sys:String>
+    <sys:String x:Key="CC_Title">إعدادات الضبط اللوني</sys:String>
+    <sys:String x:Key="CC_PrinterLabel" xml:space="preserve">الطابعة: </sys:String>
+    <sys:String x:Key="CC_ImageAdjust">— ضبط الصورة</sys:String>
+    <sys:String x:Key="CC_Brightness">السطوع</sys:String>
+    <sys:String x:Key="CC_Contrast">التباين</sys:String>
+    <sys:String x:Key="CC_Saturation">التشبع</sys:String>
+    <sys:String x:Key="CC_CmykOffset">— إزاحة CMYK</sys:String>
+    <sys:String x:Key="CC_Cyan">سيان</sys:String>
+    <sys:String x:Key="CC_Magenta">ماجنتا</sys:String>
+    <sys:String x:Key="CC_Yellow">أصفر</sys:String>
+    <sys:String x:Key="CC_Black">أسود</sys:String>
+    <sys:String x:Key="CC_Save">💾 حفظ الإعدادات</sys:String>
+    <sys:String x:Key="CC_Reset">↺ إعادة ضبط</sys:String>
+    <sys:String x:Key="TRAY_Title">عدد الأوراق في الأدراج</sys:String>
+    <sys:String x:Key="TRAY_Question">قبل الطباعة — كم ورقة محمّلة في كل درج؟</sys:String>
+    <sys:String x:Key="TRAY_Hint">البرنامج هيعدّ الأوراق ويوقف يطلب التعبئة قبل ما أي درج يفضى — من غير الاعتماد على الطابعة.</sys:String>
+    <sys:String x:Key="TRAY_Start">ابدأ الطباعة</sys:String>
+    <sys:String x:Key="TRAY_NoAlert">بدون تنبيه</sys:String>
+    <sys:String x:Key="TRAY_Cancel">إلغاء</sys:String>
 </ResourceDictionary>

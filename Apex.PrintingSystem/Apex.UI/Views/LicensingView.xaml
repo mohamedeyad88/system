@@ -160,9 +160,9 @@
                                FontSize="12" Foreground="{DynamicResource Muted}" Margin="0,0,0,16"/>
 
                     <!-- Instant online activation by serial (buy now, no need to wait for the trial to end) -->
-                    <TextBlock Text="تفعيل فوري برقم السيريال" FontSize="13" FontWeight="SemiBold"
+                    <TextBlock Text="{DynamicResource License_InstantActivation}" FontSize="13" FontWeight="SemiBold"
                                Foreground="{DynamicResource Ink}" Margin="0,0,0,4"/>
-                    <TextBlock Text="أدخل السيريال (APX-XXXXX-XXXXX-XXXXX) للتفعيل مباشرةً دون انتظار انتهاء الفترة التجريبية."
+                    <TextBlock Text="{DynamicResource License_SerialHint}"
                                FontSize="12" Foreground="{DynamicResource Muted}" Margin="0,0,0,10" TextWrapping="Wrap"/>
                     <Grid Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
@@ -178,13 +178,13 @@
                         <Button Grid.Column="1" Command="{Binding ActivateWithSerialCommand}"
                                 IsEnabled="{Binding IsNotActivating}" Margin="10,0,0,0" Cursor="Hand"
                                 Padding="22,10" Background="{DynamicResource ActionFill}" BorderThickness="0"
-                                Foreground="{DynamicResource OnAction}" FontWeight="SemiBold" Content="تفعيل"/>
+                                Foreground="{DynamicResource OnAction}" FontWeight="SemiBold" Content="{DynamicResource License_Activate}"/>
                     </Grid>
                     <TextBlock Text="{Binding OnlineStatus}" Foreground="{Binding OnlineStatusColor}"
                                FontSize="12" Margin="0,0,0,16" TextWrapping="Wrap"/>
 
                     <Border Height="1" Background="{DynamicResource Hover}" Margin="0,0,0,16"/>
-                    <TextBlock Text="أو لديك ملف ترخيص (.apex):" FontSize="12"
+                    <TextBlock Text="{DynamicResource License_OrHaveFile}" FontSize="12"
                                Foreground="{DynamicResource Muted}" Margin="0,0,0,10"/>
 
                     <Button Command="{Binding ImportLicenseCommand}" HorizontalAlignment="Left"
