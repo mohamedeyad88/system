@@ -1,4 +1,5 @@
 using Apex.NumberedBooksEngine.Models;
+using Apex.Core.Localization;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
@@ -115,19 +116,19 @@ namespace Apex.UI.Models
                 var errors = new List<string>();
 
                 if (string.IsNullOrEmpty(PrinterName))
-                    errors.Add("يرجى اختيار طابعة");
+                    errors.Add(AppLocalizer.L("Npj_PickPrinter"));
 
                 if (string.IsNullOrEmpty(TemplatePath))
-                    errors.Add("يرجى تحديد مسار القالب");
+                    errors.Add(AppLocalizer.L("Npj_PickTemplate"));
 
                 if (Slots == null || Slots.Count == 0)
-                    errors.Add("يرجى إضافة slot واحد على الأقل");
+                    errors.Add(AppLocalizer.L("Npj_AddSlot"));
 
                 if (TotalNumbers <= 0)
-                    errors.Add("إجمالي الأرقام يجب أن يكون أكبر من صفر");
+                    errors.Add(AppLocalizer.L("Npj_TotalGtZero"));
 
                 if (NumberOfCopies < 1 || NumberOfCopies > 3)
-                    errors.Add("عدد النسخ يجب أن يكون بين 1 و 3");
+                    errors.Add(AppLocalizer.L("Npj_CopiesRange"));
 
                 return errors;
             }

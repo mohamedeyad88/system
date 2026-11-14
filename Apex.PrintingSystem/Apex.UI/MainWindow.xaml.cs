@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 using Apex.UI.ViewModels;
+using Apex.Core.Localization;
 
 namespace Apex.UI
 {
@@ -85,8 +86,8 @@ namespace Apex.UI
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"خطأ في تحميل النافذة:\n{ex.Message}",
-                    "خطأ",
+                    AppLocalizer.Lf("Mw_LoadError", ex.Message),
+                    AppLocalizer.L("Err_Generic"),
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
             }

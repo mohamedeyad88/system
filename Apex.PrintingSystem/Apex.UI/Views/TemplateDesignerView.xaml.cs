@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Apex.Core.Localization;
 
 namespace Apex.UI.Views
 {
@@ -211,11 +212,11 @@ namespace Apex.UI.Views
         {
             var dlg = new OpenFileDialog
             {
-                Title = "اختر ورقتك الحالية (صورة أو PDF) لتصميم فوقها",
-                Filter = "صور و PDF|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tiff;*.pdf|"
+                Title = AppLocalizer.L("TdvFile_ChooseArtwork"),
+                Filter = AppLocalizer.L("TdvFile_ImagesPdf")
                        + "PDF|*.pdf|"
-                       + "صور|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tiff|"
-                       + "كل الملفات|*.*",
+                       + AppLocalizer.L("TdvFile_Images")
+                       + AppLocalizer.L("TdvFile_AllFiles"),
                 Multiselect = false
             };
             if (dlg.ShowDialog() != true) return;
@@ -227,8 +228,8 @@ namespace Apex.UI.Views
         {
             var dlg = new OpenFileDialog
             {
-                Title = "استيراد قالب Apex",
-                Filter = "Apex Template (*.apext)|*.apext|كل الملفات|*.*",
+                Title = AppLocalizer.L("TdvFile_ImportTemplate"),
+                Filter = AppLocalizer.L("TdvFile_ApextFilter"),
                 Multiselect = false
             };
             if (dlg.ShowDialog() != true) return;
@@ -240,13 +241,13 @@ namespace Apex.UI.Views
         {
             var dlg = new OpenFileDialog
             {
-                Title = "اختر خلفية التصميم (صورة أو PDF)",
+                Title = AppLocalizer.L("TdvFile_ChooseBg"),
                 // PDF is accepted as a design base: the first page is rasterised and set
                 // as the background, so numbering / variable fields can be laid on top.
-                Filter = "صور و PDF|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tiff;*.pdf|"
+                Filter = AppLocalizer.L("TdvFile_ImagesPdf")
                        + "PDF|*.pdf|"
-                       + "صور|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tiff|"
-                       + "كل الملفات|*.*"
+                       + AppLocalizer.L("TdvFile_Images")
+                       + AppLocalizer.L("TdvFile_AllFiles")
             };
             if (dlg.ShowDialog() != true) return;
             if (DataContext is TemplateDesignerViewModel vm)

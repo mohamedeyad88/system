@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Apex.Core.Localization;
 
 namespace Apex.UI.Views
 {
@@ -40,7 +41,7 @@ namespace Apex.UI.Views
 
             if (vm.CurrentRenderedTemplate == null)
             {
-                vm.ExportPreviewStatus = "⚠ لا توجد معاينة — اربط المتغيرات أولاً";
+                vm.ExportPreviewStatus = AppLocalizer.L("SV_NoPreview");
                 vm.ExportPreviewStatusColor = StatusPalette.Warning;
                 return;
             }
@@ -50,8 +51,8 @@ namespace Apex.UI.Views
 
             var dlg = new SaveFileDialog
             {
-                Title = "حفظ السجل الحالي كـ PNG",
-                Filter = "صورة PNG|*.png",
+                Title = AppLocalizer.L("SV_SaveRowPng"),
+                Filter = AppLocalizer.L("SV_PngFilter"),
                 FileName = defaultName,
                 AddExtension = true,
             };
@@ -65,16 +66,16 @@ namespace Apex.UI.Views
                 ExportElementToPng(TemplatePreviewRoot, dlg.FileName, dpi: 150);
 
                 string shortName = Path.GetFileName(dlg.FileName);
-                vm.ExportPreviewStatus = $"✅ تم الحفظ: {shortName}";
+                vm.ExportPreviewStatus = AppLocalizer.Lf("SV_Saved", shortName);
                 vm.ExportPreviewStatusColor = StatusPalette.Done;
             }
             catch (Exception ex)
             {
-                vm.ExportPreviewStatus = $"خطأ في التصدير: {ex.Message}";
+                vm.ExportPreviewStatus = AppLocalizer.Lf("SV_ExportError", ex.Message);
                 vm.ExportPreviewStatusColor = StatusPalette.Error;
                 MessageBox.Show(
-                    $"فشل تصدير PNG:\n{ex.Message}",
-                    "خطأ في التصدير",
+                    AppLocalizer.Lf("SV_PngFailed", ex.Message),
+                    AppLocalizer.L("SV_ExportErrorTitle"),
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
@@ -88,7 +89,7 @@ namespace Apex.UI.Views
 
             // Try to find a "name" field for a more descriptive filename
             var nameField = vm.PreviewFields.FirstOrDefault(f =>
-                f.FieldLabel.Contains("اسم", StringComparison.OrdinalIgnoreCase) ||
+                f.FieldLabel.Contains(AppLocalizer.L("SV_NameCol"), StringComparison.OrdinalIgnoreCase) ||
                 f.FieldLabel.Contains("name", StringComparison.OrdinalIgnoreCase));
 
             if (nameField != null && !string.IsNullOrWhiteSpace(nameField.Value))

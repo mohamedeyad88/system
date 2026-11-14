@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Apex.Licensing;
+using Apex.Core.Localization;
 
 namespace Apex.UI.Services
 {
@@ -36,7 +37,7 @@ namespace Apex.UI.Services
         public async Task<ActivationOutcome> ActivateAsync(string serial, CancellationToken ct = default)
         {
             if (string.IsNullOrWhiteSpace(serial))
-                return new ActivationOutcome(false, "يرجى إدخال رقم السيريال.", null);
+                return new ActivationOutcome(false, AppLocalizer.L("Act_SerialRequired"), null);
 
             // Re-activating a machine that already holds a license keeps the id the server
             // bound it under, so it stays idempotent instead of spending a device change.
@@ -60,12 +61,12 @@ namespace Apex.UI.Services
             catch (TaskCanceledException)
             {
                 return new ActivationOutcome(false,
-                    "انتهت مهلة الاتصال بخادم التفعيل. تحقّق من الإنترنت وحاول مرة أخرى.", null);
+                    AppLocalizer.L("Act_Timeout"), null);
             }
             catch (HttpRequestException)
             {
                 return new ActivationOutcome(false,
-                    "تعذّر الاتصال بخادم التفعيل. تأكد من اتصال الإنترنت أو استخدم التفعيل عبر واتساب.", null);
+                    AppLocalizer.L("Act_NoConnect"), null);
             }
 
             ActivationResponse? parsed = null;
@@ -77,13 +78,13 @@ namespace Apex.UI.Services
                 var serverError = parsed?.Error;
                 return new ActivationOutcome(false,
                     string.IsNullOrWhiteSpace(serverError)
-                        ? $"فشل التفعيل (رمز {(int)resp.StatusCode})."
+                        ? AppLocalizer.Lf("Act_FailedCode", (int)resp.StatusCode)
                         : serverError,
                     null);
             }
 
             if (parsed.License is null)
-                return new ActivationOutcome(false, "استجابة الخادم لا تحتوي على ملف ترخيص.", null);
+                return new ActivationOutcome(false, AppLocalizer.L("Act_NoLicenseInResp"), null);
 
             var signed = new SignedLicense
             {
@@ -94,7 +95,7 @@ namespace Apex.UI.Services
 
             var (installed, result) = LicenseManager.InstallSignedLicense(signed);
             return installed
-                ? new ActivationOutcome(true, "تم التفعيل بنجاح.", result)
+                ? new ActivationOutcome(true, AppLocalizer.L("Act_Success"), result)
                 : new ActivationOutcome(false, result.ErrorMessage, result);
         }
 

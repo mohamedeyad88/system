@@ -8,6 +8,7 @@ using System.Windows.Shapes;
 using Apex.UI.ViewModels;
 using Apex.UI.Models;
 using Apex.UI.Views.Dialogs;
+using Apex.Core.Localization;
 
 namespace Apex.UI.Views
 {
@@ -126,7 +127,7 @@ namespace Apex.UI.Views
             }
             else
             {
-                MessageBox.Show("يرجى إدراج التصميم أولاً", "تحذير", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(AppLocalizer.L("Num_InsertDesignFirst"), AppLocalizer.L("Num_Warning"), MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -363,9 +364,9 @@ namespace Apex.UI.Views
         {
             if (sender is RadioButton radioButton && ViewModel != null)
             {
-                if (radioButton.Content.ToString()?.Contains("الحجم الفعلي") == true)
+                if (radioButton.Content.ToString()?.Contains(AppLocalizer.L("Num_ActualSize")) == true)
                     ViewModel.PrintScaleMode = Apex.NumberedBooksEngine.Core.PrintScaleMode.ActualSize;
-                else if (radioButton.Content.ToString()?.Contains("ملاءمة") == true)
+                else if (radioButton.Content.ToString()?.Contains(AppLocalizer.L("Num_Fit")) == true)
                     ViewModel.PrintScaleMode = Apex.NumberedBooksEngine.Core.PrintScaleMode.FitToPage;
             }
         }

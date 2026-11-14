@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.Win32;
+using Apex.Core.Localization;
 
 namespace Apex.UI.ViewModels
 {
@@ -69,10 +70,10 @@ namespace Apex.UI.ViewModels
             _colorLookup = colour.CreateLookup(printerName);
 
             ColorPathNote = _colorLookup == null
-                ? "المعاينة بالمعادلة المدمجة — لا يوجد ملف ICC مناسب"
+                ? AppLocalizer.L("CC_PreviewBuiltin")
                 : resolution.Path == ColorPath.PrinterProfile
-                    ? $"المعاينة عبر ملف الطابعة: {System.IO.Path.GetFileNameWithoutExtension(resolution.ProfilePath)}"
-                    : $"المعاينة عبر معيار الدار: {System.IO.Path.GetFileNameWithoutExtension(resolution.ProfilePath)}";
+                    ? AppLocalizer.Lf("CC_PreviewByPrinter", System.IO.Path.GetFileNameWithoutExtension(resolution.ProfilePath))
+                    : AppLocalizer.Lf("CC_PreviewByHouse", System.IO.Path.GetFileNameWithoutExtension(resolution.ProfilePath));
 
             RefreshSwatches();
         }
@@ -82,7 +83,7 @@ namespace Apex.UI.ViewModels
         [ObservableProperty] private MonitorInfo? _selectedMonitor;
         [ObservableProperty] private string _displayIccStatus = "";
         [ObservableProperty] private string _importedIccPath = "";
-        [ObservableProperty] private string _importedIccName = "اختر ملف ICC للشاشة...";
+        [ObservableProperty] private string _importedIccName = AppLocalizer.L("CC_ChooseIccMonitor");
 
         public ColorCalibrationViewModel(IPrinterDiscoveryService printerDiscovery)
         {
@@ -100,8 +101,8 @@ namespace Apex.UI.ViewModels
         {
             DisplayIccStatus = value is null ? "" :
                 string.IsNullOrEmpty(value.CurrentIccPath)
-                    ? "⚠️ لا يوجد ملف ICC محدد لهذه الشاشة"
-                    : $"الملف الحالي: {value.CurrentIccName}";
+                    ? AppLocalizer.L("CC_NoIccForMonitor")
+                    : AppLocalizer.Lf("CC_CurrentFile", value.CurrentIccName);
         }
 
         // ── Partial hooks ─────────────────────────────────────────────────────
@@ -196,7 +197,7 @@ namespace Apex.UI.ViewModels
 
             _calibration.SaveCalibration(profile);
             CalibratedAtText = DateTime.Now.ToString("yyyy-MM-dd  HH:mm");
-            StatusMessage = "✅ تم حفظ الإعدادات بنجاح";
+            StatusMessage = AppLocalizer.L("CC_Saved");
         }
 
         [RelayCommand]
@@ -213,7 +214,7 @@ namespace Apex.UI.ViewModels
             CalibratedAtText = "—";
             UpdateIccInfo(null);
 
-            StatusMessage = "↺ تم إعادة الضبط للقيم الافتراضية";
+            StatusMessage = AppLocalizer.L("CC_Reset");
         }
 
         [RelayCommand]
@@ -221,7 +222,7 @@ namespace Apex.UI.ViewModels
         {
             var dlg = new OpenFileDialog
             {
-                Title = "اختر ملف ICC / ICM",
+                Title = AppLocalizer.L("CC_ChooseIcc"),
                 Filter = "ICC Profiles|*.icc;*.icm|All Files|*.*",
             };
             if (dlg.ShowDialog() == true)
@@ -246,7 +247,7 @@ namespace Apex.UI.ViewModels
             }
             else
             {
-                StatusMessage = "⚠️ لم يتم العثور على ملف ICC للطابعة";
+                StatusMessage = AppLocalizer.L("CC_NoIccForPrinter");
             }
         }
 
@@ -276,7 +277,7 @@ namespace Apex.UI.ViewModels
             catch (Exception ex)
             {
                 Application.Current.Dispatcher.Invoke(() =>
-                    DisplayIccStatus = $"⚠️ تعذّر الكشف عن الشاشات: {ex.Message}");
+                    DisplayIccStatus = AppLocalizer.Lf("CC_DetectError", ex.Message));
             }
         }
 
@@ -285,7 +286,7 @@ namespace Apex.UI.ViewModels
         {
             var dlg = new OpenFileDialog
             {
-                Title       = "اختر ملف ICC / ICM للشاشة",
+                Title       = AppLocalizer.L("CC_ChooseIccMonitor2"),
                 Filter      = "ICC Profiles|*.icc;*.icm|All Files|*.*",
                 InitialDirectory = DisplayIccDetector.GetSystemColorFolder()
             };
@@ -302,12 +303,12 @@ namespace Apex.UI.ViewModels
         {
             if (SelectedMonitor is null)
             {
-                DisplayIccStatus = "⚠️ اختر شاشة أولاً";
+                DisplayIccStatus = AppLocalizer.L("CC_PickMonitorFirst");
                 return;
             }
             if (string.IsNullOrEmpty(ImportedIccPath))
             {
-                DisplayIccStatus = "⚠️ اختر ملف ICC أولاً";
+                DisplayIccStatus = AppLocalizer.L("CC_PickIccFirst");
                 return;
             }
 
@@ -315,7 +316,7 @@ namespace Apex.UI.ViewModels
             // window stays responsive (file copy to System32 + mscms.dll calls can
             // block for seconds). The async RelayCommand also disables itself while
             // running, preventing duplicate clicks.
-            DisplayIccStatus = "⏳ جارٍ تطبيق ملف ICC على الشاشة…";
+            DisplayIccStatus = AppLocalizer.L("CC_Applying");
 
             string iccPath = ImportedIccPath;
             string deviceName = SelectedMonitor.DeviceName;

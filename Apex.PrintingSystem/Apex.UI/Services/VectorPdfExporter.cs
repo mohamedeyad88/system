@@ -6,6 +6,7 @@ using Apex.UI.Rendering;
 using Apex.UI.ViewModels;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
+using Apex.Core.Localization;
 
 namespace Apex.UI.Services
 {
@@ -28,7 +29,7 @@ namespace Apex.UI.Services
         {
             if (pages == null) throw new ArgumentNullException(nameof(pages));
             if (string.IsNullOrWhiteSpace(filePath))
-                throw new ArgumentException("مسار الحفظ مطلوب.", nameof(filePath));
+                throw new ArgumentException(AppLocalizer.L("Vpe_SavePathRequired"), nameof(filePath));
 
             using var doc = new PdfDocument();
             int count = 0;
@@ -41,7 +42,7 @@ namespace Apex.UI.Services
             }
 
             if (count == 0)
-                throw new InvalidOperationException("لا توجد صفحات للتصدير.");
+                throw new InvalidOperationException(AppLocalizer.L("Vpe_NoPages"));
 
             doc.Info.Creator = "Apex Print OS";
             doc.Save(filePath);

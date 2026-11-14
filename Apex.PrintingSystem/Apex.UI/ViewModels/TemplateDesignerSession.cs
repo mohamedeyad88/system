@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using Apex.Core.Localization;
 using Apex.Services.SmartVariables;
 using Apex.Services.SmartVariables.Models;
 using Apex.Services.Templates;
@@ -17,14 +18,16 @@ namespace Apex.UI.ViewModels
     public partial class TemplateDesignerSession : ObservableObject
     {
         // ── Step metadata ─────────────────────────────────────────────────────
-        public static readonly (string Icon, string Label, string ShortLabel)[] Steps =
+        // Resolved against the active language each access (not a cached readonly array),
+        // so switching language updates the step labels.
+        public static (string Icon, string Label, string ShortLabel)[] Steps => new (string, string, string)[]
         {
-            ("📄", "تصميم القالب",   "تصميم"),
-            ("📋", "لصق البيانات",   "لصق"),
-            ("🔗", "ربط المتغيرات",  "ربط"),
-            ("🖼", "إدارة الصور",    "صور"),
-            ("👁", "معاينة",         "معاينة"),
-            ("✅", "فحص وتصدير",    "تصدير"),
+            ("📄", Apex.Core.Localization.AppLocalizer.L("Step_Design"),  Apex.Core.Localization.AppLocalizer.L("Step_DesignShort")),
+            ("📋", Apex.Core.Localization.AppLocalizer.L("Step_Paste"),   Apex.Core.Localization.AppLocalizer.L("Step_PasteShort")),
+            ("🔗", Apex.Core.Localization.AppLocalizer.L("Step_Map"),     Apex.Core.Localization.AppLocalizer.L("Step_MapShort")),
+            ("🖼", Apex.Core.Localization.AppLocalizer.L("Step_Images"),  Apex.Core.Localization.AppLocalizer.L("Step_ImagesShort")),
+            ("👁", Apex.Core.Localization.AppLocalizer.L("Step_Preview"), Apex.Core.Localization.AppLocalizer.L("Step_PreviewShort")),
+            ("✅", Apex.Core.Localization.AppLocalizer.L("Step_Export"),  Apex.Core.Localization.AppLocalizer.L("Step_ExportShort")),
         };
 
         // ── Canvas fields (synced from slots every time user enters a Smart step) ──

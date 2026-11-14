@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Apex.Core.Localization;
 
 namespace Apex.UI.ViewModels
 {
@@ -69,10 +70,10 @@ namespace Apex.UI.ViewModels
 
         public string ErrorMessage => Error switch
         {
-            FieldRenderError.NotMapped => "[غير مربوط]",
-            FieldRenderError.MissingValue => "[قيمة ناقصة]",
-            FieldRenderError.MissingImage => "[صورة ناقصة]",
-            FieldRenderError.InvalidFormat => "[تنسيق خاطئ]",
+            FieldRenderError.NotMapped => AppLocalizer.L("Rt_Unbound"),
+            FieldRenderError.MissingValue => AppLocalizer.L("Rt_MissingValue"),
+            FieldRenderError.MissingImage => AppLocalizer.L("Rt_MissingImage"),
+            FieldRenderError.InvalidFormat => AppLocalizer.L("Rt_BadFormat"),
             _ => ""
         };
 

@@ -6,6 +6,7 @@ using Apex.UI.Views;
 using System.IO;
 using System.Threading.Tasks;
 using Apex.Licensing;
+using Apex.Core.Localization;
 
 namespace Apex.UI
 {
@@ -267,8 +268,8 @@ namespace Apex.UI
             {
                 WriteCrashLog("crash_log.txt", "OnStartup", ex);
                 MessageBox.Show(
-                    $"خطأ فادح عند بدء التشغيل:\n\n{ex.Message}\n\nتم حفظ تقرير الخطأ.",
-                    "خطأ فادح", MessageBoxButton.OK, MessageBoxImage.Error);
+                    AppLocalizer.Lf("Crash_StartupMsg", ex.Message),
+                    AppLocalizer.L("Crash_Fatal"), MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown();
             }
         }
@@ -283,15 +284,15 @@ namespace Apex.UI
                 try
                 {
                     var msg = ex is not null
-                        ? $"البرنامج سيُغلق بسبب خطأ غير متوقع:\n\n{ex.GetType().Name}: {ex.Message}\n\nتم حفظ تقرير الخطأ."
-                        : "البرنامج سيُغلق بسبب خطأ غير متوقع.\n\nتم حفظ تقرير الخطأ.";
+                        ? AppLocalizer.Lf("Crash_UnexpectedMsg", $"{ex.GetType().Name}: {ex.Message}")
+                        : AppLocalizer.L("Crash_UnexpectedShort");
 
                     var dispatcher = Current?.Dispatcher;
                     if (dispatcher is not null && !dispatcher.HasShutdownStarted)
                         dispatcher.Invoke(() =>
-                            MessageBox.Show(msg, "خطأ فادح", MessageBoxButton.OK, MessageBoxImage.Error));
+                            MessageBox.Show(msg, AppLocalizer.L("Crash_Fatal"), MessageBoxButton.OK, MessageBoxImage.Error));
                     else
-                        MessageBox.Show(msg, "خطأ فادح", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show(msg, AppLocalizer.L("Crash_Fatal"), MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 catch { }
             };
@@ -354,7 +355,7 @@ namespace Apex.UI
                 try
                 {
                     MessageBox.Show(
-                        $"خطأ غير متوقع:\n{message}",
+                        AppLocalizer.Lf("Crash_UnexpectedMsg2", message),
                         "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 finally

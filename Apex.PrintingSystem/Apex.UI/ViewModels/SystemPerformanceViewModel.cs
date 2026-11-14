@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using Apex.Core.Localization;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -59,7 +60,7 @@ namespace Apex.UI.ViewModels
             UpdateStats();
 
             // Seed with startup entry
-            PushActivity("تم تشغيل مراقب الأداء");
+            PushActivity(AppLocalizer.L("Perf_MonitorStarted"));
         }
 
         private void Timer_Tick(object? sender, EventArgs e) => UpdateStats();
@@ -87,7 +88,7 @@ namespace Apex.UI.ViewModels
 
             // Log high-CPU events to the activity feed
             if (CpuUsage > 80)
-                PushActivity($"تحذير: استخدام المعالج {CpuUsage:F1}%");
+                PushActivity(AppLocalizer.Lf("Perf_CpuWarn", CpuUsage.ToString("F1")));
         }
 
         /// <summary>Adds a timestamped entry to the activity log (max 50 entries).</summary>

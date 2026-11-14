@@ -1,4 +1,5 @@
 using Apex.Core.Interfaces;
+using Apex.Core.Localization;
 using Apex.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -87,10 +88,10 @@ namespace Apex.UI.ViewModels
             // WPF folder picker via OpenFileDialog hack (no external lib required)
             var dlg = new Microsoft.Win32.OpenFileDialog
             {
-                Title = "اختر مجلد النسخ الاحتياطي",
+                Title = AppLocalizer.L("Set_ChooseBackupFolder"),
                 CheckFileExists = false,
                 CheckPathExists = true,
-                FileName = "اختر هذا المجلد",
+                FileName = AppLocalizer.L("Set_ChooseThisFolder"),
                 ValidateNames = false,
                 InitialDirectory = string.IsNullOrEmpty(BackupPath)
                     ? System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments)
@@ -105,7 +106,7 @@ namespace Apex.UI.ViewModels
         {
             var result = BackupService.Instance.RunBackup(BackupPath);
             MessageBox.Show(result.Message,
-                result.Success ? "النسخ الاحتياطي" : "خطأ في النسخ الاحتياطي",
+                result.Success ? AppLocalizer.L("Set_Backup") : AppLocalizer.L("Set_BackupError"),
                 MessageBoxButton.OK,
                 result.Success ? MessageBoxImage.Information : MessageBoxImage.Error);
         }
@@ -133,7 +134,7 @@ namespace Apex.UI.ViewModels
                     UpdateAvailable = true;
                     LatestVersion = info.LatestVersion;
                     _updateDownloadUrl = info.DownloadUrl;
-                    UpdateStatus = $"يوجد تحديث جديد: النسخة {info.LatestVersion} (نسختك {CurrentVersion}).";
+                    UpdateStatus = AppLocalizer.Lf("Set_UpdateAvailableMsg", info.LatestVersion, CurrentVersion);
                 }
             }
             catch { /* best-effort; the manual button still works */ }
@@ -145,23 +146,23 @@ namespace Apex.UI.ViewModels
             if (IsCheckingUpdate) return;
             IsCheckingUpdate = true;
             UpdateAvailable = false;
-            UpdateStatus = "جارٍ البحث عن تحديث…";
+            UpdateStatus = AppLocalizer.L("Set_Checking");
             try
             {
                 var info = await new Services.UpdateCheckService().CheckAsync(CurrentVersion);
                 if (info == null)
-                    UpdateStatus = "تعذّر الاتصال بالخادم. تأكد من الإنترنت وحاول تاني.";
+                    UpdateStatus = AppLocalizer.L("Set_NoConnect");
                 else if (info.Available)
                 {
                     UpdateAvailable = true;
                     LatestVersion = info.LatestVersion;
                     _updateDownloadUrl = info.DownloadUrl;
-                    UpdateStatus = $"يوجد تحديث جديد: النسخة {info.LatestVersion} (نسختك {CurrentVersion}).";
+                    UpdateStatus = AppLocalizer.Lf("Set_UpdateAvailableMsg", info.LatestVersion, CurrentVersion);
                 }
                 else
-                    UpdateStatus = $"أنت على أحدث نسخة ({CurrentVersion}).";
+                    UpdateStatus = AppLocalizer.Lf("Set_UpToDate", CurrentVersion);
             }
-            catch { UpdateStatus = "حصل خطأ أثناء البحث عن التحديث."; }
+            catch { UpdateStatus = AppLocalizer.L("Set_CheckError"); }
             finally { IsCheckingUpdate = false; }
         }
 
@@ -176,7 +177,7 @@ namespace Apex.UI.ViewModels
             }
             catch
             {
-                MessageBox.Show("تعذّر فتح رابط التحميل.", "تحديث", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(AppLocalizer.L("Set_OpenLinkError"), AppLocalizer.L("Set_Update"), MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
     }

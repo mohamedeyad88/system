@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
+using Apex.Core.Localization;
 
 namespace Apex.UI.ViewModels
 {
@@ -1181,7 +1182,7 @@ namespace Apex.UI.ViewModels
                 {
                     var trays = trayMapping.Keys.OrderBy(k => k)
                         .Select(k => (copyIndex: k,
-                            label: k == 0 ? "درج الأصل" : k == 1 ? "درج الصورة" : $"درج النسخة {k}"))
+                            label: k == 0 ? AppLocalizer.L("Nvm_OrigTray") : k == 1 ? AppLocalizer.L("Nvm_ImageTray") : AppLocalizer.Lf("Nvm_CopyTray", k)))
                         .ToList();
                     var trayDlg = new Apex.UI.Views.Dialogs.TrayLoadDialog(trays)
                     {
