@@ -74,6 +74,18 @@
     <SolidColorBrush x:Key="StoppedSoft"  Color="{StaticResource StoppedSoftColor}"/>
     <SolidColorBrush x:Key="PrintingSoft" Color="{StaticResource PrintingSoftColor}"/>
 
+    <!-- ── Dashboard 3D printer tones — dark metallic so the device blends into the
+         dark theme instead of glowing light grey. ── -->
+    <SolidColorBrush x:Key="PrTop"       Color="#FF3C434C"/>
+    <SolidColorBrush x:Key="PrFront"     Color="#FF2F353D"/>
+    <SolidColorBrush x:Key="PrSide"      Color="#FF23272E"/>
+    <SolidColorBrush x:Key="PrEdge"      Color="#FF454C55"/>
+    <SolidColorBrush x:Key="PrBtn"       Color="#FF566069"/>
+    <SolidColorBrush x:Key="PrSlot"      Color="#FF101317"/>
+    <SolidColorBrush x:Key="PrTray"      Color="#FF333A42"/>
+    <SolidColorBrush x:Key="PrPaper"     Color="#FFC9CED3"/>
+    <SolidColorBrush x:Key="PrPaperLine" Color="#FF8A9199"/>
+
     <!-- Text on the cyan brand fill stays dark ink in both modes; the light palette
          points OnBrand at InkColor, which here is near-white and would vanish. -->
     <SolidColorBrush x:Key="OnBrand"        Color="#FF14181D"/>

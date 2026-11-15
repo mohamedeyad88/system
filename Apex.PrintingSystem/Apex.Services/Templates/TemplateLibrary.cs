@@ -557,6 +557,12 @@ namespace Apex.Services.Templates
             try { seeded = File.Exists(SampleLangFilePath) ? File.ReadAllText(SampleLangFilePath).Trim() : ""; }
             catch { return; }
 
+            // When no marker exists (library seeded by an older build that predates the
+            // marker), infer the samples' language from their content so a mismatch is
+            // still reconciled instead of leaving stale Arabic samples on an English UI.
+            if (string.IsNullOrEmpty(seeded))
+                seeded = DetectSampleLanguage();
+
             if (string.IsNullOrEmpty(seeded) || seeded == current) return;
 
             try
@@ -575,6 +581,36 @@ namespace Apex.Services.Templates
 
             CreateSampleTemplates();
             Refresh();
+        }
+
+        /// <summary>
+        /// Best-effort detection of the language the built-in samples are currently in,
+        /// used when no <c>.sample-lang</c> marker exists. Looks at an Apex-authored
+        /// sample's name/category: Arabic letters → "ar", Latin letters → "en".
+        /// Returns "" when there are no Apex samples to judge from.
+        /// </summary>
+        private string DetectSampleLanguage()
+        {
+            try
+            {
+                foreach (string file in Directory.GetFiles(LibraryPath, $"*{ApextFileFormat.FileExtension}", SearchOption.TopDirectoryOnly))
+                {
+                    try
+                    {
+                        (ApextTemplate tpl, _) = ApextFileFormat.Load(file);
+                        if (tpl.Author != "Apex PrintingSystem") continue;
+                        string probe = (tpl.Name ?? "") + (tpl.Category ?? "");
+                        foreach (char c in probe)
+                        {
+                            if (c >= '؀' && c <= 'ۿ') return "ar";
+                            if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) return "en";
+                        }
+                    }
+                    catch { /* skip corrupted */ }
+                }
+            }
+            catch { /* ignore */ }
+            return "";
         }
 
         // ── Private helpers ───────────────────────────────────────────────────────

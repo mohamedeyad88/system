@@ -86,6 +86,18 @@
     <SolidColorBrush x:Key="StoppedSoft"  Color="{StaticResource StoppedSoftColor}"/>
     <SolidColorBrush x:Key="PrintingSoft" Color="{StaticResource PrintingSoftColor}"/>
 
+    <!-- ── Dashboard 3D printer tones — theme-aware so the device sits inside the
+         app's calm palette instead of reading as a bright cut-out. Light here. ── -->
+    <SolidColorBrush x:Key="PrTop"       Color="#FFE7EBEE"/>
+    <SolidColorBrush x:Key="PrFront"     Color="#FFCED3D7"/>
+    <SolidColorBrush x:Key="PrSide"      Color="#FFAAB0B5"/>
+    <SolidColorBrush x:Key="PrEdge"      Color="#FFBCC2C6"/>
+    <SolidColorBrush x:Key="PrBtn"       Color="#FF9AA1A7"/>
+    <SolidColorBrush x:Key="PrSlot"      Color="#FF5F666C"/>
+    <SolidColorBrush x:Key="PrTray"      Color="#FFDADFE3"/>
+    <SolidColorBrush x:Key="PrPaper"     Color="#FFFFFFFF"/>
+    <SolidColorBrush x:Key="PrPaperLine" Color="#FFE2E6E9"/>
+
     <!-- نص على العلامة: أبيض تباينه ضعيف (~3.3:1) فوق السماوي؛ الحبر أوضح.
          نستخدم الحبر كنص افتراضي على الأزرار السماوية، ونحتفظ بأبيض للحالات الغامقة. -->
     <SolidColorBrush x:Key="OnBrand"       Color="#FFFFFFFF"/>
