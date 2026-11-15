@@ -128,13 +128,17 @@
         </EventTrigger>
     </UserControl.Triggers>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <Grid Margin="28,22,28,24">
+    <!-- The grid is pinned to the viewport height so the whole cockpit — header,
+         centre and the bottom stats band — always fits the screen with the band in
+         view; it only scrolls on very short windows. A field customer on a small
+         laptop had the bottom row cut off under the fixed layout. -->
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="24,12,24,12">
+        <Grid MinHeight="{Binding ViewportHeight, RelativeSource={RelativeSource AncestorType=ScrollViewer}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>  <!-- 0 header -->
-                <RowDefinition Height="16"/>
-                <RowDefinition Height="*" MinHeight="430"/>  <!-- 2 main cockpit -->
                 <RowDefinition Height="14"/>
+                <RowDefinition Height="*" MinHeight="260"/>  <!-- 2 main cockpit -->
+                <RowDefinition Height="12"/>
                 <RowDefinition Height="Auto"/>  <!-- 4 bottom band -->
             </Grid.RowDefinitions>
 

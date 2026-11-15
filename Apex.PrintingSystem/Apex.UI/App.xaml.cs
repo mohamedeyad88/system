@@ -203,7 +203,7 @@ namespace Apex.UI
                 catch { /* stay in Arabic */ }
 
                 // Reapply light or dark, whichever was chosen last — dark until a choice
-                // is made: the owner made dark the default look (2026-09-21).
+                // is made: the owner keeps dark as the default look.
                 try
                 {
                     using var scope = scopeFactory.CreateScope();
