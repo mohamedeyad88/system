@@ -99,14 +99,20 @@ namespace Apex.UI.ViewModels
         [RelayCommand]
         private void LoadSampleData()
         {
-            // Tab-separated demo data. Kept inline (NOT localized): the \t / \r\n
-            // structure is what the parser depends on, so it must not be editable
-            // by translators or resolved at runtime.
-            const string sample =
-                "الاسم\tالصف\tرقم الجلوس\tالصورة\tالكود\r\n" +
-                "أحمد محمد علي\t3أ\t001\tأحمد.jpg\t00125\r\n" +
-                "فاطمة إبراهيم\t3ب\t002\tفاطمة.jpg\t00126\r\n" +
-                "محمد عبدالله\t4أ\t003\tمحمد.jpg\t00127";
+            // Tab-separated demo data (\t columns, \r\n rows) — the parser depends on
+            // this structure, so it stays inline rather than going through resources.
+            // We swap the whole block by UI language so the English UI gets a Latin
+            // sample instead of Arabic names.
+            bool ar = Services.LocalizationService.Instance?.IsArabicActive ?? true;
+            string sample = ar
+                ? "الاسم\tالصف\tرقم الجلوس\tالصورة\tالكود\r\n" +
+                  "أحمد محمد علي\t3أ\t001\tأحمد.jpg\t00125\r\n" +
+                  "فاطمة إبراهيم\t3ب\t002\tفاطمة.jpg\t00126\r\n" +
+                  "محمد عبدالله\t4أ\t003\tمحمد.jpg\t00127"
+                : "Name\tClass\tSeat No.\tPhoto\tCode\r\n" +
+                  "Ahmed Mohamed Ali\t3A\t001\tahmed.jpg\t00125\r\n" +
+                  "Fatima Ibrahim\t3B\t002\tfatima.jpg\t00126\r\n" +
+                  "Mohamed Abdullah\t4A\t003\tmohamed.jpg\t00127";
 
             RawPasteText = sample;
             // OnRawPasteTextChanged → ParsePaste is called automatically

@@ -1823,4 +1823,36 @@ Close anyway?</sys:String>
     <sys:String x:Key="Step_PreviewShort">Preview</sys:String>
     <sys:String x:Key="Step_Export">Check &amp; export</sys:String>
     <sys:String x:Key="Step_ExportShort">Export</sys:String>
+
+    <!-- ── Enum display labels (one-way converters) ─────────────────── -->
+    <sys:String x:Key="HAlign_Right">Right</sys:String>
+    <sys:String x:Key="HAlign_Center">Center</sys:String>
+    <sys:String x:Key="HAlign_Left">Left</sys:String>
+    <sys:String x:Key="VAlign_Top">Top</sys:String>
+    <sys:String x:Key="VAlign_Middle">Middle</sys:String>
+    <sys:String x:Key="VAlign_Bottom">Bottom</sys:String>
+    <sys:String x:Key="IMM_ByFileName">By file name</sys:String>
+    <sys:String x:Key="IMM_ById">By ID</sys:String>
+    <sys:String x:Key="IMM_ByName">By name</sys:String>
+    <sys:String x:Key="IMM_ByPathColumn">From path column</sys:String>
+    <sys:String x:Key="IMM_StaticSingle">Single static image</sys:String>
+    <sys:String x:Key="IMM_Manual">Manual</sys:String>
+    <sys:String x:Key="ES_AllValid">All valid records</sys:String>
+    <sys:String x:Key="ES_CurrentRecord">Current record only</sys:String>
+    <sys:String x:Key="ES_SelectedRecords">Selected records</sys:String>
+    <sys:String x:Key="EF_SinglePdf">Single PDF</sys:String>
+    <sys:String x:Key="EF_SeparatePdfs">PDF per record</sys:String>
+    <sys:String x:Key="EF_Png">PNG images</sys:String>
+    <sys:String x:Key="EF_Jpg">JPG images</sys:String>
+    <sys:String x:Key="EF_DirectPrint">Direct print</sys:String>
+    <sys:String x:Key="FNM_BySerial">Serial number</sys:String>
+    <sys:String x:Key="FNM_ByCode">By code</sys:String>
+    <sys:String x:Key="FNM_ByName">By name</sys:String>
+    <sys:String x:Key="FNM_ByFormula">Custom formula</sys:String>
+    <sys:String x:Key="IFit_Contain">Fit (Contain)</sys:String>
+    <sys:String x:Key="IFit_Cover">Cover</sys:String>
+    <sys:String x:Key="IFit_Stretch">Stretch</sys:String>
+    <sys:String x:Key="IFit_Fill">Fill</sys:String>
+    <sys:String x:Key="CC_None">None</sys:String>
+    <sys:String x:Key="ListSep">, </sys:String>
 </ResourceDictionary>

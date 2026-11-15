@@ -570,13 +570,17 @@ namespace Apex.UI.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Apex.Services.Templates.HorizontalAlign align)
-                return align switch
+            {
+                string? key = align switch
                 {
-                    Apex.Services.Templates.HorizontalAlign.Right => "يمين",
-                    Apex.Services.Templates.HorizontalAlign.Center => "وسط",
-                    Apex.Services.Templates.HorizontalAlign.Left => "يسار",
-                    _ => value.ToString() ?? "",
+                    Apex.Services.Templates.HorizontalAlign.Right => "HAlign_Right",
+                    Apex.Services.Templates.HorizontalAlign.Center => "HAlign_Center",
+                    Apex.Services.Templates.HorizontalAlign.Left => "HAlign_Left",
+                    _ => null,
                 };
+                if (key != null)
+                    return System.Windows.Application.Current?.TryFindResource(key) as string ?? value.ToString() ?? "";
+            }
             return value?.ToString() ?? "";
         }
 
@@ -592,13 +596,17 @@ namespace Apex.UI.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Apex.Services.Templates.VerticalAlign align)
-                return align switch
+            {
+                string? key = align switch
                 {
-                    Apex.Services.Templates.VerticalAlign.Top    => "أعلى",
-                    Apex.Services.Templates.VerticalAlign.Middle => "وسط",
-                    Apex.Services.Templates.VerticalAlign.Bottom => "أسفل",
-                    _ => value.ToString() ?? "",
+                    Apex.Services.Templates.VerticalAlign.Top    => "VAlign_Top",
+                    Apex.Services.Templates.VerticalAlign.Middle => "VAlign_Middle",
+                    Apex.Services.Templates.VerticalAlign.Bottom => "VAlign_Bottom",
+                    _ => null,
                 };
+                if (key != null)
+                    return System.Windows.Application.Current?.TryFindResource(key) as string ?? value.ToString() ?? "";
+            }
             return value?.ToString() ?? "";
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -613,16 +621,20 @@ namespace Apex.UI.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Apex.Services.SmartVariables.ImageMatchMode mode)
-                return mode switch
+            {
+                string? key = mode switch
                 {
-                    Apex.Services.SmartVariables.ImageMatchMode.ByFileName => "بحسب اسم الملف",
-                    Apex.Services.SmartVariables.ImageMatchMode.ById => "بحسب الرقم التعريفي",
-                    Apex.Services.SmartVariables.ImageMatchMode.ByName => "بحسب الاسم",
-                    Apex.Services.SmartVariables.ImageMatchMode.ByPathColumn => "من عمود المسار",
-                    Apex.Services.SmartVariables.ImageMatchMode.StaticSingle => "صورة ثابتة واحدة",
-                    Apex.Services.SmartVariables.ImageMatchMode.Manual => "يدوي",
-                    _ => value.ToString() ?? "",
+                    Apex.Services.SmartVariables.ImageMatchMode.ByFileName => "IMM_ByFileName",
+                    Apex.Services.SmartVariables.ImageMatchMode.ById => "IMM_ById",
+                    Apex.Services.SmartVariables.ImageMatchMode.ByName => "IMM_ByName",
+                    Apex.Services.SmartVariables.ImageMatchMode.ByPathColumn => "IMM_ByPathColumn",
+                    Apex.Services.SmartVariables.ImageMatchMode.StaticSingle => "IMM_StaticSingle",
+                    Apex.Services.SmartVariables.ImageMatchMode.Manual => "IMM_Manual",
+                    _ => null,
                 };
+                if (key != null)
+                    return System.Windows.Application.Current?.TryFindResource(key) as string ?? value.ToString() ?? "";
+            }
             return value?.ToString() ?? "";
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -637,13 +649,17 @@ namespace Apex.UI.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Apex.Services.SmartVariables.Models.ExportScope scope)
-                return scope switch
+            {
+                string? key = scope switch
                 {
-                    Apex.Services.SmartVariables.Models.ExportScope.AllValid => "كل السجلات الصحيحة",
-                    Apex.Services.SmartVariables.Models.ExportScope.CurrentRecord => "السجل الحالي فقط",
-                    Apex.Services.SmartVariables.Models.ExportScope.SelectedRecords => "السجلات المحددة",
-                    _ => value.ToString() ?? "",
+                    Apex.Services.SmartVariables.Models.ExportScope.AllValid => "ES_AllValid",
+                    Apex.Services.SmartVariables.Models.ExportScope.CurrentRecord => "ES_CurrentRecord",
+                    Apex.Services.SmartVariables.Models.ExportScope.SelectedRecords => "ES_SelectedRecords",
+                    _ => null,
                 };
+                if (key != null)
+                    return System.Windows.Application.Current?.TryFindResource(key) as string ?? value.ToString() ?? "";
+            }
             return value?.ToString() ?? "";
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -658,15 +674,19 @@ namespace Apex.UI.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Apex.Services.SmartVariables.Models.ExportFormat fmt)
-                return fmt switch
+            {
+                string? key = fmt switch
                 {
-                    Apex.Services.SmartVariables.Models.ExportFormat.SinglePdf => "PDF ملف واحد",
-                    Apex.Services.SmartVariables.Models.ExportFormat.SeparatePdfs => "PDF ملف لكل سجل",
-                    Apex.Services.SmartVariables.Models.ExportFormat.Png => "صور PNG",
-                    Apex.Services.SmartVariables.Models.ExportFormat.Jpg => "صور JPG",
-                    Apex.Services.SmartVariables.Models.ExportFormat.DirectPrint => "طباعة مباشرة",
-                    _ => value.ToString() ?? "",
+                    Apex.Services.SmartVariables.Models.ExportFormat.SinglePdf => "EF_SinglePdf",
+                    Apex.Services.SmartVariables.Models.ExportFormat.SeparatePdfs => "EF_SeparatePdfs",
+                    Apex.Services.SmartVariables.Models.ExportFormat.Png => "EF_Png",
+                    Apex.Services.SmartVariables.Models.ExportFormat.Jpg => "EF_Jpg",
+                    Apex.Services.SmartVariables.Models.ExportFormat.DirectPrint => "EF_DirectPrint",
+                    _ => null,
                 };
+                if (key != null)
+                    return System.Windows.Application.Current?.TryFindResource(key) as string ?? value.ToString() ?? "";
+            }
             return value?.ToString() ?? "";
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -681,14 +701,18 @@ namespace Apex.UI.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Apex.Services.SmartVariables.Models.FileNamingMode mode)
-                return mode switch
+            {
+                string? key = mode switch
                 {
-                    Apex.Services.SmartVariables.Models.FileNamingMode.BySerial => "رقم تسلسلي",
-                    Apex.Services.SmartVariables.Models.FileNamingMode.ByCode => "حسب الكود",
-                    Apex.Services.SmartVariables.Models.FileNamingMode.ByName => "حسب الاسم",
-                    Apex.Services.SmartVariables.Models.FileNamingMode.ByFormula => "صيغة مخصصة",
-                    _ => value.ToString() ?? "",
+                    Apex.Services.SmartVariables.Models.FileNamingMode.BySerial => "FNM_BySerial",
+                    Apex.Services.SmartVariables.Models.FileNamingMode.ByCode => "FNM_ByCode",
+                    Apex.Services.SmartVariables.Models.FileNamingMode.ByName => "FNM_ByName",
+                    Apex.Services.SmartVariables.Models.FileNamingMode.ByFormula => "FNM_ByFormula",
+                    _ => null,
                 };
+                if (key != null)
+                    return System.Windows.Application.Current?.TryFindResource(key) as string ?? value.ToString() ?? "";
+            }
             return value?.ToString() ?? "";
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -702,14 +726,17 @@ namespace Apex.UI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value?.ToString() switch
+            string? key = value?.ToString() switch
             {
-                "Contain" => "ملاءمة (Contain)",
-                "Cover"   => "تغطية (Cover)",
-                "Stretch" => "تمديد (Stretch)",
-                "Fill"    => "ملء (Fill)",
-                _ => value?.ToString() ?? ""
+                "Contain" => "IFit_Contain",
+                "Cover"   => "IFit_Cover",
+                "Stretch" => "IFit_Stretch",
+                "Fill"    => "IFit_Fill",
+                _ => null
             };
+            if (key != null)
+                return System.Windows.Application.Current?.TryFindResource(key) as string ?? value?.ToString() ?? "";
+            return value?.ToString() ?? "";
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
             => Binding.DoNothing;

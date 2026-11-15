@@ -1830,4 +1830,36 @@
     <sys:String x:Key="Step_PreviewShort">معاينة</sys:String>
     <sys:String x:Key="Step_Export">فحص وتصدير</sys:String>
     <sys:String x:Key="Step_ExportShort">تصدير</sys:String>
+
+    <!-- ── Enum display labels (one-way converters) ─────────────────── -->
+    <sys:String x:Key="HAlign_Right">يمين</sys:String>
+    <sys:String x:Key="HAlign_Center">وسط</sys:String>
+    <sys:String x:Key="HAlign_Left">يسار</sys:String>
+    <sys:String x:Key="VAlign_Top">أعلى</sys:String>
+    <sys:String x:Key="VAlign_Middle">وسط</sys:String>
+    <sys:String x:Key="VAlign_Bottom">أسفل</sys:String>
+    <sys:String x:Key="IMM_ByFileName">بحسب اسم الملف</sys:String>
+    <sys:String x:Key="IMM_ById">بحسب الرقم التعريفي</sys:String>
+    <sys:String x:Key="IMM_ByName">بحسب الاسم</sys:String>
+    <sys:String x:Key="IMM_ByPathColumn">من عمود المسار</sys:String>
+    <sys:String x:Key="IMM_StaticSingle">صورة ثابتة واحدة</sys:String>
+    <sys:String x:Key="IMM_Manual">يدوي</sys:String>
+    <sys:String x:Key="ES_AllValid">كل السجلات الصحيحة</sys:String>
+    <sys:String x:Key="ES_CurrentRecord">السجل الحالي فقط</sys:String>
+    <sys:String x:Key="ES_SelectedRecords">السجلات المحددة</sys:String>
+    <sys:String x:Key="EF_SinglePdf">PDF ملف واحد</sys:String>
+    <sys:String x:Key="EF_SeparatePdfs">PDF ملف لكل سجل</sys:String>
+    <sys:String x:Key="EF_Png">صور PNG</sys:String>
+    <sys:String x:Key="EF_Jpg">صور JPG</sys:String>
+    <sys:String x:Key="EF_DirectPrint">طباعة مباشرة</sys:String>
+    <sys:String x:Key="FNM_BySerial">رقم تسلسلي</sys:String>
+    <sys:String x:Key="FNM_ByCode">حسب الكود</sys:String>
+    <sys:String x:Key="FNM_ByName">حسب الاسم</sys:String>
+    <sys:String x:Key="FNM_ByFormula">صيغة مخصصة</sys:String>
+    <sys:String x:Key="IFit_Contain">ملاءمة (Contain)</sys:String>
+    <sys:String x:Key="IFit_Cover">تغطية (Cover)</sys:String>
+    <sys:String x:Key="IFit_Stretch">تمديد (Stretch)</sys:String>
+    <sys:String x:Key="IFit_Fill">ملء (Fill)</sys:String>
+    <sys:String x:Key="CC_None">لا يوجد</sys:String>
+    <sys:String x:Key="ListSep">، </sys:String>
 </ResourceDictionary>

@@ -134,10 +134,10 @@
                                        Margin="0,2,0,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="Text" Value="لا يوجد"/>
+                                        <Setter Property="Text" Value="{DynamicResource CC_None}"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IccProfilePath}" Value="{x:Null}">
-                                                <Setter Property="Text" Value="لا يوجد"/>
+                                                <Setter Property="Text" Value="{DynamicResource CC_None}"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>

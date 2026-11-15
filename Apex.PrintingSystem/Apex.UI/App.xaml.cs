@@ -356,7 +356,7 @@ namespace Apex.UI
                 {
                     MessageBox.Show(
                         AppLocalizer.Lf("Crash_UnexpectedMsg2", message),
-                        "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                        AppLocalizer.L("Err_Generic"), MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 finally
                 {

@@ -403,7 +403,7 @@ namespace Apex.UI.ViewModels
             if (printers.Count == 0) return;
 
             if (System.Windows.MessageBox.Show(
-                    Lf("PM_PurgeConfirm", string.Join("، ", printers)),
+                    Lf("PM_PurgeConfirm", string.Join(L("ListSep"), printers)),
                     L("PM_PurgeTitle"),
                     System.Windows.MessageBoxButton.YesNo,
                     System.Windows.MessageBoxImage.Warning) != System.Windows.MessageBoxResult.Yes)
