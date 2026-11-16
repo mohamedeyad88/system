@@ -132,11 +132,15 @@
          margins). The band is a fixed Auto row pinned to the bottom; the centre
          cockpit is the elastic row and its radial core is a Viewbox that scales
          down, so on a smaller window the cockpit shrinks and the band stays in view. -->
-    <Grid Margin="24,12,24,12">
+    <!-- MaxHeight is pinned to the host's height so the dashboard can NEVER grow
+         taller than the window (some machines didn't bound it, so it overflowed and
+         the band dropped off). The centre cockpit shrinks and the band stays pinned. -->
+    <Grid Margin="24,10,24,8"
+          MaxHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=ContentControl}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>  <!-- 0 header -->
-            <RowDefinition Height="14"/>
-            <RowDefinition Height="*" MinHeight="80"/>  <!-- 2 main cockpit (elastic) -->
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="*" MinHeight="40"/>  <!-- 2 main cockpit (elastic) -->
             <RowDefinition Height="12"/>
             <RowDefinition Height="Auto"/>  <!-- 4 bottom band -->
         </Grid.RowDefinitions>
