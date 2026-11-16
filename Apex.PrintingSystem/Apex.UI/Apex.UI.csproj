@@ -15,10 +15,10 @@
     <Company>Apex</Company>
     <Copyright>Copyright © Apex 2026</Copyright>
     <Description>نظام إدارة الطباعة المتكامل</Description>
-    <Version>4.0.4</Version>
-    <AssemblyVersion>4.0.4.0</AssemblyVersion>
-    <FileVersion>4.0.4.0</FileVersion>
-    <InformationalVersion>4.0.4</InformationalVersion>
+    <Version>4.0.5</Version>
+    <AssemblyVersion>4.0.5.0</AssemblyVersion>
+    <FileVersion>4.0.5.0</FileVersion>
+    <InformationalVersion>4.0.5</InformationalVersion>
     <!-- Nullable Reference Types Warnings (تحذيرات القيم الفارغة)
          تم تعطيل التحذيرات التالية مؤقتاً لحين مراجعة الكود:
          CS8603: Possible null reference return
