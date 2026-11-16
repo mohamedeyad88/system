@@ -128,18 +128,19 @@
         </EventTrigger>
     </UserControl.Triggers>
 
-    <!-- No ScrollViewer: the grid fills the view, the centre cockpit (a Viewbox) is
-         the only elastic row so it shrinks to fit, and the bottom stats band is a
-         fixed Auto row pinned to the bottom — so it can never be cut off, on any
-         screen size. A field customer on a small/scaled laptop had the band clipped
-         when the layout was taller than the window. -->
-    <Grid Margin="24,12,24,12">
+    <!-- The whole dashboard is drawn on a fixed 1600x900 design canvas inside a
+         Viewbox, so it scales as ONE unit to fit any screen or window — on a small
+         or scaled laptop everything (including the bottom stats band) shrinks
+         together and stays fully visible; it can never be cut off. A field customer
+         on a remote/scaled machine had the band pushed off-screen. -->
+    <Viewbox Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <Grid Width="1600" Height="900" Margin="24,16,24,20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>  <!-- 0 header -->
             <RowDefinition Height="14"/>
-            <RowDefinition Height="*" MinHeight="90"/>  <!-- 2 main cockpit (elastic, shrinks on small screens) -->
+            <RowDefinition Height="*"/>  <!-- 2 main cockpit (fills the canvas) -->
             <RowDefinition Height="12"/>
-            <RowDefinition Height="Auto"/>  <!-- 4 bottom band (always visible) -->
+            <RowDefinition Height="Auto"/>  <!-- 4 bottom band -->
         </Grid.RowDefinitions>
 
             <!-- ═══ HEADER ═══ -->
@@ -622,4 +623,5 @@
                 </Grid>
             </Border>
         </Grid>
+    </Viewbox>
 </UserControl>
