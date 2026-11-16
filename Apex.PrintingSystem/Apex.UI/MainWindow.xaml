@@ -14,7 +14,7 @@
         Icon="pack://application:,,,/Assets/AppIcon.ico"
         UseLayoutRounding="True"
         TextOptions.TextRenderingMode="ClearType"
-        MinWidth="1200" MinHeight="800"
+        MinWidth="900" MinHeight="500"
         FlowDirection="{Binding Source={x:Static services:LocalizationService.Instance}, Path=FlowDirection, Mode=OneWay}"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
