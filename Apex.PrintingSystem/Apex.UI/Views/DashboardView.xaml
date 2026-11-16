@@ -137,7 +137,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>  <!-- 0 header -->
             <RowDefinition Height="14"/>
-            <RowDefinition Height="*" MinHeight="170"/>  <!-- 2 main cockpit (elastic) -->
+            <RowDefinition Height="*" MinHeight="90"/>  <!-- 2 main cockpit (elastic, shrinks on small screens) -->
             <RowDefinition Height="12"/>
             <RowDefinition Height="Auto"/>  <!-- 4 bottom band (always visible) -->
         </Grid.RowDefinitions>

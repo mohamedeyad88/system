@@ -463,7 +463,14 @@
             </Border>
             </StackPanel>
 
-            <controls:TransitionContentControl Grid.Row="1" Content="{Binding CurrentViewModel}"/>
+            <!-- Stretch the hosted view to fill this bounded row so size-aware layouts
+                 (e.g. the dashboard cockpit, which shrinks to fit) actually receive the
+                 row height instead of their natural height; without this a tall view
+                 overflows below the window and its bottom is cut off on small screens. -->
+            <controls:TransitionContentControl Grid.Row="1" ClipToBounds="True"
+                                               HorizontalContentAlignment="Stretch"
+                                               VerticalContentAlignment="Stretch"
+                                               Content="{Binding CurrentViewModel}"/>
 
             <!-- Persistent live print status — shown from EVERY section while a run is
                  active, so the operator can set up the next job and still watch the
